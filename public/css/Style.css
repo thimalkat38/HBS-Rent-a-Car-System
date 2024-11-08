@@ -1,0 +1,754 @@
+/* Global Styles */
+body {
+    font-family: 'Oxanium', sans-serif; /* Font family */
+    font-weight: bold; /* Make all text bold */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f8f9fa;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Full height */
+    background-color: #e8e8ff;
+    
+}
+
+/* Header Styles */
+.header {
+    display: flex; /* Flexbox for alignment */
+    align-items: center; /* Center vertically */
+    padding: 10px 20px; /* Padding for the header */
+    background-color: #FFAA00;
+    color: white;
+    height: 60px; /* Fixed height */
+}
+
+.logo-icon {
+    width: 150px; /* Maintain aspect ratio */
+    height: 85px; /* Set height to match header height */
+    margin-left: 50px; /* Space between logo and title */
+}
+
+.logo-section {
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.header-title {
+    flex-grow: 1; /* Take remaining space */
+    text-align: center; /* Center the title */
+    font-size: 1.5rem;
+}
+
+.title {
+    flex-grow: 1; /* Take remaining space */
+    text-align: center; /* Center the title */
+    font-size: 1.5rem;
+    margin-bottom: 2%;
+}
+
+/* Main Content Styles */
+.main-content {
+    display: flex;
+    flex: 1; /* Fill remaining space */
+    overflow: hidden; /* Hide overflow */
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 20%;
+    background-color: #ffcfd1;
+    padding: 1%; /* Padding for better spacing */
+    box-shadow: 0% 0% 1% rgba(0, 0, 0, 0.1);
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #f7f7f7;
+    border: 1px solid #ddd;
+    min-width: 100%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    z-index: 1;
+    border-color: red;
+}
+
+.nav-item:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-link {
+    display: block;
+    padding: 10px 15px;
+    color: red;
+    text-decoration: none;
+    background-color: #e8e8ff;
+}
+
+.dropdown-link:hover {
+    background-color: #e6e6e6;
+}
+
+
+.nav-link {
+    color: #000;
+    font-weight: bold; /* Keep link text bold */
+    padding: 10px;
+    text-decoration: none;
+    font-size: 1rem; /* Slightly reduced font size */
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.nav-link:hover {
+    background-color: red; /* Change to red on hover */
+    color: #fff; /* Change text color to white for better contrast */
+}
+
+.nav-link.active {
+    background-color: red;              /* Red background for the selected link */
+    color: #fff;                        /* White text for better contrast */
+}
+
+.nav-icon {
+    width: 18%; /* Adjust icon size */
+    height: 18%; /* Adjust icon size */
+    margin-right: 10px; /* Space between icon and text */
+}
+
+/* Content Styles */
+.content {
+    background-color: #e8e8ff;
+    width: 80%; /* 80% of the container */
+    padding: 10px; /* Padding for content */
+    overflow-y: auto; /* Enable vertical scrolling for content only */
+}
+
+/* General styling and layout remain the same as in the previous response */
+
+/* Dashboard - Calendar Body Styles.................................................................................................................. */
+.calendar {
+    background-color: #4105DB1A;
+    padding: 15px 15px;
+    border-radius: 8px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.month-nav {
+    padding: 10px 10px;
+    background-color: #FFAA00;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 80px;
+}
+
+.calendar-days-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    text-align: center;
+    font-weight: bold;
+    padding-bottom: 40px;
+    border-bottom: 1px solid black; /* Add black line here */
+}
+
+.calendar-day-name{
+    height: 180%;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10%;
+    background-color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    padding: 1% 1%;
+}
+
+.calendar-day {
+    height: 90%;
+    width: 30%;
+    padding: 4% 4%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #e6e1f7;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.calendar-day:hover {
+    background-color: #fff;
+}
+
+
+.available {
+    background-color: #05FA004D;
+    color: #fff;
+}
+
+.onsite {
+    background-color: #FFAA004D;
+    color: #fff;
+}
+.onhire {
+    background-color: #FA000B4D;
+    color: #fff;
+}
+
+/* Status Summary Styles */
+.status-summary {
+    display: flex;
+    gap: 20px;
+    padding-top: 15px;
+}
+
+.status-box {
+    flex: 1;
+    padding: 15px 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-box img {
+    width: 50px;
+    height: 50px;
+    border-radius: 15%;
+}
+
+.calendar-day.available {
+    background-color: #05FA004D; /* Available color */
+    color: #fff; /* Text color for better contrast */
+}
+
+.calendar-day.onsite {
+    background-color: #FFAA004D; /* Onsite color */
+    color: black; /* Text color for better contrast */
+}
+
+.calendar-day.onhire {
+    background-color: #FA000B4D; /* On hire color */
+    color: black; /* Text color for better contrast */
+}
+
+/*Vehicle, Booking, customer and HRM -  Form Section ..................................................................................................... */
+.form-section {
+    width: 98%;
+    height: 80%;
+    padding: 1%; /* Padding for the form */
+    flex: 1; /* Allow it to take available space */
+   
+}
+
+.form-container {
+  width: 95%;
+  height: 70%;
+  margin: 4% auto;
+  padding: 1%;
+  border-radius: 10px;
+}
+
+.leave-form {
+  width: 95%;
+  height: 70%;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row_img{
+    width: 20%;
+    height: 15%;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #000;
+  font-size: 1em;
+}
+
+.reason-group {
+  margin-bottom: 20px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* Form Row Styles */
+.form-row {
+    display: flex;
+    gap: 1%; /* Space between input fields */
+    margin-bottom: 1%; /* Space below form row */
+}
+
+.form-labe{
+    margin-right: 1%;
+    margin-left: 2%;
+}
+
+.card6-form-row{
+    display: flex;
+    gap: 1%; /* Space between input fields */
+    margin-bottom: 1%; /* Space below form row */
+}
+
+.card6-form-row input{
+    width: calc(50% - 1%); /* Adjusted width */
+    padding: 1%;
+    width: 50%
+    border: 1px solid #ccc;
+    border-color: black;
+    border-radius: 5px; /* Border radius for input fields */
+    font-family: 'Oxanium', sans-serif;
+}
+
+.form-row input{
+    width: calc(50% - 1%); /* Adjusted width */
+    padding: 1%;
+    width: 50%
+    border: 1px solid #ccc;
+    border-color: black;
+    border-radius: 5px; /* Border radius for input fields */
+    font-family: 'Oxanium', sans-serif;
+}
+
+.form-row select{
+    width: calc(50% - 1%); /* Adjusted width */
+    padding: 1%;
+    width: 50%;
+    border: 2px solid #ccc;
+    border-color: black;
+    border-radius: 5px; /* Border radius for input fields */
+    font-family: 'Oxanium', sans-serif;
+}
+
+/* Upload Section Styles */
+.upload-section {
+    border: 2px dashed #bbb;
+    text-align: center;
+    background-color: #f7f7f7;
+    border-color: black;
+    font-weight: bold; /* Keep upload section text bold */
+    color: #666;
+    flex: 1; /* Allow each section to grow and fill space equally */
+    padding: 1% 1%;
+}
+
+.upload-icon {
+    width: 7%; /* Adjust size of the upload icon */
+    height: 7%; /* Adjust size of the upload icon */
+    margin-bottom: 0%; /* Space below the icon */
+    margin-bottom: 1%;
+}
+
+/* Checkbox Section Styles */
+.checkbox-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5%; /* Space between checkboxes */
+    margin-top: 3%; /* Margin above checkbox section */
+}
+
+.checkbox-section div {
+    flex: 1 1 30%; /* Responsive layout for checkboxes */
+}
+
+.checkbox-section input {
+    margin-right: 1%; /* Space between checkbox and label */
+}
+
+/* Submit Button Styles */
+.submit-container {
+    text-align: right;
+    margin-top: 2%;
+}
+
+.btn-clear,
+.btn-submit {
+    padding: 1% 3%;
+    background-color: #365C96; /* Button color */
+    color: white;
+    border: none;
+    border-radius: 20px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    font-family: 'Oxanium', sans-serif;
+}
+
+.btn-clear:hover,
+.btn-submit:hover {
+    background-color: #ff8c00; /* Darker shade on hover */
+}
+
+
+/* Vehicle, Booking, Customer,Employee List Pages- Main Content Styles.............................................................................. */
+.table-content {
+            width: 97%; /* Take the full width of the content area */
+            height: 80%;
+            display: flex;
+            overflow-x: scroll;/* Always show horizontal scrollbar */
+            overflow-y: scroll;/* Always show vertical scrollbar */
+            max-height: 65vh; /* Limit height to prevent overflowing beyond viewport */
+            max-width: 154vw;
+            border: 1px solid #ddd; /* Optional: border for better appearance */
+            overflow-y: auto; /* Enable vertical scrolling for content only */
+            padding: 1% 1%;
+        }
+
+.card1 {
+  padding: 2px;
+}
+
+.card1-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card1-welcome-message {
+  flex: 1;
+}
+
+.card1-btn-submit {
+    padding: 2% 8%;
+    margin-right: 2%;
+    background-color: #CB80AB; /* Button color */
+    color: white;
+    font-size: 20px;
+    border: none;
+    border-radius: 20px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    font-family: 'Oxanium', sans-serif;
+}
+
+.card1-btn-submit:hover {
+  background-color: #ff8c00;
+}
+
+.btn-border{
+    background-color: #FA000B4D;
+    width: %;
+    height: 1%;
+    border-radius: 10px;
+}
+
+        table {
+            height: 80%;
+            margin-top: 0%; /* Add some space above the table */
+            width: 100%; /* Make the table take full width of the content area */
+            border-collapse: collapse; /* Collapse borders */
+        }
+
+        th {
+            background-color: #FA000B; /* Set header background color to red */
+            color: white; /* Change text color to white for better contrast */
+            height: 5%; /* Set a fixed height for header cells */
+        }
+
+        tr {
+            height: 5%; /* Set a fixed height for table rows */
+        }
+
+        tr:nth-child(odd) {
+            background-color: #FFAA0066; /* Light gray background for odd rows */
+        }
+
+        tr:nth-child(even) {
+            background-color: #B4FEB3; /* Light green background for even rows */
+        }
+
+        td {
+            text-align: center; /* Center-align text in table cells */
+            border: none; /* Remove cell borders */
+        }
+
+        td img{
+        	width: 90px;
+    		height: auto;
+        }
+
+        .text-start{
+            text-align: left;
+        }
+
+        img {
+            width: 80%;
+            height: 60%;
+            border-radius: 10px;
+        }
+
+        .pending{
+            color: blue;
+        }
+
+        .approved{
+            color: green;
+        }
+
+        .rejected{
+            color: red;
+        }
+
+        .button-cell {
+            padding: 0; /* Remove padding between buttons */
+        }
+
+        .btn {
+            width: 25px;
+            height: 25px;
+            border: none;
+            border-radius: 50%;
+            font-size: 1em;
+            color: white;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin: 0; /* Remove margin between buttons */
+        }
+
+        .btn-search{
+            display: inline-block;
+            padding: 16px 16px;
+            font-size: 12px;
+            color: white;
+            background-color: #CB80AB;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 0px; /* Adds space between buttons */
+        }
+
+        .btn-edit{
+            display: inline-block;
+            padding: 8px 10px;
+            font-size: 12px;
+            color: white;
+            background-color: green;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 0px; /* Adds space between buttons */
+        }
+
+        .btn-delete{
+            display: inline-block;
+            padding: 8px 10px;
+            font-size: 12px;
+            color: white;
+            background-color: red;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 0px; /* Adds space between buttons */
+        }
+
+        .green-button {
+            background-color: #008000; /* Green color */
+        }
+
+        .red-button {
+            background-color: #ff0000; /* Red color */
+        }
+
+        .checkmark, .cross {
+            color: white;
+        }
+
+/* HRM01 page - Card Container Styles ...............................................................................................................*/
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3%;
+    padding: 3%;
+    overflow: hidden; /* Disable scrolling */
+}
+
+.card2-cards-container {
+    display: grid;
+    grid-template-columns: repeat(1, 3fr);
+    gap: 5%;
+    padding: 5%;
+    overflow: hidden; /* Disable scrolling */
+
+}
+
+.bg-pink-custom {
+    background-color: #F37383;
+}
+
+/* Individual Card Styling */
+.card {
+    border-radius: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    padding: 2%;
+    text-align: center;
+    padding: 0%; /* Adjust padding to increase or decrease internal spacing */
+    margin: 0%; /* Adjust margin to control spacing between cards */
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0% 4% 10% rgba(0, 0, 0, 0.2);
+}
+
+.shadow-sm {
+    box-shadow: 0% 2% 5% rgba(0, 0, 0, 0.1);
+}
+
+/* Custom Colors */
+.bg-dark-custom {
+    background-color: #343a40;
+}
+
+.bg-warning-custom {
+    background-color: #ffc107;
+}
+
+.bg-azure {
+    background-color: #007bff;
+}
+
+.bg-danger-custom {
+    background-color: #dc3545;
+}
+
+.bg-success-custom {
+    background-color: #28a745;
+}
+
+.bg-purple-custom {
+    background-color: #6f42c1;
+}
+
+.bg-magenta {
+    background-color: #e83e8c;
+}
+
+.text-white {
+    color: #ffffff;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    margin-top: 2%;
+    font-weight: bold;
+}
+
+.card-text {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 1% 0;
+}
+
+.image-wrapper {
+    margin-bottom: 3%;
+}
+
+.card-image {
+    width: 25%; /* Set a fixed width for the image */
+    height: 25%; /* Maintain aspect ratio */
+    border-radius: 50%;
+}
+
+/* Responsive Design */
+@media (max-width: 150%) {
+    .cards-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 100%) {
+    .cards-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Footer Styles */
+.footer {
+    background-color: #ffa500;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: auto;
+}
+
+
+.photo-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.photo-item {
+    width: 200px;
+    height: 150px;
+    overflow: hidden;
+}
+
+.vehicle-photo {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
