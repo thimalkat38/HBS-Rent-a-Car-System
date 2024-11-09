@@ -140,7 +140,9 @@
                         <div class="form-row">
                             <input type="text" name="additional_chagers" placeholder="Additional Chagers (LKR)">
                             <input type="text" name="price" placeholder="Total Price (LKR)" readonly>
+                            {{-- <input type="text" name="additional_details" placeholder="Additional Details"> --}}
                         </div>
+
                         <!-- Upload Sections in Form Row -->
                         <div class="form-row">
                             <div class="upload-section">

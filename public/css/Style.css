@@ -21,7 +21,7 @@ body {
     display: flex; /* Flexbox for alignment */
     align-items: center; /* Center vertically */
     padding: 10px 20px; /* Padding for the header */
-    background-color: #FFAA00;
+    background-color: #133E87;
     color: white;
     height: 60px; /* Fixed height */
 }
@@ -59,7 +59,7 @@ body {
 /* Sidebar Styles */
 .sidebar {
     width: 20%;
-    background-color: #ffcfd1;
+    background-color: #CBDCEB;
     padding: 1%; /* Padding for better spacing */
     box-shadow: 0% 0% 1% rgba(0, 0, 0, 0.1);
 }
@@ -85,7 +85,7 @@ body {
     min-width: 100%;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
     z-index: 1;
-    border-color: red;
+    border-color: #133E87;
 }
 
 .nav-item:hover .dropdown-menu {
@@ -95,7 +95,7 @@ body {
 .dropdown-link {
     display: block;
     padding: 10px 15px;
-    color: red;
+    color: #133E87;
     text-decoration: none;
     background-color: #e8e8ff;
 }
@@ -117,12 +117,12 @@ body {
 }
 
 .nav-link:hover {
-    background-color: red; /* Change to red on hover */
+    background-color: #133E87; /* Change to red on hover */
     color: #fff; /* Change text color to white for better contrast */
 }
 
 .nav-link.active {
-    background-color: red;              /* Red background for the selected link */
+    background-color: #133E87;              /* Red background for the selected link */
     color: #fff;                        /* White text for better contrast */
 }
 
@@ -158,7 +158,7 @@ body {
 
 .month-nav {
     padding: 10px 10px;
-    background-color: #FFAA00;
+    background-color: #133E87;
     border: none;
     color: white;
     cursor: pointer;
@@ -726,7 +726,7 @@ body {
 
 /* Footer Styles */
 .footer {
-    background-color: #ffa500;
+    background-color: #133E87;
     color: white;
     text-align: center;
     padding: 10px 0;

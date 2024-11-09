@@ -60,7 +60,7 @@ body, html {
 }
 /* Right Panel Styles */
 .right-panel {
-    background-color: #FA000B;
+    background-color: #133E87;
     padding: 20px;
     color: white;
 }
@@ -70,7 +70,7 @@ body, html {
     width: 100%;
     max-width: 550px;
     padding: 50px 40px;
-    background-color: #FA000B; /* Add background color for contrast */
+    background-color: #133E87; /* Add background color for contrast */
 }
 
 /* Header Styles */
@@ -81,7 +81,7 @@ h2 {
 
 /* Login Button Styles */
 .login-button {
-    background-color: #365C96;
+    background-color: #021D49;
     color: white;
     font-weight: bold;
     border: none;
@@ -92,7 +92,7 @@ h2 {
 }
 
 .login-button:hover {
-    background-color: #244870; /* Darker shade on hover */
+    background-color: #021D49; /* Darker shade on hover */
 }
 
 /* Input Field Placeholder Styles */
