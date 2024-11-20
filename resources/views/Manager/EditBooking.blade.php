@@ -26,25 +26,39 @@
 
 
                     <div class="form-row">
-                        <label for="booking_time" class="form-label">Booking Time</label>
-                        <input type="time" name="booking_time" id="booking_time" class="form-control" value="{{ old('booking_time', $booking->booking_time) }}" required>
-                        <label for="price" class="form-label">Price</label>
-                        <input type="text" name="price" id="price" class="form-control" value="{{ old('price', $booking->price) }}" required>
-                    </div>
-
-
-                    {{-- <div class="form-row">
-                        <label for="fuel_type" class="form-label">Fuel Type</label>
-                        <input type="text" name="fuel_type" id="fuel_type" class="form-control" value="{{ old('fuel_type', $booking->fuel_type) }}" required>
-                        <label for="vehicle_name" class="form-label">Vehicle name</label>
-                        <input type="text" name="vehicle_name" id="vehicle_name" class="form-control" value="{{ old('vehicle_name', $booking->vehicle_name) }}" required>
-                    </div> --}}
-
-                    <div class="form-row">
                         <label for="from_date" class="form-label">From Date</label>
                         <input type="date" name="from_date" id="from_date" class="form-control" value="{{ old('from_date', $booking->from_date) }}" required>
+                        <label for="booking_time" class="form-label">Booking Time</label>
+                        <input type="time" name="booking_time" id="booking_time" class="form-control" value="{{ old('booking_time', $booking->booking_time) }}" required>
+                    </div>
+                    
+                    <div class="form-row">
                         <label for="to_date" class="form-label">To Date</label>
                         <input type="date" name="to_date" id="to_date" class="form-control" value="{{ old('to_date', $booking->to_date) }}" required>
+                        <label for="arrival_time" class="form-label">Arrival Time</label>
+                        <input type="time" name="arrival_time" id="arrival_time" class="form-control" value="{{ old('arrival_time', $booking->arrival_time) }}" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="vehicle_number" class="form-label">Vehicle Number</label>
+                        <input type="text" name="vehicle_number" id="vehicle_number" class="form-control" value="{{ old('vehicle_number', $booking->vehicle_number) }}" readonly>
+                        <label for="vehicle_name" class="form-label">Vehicle Name</label>
+                        <input type="text" name="vehicle_name" id="vehicle_name" class="form-control" value="{{ old('vehicle_name', $booking->vehicle_name) }}" readonly>
+                    </div>
+
+                    
+                    <div class="form-row">
+                        <label for="additional_chagers" class="form-label">Additional Chagers</label>
+                        <input type="text" name="additional_chagers" id="additional_chagers" class="form-control" value="{{ old('additional_chagers', $booking->additional_chagers) }}" readonly>
+                        <label for="reason" class="form-label">Reason For Additional Chagers</label>
+                        <input type="text" name="reason" id="reason" class="form-control" value="{{ old('reason', $booking->reason) }}" readonly>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="discount_price" class="form-label">Discount Price</label>
+                        <input type="text" name="discount_price" id="discount_price" class="form-control" value="{{ old('discount_price', $booking->discount_price) }}" readonly>
+                        <label for="price" class="form-label">Total Price</label>
+                        <input type="text" name="price" id="price" class="form-control" value="{{ old('price', $booking->price) }}" readonly>
                     </div>
 
                     <!-- Driving Photos -->

@@ -113,6 +113,7 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
+                                <th>#</th>
                                 <th>CAR IMAGE</th>
                                 <th>MANUFACTURER</th>
                                 <th>VEHICLE NAME</th>
@@ -120,6 +121,8 @@
                                 <th>CHASSIS NUMBER</th>
                                 <th>FUEL TYPE</th>
                                 <th>PRICE PER DAY</th>
+                                <th>FREE KM/DAY</th>
+                                <th>Extra KM Price</th>
                                 {{-- <th>ENGINE NUMBER</th>
                         <th>MODEL YEAR</th>
                         <th>FEATURES</th> --}}
@@ -129,6 +132,7 @@
                         <tbody>
                             @foreach ($vehicles as $vehicle)
                                 <tr>
+                                    <td>{{ $vehicle->id }}</td>
                                     <td>
                                         @if (!empty($vehicle->images) && isset($vehicle->images[0]))
                                             <img src="{{ asset('storage/' . $vehicle->images[0]) }}" alt="Car Image">
@@ -143,6 +147,8 @@
                                     <td>{{ $vehicle->chassis_number }}</td>
                                     <td>{{ $vehicle->fuel_type }}</td>
                                     <td>{{ $vehicle->price_per_day }}</td>
+                                    <td>{{ $vehicle->free_km }}</td>
+                                    <td>{{ $vehicle->extra_km_chg }}</td>
                                     {{-- <td>{{ $vehicle->engine_number }}</td>
                             <td>{{ $vehicle->model_year }}</td> --}}
                                     {{-- <td class="text-start">

@@ -140,6 +140,7 @@
                         <div class="form-row">
                             <input type="text" name="price_per_day" placeholder="Price Per Day">
                             <input type="text" name="free_km" placeholder="Free KM">
+                            <input type="text" name="extra_km_chg" placeholder="Extra 1 KM Charge">                      
                         </div>
                         <div class="upload-section">
                             <p>Add Vehicle Images</p>

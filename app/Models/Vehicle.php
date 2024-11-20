@@ -20,6 +20,7 @@ class Vehicle extends Model
         'model_year',
         'price_per_day',
         'free_km',
+        'extra_km_chg',
         'features',
         'images',
     ];
