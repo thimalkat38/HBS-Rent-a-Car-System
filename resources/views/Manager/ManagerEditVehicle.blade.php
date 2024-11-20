@@ -71,13 +71,15 @@
 
 
             <div class="form-row">
-                <label for="chassis_number">Price Per Day</label>
+                <label for="price_per_day">Price Per Day</label>
                 <input type="text" name="price_per_day" value="{{ old('price_per_day', $vehicle->price_per_day) }}" required>
-                <label for="model_year">Free KM</label>
+                <label for="free_km">Free KM</label>
                 <input type="text" name="free_km" value="{{ old('free_km', $vehicle->free_km) }}" required>
+                <label for="extra_km_chg">Extra 1KM Charge</label>
+                <input type="text" name="extra_km_chg" value="{{ old('extra_km_chg', $vehicle->extra_km_chg) }}" required>
             </div>
 
-            <!-- Vehicle Features -->
+            {{-- <!-- Vehicle Features -->
             <div class="form-row">
                 <label>Vehicle Features</label><br>
                 <input type="checkbox" name="features[chassy_number]" {{ old('features[chassy_number]', $vehicle->features['chassy_number'] ?? false) ? 'checked' : '' }}> Chassis Number<br>
@@ -86,7 +88,7 @@
                 <input type="checkbox" name="features[power_steering]" {{ old('features[power_steering]', $vehicle->features['power_steering'] ?? false) ? 'checked' : '' }}> Power Steering<br>
                 <input type="checkbox" name="features[cd_player]" {{ old('features[cd_player]', $vehicle->features['cd_player'] ?? false) ? 'checked' : '' }}> CD Player<br>
                 <input type="checkbox" name="features[power_door]" {{ old('features[power_door]', $vehicle->features['power_door'] ?? false) ? 'checked' : '' }}> Power Door<br>
-            </div>
+            </div> --}}
 
             <!-- Current Images -->
             <div class="form-row">

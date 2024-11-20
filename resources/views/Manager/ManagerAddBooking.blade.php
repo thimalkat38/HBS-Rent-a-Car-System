@@ -109,7 +109,7 @@
                             <!-- Moved outside the form row to ensure proper positioning -->
                             <ul id="customer-list" class="list-group" style="position: absolute; display: none;">
                             </ul>
-                            <input type="text" name="mobile_number" placeholder="Mobile number" readonly>
+                            <input type="text" name="mobile_number" placeholder="Mobile number">
                         </div>
 
                         <!-- Customer List Dropdown -->
@@ -132,15 +132,19 @@
                         <div class="form-row">
                             <input type="date" name="from_date" placeholder="From Date" required
                                 min="<?php echo date('Y-m-d'); ?>" onclick="this.showPicker()">
-                            <input type="date" name="to_date" placeholder="To Date" required
-                                min="<?php echo date('Y-m-d'); ?>" onclick="this.showPicker()">
-                            <input type="time" name="booking_time" class="small-input" required onclick="this.showPicker()">
+                                <input type="time" name="booking_time" class="small-input" required onclick="this.showPicker()">
+                                <input type="date" name="to_date" placeholder="To Date" required
+                                min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" onclick="this.showPicker()">                            
+                            <input type="time" name="arrival_time" class="small-input" required onclick="this.showPicker()">
+                            <input type="number" name="days" id="days" placeholder="Total Days" readonly>
                         </div>
                         
                         <div class="form-row">
                             <input type="text" name="additional_chagers" placeholder="Additional Chagers (LKR)">
+                            <input type="text" name="reason" placeholder="Reason for Additional Chagers">
+                            <input type="text" name="discount_price" placeholder="Discount Price (LKR)">
+                            <input type="text" name="payed" placeholder="PAYED">
                             <input type="text" name="price" placeholder="Total Price (LKR)" readonly>
-                            {{-- <input type="text" name="additional_details" placeholder="Additional Details"> --}}
                         </div>
 
                         <!-- Upload Sections in Form Row -->
@@ -302,30 +306,56 @@
             });
         });
     </script>
-    <script>
-        $(document).ready(function() {
-            // Function to calculate total price
-            function calculateTotalPrice() {
-                const pricePerDay = parseFloat($('#price_per_day').val()) || 0;
-                const additionalCharges = parseFloat($('input[name="additional_chagers"]').val()) || 0;
-                const fromDate = new Date($('input[name="from_date"]').val());
-                const toDate = new Date($('input[name="to_date"]').val());
-                const timeDiff = toDate - fromDate;
-                const days = timeDiff / (1000 * 60 * 60 * 24) + 1; // Add 1 to include the start day
 
-                if (!isNaN(days) && days > 0) {
-                    const totalPrice = (pricePerDay * days) + additionalCharges;
-                    $('input[name="price"]').val(totalPrice.toFixed(2)); // Update the price input field
+<script>
+    $(document).ready(function () {
+        // Function to calculate total price and days
+        function calculateTotalPriceAndDays() {
+            const pricePerDay = parseFloat($('#price_per_day').val()) || 0;
+            const additionalCharges = parseFloat($('input[name="additional_chagers"]').val()) || 0;
+            const discountPrice = parseFloat($('input[name="discount_price"]').val()) || 0;
+            const payed = parseFloat($('input[name="payed"]').val()) || 0;
+
+            // Retrieve and parse the date and time values
+            const fromDate = $('input[name="from_date"]').val();
+            const bookingTime = $('input[name="booking_time"]').val();
+            const toDate = $('input[name="to_date"]').val();
+            const arrivalTime = $('input[name="arrival_time"]').val();
+
+            if (fromDate && toDate && bookingTime && arrivalTime) {
+                // Combine date and time for proper calculation
+                const startDateTime = new Date(`${fromDate}T${bookingTime}`);
+                const endDateTime = new Date(`${toDate}T${arrivalTime}`);
+
+                // Calculate the time difference in milliseconds
+                const timeDiff = endDateTime - startDateTime;
+
+                if (timeDiff >= 0) { // Ensure valid date range
+                    // Calculate total days accurately (include start day if not a full day)
+                    const days = Math.max(1, timeDiff / (1000 * 60 * 60 * 24)); // Minimum of 1 day
+
+                    // Update the days field
+                    $('input[name="days"]').val(Math.ceil(days)); // Populate the days field
+
+                    // Calculate the total price
+                    const totalPrice = (pricePerDay * days) + additionalCharges - discountPrice - payed;
+                    $('input[name="price"]').val(totalPrice.toFixed(2)); // Autofill the price field
                 } else {
-                    $('input[name="price"]').val(''); // Clear the price input field if date range is invalid
+                    $('input[name="days"]').val(''); // Clear the days field if the date range is invalid
+                    $('input[name="price"]').val(''); // Clear the price field if the date range is invalid
                 }
             }
+        }
 
-            // Trigger calculation when relevant inputs change
-            $('input[name="from_date"], input[name="to_date"], #price_per_day, input[name="additional_chagers"]')
-                .on('input change', calculateTotalPrice);
-        });
-    </script>
+        // Trigger calculation when any relevant input changes
+        $('input[name="from_date"], input[name="booking_time"], input[name="to_date"], input[name="arrival_time"], #price_per_day, input[name="additional_chagers"], input[name="discount_price"], input[name="payed"]')
+            .on('input change', calculateTotalPriceAndDays);
+    });
+</script>
+
+
+
+
 
 
     <style>

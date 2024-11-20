@@ -116,11 +116,15 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Full Name</th>
-                                <th>From Date</th>
-                                <th>To Date</th>
+                                <th>From</th>
+                                <th>To</th>
                                 <th>Vehicle Number</th>
                                 <th>Mobile Number</th>
-                                <th>Price</th>
+                                <th>Additional Price</th>
+                                <th>Reason</th>
+                                <th>Discount Price</th>
+                                <th>Payed</th>
+                                <th>Balance</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -129,10 +133,14 @@
                                 <tr onclick="window.location='{{ route('bookings.show', $booking->id) }}'">
                                     <td>{{ $booking->id }}</td>
                                     <td>{{ $booking->full_name }}</td>
-                                    <td>{{ $booking->from_date }}</td>
-                                    <td>{{ $booking->to_date }}</td>
+                                    <td>{{ $booking->from_date }} [{{ $booking->booking_time }}]</td>
+                                    <td>{{ $booking->to_date }} [{{ $booking->arrival_time }}]</td>
                                     <td>{{ $booking->vehicle_number }}</td>
                                     <td>{{ $booking->mobile_number }}</td>
+                                    <td>{{ $booking->additional_chagers }}</td>
+                                    <td>{{ $booking->reason }}</td>
+                                    <td>{{ $booking->discount_price }}</td>
+                                    <td>{{ $booking->payed }}</td>
                                     <td>{{ $booking->price }}</td>
                                     <td class="button-cell">
                                         <a href="{{ route('bookings.edit', $booking->id) }}"

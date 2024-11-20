@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HBS Car Rental Management System</title>
-     <!-- Google Fonts for Oxanium -->
-     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts for Oxanium -->
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- jsPDF CDN -->
@@ -71,7 +71,16 @@
                         <p><strong>Booking Time:</strong> <span id="bookingTime">{{ $booking->booking_time }}</span></p>
                         <p><strong>From Date:</strong> <span id="fromDate">{{ $booking->from_date }}</span></p>
                         <p><strong>To Date:</strong> <span id="toDate">{{ $booking->to_date }}</span></p>
-                        <p><strong>Price:</strong> <span id="price">LKR {{ $booking->price }}</span></p>
+                        
+                        
+                        <!-- Updated Bill Information -->
+                        <h5 class="card-title text-primary mt-3 mb-2">Bill Information</h5>
+                        <p><strong>Based Price:</strong><span id="basedPrice"> LKR {{ number_format($booking->price_per_day * $booking->days, 2) }}</p>
+                        <p><strong>Additional Charges:</strong><span id="addChg"> LKR {{ number_format($booking->additional_chagers, 2) }}</p>
+                        <p><strong>Discount Price:</strong><span id="discountPrice"> LKR {{ number_format($booking->discount_price, 2) }}</p>
+                        <p><strong>Paid Amount:</strong><span id="PaidAmunt"> LKR {{ number_format($booking->payed, 2) }}</p>
+                        <p><strong>Amount Due:</strong><span id="due"> LKR {{ number_format($booking->price, 2) }}</p>
+                        <p><strong>Reason For Additional Charges:</strong> <span id="reason">{{ $booking->reason }}</span></p>
 
                         <!-- Photos Section -->
                         <h5 class="card-title text-primary mt-3 mb-2">Photos</h5>
@@ -135,52 +144,121 @@
         async function generatePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+    
+            try {
+                // Add header with background and logo
+                const logo = new Image();
+                logo.src = '{{ asset("images/logo.png") }}';
+    
+                logo.onload = function () {
+                    doc.setFillColor(255, 170, 0); // Header background color
+                    doc.rect(0, 0, 210, 40, 'F');
+                    doc.addImage(logo, 'PNG', 10, 10, 50, 20);
+    
+                    doc.setFontSize(10);
+                    doc.setTextColor(255, 255, 255);
+                    doc.text("Bulagala, Dambulla", 70, 20);
+                    doc.text("Phone: +94 777425008 / +94 777425008 | Email: info@rentacarsrilankahbs.com", 70, 30);
+    
+                    // Reset text color and position for the main content
+                    doc.setTextColor(0, 0, 0);
+                    let currentY = 50; // Initial Y position for content
+                    const lineSpacing = 10; // Space between lines
+    
+                    // Title
+                    doc.setFontSize(18);
+                    doc.setFont("helvetica", "bold");
+                    doc.text("Booking Details", doc.internal.pageSize.getWidth() / 2, currentY, { align: "center" });
+                    currentY += 20; // Add space after the title
+    
+                    // Customer Information
+                    doc.setFontSize(12);
+                    doc.setFont("helvetica", "normal");
+                    doc.text('Customer Information:', 10, currentY);
+                    currentY += lineSpacing;
+    
+                    doc.text('Full Name: ' + (document.getElementById('fullName')?.textContent || 'N/A'), 10, currentY);
+                    currentY += lineSpacing;
+                    doc.text('Mobile Number: ' + (document.getElementById('mobileNumber')?.textContent || 'N/A'), 10, currentY);
+                    currentY += lineSpacing;
+                    doc.text('NIC: ' + (document.getElementById('nic')?.textContent || 'N/A'), 10, currentY);
+                    currentY += lineSpacing;
+                    doc.text('Address: ' + (document.getElementById('address')?.textContent || 'N/A'), 10, currentY);
+                    currentY += lineSpacing + 5; // Extra space before the next section
+    
+                    // Booking Information
+                    doc.text('Booking Information:', 10, currentY);
+                    currentY += lineSpacing;
+    
+                    doc.text('Vehicle Number: ' + (document.getElementById('vehicleNumber')?.textContent || 'N/A'), 10, currentY);
+                    currentY += lineSpacing;
+                    doc.text('Vehicle Model: ' + (document.getElementById('vehicleModel')?.textContent || 'N/A'), 10, currentY);
+                    currentY += lineSpacing;
+                    doc.text('Booking Time: ' + (document.getElementById('bookingTime')?.textContent || 'N/A'), 10, currentY);
+                    currentY += lineSpacing;
+                    doc.text('From Date: ' + (document.getElementById('fromDate')?.textContent || 'N/A'), 10, currentY);
+                    currentY += lineSpacing;
+                    doc.text('To Date: ' + (document.getElementById('toDate')?.textContent || 'N/A'), 10, currentY);
+                    currentY += lineSpacing + 5; // Extra space before the next section
+    
+                    // Billing Information
+                    doc.text('Billing Information:', 10, currentY);
+                    currentY += lineSpacing;
+    
+                    const labelX = 10; // Left-side X coordinate for labels
+                    const valueX = 190; // Right-side X coordinate for values
+    
+                    doc.setFont('courier', 'normal'); // Use monospaced font for better alignment
+                    doc.text('Base Price:', labelX, currentY);
+                    doc.text('LKR ' + (document.getElementById('basedPrice')?.textContent || 'N/A'), valueX, currentY, { align: 'right' });
+                    currentY += lineSpacing;
+    
+                    doc.text('Additional Charges (+):', labelX, currentY);
+                    doc.text('LKR ' + (document.getElementById('addChg')?.textContent || 'N/A'), valueX, currentY, { align: 'right' });
+                    currentY += lineSpacing;
+    
+                    doc.text('Discount Price (-):', labelX, currentY);
+                    doc.text('LKR ' + (document.getElementById('discountPrice')?.textContent || 'N/A'), valueX, currentY, { align: 'right' });
+                    currentY += lineSpacing;
+    
+                    doc.text('Paid Amount (-):', labelX, currentY);
+                    doc.text('LKR ' + (document.getElementById('PaidAmunt')?.textContent || 'N/A'), valueX, currentY, { align: 'right' });
+                    currentY += lineSpacing;
+    
+                    doc.text('Amount Due:', labelX, currentY);
+                    doc.text('LKR ' + (document.getElementById('due')?.textContent || 'N/A'), valueX, currentY, { align: 'right' });
 
-            const logo = new Image();
-            logo.src = '{{ asset("images/logo.png") }}';
-
-            logo.onload = function () {
-                doc.setFillColor(255, 170, 0);
-                doc.rect(0, 0, 210, 40, 'F');
-                doc.addImage(logo, 'PNG', 10, 10, 50, 20);
-
-                doc.setFontSize(10);
-                doc.setTextColor(255, 255, 255);
-                doc.text("Bulagala, Dambulla", 70, 20);
-                doc.text("Phone: +94 777425008 / +94 777425008 | Email: info@rentacarsrilankahbs.com", 70, 30);
-
-                doc.setTextColor(0, 0, 0);
-                doc.setFontSize(18);
-                doc.setFont("helvetica", "bold");
-                doc.text("Booking Details", doc.internal.pageSize.getWidth() / 2, 50, { align: "center" });
-
-                doc.setFontSize(12);
-                doc.text("Customer Information", 10, 60);
-                doc.text("Full Name: " + document.getElementById("fullName").textContent, 10, 70);
-                doc.text("Mobile Number: " + document.getElementById("mobileNumber").textContent, 10, 80);
-
-                var nic = document.getElementById("nic") ? document.getElementById("nic").textContent : "N/A";
-                var address = document.getElementById("address") ? document.getElementById("address").textContent : "N/A";
-                doc.text("NIC: " + nic, 10, 90);
-                doc.text("Address: " + address, 10, 100);
-
-                doc.setFontSize(12);
-                doc.text("Booking Information", 10, 110);
-                doc.text("Vehicle Number: " + document.getElementById("vehicleNumber").textContent, 10, 120);
-                doc.text("Vehicle Model: " + document.getElementById("vehicleModel").textContent, 10, 130);
-                doc.text("Booking Time: " + document.getElementById("bookingTime").textContent, 10, 140);
-                doc.text("From: " + document.getElementById("fromDate").textContent + " to " + document.getElementById("toDate").textContent, 10, 150);
-
-                doc.setFontSize(17);
-                doc.text("Price: " + document.getElementById("price").textContent, 150, 170);
-
-                doc.save("booking_details.pdf");
+                    currentY += lineSpacing;
+                    doc.text('Reasone For Additional Charges: ' + (document.getElementById('reason')?.textContent || 'N/A'), 10, currentY);
+    
+                    // Save the PDF
+                    doc.save('Booking_Details.pdf');
+                };
+    
+                logo.onerror = function () {
+                    console.error('Logo could not be loaded. Check the path.');
+                    alert('Failed to load logo. PDF generation will proceed without it.');
+                    addContentWithoutLogo(doc); // Fallback in case logo fails
+                };
+            } catch (error) {
+                console.error('PDF Generation Error:', error);
+                alert('An error occurred while generating the PDF. Check the console for details.');
             }
         }
+    
+        function addContentWithoutLogo(doc) {
+            doc.setFillColor(255, 170, 0);
+            doc.rect(0, 0, 210, 40, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(10);
+            doc.text('HBS Car Rental Management System', 70, 20);
+            doc.text('Booking Details', 70, 30);
+    
+            doc.setTextColor(0, 0, 0);
+            doc.text('Booking Details Content', 10, 50);
+            doc.save('Booking_Details.pdf');
+        }
     </script>
-
-    <!-- Bootstrap 5 JS and dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    
 </body>
 </html>

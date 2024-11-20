@@ -51,6 +51,7 @@ class VehicleController extends Controller
             'model_year' => 'required|integer|min:1886|max:' . date('Y'),
             'price_per_day' => 'required|string|max:255',
             'free_km' => 'required|string|max:255',
+            'extra_km_chg' => 'required|string|max:255',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -82,6 +83,7 @@ class VehicleController extends Controller
             'model_year' => $request->model_year,
             'price_per_day' => $request->price_per_day,
             'free_km' => $request->free_km,
+            'extra_km_chg'=> $request->extra_km_chg,
             'features' => $features,
             'images' => $images,
         ]);
@@ -116,6 +118,7 @@ class VehicleController extends Controller
             'model_year' => 'required|integer|min:1886|max:' . date('Y'),
             'price_per_day' => 'required|string|max:255',
             'free_km' => 'required|string|max:255',
+            'extra_km_chg' => 'required|string|max:255',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -155,6 +158,7 @@ class VehicleController extends Controller
             'model_year' => $request->model_year,
             'price_per_day' => $request->price_per_day,
             'free_km' => $request->free_km,
+            'extra_km_chg'=> $request->extra_km_chg,
             'features' => $features,
             'images' => $images,
         ]);
