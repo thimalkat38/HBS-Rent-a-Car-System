@@ -34,81 +34,54 @@ class BookingController extends Controller
     // Store new booking data and redirect to DetailedBooking.blade.php
     public function store(Request $request)
     {
-        // Validate the request
         $request->validate([
             'title' => 'required',
             'full_name' => 'required|string|max:255',
             'mobile_number' => 'required',
+            'nic' => 'required',
             'booking_time' => 'required',
             'arrival_time' => 'required',
-            'price_per_day' => 'required',
-            'days' => 'required',
+            'price_per_day' => 'required|numeric',
             'vehicle_number' => 'required',
             'fuel_type' => 'required',
             'vehicle_name' => 'required',
             'from_date' => 'required|date',
             'to_date' => 'required|date',
-            'discount_price' => 'nullable|numeric',
-            'additional_chagers' => 'nullable|numeric',
-            'payed' => 'nullable|numeric',
-            'price' => 'nullable|numeric',
-            'reason' => 'required',
+            'reason' => 'nullable|string',
             'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
         ]);
     
-        // Calculate the total price in PHP to ensure the correct value is stored
+        // Calculate days and total price
+        $fromDateTime = new \DateTime($request->input('from_date') . ' ' . $request->input('booking_time'));
+        $toDateTime = new \DateTime($request->input('to_date') . ' ' . $request->input('arrival_time'));
+        $interval = $fromDateTime->diff($toDateTime);
+        $days = ceil(($interval->days * 24 + $interval->h) / 24);
         $pricePerDay = $request->input('price_per_day');
         $additionalCharges = $request->input('additional_chagers') ?? 0;
         $discountPrice = $request->input('discount_price') ?? 0;
         $payed = $request->input('payed') ?? 0;
-    
-        // Combine dates and times for accurate calculations
-        $fromDateTime = new \DateTime($request->input('from_date') . ' ' . $request->input('booking_time'));
-        $toDateTime = new \DateTime($request->input('to_date') . ' ' . $request->input('arrival_time'));
-    
-        $interval = $fromDateTime->diff($toDateTime);
-        $days = ceil(($interval->days * 24 + $interval->h) / 24); // Convert hours to days (24h = 1 day)
-    
         $totalPrice = ($pricePerDay * $days) + $additionalCharges - $discountPrice - $payed;
     
-        // Store the booking data
-        $booking = new Booking([
-            'title' => $request->input('title'),
-            'full_name' => $request->input('full_name'),
-            'mobile_number' => $request->input('mobile_number'),
-            'booking_time' => $request->input('booking_time'),
-            'arrival_time' => $request->input('arrival_time'),
-            'price_per_day' =>$request->input('price_per_day'),
-            'days' => $request->input('days'),
-            'vehicle_number' => $request->input('vehicle_number'),
-            'fuel_type' => $request->input('fuel_type'),
-            'vehicle_name' => $request->input('vehicle_name'),
-            'from_date' => $request->input('from_date'),
-            'to_date' => $request->input('to_date'),
-            'discount_price' => $discountPrice,
-            'additional_chagers' => $additionalCharges,
-            'payed' => $payed,
-            'price' => $totalPrice, // Save the calculated total price
-            'reason' => $request->input('reason'),
-        ]);
+        $request->merge(['days' => $days, 'price' => $totalPrice]);
+    
+        // Save booking data
+        $booking = new Booking($request->except(['driving_photos', 'nic_photos']));
     
         // Handle file uploads
-        if ($request->hasFile('driving_photos')) {
-            $booking->driving_photos = $this->uploadFiles($request->file('driving_photos'), 'driving_photos');
-        }
+        $booking->driving_photos = $request->hasFile('driving_photos') 
+            ? $this->uploadFiles($request->file('driving_photos'), 'driving_photos') 
+            : [];
+        $booking->nic_photos = $request->hasFile('nic_photos') 
+            ? $this->uploadFiles($request->file('nic_photos'), 'nic_photos') 
+            : [];
     
-        if ($request->hasFile('nic_photos')) {
-            $booking->nic_photos = $this->uploadFiles($request->file('nic_photos'), 'nic_photos');
-        }
-    
-        // Save the booking
         $booking->save();
     
         return redirect()->route('bookings.show', ['id' => $booking->id])
             ->with('success', 'Booking created successfully.');
     }
-    
+        
     /**
      * Helper function to handle file uploads.
      */
@@ -151,6 +124,7 @@ class BookingController extends Controller
         $validatedData = $request->validate([
             'full_name' => 'required|string|max:255',
             'mobile_number' => 'required',
+            'nic' => 'required',
             'booking_time' => 'required',
             'arrival_time' => 'required',
             'price_per_day' =>'required',
