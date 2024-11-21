@@ -110,6 +110,7 @@
                             <ul id="customer-list" class="list-group" style="position: absolute; display: none;">
                             </ul>
                             <input type="text" name="mobile_number" placeholder="Mobile number">
+                            <input type="text" name="nic" placeholder="NIC">
                         </div>
 
                         <!-- Customer List Dropdown -->
@@ -224,88 +225,95 @@
         });
     </script>
 
-    <script>
-        $(document).ready(function() {
-            // When typing in the full name field
-            $('#full_name').on('input', function() {
-                var query = $(this).val();
+<script>
+    $(document).ready(function() {
+        // When typing in the full name field
+        $('#full_name').on('input', function() {
+            var query = $(this).val();
 
-                if (query.length >= 2) {
-                    // Fetch matching customer names from the server
-                    $.ajax({
-                        url: '/customers/search', // Route to get customer names
-                        method: 'GET',
-                        data: {
-                            query: query
-                        },
-                        success: function(data) {
-                            $('#customer-list').empty().show(); // Show the list
-                            if (data.length > 0) {
-                                $.each(data, function(index, customer) {
-                                    $('#customer-list').append(
-                                        '<li class="list-group-item customer-item" data-id="' +
-                                        customer.id + '" data-name="' + customer
-                                        .full_name + '">' +
-                                        customer.full_name + '</li>'
-                                    );
-                                });
-                            } else {
-                                $('#customer-list').append(
-                                    '<li class="list-group-item add-customer-item" style="font-weight:bold; color: blue;">' +
-                                    'Add Customer' +
-                                    '</li>'
-                                );
-                            }
-                        }
-                    });
-                } else {
-                    $('#customer-list').hide();
-                }
-            });
-
-            // When a customer name is selected from the dropdown
-            $(document).on('click', '.customer-item', function() {
-                var selectedName = $(this).data('name');
-                var customerId = $(this).data('id');
-
-                $('#full_name').val(selectedName); // Set the input field with the selected name
-                $('#customer-list').hide(); // Hide the list
-
-                // Fetch the selected customer's details
+            if (query.length >= 2) {
+                // Fetch matching customer names from the server
                 $.ajax({
-                    url: '/customers/get-details/' +
-                        customerId, // Route to get customer details by ID
+                    url: '/customers/search', // Route to get customer names
                     method: 'GET',
-                    success: function(data) {
-                        if (data.phone) {
-                            $('input[name="mobile_number"]').val(data
-                                .phone); // Autofill mobile number
-                        } else {
-                            $('input[name="mobile_number"]').val(
-                                ''); // Clear the field if phone not found
-                            alert('Customer details not found');
-                        }
+                    data: {
+                        query: query
                     },
-                    error: function() {
-                        console.error('Error fetching customer details');
+                    success: function(data) {
+                        $('#customer-list').empty().show(); // Show the list
+                        if (data.length > 0) {
+                            $.each(data, function(index, customer) {
+                                $('#customer-list').append(
+                                    '<li class="list-group-item customer-item" data-id="' +
+                                    customer.id + '" data-name="' + customer
+                                    .full_name + '">' +
+                                    customer.full_name + '</li>'
+                                );
+                            });
+                        } else {
+                            $('#customer-list').append(
+                                '<li class="list-group-item add-customer-item" style="font-weight:bold; color: blue;">' +
+                                'Add Customer' +
+                                '</li>'
+                            );
+                        }
                     }
                 });
-            });
+            } else {
+                $('#customer-list').hide();
+            }
+        });
 
-            // Redirect to "Add Customer" page if the "Add Customer" option is clicked
-            $(document).on('click', '.add-customer-item', function() {
-                window.location.href =
-                    '{{ route('customers.create') }}'; // Redirect to the create customer route
-            });
+        // When a customer name is selected from the dropdown
+        $(document).on('click', '.customer-item', function() {
+            var selectedName = $(this).data('name');
+            var customerId = $(this).data('id');
 
-            // Hide the dropdown if clicking outside of it
-            $(document).click(function(e) {
-                if (!$(e.target).closest('#full_name, #customer-list').length) {
-                    $('#customer-list').hide();
+            $('#full_name').val(selectedName); // Set the input field with the selected name
+            $('#customer-list').hide(); // Hide the list
+
+            // Fetch the selected customer's details
+            $.ajax({
+                url: '/customers/get-details/' + customerId, // Route to get customer details by ID
+                method: 'GET',
+                success: function(data) {
+                    if (data) {
+                        if (data.phone) {
+                            $('input[name="mobile_number"]').val(data.phone); // Autofill mobile number
+                        } else {
+                            $('input[name="mobile_number"]').val(''); // Clear the field if phone not found
+                        }
+
+                        if (data.nic) {
+                            $('input[name="nic"]').val(data.nic); // Autofill NIC
+                        } else {
+                            $('input[name="nic"]').val(''); // Clear the field if NIC not found
+                        }
+                    } else {
+                        $('input[name="mobile_number"], input[name="nic"]').val(''); // Clear all fields if no data found
+                        alert('Customer details not found');
+                    }
+                },
+                error: function() {
+                    console.error('Error fetching customer details');
                 }
             });
         });
-    </script>
+
+        // Redirect to "Add Customer" page if the "Add Customer" option is clicked
+        $(document).on('click', '.add-customer-item', function() {
+            window.location.href = '{{ route('customers.create') }}'; // Redirect to the create customer route
+        });
+
+        // Hide the dropdown if clicking outside of it
+        $(document).click(function(e) {
+            if (!$(e.target).closest('#full_name, #customer-list').length) {
+                $('#customer-list').hide();
+            }
+        });
+    });
+</script>
+
 
 <script>
     $(document).ready(function () {

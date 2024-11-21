@@ -107,7 +107,8 @@ class CustomerController extends Controller
 
     if ($customer) {
         return response()->json([
-            'phone' => $customer->phone
+            'phone' => $customer->phone,
+            'nic' => $customer->nic
         ]);
     } else {
         return response()->json([
