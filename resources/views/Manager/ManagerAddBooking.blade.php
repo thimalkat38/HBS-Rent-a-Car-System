@@ -339,11 +339,11 @@
                 const timeDiff = endDateTime - startDateTime;
 
                 if (timeDiff >= 0) { // Ensure valid date range
-                    // Calculate total days accurately (include start day if not a full day)
-                    const days = Math.max(1, timeDiff / (1000 * 60 * 60 * 24)); // Minimum of 1 day
+                    // Calculate total days as full 24-hour periods (no fractional days)
+                    const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // Full 24-hour periods only
 
                     // Update the days field
-                    $('input[name="days"]').val(Math.ceil(days)); // Populate the days field
+                    $('input[name="days"]').val(days); // Populate the days field
 
                     // Calculate the total price
                     const totalPrice = (pricePerDay * days) + additionalCharges - discountPrice - payed;

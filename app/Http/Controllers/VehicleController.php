@@ -25,7 +25,17 @@ class VehicleController extends Controller
         return view('Manager.ManagerVehicles', compact('vehicles', 'search'));
     }
 
+    public function show($id)
+    {
+        $vehicle = vehicle::find($id);
 
+        if (!$vehicle) {
+            // Redirect or handle the error if the vehicle is not found
+            return redirect()->route('vehicles.index')->with('error', 'vehicle not found.');
+        }
+
+        // Pass the customer data to the view
+        return view('Manager.Detailedvehicle', compact('vehicle'));    }
 
     /**
      * Show the form for creating a new vehicle.

@@ -131,16 +131,15 @@
                         </thead>
                         <tbody>
                             @foreach ($vehicles as $vehicle)
-                                <tr>
+                                <tr onclick="window.location='{{ route('vehicles.show', $vehicle->id) }}'" style="cursor: pointer;">
                                     <td>{{ $vehicle->id }}</td>
                                     <td>
                                         @if (!empty($vehicle->images) && isset($vehicle->images[0]))
-                                            <img src="{{ asset('storage/' . $vehicle->images[0]) }}" alt="Car Image">
+                                            <img src="{{ asset('storage/' . $vehicle->images[0]) }}" alt="Car Image" style="width: 100px; height: auto;">
                                         @else
                                             No Image Available
                                         @endif
                                     </td>
-
                                     <td>{{ $vehicle->vehicle_model }}</td>
                                     <td>{{ $vehicle->vehicle_name }}</td>
                                     <td>{{ $vehicle->vehicle_number }}</td>
@@ -149,31 +148,18 @@
                                     <td>{{ $vehicle->price_per_day }}</td>
                                     <td>{{ $vehicle->free_km }}</td>
                                     <td>{{ $vehicle->extra_km_chg }}</td>
-                                    {{-- <td>{{ $vehicle->engine_number }}</td>
-                            <td>{{ $vehicle->model_year }}</td> --}}
-                                    {{-- <td class="text-start">
-                                @foreach ($vehicle->features as $feature => $value)
-                                    @if ($value)
-                                        {{ strtoupper(str_replace('_', ' ', $feature)) }}<br>
-                                    @endif
-                                @endforeach
-                            </td> --}}
                                     <td class="button-cell">
-                                        <a href="{{ route('vehicles.edit', $vehicle->id) }}"
-                                            class="btn-edit">Edit</a>
-                                        {{-- <a href="{{ route('vehicles.destroy',$vehicle->id)}}" class="btn_red-button">Delete</a> --}}
-                                        <form action="{{ route('vehicles.destroy', $vehicle->id) }}" method="POST"
-                                            style="display:inline;">
+                                        <a href="{{ route('vehicles.edit', $vehicle->id) }}" class="btn-edit">Edit</a>
+                                        <form action="{{ route('vehicles.destroy', $vehicle->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn-delete"
-                                                onclick="return confirm('Are you sure you want to delete this vehicle?')">Delete</button>
+                                            <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this vehicle?')">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                        </table>
                 </div>
             </div>
         </div>

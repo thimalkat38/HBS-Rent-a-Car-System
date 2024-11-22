@@ -157,8 +157,7 @@
                         </thead>
                         <tbody>
                             @foreach ($customers as $customer)
-                                <!-- Loop through customers -->
-                                <tr>
+                                <tr onclick="window.location='{{ route('Customer.show', $customer->id) }}'" style="cursor: pointer;">
                                     <td>{{ $customer->id }}</td>
                                     <td>{{ $customer->full_name }}</td>
                                     <td>{{ $customer->phone }}</td>
@@ -166,20 +165,17 @@
                                     <td>{{ $customer->email }}</td>
                                     <td>{{ $customer->address }}</td>
                                     <td class="button-cell">
-                                        <a href="{{ url('customers/' . $customer->id . '/edit') }}"
-                                            class="btn-edit">Edit</a>
-                                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST"
-                                            style="display:inline;">
+                                        <a href="{{ route('customers.edit', $customer->id) }}" class="btn-edit">Edit</a>
+                                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn-delete"
-                                                onclick="return confirm('Are you sure you want to delete this booking?')">Delete</button>
+                                            <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this customer?')">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                        </table>
                 </div>
             </div>
         </div>
