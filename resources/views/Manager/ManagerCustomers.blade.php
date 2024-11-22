@@ -111,9 +111,11 @@
                                 class="nav-icon"> CRM (under development...)</a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link" href="#"><img src="{{ asset('images/7.png') }}" alt="Inventory"
-                                class="nav-icon"> INVENTORY (under development...)</a>
-                    </div>
+                        <a class="nav-link" href="{{ route('inventory.index') }}">
+                            <img src="{{ asset('images/7.png') }}" alt="Inventory" class="nav-icon">
+                            INVENTORY (under development...)
+                        </a>
+                    </div>  
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> ACCOUNTING (under development...)</a>

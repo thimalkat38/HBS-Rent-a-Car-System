@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\InventoryController;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Route;
 
@@ -102,7 +103,19 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-    Route::middleware(['admin'])->get('admin/dashboard', [HomeController::class,'adminDash']);
+Route::middleware(['admin'])->get('admin/dashboard', [HomeController::class,'adminDash']);
+
+
+
+
+
+Route::get('inventory', [InventoryController::class, 'index'])->name('inventory.index'); // Display all inventory items
+Route::get('inventory/create', [InventoryController::class, 'create'])->name('inventory.create'); // Show form to create a new item
+Route::post('inventory', [InventoryController::class, 'store'])->name('inventory.store'); // Store a new item
+Route::get('inventory/{id}/edit', [InventoryController::class, 'edit'])->name('inventory.edit'); // Show form to edit an existing item
+Route::put('inventory/{id}', [InventoryController::class, 'update'])->name('inventory.update'); // Update an existing item
+Route::delete('inventory/{id}', [InventoryController::class, 'destroy'])->name('inventory.destroy'); // Delete an item
+
 
 
 
