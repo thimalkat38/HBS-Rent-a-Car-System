@@ -94,7 +94,7 @@
             <!-- Form Section -->
 
             <div class="content">
-                <form method="POST" action="{{ route('customers.store') }}">
+                <form method="POST" action="{{ route('customers.store') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="form-section">
                         {{-- error handling --}}
@@ -126,6 +126,22 @@
                             <input type="text" id="nic" name="nic" placeholder="NIC Number" required>
                             <input type="text" id="address" name="address" class="address-input"
                                 placeholder="Address" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="upload-section">
+                                <label for="nic_photos" class="upload-label">
+                                    <p>Upload NIC</p>
+                                    <input type="file" name="nic_photos[]" id="nic_photos" multiple
+                                        class="file-input">
+                                </label>
+                            </div>
+                            <div class="upload-section">
+                                <label for="dl_photos" class="upload-label">
+                                    <p>Upload Driving Lisance</p>
+                                    <input type="file" name="dl_photos[]" id="dl_photos" multiple
+                                        class="file-input">
+                                </label>
+                            </div>
                         </div>
                     </div>
                     <!-- Submit Button -->

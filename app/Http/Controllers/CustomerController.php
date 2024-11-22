@@ -39,11 +39,36 @@ class CustomerController extends Controller
             'email' => 'required|email|max:255',
             'nic' => 'required|string|max:12|unique:customers,nic',
             'address' => 'required|string|max:255',
+            'nic_photos.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Validate images
+            'dl_photos.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-
+    
+        $nicPhotos = [];
+        $dlPhotos = [];
+    
+        // Handle NIC photos
+        if ($request->hasFile('nic_photos')) {
+            foreach ($request->file('nic_photos') as $file) {
+                $nicPhotos[] = $file->store('uploads/nic_photos', 'public'); // Store in `storage/app/public`
+            }
+        }
+    
+        // Handle DL photos
+        if ($request->hasFile('dl_photos')) {
+            foreach ($request->file('dl_photos') as $file) {
+                $dlPhotos[] = $file->store('uploads/dl_photos', 'public'); // Store in `storage/app/public`
+            }
+        }
+    
+        // Convert arrays to JSON strings before saving
+        $validated['nic_photos'] = $nicPhotos; // Store as array
+        $validated['dl_photos'] = $dlPhotos; // Store as array
+    
         Customer::create($validated);
+    
         return redirect()->route('customers.index')->with('success', 'Customer added successfully.');
     }
+        
 
     // Show the form for editing the specified customer
     public function edit(Customer $customer)
@@ -98,8 +123,7 @@ class CustomerController extends Controller
         }
 
         // Pass the customer data to the view
-        return view('customers.show', compact('customer'));
-    }
+        return view('Manager.DetailedCustomer', compact('customer'));    }
 
     public function getCustomerDetails($id)
 {

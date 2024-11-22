@@ -9,8 +9,21 @@ class Customer extends Model
 {
     use HasFactory;
 
-    // Specify which attributes can be mass-assigned.
+    // Specify which attributes can be mass-assigned
     protected $fillable = [
-        'title', 'full_name', 'phone', 'email', 'nic', 'address'
+        'title', 
+        'full_name', 
+        'phone', 
+        'email', 
+        'nic', 
+        'address', 
+        'nic_photos', 
+        'dl_photos'
+    ];
+
+    // Cast JSON fields to arrays
+    protected $casts = [
+        'nic_photos' => 'array',
+        'dl_photos' => 'array',
     ];
 }

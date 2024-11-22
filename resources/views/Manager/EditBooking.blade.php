@@ -22,6 +22,8 @@
                         <input type="text" name="full_name" id="full_name" class="form-control" value="{{ old('full_name', $booking->full_name) }}" required>
                         <label for="mobile_number" class="form-label">Mobile Number</label>
                         <input type="text" name="mobile_number" id="mobile_number" class="form-control" value="{{ old('mobile_number', $booking->mobile_number) }}" required>
+                        <label for="nic" class="form-label">NIC</label>
+                        <input type="text" name="nic" id="nic" class="form-control" value="{{ old('nic', $booking->nic) }}" readonly>
                     </div>
 
 

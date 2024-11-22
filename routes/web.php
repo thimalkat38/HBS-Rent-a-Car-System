@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\BookingController;
+use App\Models\Customer;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -66,6 +67,7 @@ Route::middleware(['manager'])->post('manager/vehicles', [VehicleController::cla
 Route::middleware(['manager'])->get('/manager/vehicles/{id}/edit', [VehicleController::class, 'edit'])->name('vehicles.edit');
 Route::middleware(['manager'])->put('/manager/vehicles/{id}', [VehicleController::class, 'update'])->name('vehicles.update');
 Route::middleware(['manager'])->delete('/manager/vehicles/{id}', [VehicleController::class, 'destroy'])->name('vehicles.destroy');
+Route::middleware(['manager'])->get('vehicles/{id}', [VehicleController::class, 'show'])->name('vehicles.show');
 
 
 
@@ -88,7 +90,7 @@ Route::middleware(['manager'])->get('/bookings/{id}', [BookingController::class,
 Route::middleware(['manager'])->get('/vehicles/search', [VehicleController::class, 'search'])->name('vehicles.search');
 Route::middleware(['manager'])->get('/vehicles/get-details/{vehicle_number}', [VehicleController::class, 'getDetails'])->name('vehicles.getDetails');
 Route::middleware(['manager'])->get('/customers/search', [CustomerController::class, 'search']);
-Route::middleware(['manager'])->get('customers/{id}', [CustomerController::class, 'show']);
+Route::middleware(['manager'])->get('customers/{id}', [CustomerController::class, 'show'])->name('Customer.show');
 Route::middleware(['manager'])->get('/customers/get-details/{id}', [CustomerController::class, 'getCustomerDetails']);
 Route::get('/get-vehicle-models', [VehicleController::class, 'getVehicleModels'])->name('getVehicleModels');
 
