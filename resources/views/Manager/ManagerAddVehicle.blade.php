@@ -67,13 +67,8 @@
                         </div>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link"><img src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM
-                            (under development...)</a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-link" href="{{ url('manager/addemp') }}">Add Employee</a>
-                            <a class="dropdown-link" href="{{ url('manager/emp') }}">List Employee</a>
-                            <a class="dropdown-link" href="{{ url('hrm/details') }}">Employee Details</a>
-                        </div>
+                        <a class="nav-link" href="{{ url('hr-management') }}"><img
+                                src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/6.png') }}" alt="CRM"
@@ -149,32 +144,6 @@
                             <input type="file" name="images[]" accept="image/*" multiple>
                         </div>
 
-                        <div class="checkbox-section">
-                            <div>
-                                <input type="checkbox" id="chassyNumber" name="chassyNumber">
-                                <label for="chassyNumber">Chassy Number</label>
-                            </div>
-                            <div>
-                                <input type="checkbox" id="leatherSeats" name="leatherSeats">
-                                <label for="leatherSeats">Leather Seats</label>
-                            </div>
-                            <div>
-                                <input type="checkbox" id="airConditioner" name="airConditioner">
-                                <label for="airConditioner">Air Conditioner</label>
-                            </div>
-                            <div>
-                                <input type="checkbox" id="powerSteering" name="powerSteering">
-                                <label for="powerSteering">Power Steering</label>
-                            </div>
-                            <div>
-                                <input type="checkbox" id="cdPlayer" name="cdPlayer">
-                                <label for="cdPlayer">CD Player</label>
-                            </div>
-                            <div>
-                                <input type="checkbox" id="powerDoor" name="powerDoor">
-                                <label for="powerDoor">Power Door</label>
-                            </div>
-                        </div>
                     </div>
                     <div class="submit-container">
                         <button type="reset" class="btn-submit">CANCEL</button>

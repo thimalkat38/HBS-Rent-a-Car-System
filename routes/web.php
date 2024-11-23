@@ -118,6 +118,19 @@ Route::delete('inventory/{id}', [InventoryController::class, 'destroy'])->name('
 
 
 
+Route::get('hr-management', function () { return view('Manager.HRManagment');})->name('hrmanagement');
+Route::get('addemp', function () { return view('Manager.AddEmp');})->name('addemp');
+Route::get('emp', function () { return view('Manager.ManagerEmployees');})->name('emp');
+Route::get('leavereq', function () { return view('Manager.LeaveRequest');})->name('leavereq');
+Route::get('addleavereq', function () { return view('Manager.AddLeaveReq');})->name('addleavereq');
+Route::get('approvedleave', function () { return view('Manager.ApprovedLeaves');})->name('approvedleave');
+Route::get('rejectedleave', function () { return view('Manager.RejectedLeaves');})->name('rejectedleave');
+Route::get('payroll', function () { return view('Manager.Payroll');})->name('payroll');
+Route::get('addpayroll', function () { return view('Manager.AddPayroll');})->name('addpayroll');
+Route::get('attendance', function () { return view('Manager.Attendance');})->name('attendance');
+Route::get('addattendance', function () { return view('Manager.AddAttendance');})->name('addattendance');
+
+
 
 
 

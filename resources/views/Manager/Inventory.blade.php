@@ -98,13 +98,8 @@
                         </div>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link"><img src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM
-                            (under development...)</a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-link" href="{{ url('manager/addemp') }}">Add Employee</a>
-                            <a class="dropdown-link" href="{{ url('manager/emp') }}">List Employee</a>
-                            <a class="dropdown-link" href="{{ url('hrm/details') }}">Employee Details</a>
-                        </div>
+                        <a class="nav-link" href="{{ url('hr-management') }}"><img
+                                src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/6.png') }}" alt="CRM"
@@ -127,19 +122,36 @@
                 <div class="card6-form-row">
                     <div class="form-section">
                         {{-- Search --}}
-                        <form action="{{ url('customers') }}" method="GET">
+                        <form method="GET" action="{{ route('inventory.index') }}">
+                            <!-- Search by Item Name -->
                             <div class="form-row">
-                                <input type="text" name="search" placeholder="Search by NIC"
-                                    value="{{ request('search') }}">
+                                <input type="text" name="search_name" placeholder="Search by Item Name"
+                                    value="{{ request('search_name') }}">
+                        
                                 <div class="card1">
                                     <div class="card1-content">
-                                        <form action="#" method="post" style="display:inline;">
-                                            <button type="submit" class="btn-search">SEARCH</button>
-                                        </form>
+                                        <button type="submit" class="btn-search">SEARCH</button>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <!-- Search by Item ID -->
+                            <div class="form-row">
+                                <input type="text" name="search_id" placeholder="Search by Item ID"
+                                    value="{{ request('search_id') }}">
+                        
+                                <div class="card1">
+                                    <div class="card1-content">
+                                        <button type="submit" class="btn-search">SEARCH</button>
                                     </div>
                                 </div>
                             </div>
                         </form>
+                        <div class="">
+                            <a class="" href="{{ route('inventory.create') }}">
+                                Add Stock into INVENTORY
+                            </a>
+                        </div> 
                     </div>
                 </div>
 
@@ -151,7 +163,7 @@
                                 <th>Item ID</th>
                                 <th>Item</th>
                                 <th>Image</th>
-                                <th>Stock Count</th>
+                                <th>Remaining Stock</th>
                                 <th>Action</th>
 
                             </tr>
@@ -161,7 +173,23 @@
                                 {{-- <tr onclick="window.location='{{ route('inventory.show', $inventory->id) }}'" style="cursor: pointer;"> --}}
                                     <td>{{ $inventory->Itm_id }}</td>
                                     <td>{{ $inventory->it_name }}</td>
-                                    <td>{{ $inventory->quantity }}</td> {{-- need to replace to show a images --}}
+                                    <td>
+                                        @if (!empty($inventory->it_images))
+                                            @php
+                                                // Decode the JSON field if necessary
+                                                $images = is_array($inventory->it_images) ? $inventory->it_images : json_decode($inventory->it_images, true);
+                                            @endphp
+                                    
+                                            @if (!empty($images) && isset($images[0]))
+                                                <img src="{{ asset('storage/' . $images[0]) }}" alt="Item Image" style="width: 100px; height: auto;">
+                                            @else
+                                                No Image Available
+                                            @endif
+                                        @else
+                                            No Image Available
+                                        @endif
+                                    </td>
+                                    
                                     <td>{{ $inventory->quantity }}</td>
                                     <td class="button-cell">
                                         <a href="{{ route('inventory.edit', $inventory->id) }}" class="btn-edit">Edit</a>

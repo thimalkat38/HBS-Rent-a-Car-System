@@ -98,13 +98,8 @@
                         </div>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link"><img src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM
-                            (under development...)</a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-link" href="{{ url('manager/addemp') }}">Add Employee</a>
-                            <a class="dropdown-link" href="{{ url('manager/emp') }}">List Employee</a>
-                            <a class="dropdown-link" href="{{ url('hrm/details') }}">Employee Details</a>
-                        </div>
+                        <a class="nav-link" href="{{ url('hr-management') }}"><img
+                                src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/6.png') }}" alt="CRM"

@@ -14,7 +14,7 @@
         <!-- Header -->
         <div class="header">
             <div class="logo-section">
-                <img src="logo.png" class="logo-icon" alt="HBS Car Rental Logo">
+                <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
         </div>
@@ -24,12 +24,51 @@
             <!-- Sidebar -->
             <div class="sidebar">
                 <nav class="nav">
-                    <!-- Sidebar Navigation -->
                     <div class="nav-item">
-                        <a class="nav-link" href="Dashboard.html"><img src="1.png" alt="Dashboard" class="nav-icon"> DASHBOARD</a>
+                        <a class="nav-link" href="{{ url('manager/dashboard') }}"><img src="{{ asset('images/1.png') }}"
+                                alt="Dashboard" class="nav-icon"> DASHBOARD</a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link active" href="#"><img src="7.png" alt="Inventory" class="nav-icon"> INVENTORY</a>
+                        <a class="nav-link"><img src="{{ asset('images/2.png') }}" alt="Vehicles" class="nav-icon">
+                            VEHICLES</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('addvehicle') }}">Add Vehicle</a>
+                            <a class="dropdown-link" href="{{ url('manager/vehicles') }}">List Vehicle</a>
+                        </div>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link"><img src="{{ asset('images/3.png') }}" alt="Bookings" class="nav-icon">
+                            BOOKINGS</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('manager/addbook') }}">Book Vehicle</a>
+                            <a class="dropdown-link" href="{{ url('bookings') }}">Booking History</a>
+                        </div>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link"><img src="{{ asset('images/4.png') }}" alt="Customers" class="nav-icon">
+                            CUSTOMERS</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('/customers/create') }}">Add Customer</a>
+                            <a class="dropdown-link" href="{{ url('customers') }}">List Customer</a>
+                        </div>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link" href="{{ url('hr-management') }}"><img
+                                src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link" href="#"><img src="{{ asset('images/6.png') }}" alt="CRM"
+                                class="nav-icon"> CRM (under development...)</a>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link active" href="{{ route('inventory.index') }}">
+                            <img src="{{ asset('images/7.png') }}" alt="Inventory" class="nav-icon">
+                            INVENTORY (under development...)
+                        </a>
+                    </div>  
+                    <div class="nav-item">
+                        <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
+                                class="nav-icon"> ACCOUNTING (under development...)</a>
                     </div>
                 </nav>
             </div>
@@ -41,7 +80,6 @@
                     <form action="{{ route('inventory.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-row">
-                            <input type="text" name="Itm_id" placeholder="Item ID" value="{{ old('Itm_id') }}" required>
                             <input type="text" name="it_name" placeholder="Item Name" value="{{ old('it_name') }}" required>
                         </div>
                         <div class="form-row">
@@ -79,7 +117,7 @@
 
         <!-- Footer -->
         <div class="footer">
-            <p>Copyright © 2022 Golden Ray. All Rights Reserved. Designed By Ezone IT SOLUTION</p>
+            <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>
         </div>
     </div>
 </body>
