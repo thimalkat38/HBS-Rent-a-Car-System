@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HBS Car Rental Management System</title>
     <!-- Google Fonts for Oxanium -->
-    <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
-
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
 </head>
-
 <body>
     <div class="container">
         <!-- Header -->
@@ -19,25 +17,15 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
-            <div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
         </div>
+
         <!-- Main Content -->
         <div class="main-content">
             <!-- Sidebar -->
             <div class="sidebar">
                 <nav class="nav">
                     <div class="nav-item">
-                        <a class="nav-link active" href="{{ url('manager/dashboard') }}"><img
+                        <a class="nav-link" href="{{ url('manager/dashboard') }}"><img
                                 src="{{ asset('images/1.png') }}" alt="Dashboard" class="nav-icon"> DASHBOARD</a>
                     </div>
                     <div class="nav-item">
@@ -65,7 +53,7 @@
                         </div>
                     </div>
                         <div class="nav-item">
-                            <a class="nav-link" href="{{ url('hr-management') }}"><img
+                            <a class="nav-link active" href="{{ url('hr-management') }}"><img
                                     src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
                         </div>
                     <div class="nav-item">
@@ -85,53 +73,86 @@
                 </nav>
             </div>
 
-            <!-- Main Content Section -->
-            <div class="content">
-                <!-- Calendar Section -->
-                <div class="calendar">
-                    <div class="calendar-header">
-                        <button class="month-nav">&lt; Prev</button>
-                        <div class="month-year">October 2024</div>
-                        <button class="month-nav">Next &gt;</button>
-                    </div>
-                    <div class="calendar-days-header">
-                        <div class="calendar-day-name">Sun</div>
-                        <div class="calendar-day-name">Mon</div>
-                        <div class="calendar-day-name">Tue</div>
-                        <div class="calendar-day-name">Wed</div>
-                        <div class="calendar-day-name">Thu</div>
-                        <div class="calendar-day-name">Fri</div>
-                        <div class="calendar-day-name">Sat</div>
-                    </div>
-                    <div class="calendar-days">
-                        <div class="calendar-day available">1</div>
-                        <div class="calendar-day onsite">2</div>
-                        <div class="calendar-day onhire">3</div>
-                        <div class="calendar-day available">4</div>
-                        <div class="calendar-day onsite">5</div>
-                        <div class="calendar-day onhire">6</div>
-                        <div class="calendar-day available">7</div>
-                        <!-- Add more days as needed -->
-                    </div>
-                </div>
 
-                <!-- Status Summary Section -->
-                <div class="status-summary">
-                    <div class="status-box available">
-                        <img src="{{ asset('images/a.png') }}" alt="Available Icon">
-                        Available: 12
-                    </div>
-                    <div class="status-box onsite">
-                        <img src="{{ asset('images/b.png') }}" alt="Onsite Icon">
-                        Onsite: 5
-                    </div>
-                    <div class="status-box onhire">
-                        <img src="{{ asset('images/c.png') }}" alt="Onhire Icon">
-                        On Hire: 8
-                    </div>
-                </div>
+<div class="content">
+    <a class="nav-link" href="{{url('addemp')}}"> Add New Employee</a>
+    <div class="cards-container no-scroll">
+    <!-- Registered Staff -->
+    <div class="card shadow-sm bg-dark-custom text-white">
+        <a class="nav-link" href="{{('emp')}}">
+        <div class="card-body">
+            <div class="image-wrapper">
+                <img src="{{ asset('images/H1.png') }}" alt="regstaff" class="card-image">
+                        </div>
+            <h5 class="card-title">Registered Staff</h5>
+            <p class="card-text">10</p>
+        </div></a>
+    </div>
+
+    <!-- Leaves Requested -->
+    <div class="card shadow-sm bg-warning-custom text-white">
+        <a class="nav-link" href="{{'leavereq'}}">
+        <div class="card-body">
+            <div class="image-wrapper">
+                <img src="{{ asset('images/H2.png') }}" alt="leavereq" class="card-image">
             </div>
-        </div>
+            <h5 class="card-title">Leaves Requested</h5>
+            <p class="card-text">3</p>
+        </div></a>
+    </div>
+
+    <!-- Approved Leaves -->
+    <div class="card shadow-sm bg-azure text-white">
+        <a class="nav-link" href="{{'approvedleave'}}">
+        <div class="card-body">
+            <div class="image-wrapper">
+                <img src="{{ asset('images/H3.png') }}"alt="apprvdleave" class="card-image">
+            </div>
+            <h5 class="card-title">Approved Leaves</h5>
+            <p class="card-text">20</p>
+        </div></a>
+    </div>
+
+    <!-- Rejected Leaves -->
+    <div class="card shadow-sm bg-danger-custom text-white">
+        <a class="nav-link" href="{{'rejectedleave'}}">
+        <div class="card-body">
+            <div class="image-wrapper">
+                <img src="{{ asset('images/H4.png') }}" alt="rejleave" class="card-image">
+            </div>
+            <h5 class="card-title">Rejected Leaves</h5>
+            <p class="card-text">10</p>
+        </div></a>
+    </div>
+
+    <!-- Staff Attendance -->
+    <div class="card shadow-sm bg-purple-custom text-white">
+        <a class="nav-link" href="{{'payroll'}}">
+        <div class="card-body">
+            <div class="image-wrapper">
+                <img src="{{ asset('images/H5.png') }}" alt="payroll"class="card-image">
+            </div>
+            <h5 class="card-title">Pay Roll</h5>
+            <p class="card-text">3</p>
+        </div></a>
+    </div>
+
+    <!-- Payroll -->
+    <div class="card shadow-sm bg-magenta text-white">
+        <a class="nav-link"  href="{{'attendance'}}">
+        <div class="card-body">
+            <div class="image-wrapper">
+                <img src="{{ asset('images/H4.png') }}" alt="attendance" class="card-image">
+            </div>
+            <h5 class="card-title">Staff Attendance</h5>
+            <p class="card-text">10</p>
+        </div></a>
+    </div>
+</div>
+
+</div>
+
+</div>
 
         <!-- Footer -->
         <div class="footer">
@@ -139,5 +160,4 @@
         </div>
     </div>
 </body>
-
 </html>

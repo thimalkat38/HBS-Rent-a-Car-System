@@ -14,15 +14,15 @@
         <!-- Header -->
         <div class="header">
             <div class="logo-section">
-                <img src="logo.png" class="logo-icon" alt="Logo">
+                <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
-             <!-- Sidebar -->
-             <div class="sidebar">
+            <!-- Sidebar -->
+            <div class="sidebar">
                 <nav class="nav">
                     <div class="nav-item">
                         <a class="nav-link" href="{{ url('manager/dashboard') }}"><img
@@ -73,100 +73,130 @@
                 </nav>
             </div>
 
-<div class="table-content">
-                <table class="table table-bordered">
+            <!-- Form Section -->
+            <div class="table-content">
+                <div class="form-section">
+                    <form>
+                        <div class="form-row">
+                            <select class="selection-list">
+                                <option value="Year" disabled selected>Select Year</option>
+                                <option>2022</option>
+                                <option>2023</option>
+                                <option>2024</option>
+                            </select>
+                            <select class="selection-list">
+                                <option value="Month" disabled selected>Select Month</option>
+                                <option>Month 1</option>
+                                <option>Month 2</option>
+                                <option>Month 3</option>
+                            </select>
+                            <div class="card1">
+		                    <div class="card1-content">
+		                        <div class="card1-submit-container">
+		                            <a class="nav-link" href="{{url('addpayroll')}}"> Add Payment</a>
+		                        </div>
+		                    </div>
+		                    </div>
+                        </div>
+                    </form>
+            <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>EMP ID</th>
-                            <th>EMP NAME</th>
-                            <th>M/NUMBER</th>
-                            <th>JOIN DATE</th>
-                            <th>EMAIL ADDRESS</th>
-                            <th>DISTRICT </th>
-                            <th>NIC NO </th>
-                            <th>ADDRESS</th>
+                            <th>EMPLOYEE NAME</th>
+                            <th>ACCOUNT NUMBER</th>
+                            <th>PAID DATE</th>
+                            <th>PAID AMMOUNT</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
+                            <td>E001</td>
+                            <td>Mohamed sahan</td>
+                            <td>8524894656788</td>
                             <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
+                            <td>RS 59000</td>
                         </tr>
                         <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
+                            <td>E001</td>
+                            <td>Mohamed sahan</td>
+                            <td>8524894656788</td>
                             <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
+                            <td>RS 59000</td>
                         </tr>
                         <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
+                            <td>E001</td>
+                            <td>Mohamed sahan</td>
+                            <td>8524894656788</td>
                             <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
+                            <td>RS 59000</td>
                         </tr>
                         <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
+                            <td>E001</td>
+                            <td>Mohamed sahan</td>
+                            <td>8524894656788</td>
                             <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
+                            <td>RS 59000</td>
                         </tr>
                         <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
+                            <td>E001</td>
+                            <td>Mohamed sahan</td>
+                            <td>8524894656788</td>
                             <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
+                            <td>RS 59000</td>
                         </tr>
                         <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
+                            <td>E001</td>
+                            <td>Mohamed sahan</td>
+                            <td>8524894656788</td>
                             <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
+                            <td>RS 59000</td>
                         </tr>
                         <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
+                            <td>E001</td>
+                            <td>Mohamed sahan</td>
+                            <td>8524894656788</td>
                             <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
+                            <td>RS 59000</td>
                         </tr>
-                        
+                        <tr>
+                            <td>E001</td>
+                            <td>Mohamed sahan</td>
+                            <td>8524894656788</td>
+                            <td>2024-10-10</td>
+                            <td>RS 59000</td>
+                        </tr>
+                        <tr>
+                            <td>E001</td>
+                            <td>Mohamed sahan</td>
+                            <td>8524894656788</td>
+                            <td>2024-10-10</td>
+                            <td>RS 59000</td>
+                        </tr>
+                        <tr>
+                            <td>E001</td>
+                            <td>Mohamed sahan</td>
+                            <td>8524894656788</td>
+                            <td>2024-10-10</td>
+                            <td>RS 59000</td>
+                        </tr>
+                        <tr>
+                            <td>E001</td>
+                            <td>Mohamed sahan</td>
+                            <td>8524894656788</td>
+                            <td>2024-10-10</td>
+                            <td>RS 59000</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-</div>
+
+            </div>
+        </div>
 
         <!-- Footer -->
         <div class="footer">
-            <p>Copyright © 2022 Golden Ray. All Rights Reserved. Designed By Ezone IT SOLUTION</p>
+            <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>
         </div>
     </div>
 </body>

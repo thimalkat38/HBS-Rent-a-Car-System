@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HBS Car Rental Management System</title>
     <!-- Google Fonts for Oxanium -->
-    <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
-
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
 </head>
-
 <body>
     <div class="container">
         <!-- Header -->
@@ -19,25 +17,15 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
-            <div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
         </div>
+
         <!-- Main Content -->
         <div class="main-content">
             <!-- Sidebar -->
             <div class="sidebar">
                 <nav class="nav">
                     <div class="nav-item">
-                        <a class="nav-link active" href="{{ url('manager/dashboard') }}"><img
+                        <a class="nav-link" href="{{ url('manager/dashboard') }}"><img
                                 src="{{ asset('images/1.png') }}" alt="Dashboard" class="nav-icon"> DASHBOARD</a>
                     </div>
                     <div class="nav-item">
@@ -65,7 +53,7 @@
                         </div>
                     </div>
                         <div class="nav-item">
-                            <a class="nav-link" href="{{ url('hr-management') }}"><img
+                            <a class="nav-link active" href="{{ url('hr-management') }}"><img
                                     src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
                         </div>
                     <div class="nav-item">
@@ -84,51 +72,50 @@
                     </div>
                 </nav>
             </div>
-
-            <!-- Main Content Section -->
+            <!-- Form Section -->
             <div class="content">
-                <!-- Calendar Section -->
-                <div class="calendar">
-                    <div class="calendar-header">
-                        <button class="month-nav">&lt; Prev</button>
-                        <div class="month-year">October 2024</div>
-                        <button class="month-nav">Next &gt;</button>
-                    </div>
-                    <div class="calendar-days-header">
-                        <div class="calendar-day-name">Sun</div>
-                        <div class="calendar-day-name">Mon</div>
-                        <div class="calendar-day-name">Tue</div>
-                        <div class="calendar-day-name">Wed</div>
-                        <div class="calendar-day-name">Thu</div>
-                        <div class="calendar-day-name">Fri</div>
-                        <div class="calendar-day-name">Sat</div>
-                    </div>
-                    <div class="calendar-days">
-                        <div class="calendar-day available">1</div>
-                        <div class="calendar-day onsite">2</div>
-                        <div class="calendar-day onhire">3</div>
-                        <div class="calendar-day available">4</div>
-                        <div class="calendar-day onsite">5</div>
-                        <div class="calendar-day onhire">6</div>
-                        <div class="calendar-day available">7</div>
-                        <!-- Add more days as needed -->
-                    </div>
-                </div>
+                <div class="form-section">
+                    <form>
+                        <div class="form-row">
+                            <select class="selection-list">
+                                <option value="" disabled selected>Select Your State</option>
+                                <option value="car">Mr</option>
+                                <option value="truck">Mrs</option>
+                            </select>
+                            <input type="text" placeholder="First Name">
+                        </div>
+                        <div class="form-row">
+                            <input type="text" class="small-input" placeholder="+94">
+                            <input type="text" placeholder="Mobile Number">
+                        </div>
+                        <div class="form-row">
+                            <input type="text" placeholder="Last Name">
+                            <input type="date" placeholder="Joining Date">
+                        </div>
 
-                <!-- Status Summary Section -->
-                <div class="status-summary">
-                    <div class="status-box available">
-                        <img src="{{ asset('images/a.png') }}" alt="Available Icon">
-                        Available: 12
-                    </div>
-                    <div class="status-box onsite">
-                        <img src="{{ asset('images/b.png') }}" alt="Onsite Icon">
-                        Onsite: 5
-                    </div>
-                    <div class="status-box onhire">
-                        <img src="{{ asset('images/c.png') }}" alt="Onhire Icon">
-                        On Hire: 8
-                    </div>
+                        <div class="form-row">
+                            <input type="text" placeholder="E-mail Address">
+                            <select class="selection-list">
+                                <option value="" disabled selected>Select District</option>
+                                <option value="car">Polonnaruwa</option>
+                                <option value="truck">Nuwara Eliya</option>
+                                <option value="motorcycle">colombo</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <input type="text" placeholder="NIC Number">
+                            <input type="text" placeholder="EMP ID" class="emp-id-input">
+                        </div>
+
+                        <div class="form-row">
+                            <input type="text" placeholder="Address">
+                        </div>
+
+                        <!-- Submit Button -->
+                    </form>
+                </div>
+                <div class="submit-container">
+                    <button type="submit" class="btn-submit">SUBMIT</button>
                 </div>
             </div>
         </div>
@@ -139,5 +126,4 @@
         </div>
     </div>
 </body>
-
 </html>

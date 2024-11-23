@@ -14,7 +14,7 @@
         <!-- Header -->
         <div class="header">
             <div class="logo-section">
-                <img src="logo.png" class="logo-icon" alt="Logo">
+                <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
         </div>
@@ -72,101 +72,116 @@
                     </div>
                 </nav>
             </div>
-
-<div class="table-content">
+            <div class="table-content">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>EMP ID</th>
-                            <th>EMP NAME</th>
-                            <th>M/NUMBER</th>
-                            <th>JOIN DATE</th>
-                            <th>EMAIL ADDRESS</th>
-                            <th>DISTRICT </th>
-                            <th>NIC NO </th>
-                            <th>ADDRESS</th>
+                            <th>FULL NAME</th>
+                            <th>TO</th>
+                            <th>FROM</th>
+                            <th>MOBILE NUMBER</th>
+                            <th>STATIS</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
+                            <td>E001</td>
+                            <td>Mohamed sahan</td>
                             <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
+                            <td>2024-10-12</td>
+                            <td>+94782877888</td>
+                            <td class="rejected">REJECTED</td>
                         </tr>
                         <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
+                            <td>E001</td>
+                            <td>Mohamed sahan</td>
                             <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
+                            <td>2024-10-12</td>
+                            <td>+94782877888</td>
+                            <td class="rejected">REJECTED</td>
                         </tr>
                         <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
+                            <td>E003</td>
+                            <td>Mohamed sahan</td>
                             <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
+                            <td>2024-10-12</td>
+                            <td>+94782877888</td>
+                            <td class="rejected">REJECTED</td>
                         </tr>
                         <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
+                            <td>E004</td>
+                            <td>Mohamed sahan</td>
                             <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
+                            <td>2024-10-12</td>
+                            <td>+94782877888</td>
+                            <td class="rejected">REJECTED</td>
                         </tr>
                         <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
+                            <td>E005</td>
+                            <td>Mohamed sahan</td>
                             <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
+                            <td>2024-10-12</td>
+                            <td>+94782877888</td>
+                            <td class="rejected">REJECTED</td>
                         </tr>
                         <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
+                            <td>E006</td>
+                            <td>Mohamed sahan</td>
                             <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
+                            <td>2024-10-12</td>
+                            <td>+94782877888</td>
+                            <td class="rejected">REJECTED</td>
                         </tr>
                         <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
+                            <td>E007</td>
+                            <td>Mohamed sahan</td>
                             <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
+                            <td>2024-10-12</td>
+                            <td>+94782877888</td>
+                            <td class="rejected">REJECTED</td>
                         </tr>
-                        
+                        <tr>
+                            <td>E007</td>
+                            <td>Mohamed sahan</td>
+                            <td>2024-10-10</td>
+                            <td>2024-10-12</td>
+                            <td>+94782877888</td>
+                            <td class="rejected">REJECTED</td>
+                        </tr>
+                        <tr>
+                            <td>E008</td>
+                            <td>Mohamed sahan</td>
+                            <td>2024-10-10</td>
+                            <td>2024-10-12</td>
+                            <td>+94782877888</td>
+                            <td class="rejected">REJECTED</td>
+                        </tr>
+                        <tr>
+                            <td>E009</td>
+                            <td>Mohamed sahan</td>
+                            <td>2024-10-10</td>
+                            <td>2024-10-12</td>
+                            <td>+94782877888</td>
+                            <td class="rejected">REJECTED</td>
+                        </tr>
+                        <tr>
+                            <td>E010</td>
+                            <td>Mohamed sahan</td>
+                            <td>2024-10-10</td>
+                            <td>2024-10-12</td>
+                            <td>+94782877888</td>
+                            <td class="rejected">REJECTED</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-</div>
+
+        </div>
 
         <!-- Footer -->
         <div class="footer">
-            <p>Copyright © 2022 Golden Ray. All Rights Reserved. Designed By Ezone IT SOLUTION</p>
+            <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>
         </div>
     </div>
 </body>

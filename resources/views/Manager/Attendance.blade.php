@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HBS Car Rental Management System</title>
     <!-- Google Fonts for Oxanium -->
-    <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
 
 </head>
-
 <body>
     <div class="container">
         <!-- Header -->
@@ -19,25 +18,15 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
-            <div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
         </div>
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Sidebar -->
-            <div class="sidebar">
+
+<!-- Main Content -->
+<div class="main-content">
+             <!-- Sidebar -->
+             <div class="sidebar">
                 <nav class="nav">
                     <div class="nav-item">
-                        <a class="nav-link active" href="{{ url('manager/dashboard') }}"><img
+                        <a class="nav-link" href="{{ url('manager/dashboard') }}"><img
                                 src="{{ asset('images/1.png') }}" alt="Dashboard" class="nav-icon"> DASHBOARD</a>
                     </div>
                     <div class="nav-item">
@@ -65,7 +54,7 @@
                         </div>
                     </div>
                         <div class="nav-item">
-                            <a class="nav-link" href="{{ url('hr-management') }}"><img
+                            <a class="nav-link active" href="{{ url('hr-management') }}"><img
                                     src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
                         </div>
                     <div class="nav-item">
@@ -85,49 +74,49 @@
                 </nav>
             </div>
 
-            <!-- Main Content Section -->
+
+            <!-- Content Area -->
             <div class="content">
-                <!-- Calendar Section -->
-                <div class="calendar">
-                    <div class="calendar-header">
-                        <button class="month-nav">&lt; Prev</button>
-                        <div class="month-year">October 2024</div>
-                        <button class="month-nav">Next &gt;</button>
+                <div class="card6-form-row">
+                    <input type="text" placeholder="Search Employe Name">
+                    <div class="card1">
+                    <div class="card1-content">
+                        <div class="card1-submit-container">
+                            <a  href="{{'addattendance'}}">
+                            <button type="submit" class="card1-btn-submit">ADD ATTENDANCE</button></a>
+                        </div>
                     </div>
-                    <div class="calendar-days-header">
-                        <div class="calendar-day-name">Sun</div>
-                        <div class="calendar-day-name">Mon</div>
-                        <div class="calendar-day-name">Tue</div>
-                        <div class="calendar-day-name">Wed</div>
-                        <div class="calendar-day-name">Thu</div>
-                        <div class="calendar-day-name">Fri</div>
-                        <div class="calendar-day-name">Sat</div>
-                    </div>
-                    <div class="calendar-days">
-                        <div class="calendar-day available">1</div>
-                        <div class="calendar-day onsite">2</div>
-                        <div class="calendar-day onhire">3</div>
-                        <div class="calendar-day available">4</div>
-                        <div class="calendar-day onsite">5</div>
-                        <div class="calendar-day onhire">6</div>
-                        <div class="calendar-day available">7</div>
-                        <!-- Add more days as needed -->
                     </div>
                 </div>
 
-                <!-- Status Summary Section -->
+                <div class="calendar">
+                    <div class="calendar-header">
+                        <button class="month-nav" onclick="changeMonth(-1)"><</button>
+                        <h3 id="month-title"></h3>
+                        <button class="month-nav" onclick="changeMonth(1)">></button>
+                    </div>
+                    <div class="calendar-body">
+                        <div class="calendar-days-header">
+                            <div class="calendar-day-name">MON</div>
+                            <div class="calendar-day-name">TUE</div>
+                            <div class="calendar-day-name">WED</div>
+                            <div class="calendar-day-name">THU</div>
+                            <div class="calendar-day-name">FRI</div>
+                            <div class="calendar-day-name">SAT</div>
+                            <div class="calendar-day-name">SUN</div>
+                        </div>
+                        <div class="calendar-days" id="calendar-days"></div>
+                    </div>
+                </div>
                 <div class="status-summary">
                     <div class="status-box available">
-                        <img src="{{ asset('images/a.png') }}" alt="Available Icon">
-                        Available: 12
+                        <p>25 TOTAL FULL DAY</p>
                     </div>
                     <div class="status-box onsite">
-                        <img src="{{ asset('images/b.png') }}" alt="Onsite Icon">
-                        Onsite: 5
+                        <p>03 TOTAL HALF DAY</p>
                     </div>
                     <div class="status-box onhire">
-                        <img src="{{ asset('images/c.png') }}" alt="Onhire Icon">
-                        On Hire: 8
+                        <p>04 TOTAL LEAVES</p>
                     </div>
                 </div>
             </div>
@@ -138,6 +127,6 @@
             <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>
         </div>
     </div>
+    <script src="Dashboard.js"></script>
 </body>
-
 </html>
