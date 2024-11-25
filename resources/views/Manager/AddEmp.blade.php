@@ -75,49 +75,37 @@
             <!-- Form Section -->
             <div class="content">
                 <div class="form-section">
-                    <form>
+                    <form action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
                         <div class="form-row">
-                            <select class="selection-list">
-                                <option value="" disabled selected>Select Your State</option>
-                                <option value="car">Mr</option>
-                                <option value="truck">Mrs</option>
+                            <select name="title" class="selection-list" required>
+                                <option value="" disabled selected>Select Your Title</option>
+                                <option value="Mr">Mr</option>
+                                <option value="Mrs">Mrs</option>
                             </select>
-                            <input type="text" placeholder="First Name">
+                            <input type="text" name="emp_name" placeholder="Full Name" required>
+                            <input type="text" name="nic" placeholder="NIC" required>
                         </div>
                         <div class="form-row">
-                            <input type="text" class="small-input" placeholder="+94">
-                            <input type="text" placeholder="Mobile Number">
+                            <input type="text" name="mobile_number" placeholder="Mobile Number" required>
+                            <input type="email" name="email" placeholder="E-mail Address" required>
+                            <input type="text" name="address" placeholder="Address" required>
                         </div>
                         <div class="form-row">
-                            <input type="text" placeholder="Last Name">
-                            <input type="date" placeholder="Joining Date">
+                            <input type="date" name="join_date" placeholder="Joining Date" required>
+                            <input type="date" name="birthday" placeholder="Birthday">
+                            <input type="number" name="remaining_leaves" placeholder="Leaves Per Month" min="0" required>
                         </div>
-
-                        <div class="form-row">
-                            <input type="text" placeholder="E-mail Address">
-                            <select class="selection-list">
-                                <option value="" disabled selected>Select District</option>
-                                <option value="car">Polonnaruwa</option>
-                                <option value="truck">Nuwara Eliya</option>
-                                <option value="motorcycle">colombo</option>
-                            </select>
+                        <div class="upload-section">
+                            <p>Add Photo of Employee</p>
+                            <input type="file" name="photo[]" accept="image/*" multiple>
                         </div>
-                        <div class="form-row">
-                            <input type="text" placeholder="NIC Number">
-                            <input type="text" placeholder="EMP ID" class="emp-id-input">
+                        <div class="submit-container">
+                            <button type="submit" class="btn-submit">SUBMIT</button>
                         </div>
-
-                        <div class="form-row">
-                            <input type="text" placeholder="Address">
-                        </div>
-
-                        <!-- Submit Button -->
                     </form>
                 </div>
-                <div class="submit-container">
-                    <button type="submit" class="btn-submit">SUBMIT</button>
-                </div>
-            </div>
+            </div>            
         </div>
 
         <!-- Footer -->

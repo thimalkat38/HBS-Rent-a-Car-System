@@ -6,7 +6,9 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\InventoryController;
-use App\Models\Customer;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\LeaveController;
+// use App\Models\Customer;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -119,16 +121,42 @@ Route::delete('inventory/{id}', [InventoryController::class, 'destroy'])->name('
 
 
 Route::get('hr-management', function () { return view('Manager.HRManagment');})->name('hrmanagement');
-Route::get('addemp', function () { return view('Manager.AddEmp');})->name('addemp');
+// Route::get('addemp', function () { return view('Manager.AddEmp');})->name('addemp');
 Route::get('emp', function () { return view('Manager.ManagerEmployees');})->name('emp');
 Route::get('leavereq', function () { return view('Manager.LeaveRequest');})->name('leavereq');
 Route::get('addleavereq', function () { return view('Manager.AddLeaveReq');})->name('addleavereq');
-Route::get('approvedleave', function () { return view('Manager.ApprovedLeaves');})->name('approvedleave');
+// Route::get('approvedleave', function () { return view('Manager.ApprovedLeaves');})->name('approvedleave');
 Route::get('rejectedleave', function () { return view('Manager.RejectedLeaves');})->name('rejectedleave');
 Route::get('payroll', function () { return view('Manager.Payroll');})->name('payroll');
 Route::get('addpayroll', function () { return view('Manager.AddPayroll');})->name('addpayroll');
 Route::get('attendance', function () { return view('Manager.Attendance');})->name('attendance');
 Route::get('addattendance', function () { return view('Manager.AddAttendance');})->name('addattendance');
+
+
+
+Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
+Route::post('/employees/store', [EmployeeController::class, 'store'])->name('employees.store');
+Route::get('/employees/{id}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
+Route::put('employees/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
+Route::delete('/employees/{id}/delete', [EmployeeController::class, 'destroy'])->name('employees.destroy');
+Route::get('/employees/search', [EmployeeController::class, 'search'])->name('employees.search');
+
+
+
+
+
+// View all leave requests
+Route::get('/leaves', [LeaveController::class, 'index'])->name('leaves.index');
+Route::get('/leaves/create', [LeaveController::class, 'create'])->name('leaves.create');
+Route::post('/leaves', [LeaveController::class, 'store'])->name('leaves.store');
+Route::get('/leaves/{id}', [LeaveController::class, 'show'])->name('leaves.show');
+Route::get('/leaves/{id}/edit', [LeaveController::class, 'edit'])->name('leaves.edit');
+Route::put('/leaves/{id}', [LeaveController::class, 'update'])->name('leaves.update');
+Route::delete('/leaves/{id}', [LeaveController::class, 'destroy'])->name('leaves.destroy');
+Route::patch('/leaves/{id}/status/{status}', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
+Route::get('approved', [LeaveController::class, 'showApprovedLeaves'])->name('leaves.approved');
+Route::get('rejected', [LeaveController::class, 'showRejectededLeaves'])->name('leaves.rejected');
 
 
 

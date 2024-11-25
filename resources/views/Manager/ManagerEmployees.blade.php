@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
@@ -21,12 +23,12 @@
 
         <!-- Main Content -->
         <div class="main-content">
-             <!-- Sidebar -->
-             <div class="sidebar">
+            <!-- Sidebar -->
+            <div class="sidebar">
                 <nav class="nav">
                     <div class="nav-item">
-                        <a class="nav-link" href="{{ url('manager/dashboard') }}"><img
-                                src="{{ asset('images/1.png') }}" alt="Dashboard" class="nav-icon"> DASHBOARD</a>
+                        <a class="nav-link" href="{{ url('manager/dashboard') }}"><img src="{{ asset('images/1.png') }}"
+                                alt="Dashboard" class="nav-icon"> DASHBOARD</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link"><img src="{{ asset('images/2.png') }}" alt="Vehicles" class="nav-icon">
@@ -52,10 +54,10 @@
                             <a class="dropdown-link" href="{{ url('customers') }}">List Customer</a>
                         </div>
                     </div>
-                        <div class="nav-item">
-                            <a class="nav-link active" href="{{ url('hr-management') }}"><img
-                                    src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
-                        </div>
+                    <div class="nav-item">
+                        <a class="nav-link active" href="{{ url('hr-management') }}"><img
+                                src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
+                    </div>
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/6.png') }}" alt="CRM"
                                 class="nav-icon"> CRM (under development...)</a>
@@ -65,7 +67,7 @@
                             <img src="{{ asset('images/7.png') }}" alt="Inventory" class="nav-icon">
                             INVENTORY (under development...)
                         </a>
-                    </div>                    
+                    </div>
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> ACCOUNTING (under development...)</a>
@@ -73,96 +75,61 @@
                 </nav>
             </div>
 
-<div class="table-content">
+            <div class="table-content">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>EMP ID</th>
-                            <th>EMP NAME</th>
+                            <th></th>
+                            <th>EID</th>
+                            <th>Full NAME</th>
                             <th>M/NUMBER</th>
-                            <th>JOIN DATE</th>
-                            <th>EMAIL ADDRESS</th>
-                            <th>DISTRICT </th>
-                            <th>NIC NO </th>
+                            <th>Employee since</th>
+                            <th>EMAIL</th>
+                            <th>AGE</th>
+                            <th>NIC</th>
                             <th>ADDRESS</th>
+                            <th>Actions</th>
+
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
-                            <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
-                        </tr>
-                        <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
-                            <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
-                        </tr>
-                        <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
-                            <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
-                        </tr>
-                        <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
-                            <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
-                        </tr>
-                        <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
-                            <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
-                        </tr>
-                        <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
-                            <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
-                        </tr>
-                        <tr>
-                            <td>E0001</td>
-                            <td>MOHAMED SAHAN</td>
-                            <td>+94782877888</td>
-                            <td>2024-10-10</td>
-                            <td>sahansafa2002@gmail.com</td>
-                            <td>ANURADHEPURA</td>
-                            <td>200131802340 </td>
-                            <td class="text-start">IKKIRIGOLLEWA,<br> WAHAMALGOLLEWA, <br> TEMPLEROAD, <br> ANURADHEPURA.</td>
-                        </tr>
-                        
+                        @forelse ($employees as $employee)
+                            <tr>
+                                <td>
+                                    @if (!empty($employee->photo) && isset($employee->photo[0]))
+                                        <img src="{{ asset('storage/' . $employee->photo[0]) }}" alt="emp Image" style="width: 100px; height: auto;">
+                                    @else
+                                        No Image Available
+                                    @endif
+                                </td>
+                                <td>{{ $employee->emp_id }}</td>
+                                <td>{{ $employee->title }} {{ $employee->emp_name }}</td>
+                                <td>{{ $employee->mobile_number }}</td>
+                                <td>{{ $employee->join_date }}</td>
+                                <td>{{ $employee->email }}</td>
+                                <td>{{ $employee->age }}</td>
+                                <td>{{ $employee->nic }}</td>
+                                <td class="text-start">
+                                    {!! nl2br(e($employee->address)) !!}
+                                </td>
+                                <td class="button-cell">
+                                    <a href="{{ route('employees.edit', $employee->id) }}" class="btn-edit">Edit</a>
+                                    <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this vehicle?')">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8" class="text-center">No Employees Found</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
-</div>
+                    </div>
 
         <!-- Footer -->
         <div class="footer">
@@ -170,4 +137,5 @@
         </div>
     </div>
 </body>
+
 </html>

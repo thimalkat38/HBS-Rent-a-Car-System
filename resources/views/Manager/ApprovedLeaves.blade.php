@@ -82,103 +82,24 @@
                             <th>FULL NAME</th>
                             <th>TO</th>
                             <th>FROM</th>
-                            <th>MOBILE NUMBER</th>
-                            <th>STATIS</th>
+                            <th>REASON</th>
+                            <th>STATUS</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>E001</td>
-                            <td>Mohamed sahan</td>
-                            <td>2024-10-10</td>
-                            <td>2024-10-12</td>
-                            <td>+94782877888</td>
-                            <td class="approved">APPROVED</td>
-                        </tr>
-                        <tr>
-                            <td>E001</td>
-                            <td>Mohamed sahan</td>
-                            <td>2024-10-10</td>
-                            <td>2024-10-12</td>
-                            <td>+94782877888</td>
-                            <td class="approved">APPROVED</td>
-                        </tr>
-                        <tr>
-                            <td>E003</td>
-                            <td>Mohamed sahan</td>
-                            <td>2024-10-10</td>
-                            <td>2024-10-12</td>
-                            <td>+94782877888</td>
-                            <td class="approved">APPROVED</td>
-                        </tr>
-                        <tr>
-                            <td>E004</td>
-                            <td>Mohamed sahan</td>
-                            <td>2024-10-10</td>
-                            <td>2024-10-12</td>
-                            <td>+94782877888</td>
-                            <td class="approved">APPROVED</td>
-                        </tr>
-                        <tr>
-                            <td>E005</td>
-                            <td>Mohamed sahan</td>
-                            <td>2024-10-10</td>
-                            <td>2024-10-12</td>
-                            <td>+94782877888</td>
-                            <td class="approved">APPROVED</td>
-                        </tr>
-                        <tr>
-                            <td>E006</td>
-                            <td>Mohamed sahan</td>
-                            <td>2024-10-10</td>
-                            <td>2024-10-12</td>
-                            <td>+94782877888</td>
-                            <td class="approved">APPROVED</td>
-                        </tr>
-                        <tr>
-                            <td>E007</td>
-                            <td>Mohamed sahan</td>
-                            <td>2024-10-10</td>
-                            <td>2024-10-12</td>
-                            <td>+94782877888</td>
-                            <td class="approved">APPROVED</td>
-                        </tr>
-                        <tr>
-                            <td>E007</td>
-                            <td>Mohamed sahan</td>
-                            <td>2024-10-10</td>
-                            <td>2024-10-12</td>
-                            <td>+94782877888</td>
-                            <td class="approved">APPROVED</td>
-                        </tr>
-                        <tr>
-                            <td>E008</td>
-                            <td>Mohamed sahan</td>
-                            <td>2024-10-10</td>
-                            <td>2024-10-12</td>
-                            <td>+94782877888</td>
-                            <td class="approved">APPROVED</td>
-                        </tr>
-                        <tr>
-                            <td>E009</td>
-                            <td>Mohamed sahan</td>
-                            <td>2024-10-10</td>
-                            <td>2024-10-12</td>
-                            <td>+94782877888</td>
-                            <td class="approved">APPROVED</td>
-                        </tr>
-                        <tr>
-                            <td>E010</td>
-                            <td>Mohamed sahan</td>
-                            <td>2024-10-10</td>
-                            <td>2024-10-12</td>
-                            <td>+94782877888</td>
-                            <td class="approved">APPROVED</td>
-                        </tr>
+                        @foreach ($approvedLeaves as $leave)
+                            <tr>
+                                <td>{{ $leave->emp_id }}</td>
+                                <td>{{ $leave->emp_name }}</td>
+                                <td>{{ $leave->to_date }}</td>
+                                <td>{{ $leave->from_date }}</td>
+                                <td>{{ $leave->reason }}</td>
+                                <td class="approved">{{ ucfirst($leave->status) }}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
-
         </div>
 
         <!-- Footer -->
