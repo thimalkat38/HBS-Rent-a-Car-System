@@ -17,6 +17,17 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
+            <div>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+
+                    <x-responsive-nav-link :href="route('logout')"
+                        onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        {{ __('Log Out') }}
+                    </x-responsive-nav-link>
+                </form>
+            </div>
         </div>
 
         <!-- Main Content -->
@@ -133,7 +144,6 @@
                 <img src="{{ asset('images/H5.png') }}" alt="payroll"class="card-image">
             </div>
             <h5 class="card-title">Pay Roll</h5>
-            <p class="card-text">3</p>
         </div></a>
     </div>
 
@@ -145,8 +155,8 @@
                 <img src="{{ asset('images/H4.png') }}" alt="attendance" class="card-image">
             </div>
             <h5 class="card-title">Staff Attendance</h5>
-            <p class="card-text">10</p>
-        </div></a>
+        </div>
+    </a>
     </div>
 </div>
 
