@@ -75,11 +75,11 @@
 
 
 <div class="content">
-    <a class="nav-link" href="{{url('addemp')}}"> Add New Employee</a>
+    <a class="nav-link" href="{{url('employees/create')}}"> Add New Employee</a>
     <div class="cards-container no-scroll">
     <!-- Registered Staff -->
     <div class="card shadow-sm bg-dark-custom text-white">
-        <a class="nav-link" href="{{('emp')}}">
+        <a class="nav-link" href="{{('employees')}}">
         <div class="card-body">
             <div class="image-wrapper">
                 <img src="{{ asset('images/H1.png') }}" alt="regstaff" class="card-image">
@@ -91,19 +91,19 @@
 
     <!-- Leaves Requested -->
     <div class="card shadow-sm bg-warning-custom text-white">
-        <a class="nav-link" href="{{'leavereq'}}">
+        <a class="nav-link" href="{{'leaves'}}">
         <div class="card-body">
             <div class="image-wrapper">
                 <img src="{{ asset('images/H2.png') }}" alt="leavereq" class="card-image">
             </div>
-            <h5 class="card-title">Leaves Requested</h5>
+            <h5 class="card-title">Requested Leaves</h5>
             <p class="card-text">3</p>
         </div></a>
     </div>
 
     <!-- Approved Leaves -->
     <div class="card shadow-sm bg-azure text-white">
-        <a class="nav-link" href="{{'approvedleave'}}">
+        <a class="nav-link" href="{{'approved'}}">
         <div class="card-body">
             <div class="image-wrapper">
                 <img src="{{ asset('images/H3.png') }}"alt="apprvdleave" class="card-image">
@@ -115,7 +115,7 @@
 
     <!-- Rejected Leaves -->
     <div class="card shadow-sm bg-danger-custom text-white">
-        <a class="nav-link" href="{{'rejectedleave'}}">
+        <a class="nav-link" href="{{'rejected'}}">
         <div class="card-body">
             <div class="image-wrapper">
                 <img src="{{ asset('images/H4.png') }}" alt="rejleave" class="card-image">
