@@ -17,6 +17,17 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
+            <div>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+
+                    <x-responsive-nav-link :href="route('logout')"
+                        onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        {{ __('Log Out') }}
+                    </x-responsive-nav-link>
+                </form>
+            </div>
         </div>
 
         <!-- Main Content -->
@@ -77,15 +88,17 @@
                 <div class="form-section">
                     <form>
                         <div class="form-row">
-                            <input type="text" placeholder="Employee ID">
-                            <input type="text" placeholder="Name">
+                            <input type="text" name="emp_id" placeholder="Employee ID">
+                            <input type="text" name="emp_name" placeholder="Name">
                         </div>
                         <div class="form-row">
-                            <input type="text" placeholder="Account Number">
-                            <input type="text" placeholder="Paid Amount">
+                            <input type="text" name="acc_num" placeholder="Account Number">
+                            <input type="text" name="note" placeholder="Note">
                         </div>
                         <div class="form-row">                      
-                            <input type="text" placeholder="Paid Date">
+                            <input type="date" name="paid_date" placeholder="Paid Date">
+                            <input type="text" name="paid_amnt" placeholder="Paid Amount">
+                            
                         </div>
                     </form>
                 </div>
