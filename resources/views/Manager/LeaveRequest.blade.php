@@ -94,7 +94,7 @@
                             <h1>Welcome Back</h1>
                         </div>
                         <div class="card1-submit-container">
-                            <a class="nav-link" href="{{ url('addleavereq') }}">
+                            <a class="nav-link" href="{{ url('leaves/create') }}">
                                 <button type="submit" class="card1-btn-submit">Leave Request</button></a>
                         </div>
                     </div>

@@ -87,121 +87,77 @@
             <!-- Form Section -->
             <div class="table-content">
                 <div class="form-section">
-                    <form>
+                    <form method="GET" action="{{ url('payrolls') }}">
                         <div class="form-row">
-                            <select class="selection-list">
-                                <option value="Year" disabled selected>Select Year</option>
-                                <option>2022</option>
-                                <option>2023</option>
-                                <option>2024</option>
+                            <!-- Employee ID Filter -->
+                            <input type="text" id="emp-id" name="emp_id" placeholder="EMP ID" value="{{ request('emp_id') }}">
+                            <input type="hidden" id="emp-name" name="emp_name" value="{{ request('emp_name') }}">
+                            <div id="emp-id-list" class="dropdown-list"></div>
+                
+                            <!-- Month Filter -->
+                            <select name="month" class="selection-list">
+                                <option value="" disabled selected>Select Month</option>
+                                <option value="01" {{ request('month') == '01' ? 'selected' : '' }}>JAN</option>
+                                <option value="02" {{ request('month') == '02' ? 'selected' : '' }}>FEB</option>
+                                <option value="03" {{ request('month') == '03' ? 'selected' : '' }}>MARCH</option>
+                                <option value="04" {{ request('month') == '04' ? 'selected' : '' }}>APRIL</option>
+                                <option value="05" {{ request('month') == '05' ? 'selected' : '' }}>MAY</option>
+                                <option value="06" {{ request('month') == '06' ? 'selected' : '' }}>JUNE</option>
+                                <option value="07" {{ request('month') == '07' ? 'selected' : '' }}>JULY</option>
+                                <option value="08" {{ request('month') == '08' ? 'selected' : '' }}>AUG</option>
+                                <option value="09" {{ request('month') == '09' ? 'selected' : '' }}>SEP</option>
+                                <option value="10" {{ request('month') == '10' ? 'selected' : '' }}>OCT</option>
+                                <option value="11" {{ request('month') == '11' ? 'selected' : '' }}>NOV</option>
+                                <option value="12" {{ request('month') == '12' ? 'selected' : '' }}>DEC</option>
                             </select>
-                            <select class="selection-list">
-                                <option value="Month" disabled selected>Select Month</option>
-                                <option>Month 1</option>
-                                <option>Month 2</option>
-                                <option>Month 3</option>
-                            </select>
-                            <div class="card1">
-		                    <div class="card1-content">
-		                        <div class="card1-submit-container">
-		                            <a class="nav-link" href="{{url('addpayroll')}}"> Add Payment</a>
-		                        </div>
-		                    </div>
-		                    </div>
+                
+                            <!-- Filter Button -->
+                            <button type="submit">Filter</button>
+                            
                         </div>
                     </form>
-            <table class="table table-bordered">
+                
+                    <!-- Add Payment Button -->
+                    <div class="card1">
+                        <div class="card1-content">
+                            <div class="card1-submit-container">
+                                <a class="nav-link" href="{{ url('payrolls/create') }}">Add Payment</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Table Section -->
+                <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>EMP ID</th>
-                            <th>EMPLOYEE NAME</th>
-                            <th>ACCOUNT NUMBER</th>
-                            <th>PAID DATE</th>
-                            <th>PAID AMMOUNT</th>
+                            <th>Employee ID</th>
+                            <th>Name</th>
+                            <th>Account Number</th>
+                            <th>Paid Reason</th>
+                            <th>Paid Date</th>
+                            <th>Paid Amount</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>E001</td>
-                            <td>Mohamed sahan</td>
-                            <td>8524894656788</td>
-                            <td>2024-10-10</td>
-                            <td>RS 59000</td>
-                        </tr>
-                        <tr>
-                            <td>E001</td>
-                            <td>Mohamed sahan</td>
-                            <td>8524894656788</td>
-                            <td>2024-10-10</td>
-                            <td>RS 59000</td>
-                        </tr>
-                        <tr>
-                            <td>E001</td>
-                            <td>Mohamed sahan</td>
-                            <td>8524894656788</td>
-                            <td>2024-10-10</td>
-                            <td>RS 59000</td>
-                        </tr>
-                        <tr>
-                            <td>E001</td>
-                            <td>Mohamed sahan</td>
-                            <td>8524894656788</td>
-                            <td>2024-10-10</td>
-                            <td>RS 59000</td>
-                        </tr>
-                        <tr>
-                            <td>E001</td>
-                            <td>Mohamed sahan</td>
-                            <td>8524894656788</td>
-                            <td>2024-10-10</td>
-                            <td>RS 59000</td>
-                        </tr>
-                        <tr>
-                            <td>E001</td>
-                            <td>Mohamed sahan</td>
-                            <td>8524894656788</td>
-                            <td>2024-10-10</td>
-                            <td>RS 59000</td>
-                        </tr>
-                        <tr>
-                            <td>E001</td>
-                            <td>Mohamed sahan</td>
-                            <td>8524894656788</td>
-                            <td>2024-10-10</td>
-                            <td>RS 59000</td>
-                        </tr>
-                        <tr>
-                            <td>E001</td>
-                            <td>Mohamed sahan</td>
-                            <td>8524894656788</td>
-                            <td>2024-10-10</td>
-                            <td>RS 59000</td>
-                        </tr>
-                        <tr>
-                            <td>E001</td>
-                            <td>Mohamed sahan</td>
-                            <td>8524894656788</td>
-                            <td>2024-10-10</td>
-                            <td>RS 59000</td>
-                        </tr>
-                        <tr>
-                            <td>E001</td>
-                            <td>Mohamed sahan</td>
-                            <td>8524894656788</td>
-                            <td>2024-10-10</td>
-                            <td>RS 59000</td>
-                        </tr>
-                        <tr>
-                            <td>E001</td>
-                            <td>Mohamed sahan</td>
-                            <td>8524894656788</td>
-                            <td>2024-10-10</td>
-                            <td>RS 59000</td>
-                        </tr>
+                        @forelse ($payrolls as $payroll)
+                            <tr>
+                                <td>{{ $payroll->emp_id }}</td>
+                                <td>{{ $payroll->emp_name }}</td>
+                                <td>{{ $payroll->acc_num }}</td>
+                                <td>{{ $payroll->note }}</td>
+                                <td>{{ $payroll->paid_date }}</td>
+                                <td>{{ $payroll->paid_amnt }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6">No results found.</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
-            </div>
-
+                </div>
+                
             </div>
         </div>
 
@@ -210,5 +166,82 @@
             <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const empIdInput = document.getElementById('emp-id');
+    const empIdList = document.getElementById('emp-id-list');
+    const empNameInput = document.getElementById('emp-name');
+
+    empIdInput.addEventListener('input', function () {
+        const query = this.value;
+
+        if (query.length > 1) {
+            fetch(`/employees/search?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    empIdList.innerHTML = ''; // Clear the list
+
+                    if (data.length) {
+                        data.forEach(emp => {
+                            const option = document.createElement('div');
+                            option.textContent = `${emp.emp_id} - ${emp.emp_name}`;
+                            option.className = 'dropdown-item';
+                            option.dataset.empId = emp.emp_id;
+                            option.dataset.empName = emp.emp_name;
+
+                            empIdList.appendChild(option);
+                        });
+                    } else {
+                        empIdList.innerHTML = '<div class="dropdown-item">No results found</div>';
+                    }
+                });
+        } else {
+            empIdList.innerHTML = '';
+        }
+    });
+
+    empIdList.addEventListener('click', function (e) {
+        if (e.target.classList.contains('dropdown-item')) {
+            const empId = e.target.dataset.empId;
+            const empName = e.target.dataset.empName;
+
+            empIdInput.value = empId;
+            empNameInput.value = empName;
+
+            empIdList.innerHTML = ''; // Hide the dropdown
+        }
+    });
+
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', function (e) {
+        if (!empIdList.contains(e.target) && e.target !== empIdInput) {
+            empIdList.innerHTML = '';
+        }
+    });
+});
+
+    </script>
+
+    <style>
+        .dropdown-list {
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    background: white;
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+}
+
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background: #f0f0f0;
+}
+
+    </style>
 </body>
 </html>

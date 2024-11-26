@@ -138,7 +138,7 @@
 
     <!-- Staff Attendance -->
     <div class="card shadow-sm bg-purple-custom text-white">
-        <a class="nav-link" href="{{'payroll'}}">
+        <a class="nav-link" href="{{'payrolls'}}">
         <div class="card-body">
             <div class="image-wrapper">
                 <img src="{{ asset('images/H5.png') }}" alt="payroll"class="card-image">

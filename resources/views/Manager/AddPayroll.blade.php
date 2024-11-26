@@ -86,26 +86,33 @@
             <!-- Form Section -->
             <div class="content">
                 <div class="form-section">
-                    <form>
+                    <form action="{{ route('payrolls.store') }}" method="POST">
+                        @csrf
                         <div class="form-row">
-                            <input type="text" name="emp_id" placeholder="Employee ID">
-                            <input type="text" name="emp_name" placeholder="Name">
-                        </div>
+                            <input type="text" id="emp-id" name="emp_id" placeholder="Enter EMP ID" required autocomplete="off">
+                            <div id="emp-id-list" class="dropdown-list"></div>
+                            @error('emp_id')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+                            <input type="text" id="emp-name" name="emp_name" placeholder="Auto-filled EMP Name" readonly>
+                            @error('emp_name')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+                        </div>                        
                         <div class="form-row">
-                            <input type="text" name="acc_num" placeholder="Account Number">
+                            <input type="text" name="acc_num" placeholder="Account Number" required>
                             <input type="text" name="note" placeholder="Note">
                         </div>
-                        <div class="form-row">                      
-                            <input type="date" name="paid_date" placeholder="Paid Date">
-                            <input type="text" name="paid_amnt" placeholder="Paid Amount">
-                            
+                        <div class="form-row">
+                            <input type="date" name="paid_date" required>
+                            <input type="number" name="paid_amnt" placeholder="Paid Amount" required>
+                        </div>
+                        <div class="submit-container">
+                            <button type="reset" class="btn-submit">CLEAR</button>
+                            <button type="submit" class="btn-submit">SUBMIT</button>
                         </div>
                     </form>
-                </div>
-                <div class="submit-container">
-                    <button type="reset" class="btn-submit">CLEAR</button>
-                    <button type="submit" class="btn-submit">SUBMIT</button>
-                </div>
+                </div>                
             </div>
         </div>
 
@@ -114,5 +121,80 @@
             <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>
         </div>
     </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const empIdInput = document.getElementById('emp-id');
+        const empIdList = document.getElementById('emp-id-list');
+        const empNameInput = document.getElementById('emp-name');
+    
+        empIdInput.addEventListener('input', function () {
+            const query = this.value;
+    
+            if (query.length > 1) {
+                fetch(`/employees/search?query=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        empIdList.innerHTML = ''; // Clear the list
+    
+                        if (data.length) {
+                            data.forEach(emp => {
+                                const option = document.createElement('div');
+                                option.textContent = `${emp.emp_id} - ${emp.emp_name}`;
+                                option.className = 'dropdown-item';
+                                option.dataset.empId = emp.emp_id;
+                                option.dataset.empName = emp.emp_name;
+    
+                                empIdList.appendChild(option);
+                            });
+                        } else {
+                            empIdList.innerHTML = '<div class="dropdown-item">No results found</div>';
+                        }
+                    });
+            } else {
+                empIdList.innerHTML = '';
+            }
+        });
+    
+        empIdList.addEventListener('click', function (e) {
+            if (e.target.classList.contains('dropdown-item')) {
+                const empId = e.target.dataset.empId;
+                const empName = e.target.dataset.empName;
+    
+                empIdInput.value = empId;
+                empNameInput.value = empName;
+    
+                empIdList.innerHTML = ''; // Hide the dropdown
+            }
+        });
+    
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+            if (!empIdList.contains(e.target) && e.target !== empIdInput) {
+                empIdList.innerHTML = '';
+            }
+        });
+    });
+</script>
+<style>
+    .dropdown-list {
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    background: white;
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+}
+
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background: #f0f0f0;
+}
+
+    </style>    
 </body>
 </html>
