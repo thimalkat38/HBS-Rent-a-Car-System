@@ -179,8 +179,6 @@ Route::delete('/payrolls/{id}', [PayrollController::class, 'destroy'])->name('pa
 
 
 
-
-
 //Other routes
 
 
