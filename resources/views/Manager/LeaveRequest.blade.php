@@ -89,12 +89,10 @@
             <div class="table content">
                 <div class="card1">
                     <div class="card1-content">
-                        <div class="welcome-message">
-                            <h2>Hi</h2>
-                            <h1>Welcome Back</h1>
-                        </div>
+                        <a href="{{ route('hrmanagement') }}" class="btn btn-secondary">Back</a>
+
                         <div class="card1-submit-container">
-                            <a class="nav-link" href="{{ url('addleavereq') }}">
+                            <a class="nav-link" href="{{ url('leaves/create') }}">
                                 <button type="submit" class="card1-btn-submit">Leave Request</button></a>
                         </div>
                     </div>
@@ -117,34 +115,43 @@
                             <tr>
                                 <td>{{ $leave->emp_id }}</td>
                                 <td>{{ $leave->emp_name }}</td>
-                                <td>{{ $leave->type == 0 ? 'Normal Leave' : ($leave->type == 1 ? 'Urgent Leave' : 'Half Day Leave') }}</td>
-                                <td>{{ $leave->reason}}</td>
+                                <td>{{ $leave->type == 0 ? 'Normal Leave' : ($leave->type == 1 ? 'Urgent Leave' : 'Half Day Leave') }}
+                                </td>
+                                <td>{{ $leave->reason }}</td>
                                 <td>{{ $leave->from_date }}</td>
                                 <td>{{ $leave->to_date }}</td>
                                 <td>{{ ucfirst($leave->status) }}</td>
                                 <td>
-                                    <form action="{{ route('leaves.updateStatus', ['id' => $leave->id, 'status' => 'accepted']) }}" method="POST" style="display:inline;">
+                                    <form
+                                        action="{{ route('leaves.updateStatus', ['id' => $leave->id, 'status' => 'accepted']) }}"
+                                        method="POST" style="display:inline;">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="btn-accept">Accept</button>
+                                        <button type="submit" class="btn-accept" id="accept-btn"
+                                            onclick="disableOtherButton('reject-btn')">Accept</button>
                                     </form>
-                
-                                    <form action="{{ route('leaves.updateStatus', ['id' => $leave->id, 'status' => 'rejected']) }}" method="POST" style="display:inline;">
+
+                                    <form
+                                        action="{{ route('leaves.updateStatus', ['id' => $leave->id, 'status' => 'rejected']) }}"
+                                        method="POST" style="display:inline;">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="btn-reject">Reject</button>
+                                        <button type="submit" class="btn-reject" id="reject-btn"
+                                            onclick="disableOtherButton('accept-btn')">Reject</button>
                                     </form>
-                
-                                    <form action="{{ route('leaves.destroy', $leave->id) }}" method="POST" style="display:inline;">
+
+                                    <form action="{{ route('leaves.destroy', $leave->id) }}" method="POST"
+                                        style="display:inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this leave?')">Delete</button>
+                                        <button type="submit" class="btn-delete"
+                                            onclick="return confirm('Are you sure you want to delete this leave?')">Delete</button>
                                     </form>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
-                </table>                
+                </table>
             </div>
 
         </div>
@@ -155,5 +162,10 @@
         </div>
     </div>
 </body>
+<script>
+    function disableOtherButton(buttonId) {
+        document.getElementById(buttonId).disabled = true;
+    }
+</script>
 
 </html>

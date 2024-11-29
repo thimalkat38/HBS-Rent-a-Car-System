@@ -84,46 +84,113 @@
                 </nav>
             </div>
             <!-- Form Section -->
-            <div class="content">
-                <div class="form-section">
-                    <form>
-                        <div class="form-row">
-                            <select class="selection-list">
-                                <option value="" disabled selected>Select Employee ID</option>
-                                <option>E0001</option>
-                                <option>E0002</option>
-                                <option>E0003</option>
-                            </select>
-                            <input type="text" placeholder="Employee Name">
-                        </div>
-                        <div class="form-row">
-                            <select class="selection-list">
-                                <option value="" disabled selected>Select Date</option>
-                                <option>Date 01</option>
-                                <option>Date 02</option>
-                                <option>Date 03</option>
-                            </select>
-                            <select class="selection-list">
-                                <option value="" disabled selected>Select Working Type</option>
-                                <option>Type 01</option>
-                                <option>Type 02</option>
-                                <option>Type 03</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div class="submit-container">
-                    <a href="Card6.html"><button type="back" class="btn-submit">BACK</button></a>
-                    <button type="reset" class="btn-submit">CLEAR</button>
-                    <button type="submit" class="btn-submit">SUBMIT</button>
-                </div>
+            <div class="form-section">
+                <form action="{{ route('attendances.store') }}" method="POST">
+                    @csrf
+                    <div class="form-row">
+                        <input type="text" id="emp-id" name="emp_id" placeholder="Enter EMP ID" required autocomplete="off">
+                        <div id="emp-id-list" class="dropdown-list"></div>
+                        <input type="text" id="emp-name" name="emp_name" placeholder="Auto-filled EMP Name" readonly>
+                    </div>
+                    <div class="form-row">
+                        <input type="date" id="date" name="date" required>
+                        <select name="type" class="selection-list" required>
+                            <option value="" disabled selected>Type</option>
+                            <option value="normal">Normal Working Day</option>
+                            <option value="Half Day">Half Day</option>
+                            <option value="Leave">Leave</option>
+                        </select>
+                    </div>
+                    <div class="submit-container">
+                        <a href="Card6.html"><button type="button" class="btn-submit">BACK</button></a>
+                        <button type="reset" class="btn-submit">CLEAR</button>
+                        <button type="submit" class="btn-submit">SUBMIT</button>
+                    </div>
+                </form>
             </div>
+            
         </div>
+        
 
         <!-- Footer -->
         <div class="footer">
             <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const empIdInput = document.getElementById('emp-id');
+            const empIdList = document.getElementById('emp-id-list');
+            const empNameInput = document.getElementById('emp-name');
+        
+            empIdInput.addEventListener('input', function () {
+                const query = this.value;
+        
+                if (query.length > 1) {
+                    fetch(`/employees/search?query=${query}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            empIdList.innerHTML = ''; // Clear the list
+        
+                            if (data.length) {
+                                data.forEach(emp => {
+                                    const option = document.createElement('div');
+                                    option.textContent = `${emp.emp_id} - ${emp.emp_name}`;
+                                    option.className = 'dropdown-item';
+                                    option.dataset.empId = emp.emp_id;
+                                    option.dataset.empName = emp.emp_name;
+        
+                                    empIdList.appendChild(option);
+                                });
+                            } else {
+                                empIdList.innerHTML = '<div class="dropdown-item">No results found</div>';
+                            }
+                        });
+                } else {
+                    empIdList.innerHTML = '';
+                }
+            });
+        
+            empIdList.addEventListener('click', function (e) {
+                if (e.target.classList.contains('dropdown-item')) {
+                    const empId = e.target.dataset.empId;
+                    const empName = e.target.dataset.empName;
+        
+                    empIdInput.value = empId;
+                    empNameInput.value = empName;
+        
+                    empIdList.innerHTML = ''; // Hide the dropdown
+                }
+            });
+        
+            // Hide dropdown when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!empIdList.contains(e.target) && e.target !== empIdInput) {
+                    empIdList.innerHTML = '';
+                }
+            });
+        });
+    </script>
+    <style>
+        .dropdown-list {
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+            background: white;
+            position: absolute;
+            z-index: 1000;
+            width: 100%;
+        }
+        
+        .dropdown-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        
+        .dropdown-item:hover {
+            background: #f0f0f0;
+        }
+        </style>
 </body>
 </html>

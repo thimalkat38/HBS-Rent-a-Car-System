@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
@@ -36,8 +38,8 @@
             <div class="sidebar">
                 <nav class="nav">
                     <div class="nav-item">
-                        <a class="nav-link" href="{{ url('manager/dashboard') }}"><img
-                                src="{{ asset('images/1.png') }}" alt="Dashboard" class="nav-icon"> DASHBOARD</a>
+                        <a class="nav-link" href="{{ url('manager/dashboard') }}"><img src="{{ asset('images/1.png') }}"
+                                alt="Dashboard" class="nav-icon"> DASHBOARD</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link"><img src="{{ asset('images/2.png') }}" alt="Vehicles" class="nav-icon">
@@ -63,10 +65,10 @@
                             <a class="dropdown-link" href="{{ url('customers') }}">List Customer</a>
                         </div>
                     </div>
-                        <div class="nav-item">
-                            <a class="nav-link active" href="{{ url('hr-management') }}"><img
-                                    src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
-                        </div>
+                    <div class="nav-item">
+                        <a class="nav-link active" href="{{ url('hr-management') }}"><img
+                                src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
+                    </div>
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/6.png') }}" alt="CRM"
                                 class="nav-icon"> CRM (under development...)</a>
@@ -76,7 +78,7 @@
                             <img src="{{ asset('images/7.png') }}" alt="Inventory" class="nav-icon">
                             INVENTORY (under development...)
                         </a>
-                    </div>                    
+                    </div>
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> ACCOUNTING (under development...)</a>
@@ -85,84 +87,89 @@
             </div>
 
 
-<div class="content">
-    <a class="nav-link" href="{{url('employees/create')}}"> Add New Employee</a>
-    <div class="cards-container no-scroll">
-    <!-- Registered Staff -->
-    <div class="card shadow-sm bg-dark-custom text-white">
-        <a class="nav-link" href="{{('employees')}}">
-        <div class="card-body">
-            <div class="image-wrapper">
-                <img src="{{ asset('images/H1.png') }}" alt="regstaff" class="card-image">
-                        </div>
-            <h5 class="card-title">Registered Staff</h5>
-            <p class="card-text">10</p>
-        </div></a>
-    </div>
+            <div class="content">
+                <a class="nav-link" href="{{ url('employees/create') }}"> Add New Employee</a>
+                <div class="cards-container no-scroll">
+                    <!-- Registered Staff -->
+                    <div class="card shadow-sm bg-dark-custom text-white">
+                        <a class="nav-link" href="{{ 'employees' }}">
+                            <div class="card-body">
+                                <div class="image-wrapper">
+                                    <img src="{{ asset('images/H1.png') }}" alt="regstaff" class="card-image">
+                                </div>
+                                <h5 class="card-title">Registered Staff</h5>
+                                <p class="card-text">{{ \App\Models\Employee::count() }}</p>
+                            </div>
+                        </a>
+                    </div>
 
-    <!-- Leaves Requested -->
-    <div class="card shadow-sm bg-warning-custom text-white">
-        <a class="nav-link" href="{{'leaves'}}">
-        <div class="card-body">
-            <div class="image-wrapper">
-                <img src="{{ asset('images/H2.png') }}" alt="leavereq" class="card-image">
-            </div>
-            <h5 class="card-title">Requested Leaves</h5>
-            <p class="card-text">3</p>
-        </div></a>
-    </div>
+                    <!-- Leaves Requested -->
+                    <div class="card shadow-sm bg-warning-custom text-white">
+                        <a class="nav-link" href="{{ 'leaves' }}">
+                            <div class="card-body">
+                                <div class="image-wrapper">
+                                    <img src="{{ asset('images/H2.png') }}" alt="leavereq" class="card-image">
+                                </div>
+                                <h5 class="card-title">Requested Leaves</h5>
+                                <p class="card-text">{{ \App\Models\Leave::count() }}</p>
+                            </div>
+                        </a>
+                    </div>
 
-    <!-- Approved Leaves -->
-    <div class="card shadow-sm bg-azure text-white">
-        <a class="nav-link" href="{{'approved'}}">
-        <div class="card-body">
-            <div class="image-wrapper">
-                <img src="{{ asset('images/H3.png') }}"alt="apprvdleave" class="card-image">
-            </div>
-            <h5 class="card-title">Approved Leaves</h5>
-            <p class="card-text">20</p>
-        </div></a>
-    </div>
+                    <!-- Approved Leaves -->
+                    <div class="card shadow-sm bg-azure text-white">
+                        <a class="nav-link" href="{{ 'approved' }}">
+                            <div class="card-body">
+                                <div class="image-wrapper">
+                                    <img src="{{ asset('images/H3.png') }}"alt="apprvdleave" class="card-image">
+                                </div>
+                                <h5 class="card-title">Approved Leaves</h5>
+                                <p class="card-text">{{ \App\Models\Leave::where('status', 'Accepted')->count() }}</p>
+                            </div>
+                        </a>
+                    </div>
 
-    <!-- Rejected Leaves -->
-    <div class="card shadow-sm bg-danger-custom text-white">
-        <a class="nav-link" href="{{'rejected'}}">
-        <div class="card-body">
-            <div class="image-wrapper">
-                <img src="{{ asset('images/H4.png') }}" alt="rejleave" class="card-image">
-            </div>
-            <h5 class="card-title">Rejected Leaves</h5>
-            <p class="card-text">10</p>
-        </div></a>
-    </div>
+                    <!-- Rejected Leaves -->
+                    <div class="card shadow-sm bg-danger-custom text-white">
+                        <a class="nav-link" href="{{ 'rejected' }}">
+                            <div class="card-body">
+                                <div class="image-wrapper">
+                                    <img src="{{ asset('images/H4.png') }}" alt="rejleave" class="card-image">
+                                </div>
+                                <h5 class="card-title">Rejected Leaves</h5>
+                                <p class="card-text">{{ \App\Models\Leave::where('status', 'rejected')->count() }}</p>
+                            </div>
+                        </a>
+                    </div>
 
-    <!-- Staff Attendance -->
-    <div class="card shadow-sm bg-purple-custom text-white">
-        <a class="nav-link" href="{{'payroll'}}">
-        <div class="card-body">
-            <div class="image-wrapper">
-                <img src="{{ asset('images/H5.png') }}" alt="payroll"class="card-image">
-            </div>
-            <h5 class="card-title">Pay Roll</h5>
-        </div></a>
-    </div>
+                    <!-- Staff Attendance -->
+                    <div class="card shadow-sm bg-purple-custom text-white">
+                        <a class="nav-link" href="{{ 'payrolls' }}">
+                            <div class="card-body">
+                                <div class="image-wrapper">
+                                    <img src="{{ asset('images/H5.png') }}" alt="payroll"class="card-image">
+                                </div>
+                                <h5 class="card-title">Pay Roll</h5>
+                            </div>
+                        </a>
+                    </div>
 
-    <!-- Payroll -->
-    <div class="card shadow-sm bg-magenta text-white">
-        <a class="nav-link"  href="{{'attendance'}}">
-        <div class="card-body">
-            <div class="image-wrapper">
-                <img src="{{ asset('images/H4.png') }}" alt="attendance" class="card-image">
+                    <!-- Payroll -->
+                    <div class="card shadow-sm bg-magenta text-white">
+                        <a class="nav-link" href="{{ 'attendances' }}">
+                            <div class="card-body">
+                                <div class="image-wrapper">
+                                    <img src="{{ asset('images/H4.png') }}" alt="attendance" class="card-image">
+                                </div>
+                                <h5 class="card-title">Staff Attendance</h5>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
             </div>
-            <h5 class="card-title">Staff Attendance</h5>
+
         </div>
-    </a>
-    </div>
-</div>
-
-</div>
-
-</div>
 
         <!-- Footer -->
         <div class="footer">
@@ -170,4 +177,5 @@
         </div>
     </div>
 </body>
+
 </html>

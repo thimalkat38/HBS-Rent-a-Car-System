@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
@@ -36,8 +38,8 @@
             <div class="sidebar">
                 <nav class="nav">
                     <div class="nav-item">
-                        <a class="nav-link" href="{{ url('manager/dashboard') }}"><img
-                                src="{{ asset('images/1.png') }}" alt="Dashboard" class="nav-icon"> DASHBOARD</a>
+                        <a class="nav-link" href="{{ url('manager/dashboard') }}"><img src="{{ asset('images/1.png') }}"
+                                alt="Dashboard" class="nav-icon"> DASHBOARD</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link"><img src="{{ asset('images/2.png') }}" alt="Vehicles" class="nav-icon">
@@ -63,10 +65,10 @@
                             <a class="dropdown-link" href="{{ url('customers') }}">List Customer</a>
                         </div>
                     </div>
-                        <div class="nav-item">
-                            <a class="nav-link active" href="{{ url('hr-management') }}"><img
-                                    src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
-                        </div>
+                    <div class="nav-item">
+                        <a class="nav-link active" href="{{ url('hr-management') }}"><img
+                                src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
+                    </div>
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/6.png') }}" alt="CRM"
                                 class="nav-icon"> CRM (under development...)</a>
@@ -76,7 +78,7 @@
                             <img src="{{ asset('images/7.png') }}" alt="Inventory" class="nav-icon">
                             INVENTORY (under development...)
                         </a>
-                    </div>                    
+                    </div>
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> ACCOUNTING (under development...)</a>
@@ -103,9 +105,14 @@
                             <input type="text" name="address" placeholder="Address" required>
                         </div>
                         <div class="form-row">
+                            <label for="join_date">Join Date:</label>
                             <input type="date" name="join_date" placeholder="Joining Date" required>
-                            <input type="date" name="birthday" placeholder="Birthday">
-                            <input type="number" name="remaining_leaves" placeholder="Leaves Per Month" min="0" required>
+                            <label for="birthday">Birthday:</label>
+                            <input type="date" name="birthday" id="birthday" placeholder="Birthday"
+                                max="2005-12-31">
+
+                            <input type="number" name="remaining_leaves" placeholder="Leaves Per Month"
+                                min="0" required>
                         </div>
                         <div class="upload-section">
                             <p>Add Photo of Employee</p>
@@ -116,7 +123,7 @@
                         </div>
                     </form>
                 </div>
-            </div>            
+            </div>
         </div>
 
         <!-- Footer -->
@@ -125,4 +132,5 @@
         </div>
     </div>
 </body>
+
 </html>

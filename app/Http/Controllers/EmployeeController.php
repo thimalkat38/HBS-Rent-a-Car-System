@@ -16,7 +16,7 @@ class EmployeeController extends Controller
         $employees = Employee::all();
         return view('Manager.ManagerEmployees', compact('employees'));
     }
-
+    
     /**
      * Show the form for creating a new employee.
      */

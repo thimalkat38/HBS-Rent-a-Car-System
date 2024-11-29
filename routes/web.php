@@ -8,6 +8,11 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LeaveController;
+use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\CrmController;
+
+
 // use App\Models\Customer;
 use Illuminate\Support\Facades\Route;
 
@@ -86,6 +91,7 @@ Route::middleware(['manager'])->get('bookings/{booking}/edit', [BookingControlle
 Route::middleware(['manager'])->put('bookings/{booking}', [BookingController::class, 'update'])->name('bookings.update'); // Update booking
 Route::middleware(['manager'])->delete('bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy'); // Delete booking
 Route::middleware(['manager'])->get('/bookings/{id}', [BookingController::class, 'show'])->name('bookings.show');
+Route::get('/manager/dashboard', [BookingController::class, 'calendarView'])->name('manager.dashboard');
 
 
 
@@ -111,6 +117,9 @@ Route::middleware(['admin'])->get('admin/dashboard', [HomeController::class,'adm
 
 
 
+
+
+
 Route::get('inventory', [InventoryController::class, 'index'])->name('inventory.index'); // Display all inventory items
 Route::get('inventory/create', [InventoryController::class, 'create'])->name('inventory.create'); // Show form to create a new item
 Route::post('inventory', [InventoryController::class, 'store'])->name('inventory.store'); // Store a new item
@@ -122,15 +131,17 @@ Route::delete('inventory/{id}', [InventoryController::class, 'destroy'])->name('
 
 Route::get('hr-management', function () { return view('Manager.HRManagment');})->name('hrmanagement');
 // Route::get('addemp', function () { return view('Manager.AddEmp');})->name('addemp');
-Route::get('emp', function () { return view('Manager.ManagerEmployees');})->name('emp');
-Route::get('leavereq', function () { return view('Manager.LeaveRequest');})->name('leavereq');
-Route::get('addleavereq', function () { return view('Manager.AddLeaveReq');})->name('addleavereq');
+// Route::get('emp', function () { return view('Manager.ManagerEmployees');})->name('emp');
+// Route::get('leavereq', function () { return view('Manager.LeaveRequest');})->name('leavereq');
+// Route::get('addleavereq', function () { return view('Manager.AddLeaveReq');})->name('addleavereq');
 // Route::get('approvedleave', function () { return view('Manager.ApprovedLeaves');})->name('approvedleave');
-Route::get('rejectedleave', function () { return view('Manager.RejectedLeaves');})->name('rejectedleave');
-Route::get('payroll', function () { return view('Manager.Payroll');})->name('payroll');
-Route::get('addpayroll', function () { return view('Manager.AddPayroll');})->name('addpayroll');
+// Route::get('rejectedleave', function () { return view('Manager.RejectedLeaves');})->name('rejectedleave');
+// Route::get('payroll', function () { return view('Manager.Payroll');})->name('payroll');
+// Route::get('addpayroll', function () { return view('Manager.AddPayroll');})->name('addpayroll');
 Route::get('attendance', function () { return view('Manager.Attendance');})->name('attendance');
 Route::get('addattendance', function () { return view('Manager.AddAttendance');})->name('addattendance');
+Route::get('crm', function () { return view('Manager.CRM');})->name('crm');
+Route::get('addcrm', function () { return view('Manager.AddCRM');})->name('addcrm');
 
 
 
@@ -146,7 +157,7 @@ Route::get('/employees/search', [EmployeeController::class, 'search'])->name('em
 
 
 
-// View all leave requests
+// leave Routes
 Route::get('/leaves', [LeaveController::class, 'index'])->name('leaves.index');
 Route::get('/leaves/create', [LeaveController::class, 'create'])->name('leaves.create');
 Route::post('/leaves', [LeaveController::class, 'store'])->name('leaves.store');
@@ -157,6 +168,49 @@ Route::delete('/leaves/{id}', [LeaveController::class, 'destroy'])->name('leaves
 Route::patch('/leaves/{id}/status/{status}', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
 Route::get('approved', [LeaveController::class, 'showApprovedLeaves'])->name('leaves.approved');
 Route::get('rejected', [LeaveController::class, 'showRejectededLeaves'])->name('leaves.rejected');
+
+
+
+
+
+
+
+//Payroll routes
+Route::get('/payrolls', [PayrollController::class, 'index'])->name('payrolls.index');
+Route::get('/payrolls/create', [PayrollController::class, 'create'])->name('payrolls.create');
+Route::post('/payrolls', [PayrollController::class, 'store'])->name('payrolls.store');
+Route::get('/payrolls/{id}', [PayrollController::class, 'show'])->name('payrolls.show');
+Route::get('/payrolls/{id}/edit', [PayrollController::class, 'edit'])->name('payrolls.edit');
+Route::put('/payrolls/{id}', [PayrollController::class, 'update'])->name('payrolls.update');
+Route::delete('/payrolls/{id}', [PayrollController::class, 'destroy'])->name('payrolls.destroy');
+
+
+//Attendances Routes
+
+
+Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index'); // List all records
+Route::get('/attendances/create', [AttendanceController::class, 'create'])->name('attendances.create'); // Show form
+Route::post('/attendances', [AttendanceController::class, 'store'])->name('attendances.store'); // Store data
+Route::get('/attendances/{id}/edit', [AttendanceController::class, 'edit'])->name('attendances.edit'); // Edit form
+Route::put('/attendances/{id}', [AttendanceController::class, 'update'])->name('attendances.update'); // Update data
+Route::delete('/attendances/{id}', [AttendanceController::class, 'destroy'])->name('attendances.destroy'); // Delete data
+
+
+
+
+
+// Display a list of all CRM entries
+Route::get('/crms', [CrmController::class, 'index'])->name('crms.index');
+Route::get('/crms/create', [CrmController::class, 'create'])->name('crms.create');
+Route::post('/crms', [CrmController::class, 'store'])->name('crms.store');
+Route::get('/crms/{crm}', [CrmController::class, 'show'])->name('crms.show');
+Route::get('/crms/{crm}/edit', [CrmController::class, 'edit'])->name('crms.edit');
+Route::put('/crms/{crm}', [CrmController::class, 'update'])->name('crms.update');
+Route::delete('/crms/{crm}', [CrmController::class, 'destroy'])->name('crms.destroy');
+Route::get('/crms', [CrmController::class, 'upcomingSchedule'])->name('crms.upcoming');
+
+
+
 
 
 

@@ -16,7 +16,7 @@
         <!-- Header -->
         <div class="header">
             <div class="logo-section">
-                <img src="logo.png" class="logo-icon" alt="Logo">
+                <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
             <div>
@@ -85,6 +85,7 @@
                     </div>
                 </nav>
             </div>
+            <a href="{{ route('hrmanagement') }}" class="btn btn-secondary">Back</a>
 
             <div class="table-content">
                 <table class="table table-bordered">
@@ -108,7 +109,8 @@
                             <tr>
                                 <td>
                                     @if (!empty($employee->photo) && isset($employee->photo[0]))
-                                        <img src="{{ asset('storage/' . $employee->photo[0]) }}" alt="emp Image" style="width: 100px; height: auto;">
+                                        <img src="{{ asset('storage/' . $employee->photo[0]) }}" alt="emp Image"
+                                            style="width: 100px; height: auto;">
                                     @else
                                         No Image Available
                                     @endif
@@ -125,10 +127,12 @@
                                 </td>
                                 <td class="button-cell">
                                     <a href="{{ route('employees.edit', $employee->id) }}" class="btn-edit">Edit</a>
-                                    <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" style="display:inline;">
+                                    <form action="{{ route('employees.destroy', $employee->id) }}" method="POST"
+                                        style="display:inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this vehicle?')">Delete</button>
+                                        <button type="submit" class="btn-delete"
+                                            onclick="return confirm('Are you sure you want to delete this vehicle?')">Delete</button>
                                     </form>
                                 </td>
                             </tr>
@@ -140,11 +144,11 @@
                     </tbody>
                 </table>
             </div>
-                    </div>
+        </div>
 
         <!-- Footer -->
         <div class="footer">
-            <p>Copyright © 2022 Golden Ray. All Rights Reserved. Designed By Ezone IT SOLUTION</p>
+            <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>
         </div>
     </div>
 </body>
