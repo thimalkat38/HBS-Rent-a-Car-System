@@ -83,7 +83,7 @@
                     </div>
                 </nav>
             </div>
-
+            <a href="{{ route('hrmanagement') }}" class="btn btn-secondary">Back</a>
             <!-- Form Section -->
             <div class="table-content">
                 <div class="form-section">

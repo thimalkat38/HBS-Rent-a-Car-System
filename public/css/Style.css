@@ -191,7 +191,7 @@ body {
 .calendar-days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
+    gap: 20px;
     padding: 1% 1%;
 }
 
@@ -750,5 +750,10 @@ body {
     width: 100%;
     height: auto;
     object-fit: cover;
+    
+
+
+
+
 }
 

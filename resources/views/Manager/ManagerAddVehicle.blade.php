@@ -104,7 +104,7 @@
                             </div>
                         @endif
                         <div class="form-row">
-                            <input type="text" name="vehicle_number" placeholder="Register Number">                            
+                            <input type="text" name="vehicle_number" placeholder="Register Number" id="vehicle_number" maxlength="8" oninput="formatVehicleNumber(this)" />                           
                                 <input type="text" name="vehicle_name" id="vehicle_name" placeholder="Vehicle Model" autocomplete="off">
                                 <ul id="model-suggestions" class="list-group" style="position: absolute; display: none;">
                                 </ul>
@@ -202,6 +202,18 @@
             });
         });
     </script>
+    <script>
+        function formatVehicleNumber(input) {
+            // Remove all characters that are not uppercase letters, digits, or "-"
+            input.value = input.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+            
+            // Ensure it follows the pattern "AAA-1234"
+            const match = input.value.match(/^([A-Z]{0,3})(-?)([0-9]{0,4})$/);
+            if (match) {
+                input.value = (match[1] || '') + (match[3] ? '-' + match[3] : '');
+            }
+        }
+        </script>
     
 
 <style>

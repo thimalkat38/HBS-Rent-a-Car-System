@@ -69,13 +69,13 @@
                                     src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
                         </div>
                     <div class="nav-item">
-                        <a class="nav-link" href="#"><img src="{{ asset('images/6.png') }}" alt="CRM"
-                                class="nav-icon"> CRM (under development...)</a>
+                        <a class="nav-link" href="{{ url('crms')}}"><img src="{{ asset('images/6.png') }}" alt="CRM"
+                                class="nav-icon"> CRM</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link" href="{{ route('inventory.index') }}">
                             <img src="{{ asset('images/7.png') }}" alt="Inventory" class="nav-icon">
-                            INVENTORY (under development...)
+                            INVENTORY 
                         </a>
                     </div>                    
                     <div class="nav-item">
@@ -88,46 +88,71 @@
             <!-- Main Content Section -->
             <div class="content">
                 <!-- Calendar Section -->
-                <div class="calendar">
-                    <div class="calendar-header">
-                        <button class="month-nav">&lt; Prev</button>
-                        <div class="month-year">October 2024</div>
-                        <button class="month-nav">Next &gt;</button>
+                <div class="container">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <a href="{{ route('bookings.index') }}" class="btn btn-primary">View All Bookings</a>
                     </div>
-                    <div class="calendar-days-header">
-                        <div class="calendar-day-name">Sun</div>
-                        <div class="calendar-day-name">Mon</div>
-                        <div class="calendar-day-name">Tue</div>
-                        <div class="calendar-day-name">Wed</div>
-                        <div class="calendar-day-name">Thu</div>
-                        <div class="calendar-day-name">Fri</div>
-                        <div class="calendar-day-name">Sat</div>
+                    <div class="welcome-message">
+                        <h2>Hi</h2>
+                        <h1>Welcome Back</h1>
                     </div>
-                    <div class="calendar-days">
-                        <div class="calendar-day available">1</div>
-                        <div class="calendar-day onsite">2</div>
-                        <div class="calendar-day onhire">3</div>
-                        <div class="calendar-day available">4</div>
-                        <div class="calendar-day onsite">5</div>
-                        <div class="calendar-day onhire">6</div>
-                        <div class="calendar-day available">7</div>
-                        <!-- Add more days as needed -->
-                    </div>
-                </div>
-
-                <!-- Status Summary Section -->
-                <div class="status-summary">
-                    <div class="status-box available">
-                        <img src="{{ asset('images/a.png') }}" alt="Available Icon">
-                        Available: 12
-                    </div>
-                    <div class="status-box onsite">
-                        <img src="{{ asset('images/b.png') }}" alt="Onsite Icon">
-                        Onsite: 5
-                    </div>
-                    <div class="status-box onhire">
-                        <img src="{{ asset('images/c.png') }}" alt="Onhire Icon">
-                        On Hire: 8
+                
+                    <div class="calendar">
+                        <div class="calendar-header">
+                            <a href="{{ route('manager.dashboard', ['month' => $currentMonth - 1, 'year' => $currentYear]) }}" 
+                               class="btn btn-sm btn-secondary">&lt; Prev</a>
+                            <div class="month-year">
+                                {{ Carbon\Carbon::create($currentYear, $currentMonth)->format('F Y') }}
+                            </div>
+                            <a href="{{ route('manager.dashboard', ['month' => $currentMonth + 1, 'year' => $currentYear]) }}" 
+                               class="btn btn-sm btn-secondary">Next &gt;</a>
+                        </div>
+                
+                        <div class="calendar-days-header">
+                            <div class="calendar-day-name">Sun</div>
+                            <div class="calendar-day-name">Mon</div>
+                            <div class="calendar-day-name">Tue</div>
+                            <div class="calendar-day-name">Wed</div>
+                            <div class="calendar-day-name">Thu</div>
+                            <div class="calendar-day-name">Fri</div>
+                            <div class="calendar-day-name">Sat</div>
+                        </div>
+                
+                        <div class="calendar-days">
+                            @php
+                                $daysInMonth = Carbon\Carbon::create($currentYear, $currentMonth)->daysInMonth;
+                                $firstDayOfMonth = Carbon\Carbon::create($currentYear, $currentMonth)->startOfMonth()->dayOfWeek;
+                            @endphp
+                
+                            <!-- Empty cells for days before the first day of the month -->
+                            @for ($i = 0; $i < $firstDayOfMonth; $i++)
+                                <div class="calendar-day empty"></div>
+                            @endfor
+                
+                            <!-- Days of the month -->
+                            @for ($i = 1; $i <= $daysInMonth; $i++)
+                                @php
+                                    $date = Carbon\Carbon::create($currentYear, $currentMonth, $i)->toDateString();
+                                    $count = $bookingCounts[$date] ?? 0;
+                                    $class = $count > 10 ? 'available' : ($count > 0 ? 'onsite' : 'onhire');
+                                @endphp
+                                <div class="calendar-day {{ $class }}">{{ $i }}</div>
+                            @endfor
+                        </div>
+                        <div class="status-summary">
+                            <div class="status-box available">
+                                <img src="{{ asset('images/a.png') }}" alt="Available Icon">
+                                More than 10 Bookings
+                            </div>
+                            <div class="status-box onsite">
+                                <img src="{{ asset('images/b.png') }}" alt="Onsite Icon">
+                                Avarage
+                            </div>
+                            <div class="status-box onhire">
+                                <img src="{{ asset('images/c.png') }}" alt="Onhire Icon">
+                                No Bookings 
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -139,5 +164,4 @@
         </div>
     </div>
 </body>
-
 </html>

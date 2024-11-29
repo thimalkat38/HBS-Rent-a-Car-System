@@ -22,11 +22,12 @@ class PayrollController extends Controller
             $query->whereMonth('paid_date', $request->input('month'));
         }
     
-        // Fetch filtered results
-        $payrolls = $query->get();
+        // Sort by the most recent payrolls
+        $payrolls = $query->orderBy('created_at', 'desc')->get();
     
         return view('Manager.payroll', compact('payrolls'));
     }
+    
     
 
     // Show the form for creating a new payroll

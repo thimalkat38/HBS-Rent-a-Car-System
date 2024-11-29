@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class BookingController extends Controller
@@ -13,17 +14,20 @@ class BookingController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-
-        // If a search query exists, filter bookings by V/NUMBER
+    
         if ($search) {
-            $bookings = Booking::where('mobile_number', 'LIKE', "%{$search}%")->get();
+            // Filter bookings by mobile number and sort by creation date
+            $bookings = Booking::where('mobile_number', 'LIKE', "%{$search}%")
+                ->orderBy('created_at', 'desc')
+                ->get();
         } else {
-            // If no search query, return all bookings
-            $bookings = Booking::all();
+            // Return all bookings sorted by creation date
+            $bookings = Booking::orderBy('created_at', 'desc')->get();
         }
-
+    
         return view('Manager.ManagerBookings', compact('bookings'));
     }
+    
 
     // Show form to create a new booking
     public function create()
@@ -193,4 +197,27 @@ class BookingController extends Controller
 
         return redirect()->route('bookings.index')->with('success', 'Booking deleted successfully.');
     }
+
+    
+
+public function calendarView()
+{
+    // Get the current month and year for the calendar
+    $currentMonth = request()->input('month', now()->month);
+    $currentYear = request()->input('year', now()->year);
+
+    // Calculate the start and end of the selected month
+    $startDate = Carbon::createFromDate($currentYear, $currentMonth, 1)->startOfMonth();
+    $endDate = $startDate->copy()->endOfMonth();
+
+    // Fetch bookings grouped by day
+    $bookingCounts = Booking::whereBetween('from_date', [$startDate, $endDate])
+        ->selectRaw('DATE(from_date) as date, COUNT(*) as count')
+        ->groupBy('date')
+        ->pluck('count', 'date');
+
+    // Pass data to the calendar view
+    return view('Manager.ManagerDashboard', compact('bookingCounts', 'currentMonth', 'currentYear'));
+}
+
 }

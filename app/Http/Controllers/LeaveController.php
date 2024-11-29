@@ -11,9 +11,10 @@ class LeaveController extends Controller
     // Display all leave requests
     public function index()
     {
-        $leaves = Leave::all();
+        $leaves = Leave::orderBy('created_at', 'desc')->get();
         return view('Manager.LeaveRequest', compact('leaves'));
     }
+    
 
     // Show the form for creating a new leave request
     public function create()
