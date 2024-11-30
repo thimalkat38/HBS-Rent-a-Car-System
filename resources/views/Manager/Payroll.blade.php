@@ -17,17 +17,18 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
-            <div>
-                <form method="POST" action="{{ route('logout') }}">
+            <div class="card1">
+            <div class="card1-content">  
+                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
                     @csrf
-
                     <x-responsive-nav-link :href="route('logout')"
                         onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                        {{ __('LogOut') }}
                     </x-responsive-nav-link>
                 </form>
             </div>
+        </div>
         </div>
 
         <!-- Main Content -->
@@ -83,9 +84,16 @@
                     </div>
                 </nav>
             </div>
-            <a href="{{ route('hrmanagement') }}" class="btn btn-secondary">Back</a>
-            <!-- Form Section -->
-            <div class="table-content">
+            
+            \
+
+        <div class="content">
+            <div class="card1">
+                    <div class="card1-content">
+                    <a href="{{ route('hrmanagement') }}" class="btn-submit">Back</a>
+                    </div>
+                </div>
+
                 <div class="form-section">
                     <form method="GET" action="{{ url('payrolls') }}">
                         <div class="form-row">
@@ -112,20 +120,19 @@
                             </select>
                 
                             <!-- Filter Button -->
-                            <button type="submit">Filter</button>
+                            <button class="btn-submit" type="submit">Filter</button>
                             
                         </div>
-                    </form>
-                
-                    <!-- Add Payment Button -->
-                    <div class="card1">
+         
+                                    <!-- Add Payment Button -->
+                                    <div class="card1">
                         <div class="card1-content">
                             <div class="card1-submit-container">
                                 <a class="nav-link" href="{{ url('payrolls/create') }}">Add Payment</a>
                             </div>
                         </div>
                     </div>
-                </div>
+                <div class="table-content">
                 
                 <!-- Table Section -->
                 <table class="table table-bordered">
@@ -157,7 +164,9 @@
                     </tbody>
                 </table>
                 </div>
-                
+                </form>
+                </div>
+            </div>  
             </div>
         </div>
 
@@ -224,13 +233,14 @@
 
     <style>
         .dropdown-list {
-    border: 1px solid #ccc;
+    border: 0px solid black;
     max-height: 150px;
     overflow-y: auto;
     background: white;
     position: absolute;
     z-index: 1000;
-    width: 100%;
+    width: 20%;
+    margin-top: 3%
 }
 
 .dropdown-item {

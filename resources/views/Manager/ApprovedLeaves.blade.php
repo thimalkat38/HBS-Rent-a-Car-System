@@ -17,17 +17,18 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
-            <div>
-                <form method="POST" action="{{ route('logout') }}">
+            <div class="card1">
+            <div class="card1-content">  
+                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
                     @csrf
-
                     <x-responsive-nav-link :href="route('logout')"
                         onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                        {{ __('LogOut') }}
                     </x-responsive-nav-link>
                 </form>
             </div>
+        </div>
         </div>
 
         <!-- Main Content -->
@@ -83,8 +84,14 @@
                     </div>
                 </nav>
             </div>
-            <a href="{{ route('hrmanagement') }}" class="btn btn-secondary">Back</a>
-            
+ 
+        <div class="content">
+            <div class="card1">
+                    <div class="card1-content">
+                    <a href="{{ route('hrmanagement') }}" class="btn-submit">Back</a>
+                    </div>
+                </div>
+
             <div class="table-content">
                 <table class="table table-bordered">
                     <thead>
@@ -112,7 +119,7 @@
                 </table>
             </div>
         </div>
-
+</div>
         <!-- Footer -->
         <div class="footer">
             <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>

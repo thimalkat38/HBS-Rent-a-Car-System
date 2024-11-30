@@ -19,18 +19,19 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
-            <div>
-                <form method="POST" action="{{ route('logout') }}">
+        <div class="card1">
+            <div class="card1-content">  
+                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
                     @csrf
-
                     <x-responsive-nav-link :href="route('logout')"
                         onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                        {{ __('LogOut') }}
                     </x-responsive-nav-link>
                 </form>
             </div>
         </div>
+    </div>
         <!-- Main Content -->
         <div class="main-content">
             <!-- Sidebar -->
@@ -88,24 +89,26 @@
             <!-- Main Content Section -->
             <div class="content">
                 <!-- Calendar Section -->
-                <div class="container">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <a href="{{ route('bookings.index') }}" class="btn btn-primary">View All Bookings</a>
-                    </div>
+ 
+                    <div class="card1-content">
                     <div class="welcome-message">
-                        <h2>Hi</h2>
-                        <h1>Welcome Back</h1>
+                        <h1>Hi! Welcome Back</h1>
                     </div>
+                    <div class="card1-submit-container">
+                        <a class="nav-link" href="{{ route('bookings.index') }}" class="card1-btn-submit">AllBookings</a>
+                    </div>
+                    </div>
+                 
                 
                     <div class="calendar">
                         <div class="calendar-header">
                             <a href="{{ route('manager.dashboard', ['month' => $currentMonth - 1, 'year' => $currentYear]) }}" 
-                               class="btn btn-sm btn-secondary">&lt; Prev</a>
+                               class="month-nav">&lt; Prev</a>
                             <div class="month-year">
                                 {{ Carbon\Carbon::create($currentYear, $currentMonth)->format('F Y') }}
                             </div>
                             <a href="{{ route('manager.dashboard', ['month' => $currentMonth + 1, 'year' => $currentYear]) }}" 
-                               class="btn btn-sm btn-secondary">Next &gt;</a>
+                               class="month-nav">Next &gt;</a>
                         </div>
                 
                         <div class="calendar-days-header">
@@ -155,7 +158,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
 
         <!-- Footer -->

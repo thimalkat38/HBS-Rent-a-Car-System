@@ -20,16 +20,18 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
-            <div>
-                <form method="POST" action="{{ route('logout') }}">
+            <div class="card1">
+            <div class="card1-content">  
+                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
                     @csrf
                     <x-responsive-nav-link :href="route('logout')"
                         onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                        {{ __('LogOut') }}
                     </x-responsive-nav-link>
                 </form>
             </div>
+        </div>
         </div>
 
         <!-- Main Content -->
@@ -359,10 +361,6 @@
 </script>
 
 
-
-
-
-
     <style>
         #customer-list {
             background-color: #fff;
@@ -373,7 +371,7 @@
             list-style-type: none;
             padding: 0;
             margin-top: 3%;
-            margin-left: 25%;
+            margin-left: 19%;
             width: 20%;
             align-content: left;
         }
