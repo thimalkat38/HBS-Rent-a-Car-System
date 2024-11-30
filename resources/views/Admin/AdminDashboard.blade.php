@@ -50,6 +50,16 @@
             font-size: 1.5rem;
         }
 
+        .text-start {
+            text-align: left;
+        }
+
+        a:-webkit-any-link {
+            color: -webkit-link;
+            cursor: pointer;
+            color: white;
+        }
+
         /* Main Content Styles */
         .main-content {
             display: flex;
@@ -259,7 +269,7 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
-            <div>
+            <div class="sign-out">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
         

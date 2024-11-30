@@ -18,17 +18,18 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
-            <div>
-                <form method="POST" action="{{ route('logout') }}">
+            <div class="card1">
+            <div class="card1-content">  
+                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
                     @csrf
-
                     <x-responsive-nav-link :href="route('logout')"
                         onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                        {{ __('LogOut') }}
                     </x-responsive-nav-link>
                 </form>
             </div>
+        </div>
         </div>
 
         <!-- Main Content -->
@@ -85,29 +86,31 @@
                 </nav>
             </div>
 
-            <a href="{{ route('hrmanagement') }}" class="btn btn-secondary">Back</a>
+        <div class="content">
+            <div class="card1">
+                    <div class="card1-content">
+                    <a href="{{ route('hrmanagement') }}" class="btn-submit">Back</a>
+                    </div>
+                </div>
 
             <!-- Filter Form -->
-            <form method="GET" action="{{ route('attendances.index') }}" class="mb-4">
-                <div class="row g-3">
+            <form method="GET" action="{{ route('attendances.index') }}">
+                <div class="form-section">
                     <!-- Employee Name Filter -->
-                    <div class="col-md-4">
+                    <div class="form-row">
                         <input type="text" name="emp_name" value="{{ request('emp_name') }}" class="form-control"
                             placeholder="Search by Employee Name">
-                    </div>
 
                     <!-- Date Filter -->
-                    <div class="col-md-4">
                         <input type="date" name="date" value="{{ request('date') }}" class="form-control">
-                    </div>
 
                     <!-- Filter Button -->
-                    <div class="col-md-4">
-                        <button type="submit" class="btn btn-primary">Filter</button>
-                        <a href="{{ route('attendances.index') }}" class="btn btn-secondary">Reset</a>
+                        <button type="submit" class="btn-submit">Filter</button>
+                        <a href="{{ route('attendances.index') }}" class="btn-submit">Reset</a>
                     </div>
                 </div>
             </form>
+            <div class="table-content">
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -143,6 +146,8 @@
                 </tbody>
             </table>
         </div>
+    </div>
+</div>
         <!-- Footer -->
         <div class="footer">
             <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>

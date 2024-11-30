@@ -15,7 +15,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin: 0;
+            margin-bottom: 1%;
         }
 
         .input {
@@ -29,7 +29,17 @@
         .btn {
             padding: 25px 40px;
             font-size: 14px;
-            background-color: #007bff;
+            background-color: #365C96;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .btn-clear{
+            padding: 16px 30px;
+            font-size: 14px;
+            background-color: #365C96;
             color: white;
             border: none;
             border-radius: 10px;
@@ -46,8 +56,8 @@
 
         .card {
             flex: 1;
-            height: 70%;
-            padding: 20px;
+            height: 50%;
+            padding: 10px;
             font-size: 16px;
             text-align: center;
             border: none;
@@ -55,8 +65,8 @@
             border-radius: 8px;
             cursor: pointer;
             margin: 0 10px;
-            transition: transform 0.2s;
-            margin-bottom: 10px;
+            transition: transform 0.1s;
+            margin-bottom: 5px;
         }
 
         .card:hover {
@@ -76,7 +86,7 @@
 
         .btn-edit {
             background-color: #28a745;
-            padding: 15px 30px;
+            padding: 6px 30px;
             display: flex;
         }
 
@@ -86,7 +96,7 @@
 
         .btn-delete {
             background-color: #dc3545;
-            padding: 15px 30px;
+            padding: 18px 40px;
             display: flex;
         }
 
@@ -115,7 +125,7 @@
             background-color: #f9f9f9;
             border: 1px solid black;
             border-radius: 8px;
-            height: 30%;
+            height: 35%;
             margin-top: 10px;
         }
     </style>
@@ -129,7 +139,18 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
-            <a href="#" class="sign-out"> Sign Out</a>
+            <div class="card1">
+            <div class="card1-content">  
+                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
+                    @csrf
+                    <x-responsive-nav-link :href="route('logout')"
+                        onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        {{ __('LogOut') }}
+                    </x-responsive-nav-link>
+                </form>
+            </div>
+        </div>
         </div>
 
         <!-- Main Content -->
@@ -191,7 +212,7 @@
             <div class="content">
 
                 <div class="row">
-                    <a class="nav-link" href="{{ url('crms/create') }}"> Add Reminder</a>
+                    <a class="btn-submit" href="{{ url('crms/create') }}"> Add Reminder</a>
                 </div>
 
     <!-- Filter Section -->
@@ -217,7 +238,7 @@
             <button type="submit" class="btn">Filter</button>
     
             <!-- Clear Button -->
-            <a href="{{ route('crms.upcoming') }}" class="btn btn-clear">Clear</a>
+            <a href="{{ route('crms.upcoming') }}" class="btn-clear">Clear</a>
         </div>
     </form>
     
@@ -243,7 +264,8 @@
                                 <form action="{{ route('crms.destroy', $crm->id) }}" method="POST" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-delete">Delete</button>
+                                    <button type="submit" class="btn btn-delete" 
+                                    onclick="return confirm('Are you sure you want to delete this leave?')">Delete</button>
                                 </form>
                             </div>
                         </div>
@@ -291,7 +313,11 @@ function showDetails(card) {
 }
 
     </script>
-    
+    <script>
+    function disableOtherButton(buttonId) {
+        document.getElementById(buttonId).disabled = true;
+    }
+</script>
 </body>
 
 </html>

@@ -17,17 +17,18 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
-            <div>
-                <form method="POST" action="{{ route('logout') }}">
+            <div class="card1">
+            <div class="card1-content">  
+                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
                     @csrf
-
                     <x-responsive-nav-link :href="route('logout')"
                         onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                        {{ __('LogOut') }}
                     </x-responsive-nav-link>
                 </form>
             </div>
+        </div>
         </div>
 
         <!-- Main Content -->
@@ -92,8 +93,6 @@
                         @csrf
                         <div class="form-row">
                             <input type="text" name="it_name" placeholder="Item Name" value="{{ old('it_name') }}" required>
-                        </div>
-                        <div class="form-row">
                             <input type="number" name="quantity" placeholder="Stock" value="{{ old('quantity') }}" required>
                         </div>
                         <div class="upload-section">

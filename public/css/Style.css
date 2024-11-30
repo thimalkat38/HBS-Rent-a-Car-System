@@ -28,7 +28,7 @@ body {
 
 .logo-icon {
     width: 150px; /* Maintain aspect ratio */
-    height: 85px; /* Set height to match header height */
+    height: 70px; /* Set height to match header height */
     margin-left: 50px; /* Space between logo and title */
 }
 
@@ -47,6 +47,16 @@ body {
     text-align: center; /* Center the title */
     font-size: 1.5rem;
     margin-bottom: 2%;
+}
+
+.btn1-submit {
+    padding: 10px 20px;
+    background-color: #365C96; /* Button color */
+    color: white;
+    border: none;
+    border-radius: 20px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    font-family: 'Oxanium', sans-serif;
 }
 
 /* Main Content Styles */
@@ -116,6 +126,17 @@ body {
     transition: background-color 0.3s; /* Smooth transition */
 }
 
+.link {
+    color: #fff;
+    font-weight: bold; /* Keep link text bold */
+    padding: 10px;
+    text-decoration: none;
+    font-size: 1rem; /* Slightly reduced font size */
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
 .nav-link:hover {
     background-color: #133E87; /* Change to red on hover */
     color: #fff; /* Change text color to white for better contrast */
@@ -145,7 +166,7 @@ body {
 /* Dashboard - Calendar Body Styles.................................................................................................................. */
 .calendar {
     background-color: #4105DB1A;
-    padding: 15px 15px;
+    padding: 8px 10px;
     border-radius: 8px;
 }
 
@@ -153,17 +174,17 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .month-nav {
-    padding: 10px 10px;
+    padding: 4px 4px;
     background-color: #133E87;
     border: none;
     color: white;
     cursor: pointer;
     border-radius: 5px;
-    width: 80px;
+    width: 70px;
 }
 
 .calendar-days-header {
@@ -172,7 +193,7 @@ body {
     gap: 5px;
     text-align: center;
     font-weight: bold;
-    padding-bottom: 40px;
+    padding-bottom: 20px;
     border-bottom: 1px solid black; /* Add black line here */
 }
 
@@ -193,6 +214,7 @@ body {
     grid-template-columns: repeat(7, 1fr);
     gap: 20px;
     padding: 1% 1%;
+    align-items: center;
 }
 
 .calendar-day {
@@ -346,7 +368,7 @@ body {
 .card6-form-row input{
     width: calc(50% - 1%); /* Adjusted width */
     padding: 1%;
-    width: 50%
+    width: 50%;
     border: 1px solid #ccc;
     border-color: black;
     border-radius: 5px; /* Border radius for input fields */
@@ -356,7 +378,7 @@ body {
 .form-row input{
     width: calc(50% - 1%); /* Adjusted width */
     padding: 1%;
-    width: 50%
+    width: 50%;
     border: 1px solid #ccc;
     border-color: black;
     border-radius: 5px; /* Border radius for input fields */
@@ -460,15 +482,29 @@ body {
 }
 
 .card1-btn-submit {
-    padding: 2% 8%;
-    margin-right: 2%;
+    padding: 10% 12%;
+    margin-right: 15%;
     background-color: #CB80AB; /* Button color */
     color: white;
-    font-size: 20px;
+    font-size: 16px;
     border: none;
     border-radius: 20px; /* Rounded corners */
     cursor: pointer; /* Pointer on hover */
     font-family: 'Oxanium', sans-serif;
+    display: flex;  
+}
+
+.btn-link {
+    padding: 8PX 20PX;
+    width: 20%;
+    background-color: #CB80AB; /* Button color */
+    color: white;
+    font-size: 16px;
+    margin-bottom: 0;
+    border-radius: 20px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    font-family: 'Oxanium', sans-serif;
+    display: flex;  
 }
 
 .card1-btn-submit:hover {
@@ -477,7 +513,7 @@ body {
 
 .btn-border{
     background-color: #FA000B4D;
-    width: %;
+    width: 1%;
     height: 1%;
     border-radius: 10px;
 }
@@ -572,6 +608,21 @@ body {
             margin: 0px; /* Adds space between buttons */
         }
 
+        .btn-delete1{
+            display: inline-block;
+            padding: 8px 10px;
+            font-size: 12px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 0px; /* Adds space between buttons */
+        }
+
         .btn-edit{
             display: inline-block;
             padding: 8px 10px;
@@ -619,15 +670,15 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 3%;
-    padding: 3%;
+    padding: 1%;
     overflow: hidden; /* Disable scrolling */
 }
 
 .card2-cards-container {
     display: grid;
     grid-template-columns: repeat(1, 3fr);
-    gap: 5%;
-    padding: 5%;
+    gap: 4%;
+    padding: 4%;
     overflow: hidden; /* Disable scrolling */
 
 }

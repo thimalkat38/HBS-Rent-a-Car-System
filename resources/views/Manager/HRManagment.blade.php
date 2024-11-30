@@ -19,17 +19,18 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
-            <div>
-                <form method="POST" action="{{ route('logout') }}">
+            <div class="card1">
+            <div class="card1-content">  
+                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
                     @csrf
-
                     <x-responsive-nav-link :href="route('logout')"
                         onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                        {{ __('LogOut') }}
                     </x-responsive-nav-link>
                 </form>
             </div>
+        </div>
         </div>
 
         <!-- Main Content -->
@@ -88,11 +89,11 @@
 
 
             <div class="content">
-                <a class="nav-link" href="{{ url('employees/create') }}"> Add New Employee</a>
+                <a class="btn-link" href="{{ url('employees/create') }}"> Add New Employee</a>
                 <div class="cards-container no-scroll">
                     <!-- Registered Staff -->
                     <div class="card shadow-sm bg-dark-custom text-white">
-                        <a class="nav-link" href="{{ 'employees' }}">
+                        <a class="link" href="{{ 'employees' }}">
                             <div class="card-body">
                                 <div class="image-wrapper">
                                     <img src="{{ asset('images/H1.png') }}" alt="regstaff" class="card-image">
@@ -105,7 +106,7 @@
 
                     <!-- Leaves Requested -->
                     <div class="card shadow-sm bg-warning-custom text-white">
-                        <a class="nav-link" href="{{ 'leaves' }}">
+                        <a class="link" href="{{ 'leaves' }}">
                             <div class="card-body">
                                 <div class="image-wrapper">
                                     <img src="{{ asset('images/H2.png') }}" alt="leavereq" class="card-image">
@@ -118,7 +119,7 @@
 
                     <!-- Approved Leaves -->
                     <div class="card shadow-sm bg-azure text-white">
-                        <a class="nav-link" href="{{ 'approved' }}">
+                        <a class="link" href="{{ 'approved' }}">
                             <div class="card-body">
                                 <div class="image-wrapper">
                                     <img src="{{ asset('images/H3.png') }}"alt="apprvdleave" class="card-image">
@@ -131,7 +132,7 @@
 
                     <!-- Rejected Leaves -->
                     <div class="card shadow-sm bg-danger-custom text-white">
-                        <a class="nav-link" href="{{ 'rejected' }}">
+                        <a class="link" href="{{ 'rejected' }}">
                             <div class="card-body">
                                 <div class="image-wrapper">
                                     <img src="{{ asset('images/H4.png') }}" alt="rejleave" class="card-image">
@@ -144,7 +145,7 @@
 
                     <!-- Staff Attendance -->
                     <div class="card shadow-sm bg-purple-custom text-white">
-                        <a class="nav-link" href="{{ 'payrolls' }}">
+                        <a class="link" href="{{ 'payrolls' }}">
                             <div class="card-body">
                                 <div class="image-wrapper">
                                     <img src="{{ asset('images/H5.png') }}" alt="payroll"class="card-image">
@@ -156,7 +157,7 @@
 
                     <!-- Payroll -->
                     <div class="card shadow-sm bg-magenta text-white">
-                        <a class="nav-link" href="{{ 'attendances' }}">
+                        <a class="link" href="{{ 'attendances' }}">
                             <div class="card-body">
                                 <div class="image-wrapper">
                                     <img src="{{ asset('images/H4.png') }}" alt="attendance" class="card-image">

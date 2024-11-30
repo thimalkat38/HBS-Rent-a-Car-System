@@ -20,17 +20,18 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             <div class="header-title">HBS Car Rental Management System</div>
-            <div>
-                <form method="POST" action="{{ route('logout') }}">
+            <div class="card1">
+            <div class="card1-content">  
+                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
                     @csrf
-
                     <x-responsive-nav-link :href="route('logout')"
                         onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                        {{ __('LogOut') }}
                     </x-responsive-nav-link>
                 </form>
             </div>
+        </div>
         </div>
 
         <!-- Main Content -->
@@ -89,11 +90,10 @@
             <div class="table content">
                 <div class="card1">
                     <div class="card1-content">
-                        <a href="{{ route('hrmanagement') }}" class="btn btn-secondary">Back</a>
-
+                    <a href="{{ route('hrmanagement') }}" class="btn-submit">Back</a>
                         <div class="card1-submit-container">
-                            <a class="nav-link" href="{{ url('leaves/create') }}">
-                                <button type="submit" class="card1-btn-submit">Leave Request</button></a>
+                            <a class="link" href="{{ url('leaves/create') }}">
+                                <button type="submit" class="btn-search">Leave Request</button></a>
                         </div>
                     </div>
                 </div>
@@ -127,7 +127,7 @@
                                         method="POST" style="display:inline;">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="btn-accept" id="accept-btn"
+                                        <button type="submit" class="btn-edit" id="accept-btn"
                                             onclick="disableOtherButton('reject-btn')">Accept</button>
                                     </form>
 
@@ -136,7 +136,7 @@
                                         method="POST" style="display:inline;">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="btn-reject" id="reject-btn"
+                                        <button type="submit" class="btn-delete" id="reject-btn"
                                             onclick="disableOtherButton('accept-btn')">Reject</button>
                                     </form>
 
@@ -144,7 +144,7 @@
                                         style="display:inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn-delete"
+                                        <button type="submit" class="btn-delete1"
                                             onclick="return confirm('Are you sure you want to delete this leave?')">Delete</button>
                                     </form>
                                 </td>
