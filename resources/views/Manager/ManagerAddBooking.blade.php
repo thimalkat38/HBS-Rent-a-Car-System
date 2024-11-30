@@ -5,9 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HBS Car Rental Management System</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <!-- Google Fonts for Oxanium -->
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
 </head>
@@ -19,7 +20,7 @@
             <div class="logo-section">
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
-            <div class="header-title">HBS Car Rental Management System</div>
+            <div class="header-title">HBS RENT A CAR</div>
             <div class="card1">
             <div class="card1-content">  
                 <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
@@ -73,19 +74,19 @@
                                 src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link" href="#"><img src="{{ asset('images/6.png') }}" alt="CRM"
-                                class="nav-icon"> CRM (under development...)</a>
+                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}" alt="CRM"
+                                class="nav-icon"> CRM</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link" href="{{ route('inventory.index') }}">
                             <img src="{{ asset('images/7.png') }}" alt="Inventory" class="nav-icon">
-                            INVENTORY (under development...)
+                            INVENTORY
                         </a>
                     </div>  
-                    <div class="nav-item">
+                    {{-- <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
-                                class="nav-icon"> ACCOUNTING (under development...)</a>
-                    </div>
+                                class="nav-icon"> ACCOUNTING</a>
+                    </div> --}}
                 </nav>
             </div>
 
@@ -116,7 +117,7 @@
 
                         <div class="form-row">
                             <input type="text" id="vehicle_number" name="vehicle_number" list="vehicle_numbers"
-                                class="block w-full mt-1" placeholder="Enter vehicle number" required>
+                                class="block w-full mt-1" placeholder="Enter vehicle number" maxlength="8" oninput="formatVehicleNumber(this)" required>
                             <datalist id="vehicle_numbers">
                                 <!-- Options will be populated dynamically using JavaScript -->
                             </datalist>
@@ -359,7 +360,18 @@
             .on('input change', calculateTotalPriceAndDays);
     });
 </script>
-
+<script>
+    function formatVehicleNumber(input) {
+        // Remove all characters that are not uppercase letters, digits, or "-"
+        input.value = input.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+        
+        // Ensure it follows the pattern "AAA-1234"
+        const match = input.value.match(/^([A-Z]{0,3})(-?)([0-9]{0,4})$/);
+        if (match) {
+            input.value = (match[1] || '') + (match[3] ? '-' + match[3] : '');
+        }
+    }
+    </script>
 
     <style>
         #customer-list {

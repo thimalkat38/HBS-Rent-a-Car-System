@@ -5,9 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HBS Car Rental Management System</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+    <!-- Google Fonts for Oxanium -->
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
-
 </head>
 
 <body>
@@ -17,7 +20,7 @@
             <div class="logo-section">
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
-            <div class="header-title">HBS Car Rental Management System</div>
+            <div class="header-title">HBS RENT A CAR</div>
             <div class="card1">
             <div class="card1-content">  
                 <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
@@ -70,19 +73,19 @@
                                 src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link" href="#"><img src="{{ asset('images/6.png') }}" alt="CRM"
-                                class="nav-icon"> CRM (under development...)</a>
+                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}" alt="CRM"
+                                class="nav-icon"> CRM</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link" href="{{ route('inventory.index') }}">
                             <img src="{{ asset('images/7.png') }}" alt="Inventory" class="nav-icon">
-                            INVENTORY (under development...)
+                            INVENTORY
                         </a>
                     </div>
-                    <div class="nav-item">
+                    {{-- <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> ACCOUNTING (under development...)</a>
-                    </div>
+                    </div> --}}
                 </nav>
             </div>
 
@@ -90,6 +93,11 @@
             <div class="card1">
                     <div class="card1-content">
                     <a href="{{ route('hrmanagement') }}" class="btn-submit">Back</a>
+                    </div>
+                </div>
+                <div class="card1">
+                    <div class="card1-content">
+                    <a href="{{ route('attendances.create') }}" class="btn-submit">Add Attendance</a>
                     </div>
                 </div>
 
@@ -119,7 +127,7 @@
                         <th>Employee Name</th>
                         <th>Date</th>
                         <th>Type</th>
-                        <th>Actions</th>
+                        {{-- <th>Actions</th> --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -130,7 +138,7 @@
                             <td>{{ $attendance->emp_name }}</td>
                             <td>{{ $attendance->date }}</td>
                             <td>{{ $attendance->type }}</td>
-                            <td>
+                            {{-- <td>
                                 <a href="{{ route('attendances.edit', $attendance->id) }}"
                                     class="btn btn-warning btn-sm">Edit</a>
                                 <form action="{{ route('attendances.destroy', $attendance->id) }}" method="POST"
@@ -140,7 +148,7 @@
                                     <button type="submit" class="btn btn-danger btn-sm"
                                         onclick="return confirm('Are you sure you want to delete this record?')">Delete</button>
                                 </form>
-                            </td>
+                            </td> --}}
                         </tr>
                     @endforeach
                 </tbody>
