@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBS Car Rental Management System</title>
-    <!-- Google Fonts for Oxanium -->
-    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>HBS Car Rental Management System</title>
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+        <!-- Google Fonts for Oxanium -->
+        <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
+    </head>
 <body>
     <div class="container">
         <!-- Header -->
@@ -16,7 +18,7 @@
             <div class="logo-section">
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
-            <div class="header-title">HBS Car Rental Management System</div>
+            <div class="header-title">HBS RENT A CAR</div>
             <div class="card1">
             <div class="card1-content">  
                 <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
@@ -78,10 +80,10 @@
                     INVENTORY 
                 </a>
             </div>                    
-            <div class="nav-item">
+            {{-- <div class="nav-item">
                 <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                         class="nav-icon"> ACCOUNTING (under development...)</a>
-            </div>
+            </div> --}}
         </nav>
     </div>
 

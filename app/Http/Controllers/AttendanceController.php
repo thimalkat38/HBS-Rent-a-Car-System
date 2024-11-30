@@ -30,7 +30,7 @@ class AttendanceController extends Controller
     // Show the form for creating a new attendance record
     public function create()
     {
-        return view('attendances.create');
+        return view('Manager.AddAttendance');
     }
 
     // Store a newly created attendance record

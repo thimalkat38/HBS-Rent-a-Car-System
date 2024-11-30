@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CustomerController;
@@ -13,8 +15,8 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CrmController;
 
 
-// use App\Models\Customer;
-use Illuminate\Support\Facades\Route;
+
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -42,23 +44,12 @@ Route::middleware(['manager'])->get('manager/dashboard', [HomeController::class,
 
 
 
-// Display a listing of all customers
+// Customer Control CRUD Routes
 Route::middleware(['manager'])->get('/customers', [CustomerController::class, 'index'])->name('customers.index');
-
-// Show the form for creating a new customer
 Route::middleware(['manager'])->get('/customers/create', [CustomerController::class, 'create'])->name('customers.create');
-
-// Store a newly created customer in the database
 Route::middleware(['manager'])->post('/customers', [CustomerController::class, 'store'])->name('customers.store');
-
-
-// Show the form for editing the specified customer
 Route::middleware(['manager'])->get('/customers/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
-
-// Update the specified customer in the database
 Route::middleware(['manager'])->put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
-
-// Remove the specified customer from the database
 Route::middleware(['manager'])->delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
 
 
@@ -66,9 +57,8 @@ Route::middleware(['manager'])->delete('/customers/{customer}', [CustomerControl
 
 
 
-// Route::get('/addvehicle', [VehicleController::class, 'create'])->name('addvehicle');
+// Vehicle Control CRUD Routes
 Route::middleware(['manager'])->get('/addvehicle', [VehicleController::class, 'create'])->name('addvehicle');
-
 Route::middleware(['manager'])->post('manager/addvehicle', [VehicleController::class, 'store'])->name('manager.storevehicle');
 Route::middleware(['manager'])->get('/manager/vehicles', [VehicleController::class, 'index'])->name('vehicles.index');
 Route::middleware(['manager'])->post('manager/vehicles', [VehicleController::class, 'store'])->name('vehicles.store');
@@ -83,7 +73,7 @@ Route::middleware(['manager'])->get('vehicles/{id}', [VehicleController::class, 
 
 
 
-// CRUD routes for Bookings
+// Booking Control CRUD Routes
 Route::middleware(['manager'])->get('bookings', [BookingController::class, 'index'])->name('bookings.index'); // List all bookings
 Route::middleware(['manager'])->get('bookings/create', [BookingController::class, 'create'])->name('bookings.create'); // Show form to create a booking
 Route::middleware(['manager'])->post('bookings', [BookingController::class, 'store'])->name('bookings.store'); // Store new booking
@@ -91,17 +81,17 @@ Route::middleware(['manager'])->get('bookings/{booking}/edit', [BookingControlle
 Route::middleware(['manager'])->put('bookings/{booking}', [BookingController::class, 'update'])->name('bookings.update'); // Update booking
 Route::middleware(['manager'])->delete('bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy'); // Delete booking
 Route::middleware(['manager'])->get('/bookings/{id}', [BookingController::class, 'show'])->name('bookings.show');
-Route::get('/manager/dashboard', [BookingController::class, 'calendarView'])->name('manager.dashboard');
+Route::middleware(['manager'])->get('/manager/dashboard', [BookingController::class, 'calendarView'])->name('manager.dashboard');
 
 
 
-
+//Other functionality routes
 Route::middleware(['manager'])->get('/vehicles/search', [VehicleController::class, 'search'])->name('vehicles.search');
 Route::middleware(['manager'])->get('/vehicles/get-details/{vehicle_number}', [VehicleController::class, 'getDetails'])->name('vehicles.getDetails');
 Route::middleware(['manager'])->get('/customers/search', [CustomerController::class, 'search']);
 Route::middleware(['manager'])->get('customers/{id}', [CustomerController::class, 'show'])->name('Customer.show');
 Route::middleware(['manager'])->get('/customers/get-details/{id}', [CustomerController::class, 'getCustomerDetails']);
-Route::get('/get-vehicle-models', [VehicleController::class, 'getVehicleModels'])->name('getVehicleModels');
+Route::middleware(['manager'])->get('/get-vehicle-models', [VehicleController::class, 'getVehicleModels'])->name('getVehicleModels');
 
 
 
@@ -111,7 +101,7 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::middleware(['admin'])->get('admin/dashboard', [HomeController::class,'adminDash']);
+Route::middleware(['admin'])->get('admin/dashboard', [HomeController::class, 'adminDash']);
 
 
 
@@ -119,55 +109,46 @@ Route::middleware(['admin'])->get('admin/dashboard', [HomeController::class,'adm
 
 
 
-
-Route::get('inventory', [InventoryController::class, 'index'])->name('inventory.index'); // Display all inventory items
-Route::get('inventory/create', [InventoryController::class, 'create'])->name('inventory.create'); // Show form to create a new item
-Route::post('inventory', [InventoryController::class, 'store'])->name('inventory.store'); // Store a new item
-Route::get('inventory/{id}/edit', [InventoryController::class, 'edit'])->name('inventory.edit'); // Show form to edit an existing item
-Route::put('inventory/{id}', [InventoryController::class, 'update'])->name('inventory.update'); // Update an existing item
-Route::delete('inventory/{id}', [InventoryController::class, 'destroy'])->name('inventory.destroy'); // Delete an item
-
-
-
-Route::get('hr-management', function () { return view('Manager.HRManagment');})->name('hrmanagement');
-// Route::get('addemp', function () { return view('Manager.AddEmp');})->name('addemp');
-// Route::get('emp', function () { return view('Manager.ManagerEmployees');})->name('emp');
-// Route::get('leavereq', function () { return view('Manager.LeaveRequest');})->name('leavereq');
-// Route::get('addleavereq', function () { return view('Manager.AddLeaveReq');})->name('addleavereq');
-// Route::get('approvedleave', function () { return view('Manager.ApprovedLeaves');})->name('approvedleave');
-// Route::get('rejectedleave', function () { return view('Manager.RejectedLeaves');})->name('rejectedleave');
-// Route::get('payroll', function () { return view('Manager.Payroll');})->name('payroll');
-// Route::get('addpayroll', function () { return view('Manager.AddPayroll');})->name('addpayroll');
-Route::get('attendance', function () { return view('Manager.Attendance');})->name('attendance');
-Route::get('addattendance', function () { return view('Manager.AddAttendance');})->name('addattendance');
-Route::get('crm', function () { return view('Manager.CRM');})->name('crm');
-Route::get('addcrm', function () { return view('Manager.AddCRM');})->name('addcrm');
+// Inventory Control CRUD Routes
+Route::middleware(['manager'])->get('inventory', [InventoryController::class, 'index'])->name('inventory.index'); // Display all inventory items
+Route::middleware(['manager'])->get('inventory/create', [InventoryController::class, 'create'])->name('inventory.create'); // Show form to create a new item
+Route::middleware(['manager'])->post('inventory', [InventoryController::class, 'store'])->name('inventory.store'); // Store a new item
+Route::middleware(['manager'])->get('inventory/{id}/edit', [InventoryController::class, 'edit'])->name('inventory.edit'); // Show form to edit an existing item
+Route::middleware(['manager'])->put('inventory/{id}', [InventoryController::class, 'update'])->name('inventory.update'); // Update an existing item
+Route::middleware(['manager'])->delete('inventory/{id}', [InventoryController::class, 'destroy'])->name('inventory.destroy'); // Delete an item
 
 
 
-Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
-Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
-Route::post('/employees/store', [EmployeeController::class, 'store'])->name('employees.store');
-Route::get('/employees/{id}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
-Route::put('employees/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
-Route::delete('/employees/{id}/delete', [EmployeeController::class, 'destroy'])->name('employees.destroy');
-Route::get('/employees/search', [EmployeeController::class, 'search'])->name('employees.search');
+Route::middleware(['manager'])->get('hr-management', function () {
+    return view('Manager.HRManagment');
+})->name('hrmanagement');
+
+
+
+// Employee Control CRUD Routes
+Route::middleware(['manager'])->get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+Route::middleware(['manager'])->get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
+Route::middleware(['manager'])->post('/employees/store', [EmployeeController::class, 'store'])->name('employees.store');
+Route::middleware(['manager'])->get('/employees/{id}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
+Route::middleware(['manager'])->put('employees/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
+Route::middleware(['manager'])->delete('/employees/{id}/delete', [EmployeeController::class, 'destroy'])->name('employees.destroy');
+Route::middleware(['manager'])->get('/employees/search', [EmployeeController::class, 'search'])->name('employees.search');
 
 
 
 
 
-// leave Routes
-Route::get('/leaves', [LeaveController::class, 'index'])->name('leaves.index');
-Route::get('/leaves/create', [LeaveController::class, 'create'])->name('leaves.create');
-Route::post('/leaves', [LeaveController::class, 'store'])->name('leaves.store');
-Route::get('/leaves/{id}', [LeaveController::class, 'show'])->name('leaves.show');
-Route::get('/leaves/{id}/edit', [LeaveController::class, 'edit'])->name('leaves.edit');
-Route::put('/leaves/{id}', [LeaveController::class, 'update'])->name('leaves.update');
-Route::delete('/leaves/{id}', [LeaveController::class, 'destroy'])->name('leaves.destroy');
-Route::patch('/leaves/{id}/status/{status}', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
-Route::get('approved', [LeaveController::class, 'showApprovedLeaves'])->name('leaves.approved');
-Route::get('rejected', [LeaveController::class, 'showRejectededLeaves'])->name('leaves.rejected');
+// Leave Control CRUD Routes
+Route::middleware(['manager'])->get('/leaves', [LeaveController::class, 'index'])->name('leaves.index');
+Route::middleware(['manager'])->get('/leaves/create', [LeaveController::class, 'create'])->name('leaves.create');
+Route::middleware(['manager'])->post('/leaves', [LeaveController::class, 'store'])->name('leaves.store');
+Route::middleware(['manager'])->get('/leaves/{id}', [LeaveController::class, 'show'])->name('leaves.show');
+Route::middleware(['manager'])->get('/leaves/{id}/edit', [LeaveController::class, 'edit'])->name('leaves.edit');
+Route::middleware(['manager'])->put('/leaves/{id}', [LeaveController::class, 'update'])->name('leaves.update');
+Route::middleware(['manager'])->delete('/leaves/{id}', [LeaveController::class, 'destroy'])->name('leaves.destroy');
+Route::middleware(['manager'])->patch('/leaves/{id}/status/{status}', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
+Route::middleware(['manager'])->get('approved', [LeaveController::class, 'showApprovedLeaves'])->name('leaves.approved');
+Route::middleware(['manager'])->get('rejected', [LeaveController::class, 'showRejectededLeaves'])->name('leaves.rejected');
 
 
 
@@ -175,78 +156,35 @@ Route::get('rejected', [LeaveController::class, 'showRejectededLeaves'])->name('
 
 
 
-//Payroll routes
-Route::get('/payrolls', [PayrollController::class, 'index'])->name('payrolls.index');
-Route::get('/payrolls/create', [PayrollController::class, 'create'])->name('payrolls.create');
-Route::post('/payrolls', [PayrollController::class, 'store'])->name('payrolls.store');
-Route::get('/payrolls/{id}', [PayrollController::class, 'show'])->name('payrolls.show');
-Route::get('/payrolls/{id}/edit', [PayrollController::class, 'edit'])->name('payrolls.edit');
-Route::put('/payrolls/{id}', [PayrollController::class, 'update'])->name('payrolls.update');
-Route::delete('/payrolls/{id}', [PayrollController::class, 'destroy'])->name('payrolls.destroy');
-
-
-//Attendances Routes
-
-
-Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index'); // List all records
-Route::get('/attendances/create', [AttendanceController::class, 'create'])->name('attendances.create'); // Show form
-Route::post('/attendances', [AttendanceController::class, 'store'])->name('attendances.store'); // Store data
-Route::get('/attendances/{id}/edit', [AttendanceController::class, 'edit'])->name('attendances.edit'); // Edit form
-Route::put('/attendances/{id}', [AttendanceController::class, 'update'])->name('attendances.update'); // Update data
-Route::delete('/attendances/{id}', [AttendanceController::class, 'destroy'])->name('attendances.destroy'); // Delete data
+// Payroll Control CRUD Routes
+Route::middleware(['manager'])->get('/payrolls', [PayrollController::class, 'index'])->name('payrolls.index');
+Route::middleware(['manager'])->get('/payrolls/create', [PayrollController::class, 'create'])->name('payrolls.create');
+Route::middleware(['manager'])->post('/payrolls', [PayrollController::class, 'store'])->name('payrolls.store');
+Route::middleware(['manager'])->get('/payrolls/{id}', [PayrollController::class, 'show'])->name('payrolls.show');
+Route::middleware(['manager'])->get('/payrolls/{id}/edit', [PayrollController::class, 'edit'])->name('payrolls.edit');
+Route::middleware(['manager'])->put('/payrolls/{id}', [PayrollController::class, 'update'])->name('payrolls.update');
+Route::middleware(['manager'])->delete('/payrolls/{id}', [PayrollController::class, 'destroy'])->name('payrolls.destroy');
 
 
 
-
-
-// Display a list of all CRM entries
-Route::get('/crms', [CrmController::class, 'index'])->name('crms.index');
-Route::get('/crms/create', [CrmController::class, 'create'])->name('crms.create');
-Route::post('/crms', [CrmController::class, 'store'])->name('crms.store');
-Route::get('/crms/{crm}', [CrmController::class, 'show'])->name('crms.show');
-Route::get('/crms/{crm}/edit', [CrmController::class, 'edit'])->name('crms.edit');
-Route::put('/crms/{crm}', [CrmController::class, 'update'])->name('crms.update');
-Route::delete('/crms/{crm}', [CrmController::class, 'destroy'])->name('crms.destroy');
-Route::get('/crms', [CrmController::class, 'upcomingSchedule'])->name('crms.upcoming');
+// Attendances Control CRUD Routes
+Route::middleware(['manager'])->get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index'); // List all records
+Route::middleware(['manager'])->get('/attendances/create', [AttendanceController::class, 'create'])->name('attendances.create'); // Show form
+Route::middleware(['manager'])->post('/attendances', [AttendanceController::class, 'store'])->name('attendances.store'); // Store data
+Route::middleware(['manager'])->get('/attendances/{id}/edit', [AttendanceController::class, 'edit'])->name('attendances.edit'); // Edit form
+Route::middleware(['manager'])->put('/attendances/{id}', [AttendanceController::class, 'update'])->name('attendances.update'); // Update data
+Route::middleware(['manager'])->delete('/attendances/{id}', [AttendanceController::class, 'destroy'])->name('attendances.destroy'); // Delete data
 
 
 
 
 
-
-
-
-
-
-//Other routes
-
-
-// Admin routes (with 'auth' and 'admin' middleware)
-// Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-//     Route::get('/dashboard', [HomeController::class,'adminDash']);
-//     Route::get('/addvehicle', [HomeController::class,'adminaddvehi']);
-//     Route::get('/vehicles', [HomeController::class,'adminvehi']);
-//     Route::get('/addbook', [HomeController::class,'adminaddbook']);
-//     // Route::get('/books', [HomeController::class,'adminbook']);
-//     Route::get('/addcus', [HomeController::class,'adminaddcus']);
-//     Route::get('/cus', [HomeController::class,'admincus']);
-//     Route::get('/addemp', [HomeController::class,'adminaddemp']);
-//     Route::get('/emp', [HomeController::class,'adminemp']);
-// });
-
-
-// Manager routes (with 'auth' and 'manager' middleware)
-// Route::get('/books', [HomeController::class,'managerbook']);
-// Route::get('/addcus', [HomeController::class,'manageraddcus']);
-// Route::get('/addemp', [HomeController::class,'manageraddemp']);
-// Route::get('/emp', [HomeController::class,'manageremp']);
-// Route::get('/addvehicle', [HomeController::class,'manageraddvehi']);
-// Route::get('/vehicles', [HomeController::class,'managervehi'])
-// Route::get('/cus', [HomeController::class,'managercus']);
-
-// Customer resource routes
-// Route::resource('customers', CustomerController::class);
-
-
-// Display the specified customer
-// Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
+// CRMs Control CRUD Routes
+Route::middleware(['manager'])->get('/crms', [CrmController::class, 'index'])->name('crms.index');
+Route::middleware(['manager'])->get('/crms/create', [CrmController::class, 'create'])->name('crms.create');
+Route::middleware(['manager'])->post('/crms', [CrmController::class, 'store'])->name('crms.store');
+Route::middleware(['manager'])->get('/crms/{crm}', [CrmController::class, 'show'])->name('crms.show');
+Route::middleware(['manager'])->get('/crms/{crm}/edit', [CrmController::class, 'edit'])->name('crms.edit');
+Route::middleware(['manager'])->put('/crms/{crm}', [CrmController::class, 'update'])->name('crms.update');
+Route::middleware(['manager'])->delete('/crms/{crm}', [CrmController::class, 'destroy'])->name('crms.destroy');
+Route::middleware(['manager'])->get('/crms', [CrmController::class, 'upcomingSchedule'])->name('crms.upcoming');
