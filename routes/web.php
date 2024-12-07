@@ -13,10 +13,7 @@ use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CrmController;
-
-
-
-
+use App\Models\Employee;
 
 Route::get('/', function () {
     return view('welcome');
@@ -86,7 +83,7 @@ Route::middleware(['manager'])->get('/manager/dashboard', [BookingController::cl
 
 
 //Other functionality routes
-Route::middleware(['manager'])->get('/vehicles/search', [VehicleController::class, 'search'])->name('vehicles.search');
+// Route::middleware(['manager'])->get('/vehicles/search', [VehicleController::class, 'search'])->name('vehicles.search');
 Route::middleware(['manager'])->get('/vehicles/get-details/{vehicle_number}', [VehicleController::class, 'getDetails'])->name('vehicles.getDetails');
 Route::middleware(['manager'])->get('/customers/search', [CustomerController::class, 'search']);
 Route::middleware(['manager'])->get('customers/{id}', [CustomerController::class, 'show'])->name('Customer.show');
@@ -133,6 +130,8 @@ Route::middleware(['manager'])->get('/employees/{id}/edit', [EmployeeController:
 Route::middleware(['manager'])->put('employees/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
 Route::middleware(['manager'])->delete('/employees/{id}/delete', [EmployeeController::class, 'destroy'])->name('employees.destroy');
 Route::middleware(['manager'])->get('/employees/search', [EmployeeController::class, 'search'])->name('employees.search');
+Route::middleware(['manager'])->get('employees/{id}', [EmployeeController::class, 'show'])->name('Employee.show');
+
 
 
 
@@ -188,3 +187,6 @@ Route::middleware(['manager'])->get('/crms/{crm}/edit', [CrmController::class, '
 Route::middleware(['manager'])->put('/crms/{crm}', [CrmController::class, 'update'])->name('crms.update');
 Route::middleware(['manager'])->delete('/crms/{crm}', [CrmController::class, 'destroy'])->name('crms.destroy');
 Route::middleware(['manager'])->get('/crms', [CrmController::class, 'upcomingSchedule'])->name('crms.upcoming');
+
+
+Route::get('manager/vehicles', [VehicleController::class, 'search'])->name('vehicles.search');

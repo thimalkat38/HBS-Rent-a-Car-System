@@ -15,15 +15,16 @@ class VehicleController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-
+    
         if ($search) {
-            $vehicles = Vehicle::where('vehicle_number', 'LIKE', "%{$search}%")->paginate(10);
+            $vehicles = Vehicle::where('vehicle_number', 'LIKE', "%{$search}%")->get();
         } else {
-            $vehicles = Vehicle::paginate(10);
+            $vehicles = Vehicle::all();
         }
-
+    
         return view('Manager.ManagerVehicles', compact('vehicles', 'search'));
     }
+    
 
     public function show($id)
     {
@@ -35,7 +36,7 @@ class VehicleController extends Controller
         }
 
         // Pass the customer data to the view
-        return view('Manager.Detailedvehicle', compact('vehicle'));    }
+        return view('Manager.DetailedVehicle', compact('vehicle'));    }
 
     /**
      * Show the form for creating a new vehicle.
@@ -208,12 +209,40 @@ class VehicleController extends Controller
         return response()->json(['message' => 'Vehicle not found'], 404);
     }
 
-    public function search(Request $request)
+    public function search(Request $request) 
     {
-        $query = $request->input('query');
-        $vehicles = Vehicle::where('vehicle_name', 'LIKE', "%{$query}%")->pluck('vehicle_number');
-        return response()->json($vehicles);
+        $query = Vehicle::query();
+    
+        if ($request->filled('vehicle_number')) {
+            $query->where('vehicle_number', 'LIKE', "%{$request->vehicle_number}%");
+        }
+    
+        if ($request->filled('vehicle_name')) {
+            $query->where('vehicle_name', 'LIKE', "%{$request->vehicle_name}%");
+        }
+    
+        if ($request->filled('fuel_type')) {
+            $query->where('fuel_type', $request->fuel_type);
+        }
+    
+        if ($request->filled('id_range')) {
+            $idRange = $request->id_range;
+            if ($idRange === '50+') {
+                $query->where('id', '>', 50);
+            } else {
+                [$start, $end] = explode('-', $idRange);
+                $query->whereBetween('id', [(int)$start, (int)$end]);
+            }
+        }
+    
+        // Retrieve matching vehicles
+        $vehicles = $query->get();
+    
+        // Pass results to the view
+        return view('Manager.ManagerVehicles', compact('vehicles'));
     }
+    
+    
 
     public function getVehicleModels(Request $request)
 {

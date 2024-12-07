@@ -110,16 +110,14 @@
                             <th>NIC</th>
                             <th>ADDRESS</th>
                             <th>Actions</th>
-
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($employees as $employee)
-                            <tr>
+                            <tr onclick="window.location='{{ route('Employee.show', $employee->id) }}'" style="cursor: pointer;">
                                 <td>
                                     @if (!empty($employee->photo) && isset($employee->photo[0]))
-                                        <img src="{{ asset('storage/' . $employee->photo[0]) }}" alt="emp Image"
-                                            style="width: 100px; height: auto;">
+                                        <img src="{{ asset('storage/' . $employee->photo[0]) }}" alt="emp Image" style="width: 100px; height: auto;">
                                     @else
                                         No Image Available
                                     @endif
@@ -136,12 +134,10 @@
                                 </td>
                                 <td class="button-cell">
                                     <a href="{{ route('employees.edit', $employee->id) }}" class="btn-edit">Edit</a>
-                                    <form action="{{ route('employees.destroy', $employee->id) }}" method="POST"
-                                        style="display:inline;">
+                                    <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn-delete"
-                                            onclick="return confirm('Are you sure you want to delete this vehicle?')">Delete</button>
+                                        <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this employee?')">Delete</button>
                                     </form>
                                 </td>
                             </tr>
@@ -152,7 +148,7 @@
                         @endforelse
                     </tbody>
                 </table>
-            </div>
+                           </div>
         </div>
 </div>
         <!-- Footer -->

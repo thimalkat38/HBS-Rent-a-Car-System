@@ -25,7 +25,7 @@ class PayrollController extends Controller
         // Sort by the most recent payrolls
         $payrolls = $query->orderBy('created_at', 'desc')->get();
     
-        return view('Manager.payroll', compact('payrolls'));
+        return view('Manager.Payroll', compact('payrolls'));
     }
     
     
