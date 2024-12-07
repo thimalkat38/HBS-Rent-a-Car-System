@@ -17,15 +17,19 @@ class Employee extends Model
         'age',
         'nic',
         'mobile_number',
+        'acc_number',
+        'bank',
         'join_date',
         'email',
         'address',
         'remaining_leaves',
         'photo',
+        'doc_photos',
 
     ];
 
     protected $casts = [
         'photo' => 'array',
+        'doc_photos' => 'array',
     ];
 }

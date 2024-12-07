@@ -12,12 +12,11 @@ class CustomerController extends Controller
     {
         $search = $request->input('search');
 
-        // If a search query exists, filter customers by V/NUMBER
+        // If a search query exists, filter customers by NIC
         if ($search) {
-            $customers = customer::where('nic', 'LIKE', "%{$search}%")->get();
+            $customers = Customer::where('nic', 'LIKE', "%{$search}%")->get();
         } else {
-            // If no search query, return all customers
-            $customers = customer::all();
+            $customers = Customer::all();
         }
 
         return view('Manager.ManagerCustomers', compact('customers'));
@@ -36,39 +35,35 @@ class CustomerController extends Controller
             'title' => 'required|string|max:10',
             'full_name' => 'required|string|max:255',
             'phone' => 'required|numeric|digits_between:10,15',
-            'email' => 'required|email|max:255',
+            'email' => 'nullable|email|max:255', // Make email optional
             'nic' => 'required|string|max:12|unique:customers,nic',
             'address' => 'required|string|max:255',
-            'nic_photos.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Validate images
+            'nic_photos.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'dl_photos.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-    
+
         $nicPhotos = [];
         $dlPhotos = [];
-    
-        // Handle NIC photos
+
         if ($request->hasFile('nic_photos')) {
             foreach ($request->file('nic_photos') as $file) {
-                $nicPhotos[] = $file->store('uploads/nic_photos', 'public'); // Store in `storage/app/public`
+                $nicPhotos[] = $file->store('uploads/nic_photos', 'public');
             }
         }
-    
-        // Handle DL photos
+
         if ($request->hasFile('dl_photos')) {
             foreach ($request->file('dl_photos') as $file) {
-                $dlPhotos[] = $file->store('uploads/dl_photos', 'public'); // Store in `storage/app/public`
+                $dlPhotos[] = $file->store('uploads/dl_photos', 'public');
             }
         }
-    
-        // Convert arrays to JSON strings before saving
-        $validated['nic_photos'] = $nicPhotos; // Store as array
-        $validated['dl_photos'] = $dlPhotos; // Store as array
-    
+
+        $validated['nic_photos'] = $nicPhotos;
+        $validated['dl_photos'] = $dlPhotos;
+
         Customer::create($validated);
-    
+
         return redirect()->route('customers.index')->with('success', 'Customer added successfully.');
     }
-        
 
     // Show the form for editing the specified customer
     public function edit(Customer $customer)
@@ -83,12 +78,13 @@ class CustomerController extends Controller
             'title' => 'required|string|max:10',
             'full_name' => 'required|string|max:255',
             'phone' => 'required|numeric|digits_between:10,15',
-            'email' => 'required|email|max:255',
+            'email' => 'nullable|email|max:255', // Make email optional
             'nic' => 'required|string|max:12|unique:customers,nic,' . $customer->id,
             'address' => 'required|string|max:255',
         ]);
 
         $customer->update($validated);
+
         return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
     }
 
@@ -96,49 +92,43 @@ class CustomerController extends Controller
     public function destroy(Customer $customer)
     {
         $customer->delete();
+
         return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
     }
-
 
     public function search(Request $request)
     {
         $query = $request->input('query');
 
-        // Search for customers whose full name contains the query string
         $customers = Customer::where('full_name', 'LIKE', "%{$query}%")->get();
 
-        // Return only the necessary fields (full_name)
         return response()->json($customers);
     }
-
-
 
     public function show($id)
     {
         $customer = Customer::find($id);
 
         if (!$customer) {
-            // Redirect or handle the error if the customer is not found
             return redirect()->route('customers.index')->with('error', 'Customer not found.');
         }
 
-        // Pass the customer data to the view
-        return view('Manager.DetailedCustomer', compact('customer'));    }
+        return view('Manager.DetailedCustomer', compact('customer'));
+    }
 
     public function getCustomerDetails($id)
-{
-    $customer = Customer::find($id);
+    {
+        $customer = Customer::find($id);
 
-    if ($customer) {
-        return response()->json([
-            'phone' => $customer->phone,
-            'nic' => $customer->nic
-        ]);
-    } else {
-        return response()->json([
-            'message' => 'Customer not found'
-        ], 404);
+        if ($customer) {
+            return response()->json([
+                'phone' => $customer->phone,
+                'nic' => $customer->nic,
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Customer not found',
+            ], 404);
+        }
     }
-}
-
 }

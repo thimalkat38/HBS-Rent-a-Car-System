@@ -21,7 +21,7 @@ class CrmController extends Controller
      */
     public function create()
     {
-        return view('Manager.AddCrm');
+        return view('Manager.AddCRM');
     }
 
     /**

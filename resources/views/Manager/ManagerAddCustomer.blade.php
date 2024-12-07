@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
-</head>>
+</head>
 
 <body>
     <div class="container">
@@ -118,8 +118,7 @@
                         <div class="form-row">
                             <input type="tel" id="phone" name="phone" placeholder="Mobile number"
                                 required>
-                            <input type="email" id="email" name="email" placeholder="E-mail address"
-                                required>
+                            <input type="email" id="email" name="email" placeholder="E-mail address">
                         </div>
                         <div class="form-row">
                             <input type="text" id="nic" name="nic" placeholder="NIC Number" required>

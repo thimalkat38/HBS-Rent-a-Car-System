@@ -92,20 +92,39 @@
             <div class="content">
                 <div class="card6-form-row">
                     <div class="form-section">
-                        <form action="{{ url('manager/vehicles') }}" method="GET">
+                        <form action="{{ route('vehicles.search') }}" method="GET">
                             <div class="form-row">
-                                <input type="text" name="search" placeholder="Search by V/NUMBER"
-                                    value="{{ request('search') }}">
-
-                                <div class="card1">
-                                    <div class="card1-content">
-                                        <form action="#" method="post" style="display:inline;">
-                                            <button type="submit" class="btn-search">SEARCH</button>
-                                        </form>
-                                    </div>
-                                </div>
+                                <input type="text" name="vehicle_number" placeholder="Search by V/NUMBER"
+                                    value="{{ request('vehicle_number') }}">
+                            
+                                <input type="text" name="vehicle_name" placeholder="Search by VEHICLE NAME"
+                                    value="{{ request('vehicle_name') }}">
+                            
+                                <select name="fuel_type">
+                                    <option value="">Select Fuel Type</option>
+                                    <option value="Petrol" {{ request('fuel_type') == 'Petrol' ? 'selected' : '' }}>Petrol</option>
+                                    <option value="Diesel" {{ request('fuel_type') == 'Diesel' ? 'selected' : '' }}>Diesel</option>
+                                    <option value="Electric" {{ request('fuel_type') == 'Electric' ? 'selected' : '' }}>Electric</option>
+                                </select>
+                        
+                                <!-- New ID Range Dropdown -->
+                                <select name="id_range">
+                                    <option value="">Select ID Range</option>
+                                    <option value="1-10" {{ request('id_range') == '1-10' ? 'selected' : '' }}>1-10</option>
+                                    <option value="11-20" {{ request('id_range') == '11-20' ? 'selected' : '' }}>11-20</option>
+                                    <option value="21-30" {{ request('id_range') == '21-30' ? 'selected' : '' }}>21-30</option>
+                                    <option value="31-40" {{ request('id_range') == '31-40' ? 'selected' : '' }}>31-40</option>
+                                    <option value="41-50" {{ request('id_range') == '41-50' ? 'selected' : '' }}>41-50</option>
+                                    <option value="50+" {{ request('id_range') == '50+' ? 'selected' : '' }}>50+</option>
+                                </select>
+                            
+                                <button type="submit" class="btn-search">SEARCH</button>
+                                <a href="{{ url('manager/vehicles') }}" class="btn-search">Clear</a>
                             </div>
                         </form>
+                        
+                        
+                        
                     </div>
                 </div>
 

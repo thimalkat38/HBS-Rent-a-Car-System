@@ -86,9 +86,6 @@
                     </div> --}}
                 </nav>
             </div>
-            
-            \
-
         <div class="content">
             <div class="card1">
                     <div class="card1-content">

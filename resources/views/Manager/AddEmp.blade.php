@@ -92,36 +92,111 @@
                 <div class="form-section">
                     <form action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+
+                        <!-- General Errors -->
+                        @if ($errors->any())
+                            <div class="error-container">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <div class="form-row">
-                            <select name="title" class="selection-list" required>
+                            <select name="title" class="selection-list @error('title') is-invalid @enderror" required>
                                 <option value="" disabled selected>Select Title</option>
-                                <option value="Mr">Mr</option>
-                                <option value="Mrs">Mrs</option>
+                                <option value="Mr" {{ old('title') == 'Mr' ? 'selected' : '' }}>Mr</option>
+                                <option value="Mrs" {{ old('title') == 'Mrs' ? 'selected' : '' }}>Mrs</option>
                             </select>
-                            <input type="text" name="emp_name" placeholder="Full Name" required>
-                            <input type="text" name="nic" placeholder="NIC" required>
+                            @error('title')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+
+                            <input type="text" name="emp_name" placeholder="Full Name" value="{{ old('emp_name') }}" 
+                                   class="@error('emp_name') is-invalid @enderror" required>
+                            @error('emp_name')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+
+                            <input type="text" name="nic" placeholder="NIC" value="{{ old('nic') }}" 
+                                   class="@error('nic') is-invalid @enderror" required>
+                            @error('nic')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
+
                         <div class="form-row">
-                            <input type="text" name="mobile_number" placeholder="Mobile Number" required>
-                            <input type="email" name="email" placeholder="E-mail Address" required>
-                            <input type="text" name="address" placeholder="Address" required>
+                            <input type="text" name="mobile_number" placeholder="Mobile Number" value="{{ old('mobile_number') }}" 
+                                   class="@error('mobile_number') is-invalid @enderror" required>
+                            @error('mobile_number')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                            <input type="text" name="bank" placeholder="Bank Name" value="{{ old('bank') }}" 
+                                   class="@error('bank') is-invalid @enderror" required>
+                            @error('bank')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                            <input type="text" name="acc_number" placeholder="Account Number" value="{{ old('acc_number') }}" 
+                                   class="@error('acc_number') is-invalid @enderror" required>
+                            @error('acc_number')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+
+                            <input type="email" name="email" placeholder="E-mail Address" value="{{ old('email') }}" 
+                                   class="@error('email') is-invalid @enderror" required>
+                            @error('email')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+
+                            <input type="text" name="address" placeholder="Address" value="{{ old('address') }}" 
+                                   class="@error('address') is-invalid @enderror" required>
+                            @error('address')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
+
                         <div class="form-row">
                             <label for="join_date">Join Date:</label>
-                            <input type="date" name="join_date" placeholder="Joining Date" required>
-                            <label for="birthday">Birthday:</label>
-                            <input type="date" name="birthday" id="birthday" placeholder="Birthday"
-                                max="2005-12-31">
+                            <input type="date" name="join_date" value="{{ old('join_date') }}" 
+                                   class="@error('join_date') is-invalid @enderror" required>
+                            @error('join_date')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
 
-                            <input type="number" name="remaining_leaves" placeholder="Leaves Per Month"
-                                min="0" required>
+                            <label for="birthday">Birthday:</label>
+                            <input type="date" name="birthday" id="birthday" max="2005-12-31" 
+                                   value="{{ old('birthday') }}" class="@error('birthday') is-invalid @enderror">
+                            @error('birthday')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+
+                            <input type="number" name="remaining_leaves" placeholder="Leaves Per Month" 
+                                   value="{{ old('remaining_leaves') }}" min="0" 
+                                   class="@error('remaining_leaves') is-invalid @enderror" required>
+                            @error('remaining_leaves')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
+
                         <div class="upload-section">
                             <p>Add Photo of Employee</p>
                             <input type="file" name="photo[]" accept="image/*" multiple>
+                            @error('photo')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <br>
+                        <div class="upload-section">
+                            <p>Add Documents About Employee</p>
+                            <input type="file" name="doc_photos[]" accept="image/*" multiple>
+                            @error('doc_photos')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="submit-container">
-                        <button type="submit" class="btn-submit">BACK</button>
+                            <button type="button" class="btn-submit">BACK</button>
                             <button type="submit" class="btn-submit">SUBMIT</button>
                         </div>
                     </form>
