@@ -120,13 +120,13 @@
                         <div class="form-row">
                             <input type="text" id="vehicle_number" name="vehicle_number" list="vehicle_numbers"
                                 class="block w-full mt-1" placeholder="Enter vehicle number" maxlength="8" oninput="formatVehicleNumber(this)" required>
-                            <datalist id="vehicle_numbers">
+                            {{-- <datalist id="vehicle_numbers"> --}}
                                 <!-- Options will be populated dynamically using JavaScript -->
                             </datalist>
+                            <input type="text" name="vehicle_name" id="vehicle_name" class="block w-full mt-1"
+                            placeholder="Vehicle Name" required readonly>
                             <input type="text" name="fuel_type" id="fuel_type" class="block w-full mt-1"
                                 placeholder="Fuel Type" required readonly>
-                            <input type="text" name="vehicle_name" id="vehicle_name" class="block w-full mt-1"
-                                placeholder="Vehicle Name" required readonly>
                             <input type="text" name="price_per_day" id="price_per_day" class="block w-full mt-1"
                                 placeholder="Price Per Day (LKR)" required readonly>
                         </div>
@@ -185,46 +185,26 @@
     </div>
 
     <script>
-        // Vehicle Number Fetching
-        document.getElementById('vehicle_number').addEventListener('input', function() {
-            const vehicleNumber = this.value;
-
-            if (vehicleNumber.length >= 2) {
-                fetch(`/vehicles/search?query=${vehicleNumber}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const datalist = document.getElementById('vehicle_numbers');
-                        datalist.innerHTML = '';
-
-                        data.forEach(vehicle => {
-                            const option = document.createElement('option');
-                            option.value = vehicle.vehicle_number;
-                            datalist.appendChild(option);
-                        });
-                    })
-                    .catch(error => console.error('Error fetching vehicle numbers:', error));
-            }
-        });
-
         document.getElementById('vehicle_number').addEventListener('change', function() {
-            const vehicleNumber = this.value;
+    const vehicleNumber = this.value;
 
-            fetch(`/vehicles/get-details/${vehicleNumber}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.fuel_type && data.vehicle_name && data.price_per_day) {
-                        document.getElementById('fuel_type').value = data.fuel_type;
-                        document.getElementById('vehicle_name').value = data.vehicle_name;
-                        document.getElementById('price_per_day').value = data.price_per_day;
-                    } else {
-                        alert(data.message || 'Vehicle details not found');
-                        document.getElementById('fuel_type').value = '';
-                        document.getElementById('vehicle_name').value = '';
-                        document.getElementById('price_per_day').value = '';
-                    }
-                })
-                .catch(error => console.error('Error fetching vehicle details:', error));
-        });
+    fetch(`/vehicles/get-details/${vehicleNumber}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.fuel_type && data.vehicle_name && data.vehicle_model && data.price_per_day) {
+                document.getElementById('fuel_type').value = data.fuel_type;
+                document.getElementById('vehicle_name').value = `${data.vehicle_model} ${data.vehicle_name}`;
+                document.getElementById('price_per_day').value = data.price_per_day;
+            } else {
+                alert(data.message || 'Vehicle details not found');
+                document.getElementById('fuel_type').value = '';
+                document.getElementById('vehicle_name').value = '';
+                document.getElementById('price_per_day').value = '';
+            }
+        })
+        .catch(error => console.error('Error fetching vehicle details:', error));
+});
+
     </script>
 
 <script>

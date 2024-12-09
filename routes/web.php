@@ -13,7 +13,7 @@ use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CrmController;
-use App\Models\Employee;
+// use App\Models\Employee;
 
 Route::get('/', function () {
     return view('welcome');

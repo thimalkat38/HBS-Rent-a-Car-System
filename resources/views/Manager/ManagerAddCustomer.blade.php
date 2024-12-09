@@ -116,9 +116,11 @@
                             <input type="text" id="full_name" name="full_name" placeholder="Full name" required>
                         </div>
                         <div class="form-row">
-                            <input type="tel" id="phone" name="phone" placeholder="Mobile number"
-                                required>
-                            <input type="email" id="email" name="email" placeholder="E-mail address">
+                            <input type="tel" id="phone" name="phone" placeholder="Mobile number" required>
+                            <input type="tel" id="whatsapp" name="whatsapp" placeholder="+94 71 123 4567" required 
+                            pattern="^\+\d{1,3} \d{2,3} \d{3} \d{4}$" 
+                            title="Please enter a valid phone number with country code (e.g., +94 71 123 4567)">
+                                                 <input type="email" id="email" name="email" placeholder="E-mail address">
                         </div>
                         <div class="form-row">
                             <input type="text" id="nic" name="nic" placeholder="NIC Number" required>
