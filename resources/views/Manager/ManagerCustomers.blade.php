@@ -163,7 +163,7 @@
                                     <td>{{ $customer->full_name }}</td>
                                     <td>{{ $customer->phone }}</td>
                                     <td>{{ $customer->nic }}</td>
-                                    <td>{{ $customer->email }}</td>
+                                    <td>{{ $customer->email?? 'No email exists'  }}</td>
                                     <td>{{ $customer->address }}</td>
                                     <td class="button-cell">
                                         <a href="{{ route('customers.edit', $customer->id) }}" class="btn-edit">Edit</a>

@@ -56,7 +56,8 @@
                         <h5 class="card-title text-primary mb-3">Informations</h5>
                         <p><strong>Full Name:</strong> <span id="fullName">{{ $customer->title }} {{ $customer->full_name }}</span></p>
                         <p><strong>Mobile Number:</strong> <span id="mobileNumber">{{ $customer->phone }}</span></p>
-                        <p><strong>Email Address:</strong> <span id="mobileNumber">{{ $customer->email }}</span></p>
+                        <p><strong>WhatsApp Number:</strong> <span id="whatsapp">{{ $customer->whatsapp ?? 'No Whatsapp Number exists'}}</span></p>
+                        <p><strong>Email Address:</strong> <span id="mobileNumber">{{ $customer->email ?? 'No email exists' }}</span></p>
                         <p><strong>NIC:</strong> <span id="nic">{{ $customer->nic }}</span></p>
 
                         <!-- Photos Section -->

@@ -68,9 +68,8 @@
                         <h5 class="card-title text-primary mt-3 mb-2">Booking Information</h5>
                         <p><strong>Vehicle Number:</strong> <span id="vehicleNumber">{{ $booking->vehicle_number }}</span></p>
                         <p><strong>Vehicle:</strong> <span id="vehicleModel">{{ $booking->vehicle_name }}</span></p>
-                        <p><strong>Booking Time:</strong> <span id="bookingTime">{{ $booking->booking_time }}</span></p>
-                        <p><strong>From Date:</strong> <span id="fromDate">{{ $booking->from_date }}</span></p>
-                        <p><strong>To Date:</strong> <span id="toDate">{{ $booking->to_date }}</span></p>
+                        <p><strong>From Date:</strong> <span id="fromDate">{{ $booking->from_date }} {{ $booking->booking_time }}</span></p>
+                        <p><strong>To Date:</strong> <span id="toDate">{{ $booking->to_date }} {{ $booking->arrival_time }}</span></p>
                         
                         
                         <!-- Updated Bill Information -->

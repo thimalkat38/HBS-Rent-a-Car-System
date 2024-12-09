@@ -194,20 +194,22 @@ class VehicleController extends Controller
         return redirect()->route('vehicles.index')->with('success', 'Vehicle deleted successfully!');
     }
 
-    public function getDetails($vehicle_number)
+    public function getDetails($vehicle_number) 
     {
         $vehicle = Vehicle::where('vehicle_number', $vehicle_number)->first();
-
+    
         if ($vehicle) {
             return response()->json([
                 'fuel_type' => $vehicle->fuel_type,
                 'vehicle_name' => $vehicle->vehicle_name,
+                'vehicle_model' => $vehicle->vehicle_model,
                 'price_per_day' => $vehicle->price_per_day
             ]);
         }
-
+    
         return response()->json(['message' => 'Vehicle not found'], 404);
     }
+    
 
     public function search(Request $request) 
     {

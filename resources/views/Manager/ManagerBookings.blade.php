@@ -22,17 +22,17 @@
             </div>
             <div class="header-title">HBS RENT A CAR</div>
             <div class="card1">
-            <div class="card1-content">  
-                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
-                    @csrf
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
+                <div class="card1-content">
+                    <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
+                        @csrf
+                        <x-responsive-nav-link :href="route('logout')"
+                            onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('LogOut') }}
-                    </x-responsive-nav-link>
-                </form>
+                            {{ __('LogOut') }}
+                        </x-responsive-nav-link>
+                    </form>
+                </div>
             </div>
-        </div>
         </div>
 
         <!-- Main Content -->
@@ -53,7 +53,8 @@
                         </div>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link active"><img src="{{ asset('images/3.png') }}" alt="Bookings" class="nav-icon">
+                        <a class="nav-link active"><img src="{{ asset('images/3.png') }}" alt="Bookings"
+                                class="nav-icon">
                             BOOKINGS</a>
                         <div class="dropdown-menu">
                             <a class="dropdown-link" href="{{ url('manager/addbook') }}">Book Vehicle</a>
@@ -69,19 +70,19 @@
                         </div>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link" href="{{ url('hr-management') }}"><img
-                                src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
+                        <a class="nav-link" href="{{ url('hr-management') }}"><img src="{{ asset('images/5.png') }}"
+                                alt="HRM" class="nav-icon"> HRM</a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}" alt="CRM"
-                                class="nav-icon"> CRM</a>
+                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}"
+                                alt="CRM" class="nav-icon"> CRM</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link" href="{{ route('inventory.index') }}">
                             <img src="{{ asset('images/7.png') }}" alt="Inventory" class="nav-icon">
                             INVENTORY
                         </a>
-                    </div>  
+                    </div>
                     {{-- <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> ACCOUNTING</a>
@@ -96,18 +97,26 @@
                         {{-- Search --}}
                         <form action="{{ url('bookings') }}" method="GET">
                             <div class="form-row">
-                                <input type="text" name="search" placeholder="Search by Mobile Number"
-                                    value="{{ request('search') }}">
+                                <input type="text" name="mobile_number" placeholder="Search by Mobile Number"
+                                    value="{{ request('mobile_number') }}">
+                                <input type="text" name="full_name" placeholder="Search by Full Name"
+                                    value="{{ request('full_name') }}">
+                                <input type="text" id="vehicle_number" name="vehicle_number" list="vehicle_numbers"
+                                    class="block w-full mt-1" placeholder="Enter vehicle number" maxlength="8"
+                                    oninput="formatVehicleNumber(this)" value="{{ request('vehicle_number') }}">
+                                <input type="text" name="id" placeholder="Search by ID"
+                                    value="{{ request('id') }}">
 
                                 <div class="card1">
                                     <div class="card1-content">
-                                        <form action="#" method="post" style="display:inline;">
-                                            <button type="submit" class="btn-search">SEARCH</button>
-                                        </form>
+                                        <button type="submit" class="btn-search">SEARCH</button>||
+                                        <a href="{{ url('/bookings') }}" class="btn-search">Clear</a>
                                     </div>
                                 </div>
                             </div>
                         </form>
+
+
                     </div>
                 </div>
                 <div class="table-content">
@@ -118,10 +127,10 @@
                                 <th>Full Name</th>
                                 <th>From</th>
                                 <th>To</th>
+                                <th>Vehicle</th>
                                 <th>Vehicle Number</th>
                                 <th>Mobile Number</th>
                                 <th>Additional Price</th>
-                                <th>Reason</th>
                                 <th>Discount Price</th>
                                 <th>Payed</th>
                                 <th>Balance</th>
@@ -135,10 +144,10 @@
                                     <td>{{ $booking->full_name }}</td>
                                     <td>{{ $booking->from_date }} [{{ $booking->booking_time }}]</td>
                                     <td>{{ $booking->to_date }} [{{ $booking->arrival_time }}]</td>
+                                    <td>{{ $booking->vehicle_name }}</td>
                                     <td>{{ $booking->vehicle_number }}</td>
                                     <td>{{ $booking->mobile_number }}</td>
                                     <td>{{ $booking->additional_chagers }}</td>
-                                    <td>{{ $booking->reason }}</td>
                                     <td>{{ $booking->discount_price }}</td>
                                     <td>{{ $booking->payed }}</td>
                                     <td>{{ $booking->price }}</td>
@@ -168,5 +177,17 @@
         </div>
     </div>
 </body>
+<script>
+    function formatVehicleNumber(input) {
+        // Remove all characters that are not uppercase letters, digits, or "-"
+        input.value = input.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+
+        // Ensure it follows the pattern "AAA-1234"
+        const match = input.value.match(/^([A-Z]{0,3})(-?)([0-9]{0,4})$/);
+        if (match) {
+            input.value = (match[1] || '') + (match[3] ? '-' + match[3] : '');
+        }
+    }
+</script>
 
 </html>

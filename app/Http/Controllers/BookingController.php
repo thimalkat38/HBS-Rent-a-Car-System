@@ -13,20 +13,29 @@ class BookingController extends Controller
     // Display all bookings
     public function index(Request $request)
     {
-        $search = $request->input('search');
+        $query = Booking::query();
     
-        if ($search) {
-            // Filter bookings by mobile number and sort by creation date
-            $bookings = Booking::where('mobile_number', 'LIKE', "%{$search}%")
-                ->orderBy('created_at', 'desc')
-                ->get();
-        } else {
-            // Return all bookings sorted by creation date
-            $bookings = Booking::orderBy('created_at', 'desc')->get();
+        if ($request->filled('mobile_number')) {
+            $query->where('mobile_number', 'LIKE', "%" . $request->input('mobile_number') . "%");
         }
+    
+        if ($request->filled('full_name')) {
+            $query->where('full_name', 'LIKE', "%" . $request->input('full_name') . "%");
+        }
+    
+        if ($request->filled('vehicle_number')) {
+            $query->where('vehicle_number', 'LIKE', "%" . $request->input('vehicle_number') . "%");
+        }
+    
+        if ($request->filled('id')) {
+            $query->where('id', $request->input('id')); // Exact match for ID
+        }
+    
+        $bookings = $query->orderBy('created_at', 'desc')->get();
     
         return view('Manager.ManagerBookings', compact('bookings'));
     }
+    
     
 
     // Show form to create a new booking
