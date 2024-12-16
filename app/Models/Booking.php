@@ -30,10 +30,14 @@ class Booking extends Model
         'reason',
         'driving_photos',
         'nic_photos',
+        'deposit',        
+        'deposit_img',    
+        'status',         
     ];
 
     protected $casts = [
         'driving_photos' => 'array',
         'nic_photos' => 'array',
+        'deposit_img' => 'array', 
     ];
 }

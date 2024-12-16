@@ -128,17 +128,20 @@
                         {{-- Search --}}
                         <form action="{{ url('customers') }}" method="GET">
                             <div class="form-row">
-                                <input type="text" name="search" placeholder="Search by NIC"
-                                    value="{{ request('search') }}">
+                                <!-- NIC Search Field -->
+                                <input type="text" name="nic" placeholder="Search by NIC" value="{{ request('nic') }}">
+                                
+                                <!-- Full Name Search Field -->
+                                <input type="text" name="full_name" placeholder="Search by Full Name" value="{{ request('full_name') }}">
+                                
                                 <div class="card1">
                                     <div class="card1-content">
-                                        <form action="#" method="post" style="display:inline;">
-                                            <button type="submit" class="btn-search">SEARCH</button>
-                                        </form>
+                                        <button type="submit" class="btn-search">SEARCH</button>
                                     </div>
                                 </div>
                             </div>
                         </form>
+                        
                     </div>
                 </div>
 

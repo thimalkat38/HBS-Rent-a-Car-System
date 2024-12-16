@@ -96,9 +96,14 @@
                     @error('vehicle_name')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
+                    <label for="deposit" class="form-label">Deposit</label>
+                    <input type="text" name="deposit" id="deposit" class="form-control" value="{{ old('deposit', $booking->deposit) }}" >
+                    @error('deposit')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                <div class="form-row">
+                {{-- <div class="form-row">
                     <label for="driving_photos" class="form-label">Update Driving Photos</label>
                     <input type="file" name="driving_photos[]" id="driving_photos" class="form-control" multiple>
                     @error('driving_photos')
@@ -112,7 +117,7 @@
                     @error('nic_photos')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
-                </div>
+                </div> --}}
 
                 <div class="submit-container">
                     <button type="submit" class="btn-submit">Update Booking</button>

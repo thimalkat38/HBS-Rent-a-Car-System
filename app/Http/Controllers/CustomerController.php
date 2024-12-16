@@ -10,17 +10,24 @@ class CustomerController extends Controller
     // Display a listing of customers
     public function index(Request $request)
     {
-        $search = $request->input('search');
-
-        // If a search query exists, filter customers by NIC
-        if ($search) {
-            $customers = Customer::where('nic', 'LIKE', "%{$search}%")->get();
-        } else {
-            $customers = Customer::all();
+        $query = Customer::query();
+    
+        // Filter by NIC if provided
+        if ($request->filled('nic')) {
+            $query->where('nic', 'LIKE', '%' . $request->input('nic') . '%');
         }
-
+    
+        // Filter by Full Name if provided
+        if ($request->filled('full_name')) {
+            $query->where('full_name', 'LIKE', '%' . $request->input('full_name') . '%');
+        }
+    
+        // Get the filtered customers
+        $customers = $query->get();
+    
         return view('Manager.ManagerCustomers', compact('customers'));
     }
+    
 
     // Show the form for creating a new customer
     public function create()

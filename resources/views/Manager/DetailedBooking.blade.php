@@ -66,10 +66,25 @@
                         @endif
 
                         <h5 class="card-title text-primary mt-3 mb-2">Booking Information</h5>
+                        <p style="color: red"><strong>Booking ID:</strong> <span id="id">{{ $booking->id }}</span></p>
                         <p><strong>Vehicle Number:</strong> <span id="vehicleNumber">{{ $booking->vehicle_number }}</span></p>
                         <p><strong>Vehicle:</strong> <span id="vehicleModel">{{ $booking->vehicle_name }}</span></p>
                         <p><strong>From Date:</strong> <span id="fromDate">{{ $booking->from_date }} {{ $booking->booking_time }}</span></p>
                         <p><strong>To Date:</strong> <span id="toDate">{{ $booking->to_date }} {{ $booking->arrival_time }}</span></p>
+                        <p><strong>Deposit:</strong> <span id="deposit">{{ $booking->deposit ?? 'No Deposit..'}}</span></p>
+                        <br>
+                        <h6 style="color: red">Deposit Vehicle Images</h6>
+                        <div class="row">
+                            @if(!empty($booking->deposit_img))
+                                @foreach($booking->deposit_img as $photo)
+                                    <div class="col-6 col-md-4 col-lg-3 mb-3">
+                                        <img src="{{ asset('storage/' . $photo) }}" class="img-fluid img-thumbnail" alt="Driving Photo">
+                                    </div>
+                                @endforeach
+                            @else
+                                <p class="text-muted">No Deposit item Image Available.</p>
+                            @endif
+                        </div><br>
                         
                         
                         <!-- Updated Bill Information -->
@@ -85,7 +100,7 @@
                         <h5 class="card-title text-primary mt-3 mb-2">Photos</h5>
                         <div class="row">
                             <div class="col-md-6">
-                                <h6>Vehicle Photos when Released</h6>
+                                <h6>Vehicle Images when Released</h6>
                                 <div class="row">
                                     @if(!empty($booking->driving_photos))
                                         @foreach($booking->driving_photos as $photo)
@@ -94,12 +109,12 @@
                                             </div>
                                         @endforeach
                                     @else
-                                        <p class="text-muted">No driving photos for this vehicle.</p>
+                                        <p class="text-muted">No Images before vehicle release.</p>
                                     @endif
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <h6>NIC Photos</h6>
+                                <h6>NIC Images</h6>
                                 <div class="row">
                                     @if(!empty($booking->nic_photos))
                                         @foreach($booking->nic_photos as $photo)
@@ -108,7 +123,7 @@
                                             </div>
                                         @endforeach
                                     @else
-                                        <p class="text-muted">No NIC photos available.</p>
+                                        <p class="text-muted">No NIC Images available.</p>
                                     @endif
                                 </div>
                             </div>
@@ -191,16 +206,18 @@
                     doc.text('Booking Information:', 10, currentY);
                     currentY += lineSpacing;
     
+                    doc.text('Booking ID: ' + (document.getElementById('id')?.textContent || 'N/A'), 13, currentY);
+                    currentY += lineSpacing;
                     doc.text('Vehicle Number: ' + (document.getElementById('vehicleNumber')?.textContent || 'N/A'), 10, currentY);
                     currentY += lineSpacing;
                     doc.text('Vehicle Model: ' + (document.getElementById('vehicleModel')?.textContent || 'N/A'), 10, currentY);
                     currentY += lineSpacing;
-                    doc.text('Booking Time: ' + (document.getElementById('bookingTime')?.textContent || 'N/A'), 10, currentY);
+                    doc.text('From: ' + (document.getElementById('fromDate')?.textContent || 'N/A'), 10, currentY);
                     currentY += lineSpacing;
-                    doc.text('From Date: ' + (document.getElementById('fromDate')?.textContent || 'N/A'), 10, currentY);
+                    doc.text('To: ' + (document.getElementById('toDate')?.textContent || 'N/A'), 10, currentY);
                     currentY += lineSpacing;
-                    doc.text('To Date: ' + (document.getElementById('toDate')?.textContent || 'N/A'), 10, currentY);
-                    currentY += lineSpacing + 5; // Extra space before the next section
+                    doc.text('Deposit: ' + (document.getElementById('deposit')?.textContent || 'N/A'), 10, currentY);
+                    currentY += lineSpacing + 5;
     
                     // Billing Information
                     doc.text('Billing Information:', 10, currentY);
@@ -330,15 +347,17 @@ async function generatePDFContent(doc) {
                 // Booking Information
                 doc.text('Booking Information:', 10, currentY);
                 currentY += lineSpacing;
+                doc.text('Booking ID: ' + (document.getElementById('id')?.textContent || 'N/A'), 13, currentY);
+                currentY += lineSpacing;
                 doc.text('Vehicle Number: ' + (document.getElementById('vehicleNumber')?.textContent || 'N/A'), 10, currentY);
                 currentY += lineSpacing;
                 doc.text('Vehicle Model: ' + (document.getElementById('vehicleModel')?.textContent || 'N/A'), 10, currentY);
                 currentY += lineSpacing;
-                doc.text('Booking Time: ' + (document.getElementById('bookingTime')?.textContent || 'N/A'), 10, currentY);
+                doc.text('From: ' + (document.getElementById('fromDate')?.textContent || 'N/A'), 10, currentY);
                 currentY += lineSpacing;
-                doc.text('From Date: ' + (document.getElementById('fromDate')?.textContent || 'N/A'), 10, currentY);
+                doc.text('To: ' + (document.getElementById('toDate')?.textContent || 'N/A'), 10, currentY);
                 currentY += lineSpacing;
-                doc.text('To Date: ' + (document.getElementById('toDate')?.textContent || 'N/A'), 10, currentY);
+                doc.text('Deposit: ' + (document.getElementById('deposit')?.textContent || 'N/A'), 10, currentY);
                 currentY += lineSpacing + 5;
 
                 // Billing Information

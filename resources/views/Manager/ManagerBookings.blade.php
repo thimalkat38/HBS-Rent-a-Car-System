@@ -106,15 +106,23 @@
                                     oninput="formatVehicleNumber(this)" value="{{ request('vehicle_number') }}">
                                 <input type="text" name="id" placeholder="Search by ID"
                                     value="{{ request('id') }}">
-
+                        
+                                <!-- Status Dropdown -->
+                                <select name="status">
+                                    <option value="">Select Status</option>
+                                    <option value="Completed" {{ request('status') == 'Completed' ? 'selected' : '' }}>Completed</option>
+                                    <option value="Ongoing" {{ request('status') == 'Ongoing' ? 'selected' : '' }}>Ongoing</option>
+                                </select>
+                        
                                 <div class="card1">
                                     <div class="card1-content">
-                                        <button type="submit" class="btn-search">SEARCH</button>||
+                                        <button type="submit" class="btn-search">SEARCH</button> ||
                                         <a href="{{ url('/bookings') }}" class="btn-search">Clear</a>
                                     </div>
                                 </div>
                             </div>
                         </form>
+                        
 
 
                     </div>
@@ -152,6 +160,9 @@
                                     <td>{{ $booking->payed }}</td>
                                     <td>{{ $booking->price }}</td>
                                     <td class="button-cell">
+
+                                        
+                                        
                                         <a href="{{ route('bookings.edit', $booking->id) }}"
                                             class="btn-edit">Edit</a>
                                         <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST"
@@ -161,6 +172,7 @@
                                             <button type="submit" class="btn-delete"
                                                 onclick="return confirm('Are you sure you want to delete this booking?')">Delete</button>
                                         </form>
+                                        <a href="{{ route('bookings.postbooking', $booking->id) }}" class="btn-edit">View PostBooking</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -189,5 +201,13 @@
         }
     }
 </script>
+<style>
+    .btn-edit:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    pointer-events: none;
+}
 
+</style>
 </html>
