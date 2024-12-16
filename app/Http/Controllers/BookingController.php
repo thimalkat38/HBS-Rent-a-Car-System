@@ -31,12 +31,17 @@ class BookingController extends Controller
             $query->where('id', $request->input('id')); // Exact match for ID
         }
     
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+    
         $bookings = $query->orderBy('created_at', 'desc')->get();
     
         return view('Manager.ManagerBookings', compact('bookings'));
     }
     
-    
+
+
 
     // Show form to create a new booking
     public function create()
@@ -52,6 +57,7 @@ class BookingController extends Controller
             'full_name' => 'required|string|max:255',
             'mobile_number' => 'required',
             'nic' => 'required|string|max:20',
+            'deposit' => 'nullable',
             'booking_time' => 'required',
             'arrival_time' => 'required',
             'price_per_day' => 'required|numeric',
@@ -63,8 +69,10 @@ class BookingController extends Controller
             'reason' => 'nullable|string',
             'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
+            'deposit_img.*' => 'nullable|file|mimes:jpg,jpeg,png',
+            'status' => 'nullable',
         ]);
-    
+
         // Calculate days and total price
         $fromDateTime = new \DateTime($request->input('from_date') . ' ' . $request->input('booking_time'));
         $toDateTime = new \DateTime($request->input('to_date') . ' ' . $request->input('arrival_time'));
@@ -75,26 +83,29 @@ class BookingController extends Controller
         $discountPrice = $request->input('discount_price') ?? 0;
         $payed = $request->input('payed') ?? 0;
         $totalPrice = ($pricePerDay * $days) + $additionalCharges - $discountPrice - $payed;
-    
+
         $request->merge(['days' => $days, 'price' => $totalPrice]);
-    
+
         // Save booking data
-        $booking = new Booking($request->except(['driving_photos', 'nic_photos']));
-    
+        $booking = new Booking($request->except(['driving_photos', 'nic_photos', 'deposit_img']));
+
         // Handle file uploads
-        $booking->driving_photos = $request->hasFile('driving_photos') 
-            ? $this->uploadFiles($request->file('driving_photos'), 'driving_photos') 
+        $booking->driving_photos = $request->hasFile('driving_photos')
+            ? $this->uploadFiles($request->file('driving_photos'), 'driving_photos')
             : [];
-        $booking->nic_photos = $request->hasFile('nic_photos') 
-            ? $this->uploadFiles($request->file('nic_photos'), 'nic_photos') 
+        $booking->nic_photos = $request->hasFile('nic_photos')
+            ? $this->uploadFiles($request->file('nic_photos'), 'nic_photos')
             : [];
-    
+        $booking->deposit_img = $request->hasFile('deposit_img')
+            ? $this->uploadFiles($request->file('deposit_img'), 'deposit_img')
+            : [];
+
         $booking->save();
-    
+
         return redirect()->route('bookings.show', ['id' => $booking->id])
             ->with('success', 'Booking created successfully.');
     }
-        
+
     /**
      * Helper function to handle file uploads.
      */
@@ -107,22 +118,22 @@ class BookingController extends Controller
         }
         return $filePaths;
     }
-    
+
 
     // Show a specific booking
 
-        // Show a specific booking
-        public function show($id)
-        {
-            // Fetch the specific booking using the ID
-            $booking = Booking::findOrFail($id);
-    
-            // Fetch the customer information based on the booking's full_name
-            $customer = Customer::where('full_name', $booking->full_name)->first();
-    
-            // Pass both booking and customer data to the view
-            return view('Manager.DetailedBooking', compact('booking', 'customer'));
-        }
+    // Show a specific booking
+    public function show($id)
+    {
+        // Fetch the specific booking using the ID
+        $booking = Booking::findOrFail($id);
+
+        // Fetch the customer information based on the booking's full_name
+        $customer = Customer::where('full_name', $booking->full_name)->first();
+
+        // Pass both booking and customer data to the view
+        return view('Manager.DetailedBooking', compact('booking', 'customer'));
+    }
 
     // Show form to edit a booking
     public function edit(Booking $booking)
@@ -138,6 +149,7 @@ class BookingController extends Controller
             'full_name' => 'required|string|max:255',
             'mobile_number' => 'required',
             'nic' => 'required|string|max:20',
+            'deposit' => 'nullable',
             'booking_time' => 'required',
             'arrival_time' => 'required',
             // 'price_per_day' =>'required',
@@ -152,8 +164,8 @@ class BookingController extends Controller
             'payed' => 'nullable|numeric',
             'price' => 'nullable|numeric',
             // 'reason' => 'required',
-            'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
-            'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
+            // 'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
+            // 'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
         ]);
 
         // Update basic details
@@ -207,26 +219,49 @@ class BookingController extends Controller
         return redirect()->route('bookings.index')->with('success', 'Booking deleted successfully.');
     }
 
+
+
+    public function calendarView()
+    {
+        // Get the current month and year for the calendar
+        $currentMonth = request()->input('month', now()->month);
+        $currentYear = request()->input('year', now()->year);
+
+        // Calculate the start and end of the selected month
+        $startDate = Carbon::createFromDate($currentYear, $currentMonth, 1)->startOfMonth();
+        $endDate = $startDate->copy()->endOfMonth();
+
+        // Fetch bookings grouped by day
+        $bookingCounts = Booking::whereBetween('from_date', [$startDate, $endDate])
+            ->selectRaw('DATE(from_date) as date, COUNT(*) as count')
+            ->groupBy('date')
+            ->pluck('count', 'date');
+
+        // Pass data to the calendar view
+        return view('Manager.ManagerDashboard', compact('bookingCounts', 'currentMonth', 'currentYear'));
+    }
+ 
     
-
-public function calendarView()
-{
-    // Get the current month and year for the calendar
-    $currentMonth = request()->input('month', now()->month);
-    $currentYear = request()->input('year', now()->year);
-
-    // Calculate the start and end of the selected month
-    $startDate = Carbon::createFromDate($currentYear, $currentMonth, 1)->startOfMonth();
-    $endDate = $startDate->copy()->endOfMonth();
-
-    // Fetch bookings grouped by day
-    $bookingCounts = Booking::whereBetween('from_date', [$startDate, $endDate])
-        ->selectRaw('DATE(from_date) as date, COUNT(*) as count')
-        ->groupBy('date')
-        ->pluck('count', 'date');
-
-    // Pass data to the calendar view
-    return view('Manager.ManagerDashboard', compact('bookingCounts', 'currentMonth', 'currentYear'));
-}
-
+    public function postBooking($id)
+    {
+        // Fetch the booking details using the ID
+        $booking = Booking::findOrFail($id);
+    
+        // Pass the relevant details to the view
+        return view('Manager.PostBooking', compact('booking'));
+    }
+    
+    public function markAsCompleted($id)
+    {
+        $booking = Booking::findOrFail($id);
+    
+        if ($booking->status === 'completed') {
+            return redirect()->back()->with('info', 'This booking is already marked as completed.');
+        }
+    
+        $booking->status = 'completed';
+        $booking->save();
+    
+        return redirect()->back()->with('success', 'Booking marked as completed.');
+    }
 }

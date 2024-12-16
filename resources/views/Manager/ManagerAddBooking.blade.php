@@ -113,6 +113,7 @@
                             </ul>
                             <input type="text" name="mobile_number" placeholder="Mobile number">
                             <input type="text" name="nic" placeholder="NIC">
+                            <input type="text" name="deposit" placeholder="Deposit (Eg - RS ##### or Bike etc. )">
                         </div>
 
                         <!-- Customer List Dropdown -->
@@ -143,7 +144,7 @@
                         </div>
                         
                         <div class="form-row">
-                            <input type="text" name="additional_chagers" placeholder="Additional Chagers (LKR)">
+                            <input type="text" name="additional_chagers" placeholder="Before Additional Chagers (LKR)">
                             <input type="text" name="reason" placeholder="Reason for Additional Chagers">
                             <input type="text" name="discount_price" placeholder="Discount Price (LKR)">
                             <input type="text" name="payed" placeholder="PAYED">
@@ -166,6 +167,13 @@
                                         class="file-input">
                                 </label>
                             </div>
+                        </div>
+                        <div class="upload-section">
+                            <label for="deposit_img" class="upload-label">
+                                <p>Deposited Vehicle Images (If any)</p>
+                                <input type="file" name="deposit_img[]" id="deposit_img" multiple
+                                    class="file-input">
+                            </label>
                         </div>
 
                     </div>
