@@ -250,18 +250,4 @@ class BookingController extends Controller
         // Pass the relevant details to the view
         return view('Manager.PostBooking', compact('booking'));
     }
-    
-    public function markAsCompleted($id)
-    {
-        $booking = Booking::findOrFail($id);
-    
-        if ($booking->status === 'completed') {
-            return redirect()->back()->with('info', 'This booking is already marked as completed.');
-        }
-    
-        $booking->status = 'completed';
-        $booking->save();
-    
-        return redirect()->back()->with('success', 'Booking marked as completed.');
-    }
 }
