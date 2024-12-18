@@ -11,11 +11,38 @@ class PostBookingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $postBookings = PostBooking::all();
-        return view('postbookings.index', compact('postBookings'));
+        // Get the query parameters
+        $vehicleNumber = $request->input('vehicle_number');
+        $fromDate = $request->input('from_date');
+        $order = $request->input('order');
+    
+        // Start building the query
+        $query = PostBooking::query();
+    
+        // Apply filters
+        if ($vehicleNumber) {
+            $query->where('vehicle_number', 'like', "%$vehicleNumber%");
+        }
+    
+        if ($fromDate) {
+            $query->whereDate('from_date', '>=', $fromDate);
+        }
+    
+        // Determine pagination based on order
+        if ($order) {
+            [$start, $end] = explode('-', $order);
+            $query->skip((int) $start - 1)->take((int) $end - (int) $start + 1);
+        }
+    
+        // Get the filtered results, ordered by latest first
+        $postBookings = $query->latest()->get();
+    
+        // Return the view with the filtered results
+        return view('Manager.AllPostBookings', compact('postBookings'));
     }
+    
     public function create()
     {
         return view('Manager.PostBooking');
