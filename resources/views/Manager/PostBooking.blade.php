@@ -213,6 +213,7 @@
                     <div class="form-section">
                         <h3>Customer Information</h3>
                         <div class="form-row">
+                            <input type="hidden" name="id" value="{{ $booking->id }}">
                             <label for="v_number">Full Name</label>
                             <input type="text" name="full_name" id="full_name" value="{{ $booking->full_name }}"
                                 readonly>

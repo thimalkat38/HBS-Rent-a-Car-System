@@ -190,27 +190,27 @@ Route::middleware(['manager'])->delete('/crms/{crm}', [CrmController::class, 'de
 Route::middleware(['manager'])->get('/crms', [CrmController::class, 'upcomingSchedule'])->name('crms.upcoming');
 
 
-Route::get('manager/vehicles', [VehicleController::class, 'search'])->name('vehicles.search');
+Route::middleware(['manager'])->get('manager/vehicles', [VehicleController::class, 'search'])->name('vehicles.search');
 
-Route::post('/bookings/{id}/complete', [BookingController::class, 'markAsCompleted'])->name('bookings.complete');
+Route::middleware(['manager'])->post('/bookings/{id}/complete', [BookingController::class, 'markAsCompleted'])->name('bookings.complete');
 
 
 Route::middleware(['manager'])->get('postbooking', function () {
     return view('Manager.PostBooking');
 })->name('postbooking');
 
-Route::get('/bookings/{id}/postbooking', [BookingController::class, 'postBooking'])->name('bookings.postbooking');
+Route::middleware(['manager'])->get('/bookings/{id}/postbooking', [BookingController::class, 'postBooking'])->name('bookings.postbooking');
 
 
 
 
 
 // CRUD Routes
-Route::get('/postbookings', [PostBookingController::class, 'index'])->name('postbookings.index');
-Route::get('/postbookings/create', [PostBookingController::class, 'create'])->name('postbookings.create');
-Route::post('/postbookings', [PostBookingController::class, 'store'])->name('postbookings.store');
-Route::get('/postbookings/{postBooking}', [PostBookingController::class, 'show'])->name('postbookings.show');
-Route::get('/postbookings/{postBooking}/edit', [PostBookingController::class, 'edit'])->name('postbookings.edit');
-Route::put('/postbookings/{postBooking}', [PostBookingController::class, 'update'])->name('postbookings.update');
-Route::delete('/postbookings/{postBooking}', [PostBookingController::class, 'destroy'])->name('postbookings.destroy');
+Route::middleware(['manager'])->get('/postbookings', [PostBookingController::class, 'index'])->name('postbookings.index');
+Route::middleware(['manager'])->get('/postbookings/create', [PostBookingController::class, 'create'])->name('postbookings.create');
+Route::middleware(['manager'])->post('/postbookings', [PostBookingController::class, 'store'])->name('postbookings.store');
+Route::middleware(['manager'])->get('/postbookings/{postBooking}', [PostBookingController::class, 'show'])->name('postbookings.show');
+Route::middleware(['manager'])->get('/postbookings/{postBooking}/edit', [PostBookingController::class, 'edit'])->name('postbookings.edit');
+Route::middleware(['manager'])->put('/postbookings/{postBooking}', [PostBookingController::class, 'update'])->name('postbookings.update');
+Route::middleware(['manager'])->delete('/postbookings/{postBooking}', [PostBookingController::class, 'destroy'])->name('postbookings.destroy');
 

@@ -160,20 +160,19 @@
                                     <td>{{ $booking->payed }}</td>
                                     <td>{{ $booking->price }}</td>
                                     <td class="button-cell">
-
-                                        
-                                        
-                                        <a href="{{ route('bookings.edit', $booking->id) }}"
-                                            class="btn-edit">Edit</a>
-                                        <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST"
-                                            style="display:inline;">
+                                        @if ($booking->status !== 'Completed')
+                                            <a href="{{ route('bookings.postbooking', $booking->id) }}" class="btn-edit">View PostBooking</a>
+                                        @else
+                                            <button class="btn-edit" disabled style="cursor: not-allowed; background: #ccc;">Completed</button>
+                                        @endif
+                                        <a href="{{ route('bookings.edit', $booking->id) }}" class="btn-edit">Edit</a>
+                                        <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn-delete"
-                                                onclick="return confirm('Are you sure you want to delete this booking?')">Delete</button>
+                                            <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this booking?')">Delete</button>
                                         </form>
-                                        <a href="{{ route('bookings.postbooking', $booking->id) }}" class="btn-edit">View PostBooking</a>
                                     </td>
+                                    
                                 </tr>
                             @endforeach
                         </tbody>
@@ -189,6 +188,25 @@
         </div>
     </div>
 </body>
+
+    @if ($booking->status === 'Completed')
+    <script>
+        document.querySelectorAll('input, textarea, select').forEach((field) => {
+            field.setAttribute('readonly', true);
+            field.setAttribute('disabled', true);
+        });
+        document.querySelector('.btn-submit').setAttribute('disabled', true);
+    </script>
+@endif
+<style>
+    .btn-edit[disabled] {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+}
+
+</style>
+
 <script>
     function formatVehicleNumber(input) {
         // Remove all characters that are not uppercase letters, digits, or "-"

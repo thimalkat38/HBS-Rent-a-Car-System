@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PostBooking;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 
 class PostBookingController extends Controller
@@ -45,6 +46,9 @@ class PostBookingController extends Controller
         ]);
     
         PostBooking::create($validated);
+
+        $booking = Booking::find($request->id); // Assuming `id` is passed in the form
+    $booking->update(['status' => 'Completed']);
     
         return redirect()->route('bookings.index');
     }
