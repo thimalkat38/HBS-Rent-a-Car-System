@@ -57,6 +57,7 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-link" href="{{ url('manager/addbook') }}">Book Vehicle</a>
                             <a class="dropdown-link" href="{{ url('bookings') }}">Booking History</a>
+                            <a class="dropdown-link" href="{{ url('postbookings') }}">Completed Businesses</a>
                         </div>
                     </div>
                     <div class="nav-item">

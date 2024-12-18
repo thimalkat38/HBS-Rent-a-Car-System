@@ -96,33 +96,40 @@
                 <div class="card6-form-row">
                     <div class="form-section">
                         {{-- Search --}}
-                        <form action="{{ url('bookings') }}" method="GET">
+                        <form action="{{ url('postbookings') }}" method="GET">
                             <div class="form-row">
-                                <input type="text" name="mobile_number" placeholder="Search by Mobile Number"
-                                    value="{{ request('mobile_number') }}">
-                                <input type="text" name="full_name" placeholder="Search by Full Name"
-                                    value="{{ request('full_name') }}">
+                                <!-- Vehicle Number Field -->
                                 <input type="text" id="vehicle_number" name="vehicle_number" list="vehicle_numbers"
                                     class="block w-full mt-1" placeholder="Enter vehicle number" maxlength="8"
                                     oninput="formatVehicleNumber(this)" value="{{ request('vehicle_number') }}">
-                                <input type="text" name="id" placeholder="Search by ID"
-                                    value="{{ request('id') }}">
                         
-                                <!-- Status Dropdown -->
-                                <select name="status">
-                                    <option value="">Select Status</option>
-                                    <option value="Completed" {{ request('status') == 'Completed' ? 'selected' : '' }}>Completed</option>
-                                    <option value="Ongoing" {{ request('status') == 'Ongoing' ? 'selected' : '' }}>Ongoing</option>
+                                <!-- From Date Field -->
+                                <input type="date" name="from_date" placeholder="Filter by From Date"
+                                    value="{{ request('from_date') }}">
+                        
+                                <!-- Order Dropdown -->
+                                <select name="order">
+                                    <option value="">Select Order</option>
+                                    <option value="1-20" {{ request('order') == '1-20' ? 'selected' : '' }}>1-20</option>
+                                    <option value="21-40" {{ request('order') == '21-40' ? 'selected' : '' }}>21-40</option>
+                                    <option value="41-60" {{ request('order') == '41-60' ? 'selected' : '' }}>41-60</option>
+                                    <option value="61-80" {{ request('order') == '61-80' ? 'selected' : '' }}>61-80</option>
+                                    <option value="81-100" {{ request('order') == '81-100' ? 'selected' : '' }}>81-100</option>
+                                    <option value="101-120" {{ request('order') == '101-120' ? 'selected' : '' }}>101-120</option>
+                                    <option value="121-140" {{ request('order') == '121-140' ? 'selected' : '' }}>121-140</option>
+                                    <option value="141-160" {{ request('order') == '141-160' ? 'selected' : '' }}>141-160</option>
                                 </select>
                         
+                                <!-- Search Button -->
                                 <div class="card1">
                                     <div class="card1-content">
                                         <button type="submit" class="btn-search">SEARCH</button> ||
-                                        <a href="{{ url('/bookings') }}" class="btn-search">Clear</a>
+                                        <a href="{{ url('/postbookings') }}" class="btn-search">Clear</a>
                                     </div>
                                 </div>
                             </div>
                         </form>
+                        
                         
 
 
@@ -132,53 +139,40 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Full Name</th>
-                                <th>From</th>
-                                <th>To</th>
-                                <th>Vehicle</th>
-                                <th>Vehicle Number</th>
-                                <th>Mobile Number</th>
-                                <th>Additional Price</th>
-                                <th>Discount Price</th>
-                                <th>Payed</th>
-                                <th>Balance</th>
-                                <th>Actions</th>
+                                <th>Customer Name</th>
+                                <th style="width: 150px;">Vehicle</th>
+                                <th>From Date</th>
+                                <th>To Date</th>
+                                <th>Released Price</th>
+                                <th>Additional Charges(after)</th>
+                                <th>Reason for Add chg</th>
+                                <th>Discount Price(after)</th>
+                                <th>Total Income</th>
+                                <th>Due Paid</th>
+                                <th>Deposit Refunded</th>
+                                <th>Vehicle Checked</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($bookings as $booking)
-                                <tr onclick="window.location='{{ route('bookings.show', $booking->id) }}'">
-                                    <td>{{ $booking->id }}</td>
-                                    <td>{{ $booking->full_name }}</td>
-                                    <td>{{ $booking->from_date }} [{{ $booking->booking_time }}]</td>
-                                    <td>{{ $booking->to_date }} [{{ $booking->arrival_time }}]</td>
-                                    <td>{{ $booking->vehicle_name }}</td>
-                                    <td>{{ $booking->vehicle_number }}</td>
-                                    <td>{{ $booking->mobile_number }}</td>
-                                    <td>{{ $booking->additional_chagers }}</td>
-                                    <td>{{ $booking->discount_price }}</td>
-                                    <td>{{ $booking->payed }}</td>
-                                    <td>{{ $booking->price }}</td>
-                                    <td class="button-cell">
-                                        @if ($booking->status !== 'Completed')
-                                            <a href="{{ route('bookings.postbooking', $booking->id) }}" class="btn-edit">View PostBooking</a>
-                                        @else
-                                            <button class="btn-edit" disabled style="cursor: not-allowed; background: #ccc;">Completed</button>
-                                        @endif
-                                        <a href="{{ route('bookings.edit', $booking->id) }}" class="btn-edit">Edit</a>
-                                        <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this booking?')">Delete</button>
-                                        </form>
-                                    </td>
-                                    
+                            @foreach ($postBookings as $postBooking)
+                                <tr>
+                                    <td>{{ $postBooking->full_name }}</td>
+                                    <td>{{ $postBooking->vehicle }} <br> [{{ $postBooking->vehicle_number }}]</td>
+                                    <td>{{ $postBooking->from_date }}</td>
+                                    <td>{{ $postBooking->to_date }}</td>
+                                    <td>{{ $postBooking->base_price }}</td>
+                                    <td>{{ $postBooking->after_additional }}</td>
+                                    <td>{{ $postBooking->reason }}</td>
+                                    <td>{{ $postBooking->after_discount }}</td>
+                                    <td>{{ $postBooking->total_income }}</td>
+                                    <td>{{ $postBooking->due_paid ? 'Yes' : 'No' }}</td>
+                                    <td>{{ $postBooking->deposit_refunded ? 'Yes' : 'No' }}</td>
+                                    <td>{{ $postBooking->vehicle_checked ? 'Yes' : 'No' }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-                </div>
+                                    </div>
             </div>
 
         </div>
@@ -189,44 +183,4 @@
         </div>
     </div>
 </body>
-
-    @if ($booking->status === 'Completed')
-    <script>
-        document.querySelectorAll('input, textarea, select').forEach((field) => {
-            field.setAttribute('readonly', true);
-            field.setAttribute('disabled', true);
-        });
-        document.querySelector('.btn-submit').setAttribute('disabled', true);
-    </script>
-@endif
-<style>
-    .btn-edit[disabled] {
-    background-color: #ccc;
-    color: #666;
-    cursor: not-allowed;
-}
-
-</style>
-
-<script>
-    function formatVehicleNumber(input) {
-        // Remove all characters that are not uppercase letters, digits, or "-"
-        input.value = input.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
-
-        // Ensure it follows the pattern "AAA-1234"
-        const match = input.value.match(/^([A-Z]{0,3})(-?)([0-9]{0,4})$/);
-        if (match) {
-            input.value = (match[1] || '') + (match[3] ? '-' + match[3] : '');
-        }
-    }
-</script>
-<style>
-    .btn-edit:disabled {
-    background-color: #ccc;
-    color: #666;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-</style>
 </html>

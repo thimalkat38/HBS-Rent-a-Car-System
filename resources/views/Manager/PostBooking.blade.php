@@ -175,6 +175,7 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-link" href="{{ url('manager/addbook') }}">Book Vehicle</a>
                             <a class="dropdown-link" href="{{ url('bookings') }}">Booking History</a>
+                            <a class="dropdown-link" href="{{ url('postbookings') }}">Completed Businesses</a>
                         </div>
                     </div>
                     <div class="nav-item">
@@ -394,7 +395,7 @@
 
     function updateDue() {
         // Get input values
-        const additionalCharges = parseFloat(document.getElementById('after_additional').value) || 0; // Fixed ID
+        const additionalCharges = parseFloat(document.getElementById('after_additional').value) || 0;
         const discountPrice = parseFloat(document.getElementById('after_discount').value) || 0;
 
         // Calculate the updated due
@@ -407,7 +408,7 @@
     function updateTotalIncome() {
         // Get input values
         const basePrice = parseFloat(document.getElementById('base_price').value) || 0;
-        const additionalCharges = parseFloat(document.getElementById('after_additional').value) || 0; // Fixed ID
+        const additionalCharges = parseFloat(document.getElementById('after_additional').value) || 0;
         const discountPrice = parseFloat(document.getElementById('after_discount').value) || 0;
 
         let totalIncome;
@@ -423,6 +424,12 @@
         // Update the Total Income field
         document.getElementById('total_income').value = totalIncome.toFixed(2); // Ensure two decimal places
     }
+
+    // Initialize total_income field on page load
+    document.addEventListener("DOMContentLoaded", function () {
+        const basePrice = parseFloat(document.getElementById('base_price').value) || 0;
+        document.getElementById('total_income').value = basePrice.toFixed(2); // Set initial value
+    });
 </script>
 
 </html>
