@@ -103,7 +103,7 @@
                                 <input type="text" name="full_name" placeholder="Search by Full Name"
                                     value="{{ request('full_name') }}">
                                 <input type="text" id="vehicle_number" name="vehicle_number" list="vehicle_numbers"
-                                    class="block w-full mt-1" placeholder="Enter vehicle number" maxlength="8"
+                                    class="block w-full mt-1" placeholder="Search by vehicle number" maxlength="8"
                                     oninput="formatVehicleNumber(this)" value="{{ request('vehicle_number') }}">
                                 <input type="text" name="id" placeholder="Search by ID"
                                     value="{{ request('id') }}">
