@@ -100,7 +100,7 @@
                             <div class="form-row">
                                 <!-- Vehicle Number Field -->
                                 <input type="text" id="vehicle_number" name="vehicle_number" list="vehicle_numbers"
-                                    class="block w-full mt-1" placeholder="Enter vehicle number" maxlength="8"
+                                    class="block w-full mt-1" placeholder="Filter by vehicle number" maxlength="8"
                                     oninput="formatVehicleNumber(this)" value="{{ request('vehicle_number') }}">
                         
                                 <!-- From Date Field -->
@@ -109,7 +109,7 @@
                         
                                 <!-- Order Dropdown -->
                                 <select name="order">
-                                    <option value="">Select Order</option>
+                                    <option value="">Select Range</option>
                                     <option value="1-20" {{ request('order') == '1-20' ? 'selected' : '' }}>1-20</option>
                                     <option value="21-40" {{ request('order') == '21-40' ? 'selected' : '' }}>21-40</option>
                                     <option value="41-60" {{ request('order') == '41-60' ? 'selected' : '' }}>41-60</option>
