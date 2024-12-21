@@ -20,6 +20,9 @@ class PostBooking extends Model
         'from_date',
         'to_date',
         'base_price',
+        'extra_km',
+        'extra_hours',
+        'damage_fee',
         'after_additional',
         'reason',
         'after_discount',
@@ -29,6 +32,7 @@ class PostBooking extends Model
         'due_paid',
         'deposit_refunded',
         'vehicle_checked',
+        'officer',
     ];
 
     protected $casts = [

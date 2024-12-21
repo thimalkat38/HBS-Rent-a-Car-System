@@ -66,6 +66,7 @@ class BookingController extends Controller
             'vehicle_name' => 'required',
             'from_date' => 'required|date',
             'to_date' => 'required|date',
+            'officer' => 'nullable|string',
             'reason' => 'nullable|string',
             'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
@@ -152,64 +153,62 @@ class BookingController extends Controller
             'deposit' => 'nullable',
             'booking_time' => 'required',
             'arrival_time' => 'required',
-            // 'price_per_day' =>'required',
-            // 'days' =>'required',
             'vehicle_number' => 'nullable',
             'fuel_type' => 'nullable',
             'vehicle_name' => 'nullable',
             'from_date' => 'required|date',
             'to_date' => 'required|date',
-            // 'discount_price' =>'required',
-            // 'additional_chagers' =>'required',
             'payed' => 'nullable|numeric',
             'price' => 'nullable|numeric',
-            // 'reason' => 'required',
-            // 'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
-            // 'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
+            'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);
-
+    
         // Update basic details
         $booking->update($validatedData);
-
+    
         // Handling Driving Photos (if new ones are uploaded)
         if ($request->hasFile('driving_photos')) {
-            // Remove old photos if new ones are uploaded
-            if (!empty($booking->driving_photos)) {
+            // Delete old photos
+            if ($booking->driving_photos) {
                 foreach ($booking->driving_photos as $oldPhoto) {
-                    Storage::disk('public')->delete($oldPhoto); // Delete old photos
+                    Storage::disk('public')->delete($oldPhoto);
                 }
             }
-
+    
+            // Store new photos
             $drivingPhotos = [];
             foreach ($request->file('driving_photos') as $photo) {
-                $path = $photo->store('driving_photos', 'public'); // Store new photo
+                $path = $photo->store('driving_photos', 'public');
                 $drivingPhotos[] = $path;
             }
-            $booking->driving_photos = $drivingPhotos; // Update with new photos
+            $booking->driving_photos = $drivingPhotos;
         }
-
+    
         // Handling NIC Photos (if new ones are uploaded)
         if ($request->hasFile('nic_photos')) {
-            // Remove old NIC photos if new ones are uploaded
-            if (!empty($booking->nic_photos)) {
+            // Delete old photos
+            if ($booking->nic_photos) {
                 foreach ($booking->nic_photos as $oldPhoto) {
-                    Storage::disk('public')->delete($oldPhoto); // Delete old photos
+                    Storage::disk('public')->delete($oldPhoto);
                 }
             }
-
+    
+            // Store new photos
             $nicPhotos = [];
             foreach ($request->file('nic_photos') as $photo) {
-                $path = $photo->store('nic_photos', 'public'); // Store new photo
+                $path = $photo->store('nic_photos', 'public');
                 $nicPhotos[] = $path;
             }
-            $booking->nic_photos = $nicPhotos; // Update with new photos
+            $booking->nic_photos = $nicPhotos;
         }
-
-        // Save changes
+    
+        // Save JSON fields explicitly
         $booking->save();
-
+    
         return redirect()->route('bookings.index')->with('success', 'Booking updated successfully.');
     }
+    
 
     // Delete a booking
     public function destroy(Booking $booking)

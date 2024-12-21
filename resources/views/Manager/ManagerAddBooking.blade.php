@@ -131,6 +131,8 @@
                                 placeholder="Fuel Type" required readonly>
                             <input type="text" name="price_per_day" id="price_per_day" class="block w-full mt-1"
                                 placeholder="Price Per Day (LKR)" required readonly>
+                                <input type="text" name="officer" placeholder="Released Officer" >
+
                         </div>
 
 

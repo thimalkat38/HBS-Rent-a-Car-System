@@ -72,6 +72,7 @@
                         <p><strong>From Date:</strong> <span id="fromDate">{{ $booking->from_date }} {{ $booking->booking_time }}</span></p>
                         <p><strong>To Date:</strong> <span id="toDate">{{ $booking->to_date }} {{ $booking->arrival_time }}</span></p>
                         <p><strong>Deposit:</strong> <span id="deposit">{{ $booking->deposit ?? 'No Deposit..'}}</span></p>
+                        <p><strong>Released Officer:</strong> <span id="deposit">{{ $booking->officer}}</span></p>
                         <br>
                         <h6 style="color: red">Deposit Vehicle Images</h6>
                         <div class="row">
