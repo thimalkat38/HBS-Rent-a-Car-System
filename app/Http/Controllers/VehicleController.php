@@ -99,7 +99,7 @@ class VehicleController extends Controller
             'images' => $images,
         ]);
 
-        return redirect()->route('vehicles.index')->with('success', 'Vehicle added successfully!'); //why this line not working
+        return redirect('manager/vehicles')->with('success', 'Vehicle Added successfully!'); // this line is not working
     }
 
     /**
@@ -174,7 +174,8 @@ class VehicleController extends Controller
             'images' => $images,
         ]);
 
-        return redirect()->route('vehicles.index')->with('success', 'Vehicle updated successfully!');
+        return redirect('manager/vehicles')->with('success', 'Vehicle updated successfully!');
+
     }
 
 

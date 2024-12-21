@@ -189,16 +189,6 @@
         </div>
     </div>
 </body>
-
-    @if ($booking->status === 'Completed')
-    <script>
-        document.querySelectorAll('input, textarea, select').forEach((field) => {
-            field.setAttribute('readonly', true);
-            field.setAttribute('disabled', true);
-        });
-        document.querySelector('.btn-submit').setAttribute('disabled', true);
-    </script>
-@endif
 <style>
     .btn-edit[disabled] {
     background-color: #ccc;
