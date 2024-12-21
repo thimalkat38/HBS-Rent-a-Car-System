@@ -100,11 +100,32 @@ class CustomerController extends Controller
     // Remove the specified customer from storage
     public function destroy(Customer $customer)
     {
+        // Delete the specified customer
         $customer->delete();
-
-        return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
+    
+        // Reorder the IDs
+        $this->reorderCustomerIds();
+    
+        return redirect()->route('customers.index')->with('success', 'Customer deleted and IDs reordered successfully.');
     }
-
+    
+    /**
+     * Reorder the IDs of the customers to maintain sequential order.
+     */
+    private function reorderCustomerIds()
+    {
+        $customers = Customer::orderBy('id')->get();
+        $counter = 1;
+    
+        foreach ($customers as $customer) {
+            if ($customer->id != $counter) {
+                $customer->id = $counter;
+                $customer->save();
+            }
+            $counter++;
+        }
+    }
+    
     public function search(Request $request)
     {
         $query = $request->input('query');

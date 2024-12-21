@@ -238,21 +238,12 @@
                             <label for="to-date">TO</label>
                             <input type="text" name="to_date" id="to_date" value="{{ $booking->to_date }}"
                                 readonly>
-                        </div>
+                        </div><br>
                         <h3>Billing Information</h3>
                         <div class="form-row">
                             <label for="price">Before Base Price</label>
                             <input type="text" name="base_price" id="base_price"
-                                value="{{($booking->price + $booking->payed)}}" readonly>
-                            
-                                <label for="after_additional">After Additional Charges</label>
-                                <input type="text" name="after_additional" id="after_additional" value="0.00"
-                                    onfocus="clearDefaultValue(this);" oninput="updateDue(); updateTotalIncome();">
-                            <label for="charge">Reason for Additional Charges</label>
-                            <input type="text" name="reason" id="reason">
-                            <label for="after_discount">After Discount Price</label>
-                            <input type="text" name="after_discount" id="after_discount" value="0.00"
-                                onfocus="clearDefaultValue(this);" oninput="updateDue(); updateTotalIncome();">
+                                value="{{($booking->price + $booking->payed)}}" readonly>                            
                             <label for="price">Paid Amount</label>
                             <input type="text" name="paid" id="payed" value="{{$booking->payed}}"
                                 readonly>
@@ -260,7 +251,25 @@
                                 customer)</label>
                             <input type="text" name="due" id="price" value="{{$booking->price }}"
                                 readonly>
-                        </div>
+                        </div><br>
+                        <div class="form-row">
+                            <label for="extra_km">Extral KM Charges</label>
+                            <input type="text" name="extra_km" id="extra_km"onfocus="clearDefaultValue(this);">
+                            <label for="extra_hours">Extra hours Charges</label>
+                            <input type="text" name="extra_hours" id="extra_hours"onfocus="clearDefaultValue(this);">
+                            <label for="damage_fee">Damage fee</label>
+                            <input type="text" name="damage_fee" id="damage_fee" onfocus="clearDefaultValue(this);">
+                        </div><br>
+                        <div class="form-row">
+                        <label for="after_additional">Other Additional Charges</label>
+                        <input type="text" name="after_additional" id="after_additional" value="0.00"
+                            onfocus="clearDefaultValue(this);" oninput="updateDue(); updateTotalIncome();">
+                    <label for="charge">Reason for Other Additional Charges</label>
+                    <input type="text" name="reason" id="reason">
+                    <label for="after_discount">After Discount Price</label>
+                    <input type="text" name="after_discount" id="after_discount" value="0.00"
+                        onfocus="clearDefaultValue(this);" oninput="updateDue(); updateTotalIncome();">
+                        </div><br>
                         <div class="form-row">
                             <label for="total_income">Total Income</label>
                             <input type="text" name="total_income" id="total_income" readonly>
@@ -305,6 +314,10 @@
                                     <input type="hidden" name="vehicle_checked" value="0">
                                     <input type="checkbox" name="vehicle_checked" id="checked" value="1">
                                     <label for="checked">Vehicle Checked</label>
+                                    <div class="form-row">
+                                        <label for="officer">Checked <br>Officer's Name</label>
+                                        <input type="text" name="officer" id="officer" >
+                                    </div>
                                 </div>
 
 
@@ -406,8 +419,13 @@
         const additionalCharges = parseFloat(document.getElementById('after_additional').value) || 0;
         const discountPrice = parseFloat(document.getElementById('after_discount').value) || 0;
 
+        // New input values for extra charges
+        const extraKmCharges = parseFloat(document.getElementById('extra_km').value) || 0;
+        const extraHoursCharges = parseFloat(document.getElementById('extra_hours').value) || 0;
+        const damageFee = parseFloat(document.getElementById('damage_fee').value) || 0;
+
         // Calculate the updated due
-        const updatedDue = originalDue + additionalCharges - discountPrice;
+        const updatedDue = originalDue + additionalCharges + extraKmCharges + extraHoursCharges + damageFee - discountPrice;
 
         // Update the due (price) field
         document.getElementById('price').value = updatedDue.toFixed(2); // Ensure two decimal places
@@ -419,15 +437,13 @@
         const additionalCharges = parseFloat(document.getElementById('after_additional').value) || 0;
         const discountPrice = parseFloat(document.getElementById('after_discount').value) || 0;
 
-        let totalIncome;
+        // New input values for extra charges
+        const extraKmCharges = parseFloat(document.getElementById('extra_km').value) || 0;
+        const extraHoursCharges = parseFloat(document.getElementById('extra_hours').value) || 0;
+        const damageFee = parseFloat(document.getElementById('damage_fee').value) || 0;
 
-        // Check if both additionalCharges and discountPrice are zero (empty)
-        if (additionalCharges === 0 && discountPrice === 0) {
-            totalIncome = basePrice; // Show basePrice if both fields are empty
-        } else {
-            // Calculate total income
-            totalIncome = basePrice + additionalCharges - discountPrice;
-        }
+        // Calculate total income
+        const totalIncome = basePrice + additionalCharges + extraKmCharges + extraHoursCharges + damageFee - discountPrice;
 
         // Update the Total Income field
         document.getElementById('total_income').value = totalIncome.toFixed(2); // Ensure two decimal places
@@ -438,10 +454,90 @@
         // Set default values for the input fields
         document.getElementById('after_additional').value = "0.00";
         document.getElementById('after_discount').value = "0.00";
+        document.getElementById('extra_km').value = "0.00";
+        document.getElementById('extra_hours').value = "0.00";
+        document.getElementById('damage_fee').value = "0.00";
 
         const basePrice = parseFloat(document.getElementById('base_price').value) || 0;
         document.getElementById('total_income').value = basePrice.toFixed(2); // Set initial value
     });
+
+    // Add event listeners to recalculate on input
+    document.querySelectorAll('#after_additional, #after_discount, #extra_km, #extra_hours, #damage_fee').forEach(input => {
+        input.addEventListener('input', () => {
+            updateDue();
+            updateTotalIncome();
+        });
+    });
 </script>
+
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    .modal-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 90%;
+        max-height: 90%;
+        width: auto;
+        height: auto;
+        border-radius: 5px;
+    }
+
+    .close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: white;
+        font-size: 35px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: red;
+    }
+
+    #prevButton,
+    #nextButton {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 10px 20px;
+        z-index: 1001;
+    }
+
+    #prevButton {
+        left: 20px;
+    }
+
+    #nextButton {
+        right: 20px;
+    }
+
+    #prevButton:hover,
+    #nextButton:hover {
+        background: rgba(255, 255, 255, 0.8);
+        color: black;
+    }
+</style>
 
 </html>

@@ -97,6 +97,7 @@ class VehicleController extends Controller
             'extra_km_chg'=> $request->extra_km_chg,
             'features' => $features,
             'images' => $images,
+            'display_image' => $images[0] ?? null,
         ]);
 
         return redirect('manager/vehicles')->with('success', 'Vehicle Added successfully!'); // this line is not working
@@ -169,10 +170,12 @@ class VehicleController extends Controller
             'model_year' => $request->model_year,
             'price_per_day' => $request->price_per_day,
             'free_km' => $request->free_km,
-            'extra_km_chg'=> $request->extra_km_chg,
+            'extra_km_chg' => $request->extra_km_chg,
             'features' => $features,
             'images' => $images,
+            'display_image' => $request->input('display_image') ?? $vehicle->display_image, // Ensure this line
         ]);
+        
 
         return redirect('manager/vehicles')->with('success', 'Vehicle updated successfully!');
 
@@ -185,15 +188,38 @@ class VehicleController extends Controller
     public function destroy($id)
     {
         $vehicle = Vehicle::findOrFail($id);
-
+    
         // Delete the vehicle images from storage
         foreach ($vehicle->images as $image) {
             Storage::disk('public')->delete($image);
         }
-
+    
+        // Delete the vehicle record
         $vehicle->delete();
-        return redirect()->route('vehicles.index')->with('success', 'Vehicle deleted successfully!');
+    
+        // Reorder the IDs
+        $this->reorderVehicleIds();
+    
+        return redirect()->route('vehicles.index')->with('success', 'Vehicle deleted and IDs reordered successfully!');
     }
+    
+    /**
+     * Reorder the IDs of the vehicles to maintain sequential order.
+     */
+    private function reorderVehicleIds()
+    {
+        $vehicles = Vehicle::orderBy('id')->get();
+        $counter = 1;
+    
+        foreach ($vehicles as $vehicle) {
+            if ($vehicle->id != $counter) {
+                $vehicle->id = $counter;
+                $vehicle->save();
+            }
+            $counter++;
+        }
+    }
+    
 
     public function getDetails($vehicle_number) 
     {

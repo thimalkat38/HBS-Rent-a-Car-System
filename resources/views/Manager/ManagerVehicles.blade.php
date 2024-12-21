@@ -144,9 +144,6 @@
                                 <th>PRICE PER DAY</th>
                                 <th>FREE KM/DAY</th>
                                 <th>Extra KM Price</th>
-                                {{-- <th>ENGINE NUMBER</th>
-                        <th>MODEL YEAR</th>
-                        <th>FEATURES</th> --}}
                                 <th>ACTIONS</th>
                             </tr>
                         </thead>
@@ -155,12 +152,12 @@
                                 <tr onclick="window.location='{{ route('vehicles.show', $vehicle->id) }}'" style="cursor: pointer;">
                                     <td>{{ $vehicle->id }}</td>
                                     <td>
-                                        @if (!empty($vehicle->images) && isset($vehicle->images[0]))
-                                            <img src="{{ asset('storage/' . $vehicle->images[0]) }}" alt="Car Image" style="width: 100px; height: auto;">
+                                        @if ($vehicle->display_image)
+                                            <img src="{{ asset('storage/' . $vehicle->display_image) }}" alt="Car Image" style="width: 100px; height: auto;">
                                         @else
                                             No Image Available
                                         @endif
-                                    </td>
+                                    </td>                                    
                                     <td>{{ $vehicle->vehicle_model }}</td>
                                     <td>{{ $vehicle->vehicle_name }}</td>
                                     <td>{{ $vehicle->vehicle_number }}</td>

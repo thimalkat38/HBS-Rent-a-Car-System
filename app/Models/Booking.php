@@ -17,6 +17,7 @@ class Booking extends Model
         'booking_time',
         'arrival_time',
         'price_per_day',
+        'officer',
         'days',
         'vehicle_number',
         'fuel_type',

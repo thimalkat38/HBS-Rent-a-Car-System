@@ -151,11 +151,12 @@
                                 <th>Due Paid</th>
                                 <th>Deposit Refunded</th>
                                 <th>Vehicle Checked</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($postBookings as $postBooking)
-                                <tr>
+                            <tr>
                                     <td>{{ $postBooking->full_name }}</td>
                                     <td>{{ $postBooking->vehicle }} <br> [{{ $postBooking->vehicle_number }}]</td>
                                     <td>{{ $postBooking->from_date }}</td>
@@ -168,6 +169,7 @@
                                     <td>{{ $postBooking->due_paid ? 'Yes' : 'No' }}</td>
                                     <td>{{ $postBooking->deposit_refunded ? 'Yes' : 'No' }}</td>
                                     <td>{{ $postBooking->vehicle_checked ? 'Yes' : 'No' }}</td>
+                                    <td><a href="{{ route('postbookings.show', $postBooking->id) }}" class="btn-edit">Details</a></td>
                                 </tr>
                             @endforeach
                         </tbody>

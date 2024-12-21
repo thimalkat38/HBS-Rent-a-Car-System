@@ -61,6 +61,9 @@ class PostBookingController extends Controller
             'from_date' => 'nullable|date',
             'to_date' => 'nullable|date',
             'base_price' => 'nullable|string',
+            'extra_km' => 'nullable|string',
+            'extra_hours' => 'nullable|string',
+            'damage_fee' => 'nullable|string',
             'after_additional' => 'nullable|string',
             'reason' => 'nullable|string',
             'after_discount' => 'nullable|string',
@@ -70,6 +73,7 @@ class PostBookingController extends Controller
             'due_paid' => 'nullable|boolean',
             'deposit_refunded' => 'nullable|boolean',
             'vehicle_checked' => 'nullable|boolean',
+            'officer' => 'nullable|string',
         ]);
     
         PostBooking::create($validated);
@@ -86,7 +90,7 @@ class PostBookingController extends Controller
      */
     public function show(PostBooking $postBooking)
     {
-        return view('postbookings.show', compact('postBooking'));
+        return view('Manager.DetailedPostBookings', compact('postBooking'));
     }
 
     /**
@@ -111,6 +115,9 @@ class PostBookingController extends Controller
             'from_date' => 'nullable|date',
             'to_date' => 'nullable|date',
             'base_price' => 'nullable|string',
+            'extra_km' => 'nullable|string',
+            'extra_hours' => 'nullable|string',
+            'damage_fee' => 'nullable|string',
             'after_additional' => 'nullable|string',
             'reason' => 'nullable|string',
             'after_discount' => 'nullable|string',
@@ -120,6 +127,7 @@ class PostBookingController extends Controller
             'due_paid' => 'nullable|boolean',
             'deposit_refunded' => 'nullable|boolean',
             'vehicle_checked' => 'nullable|boolean',
+            'officer' => 'nullable|string',
         ]);
 
         $postBooking->update($validated);

@@ -89,6 +89,21 @@
                 </div>
                 @endforeach
             </div>
+            <div style="margin-bottom: 15px;">
+                <label for="display_image" style="display: block; font-weight: bold; margin-bottom: 5px;">
+                    Select Display Image:
+                </label>
+                <select name="display_image" id="display_image" 
+                    style="width: 25%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
+                    @foreach ($vehicle->images as $image)
+                        <option value="{{ $image }}" {{ $image == $vehicle->display_image ? 'selected' : '' }}>
+                            {{ basename($image) }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            
+            
 
             <!-- Upload New Images -->
             <div class="form-row">

@@ -23,6 +23,7 @@ class Vehicle extends Model
         'extra_km_chg',
         'features',
         'images',
+        'display_image'
     ];
 
     protected $casts = [
