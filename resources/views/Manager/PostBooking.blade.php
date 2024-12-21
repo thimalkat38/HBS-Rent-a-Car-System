@@ -243,21 +243,22 @@
                         <div class="form-row">
                             <label for="price">Before Base Price</label>
                             <input type="text" name="base_price" id="base_price"
-                                value="{{ $booking->price + $booking->payed }}" readonly>
-                            <label for="after_additional">After Additional Charges</label>
-                            <input type="text" name="after_additional" id="after_additional"
-                                oninput="updateDue(); updateTotalIncome();">
+                                value="{{($booking->price + $booking->payed)}}" readonly>
+                            
+                                <label for="after_additional">After Additional Charges</label>
+                                <input type="text" name="after_additional" id="after_additional" value="0.00"
+                                    onfocus="clearDefaultValue(this);" oninput="updateDue(); updateTotalIncome();">
                             <label for="charge">Reason for Additional Charges</label>
                             <input type="text" name="reason" id="reason">
                             <label for="after_discount">After Discount Price</label>
-                            <input type="text" name="after_discount" id="after_discount"
-                                oninput="updateDue(); updateTotalIncome();">
+                            <input type="text" name="after_discount" id="after_discount" value="0.00"
+                                onfocus="clearDefaultValue(this);" oninput="updateDue(); updateTotalIncome();">
                             <label for="price">Paid Amount</label>
-                            <input type="text" name="paid" id="payed" value="{{ $booking->payed }}"
+                            <input type="text" name="paid" id="payed" value="{{$booking->payed}}"
                                 readonly>
                             <label for="price" style="color: #c82333">Due (Amount remaining to be paid by the
                                 customer)</label>
-                            <input type="text" name="due" id="price" value="{{ $booking->price }}"
+                            <input type="text" name="due" id="price" value="{{$booking->price }}"
                                 readonly>
                         </div>
                         <div class="form-row">
@@ -393,6 +394,13 @@
     // Original due value
     const originalDue = parseFloat(document.getElementById('price').value) || 0;
 
+    function clearDefaultValue(input) {
+        // Clear the value only if it is the default "0.00"
+        if (input.value === "0.00") {
+            input.value = "";
+        }
+    }
+
     function updateDue() {
         // Get input values
         const additionalCharges = parseFloat(document.getElementById('after_additional').value) || 0;
@@ -425,8 +433,12 @@
         document.getElementById('total_income').value = totalIncome.toFixed(2); // Ensure two decimal places
     }
 
-    // Initialize total_income field on page load
+    // Initialize fields on page load
     document.addEventListener("DOMContentLoaded", function () {
+        // Set default values for the input fields
+        document.getElementById('after_additional').value = "0.00";
+        document.getElementById('after_discount').value = "0.00";
+
         const basePrice = parseFloat(document.getElementById('base_price').value) || 0;
         document.getElementById('total_income').value = basePrice.toFixed(2); // Set initial value
     });
