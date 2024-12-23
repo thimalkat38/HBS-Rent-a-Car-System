@@ -21,7 +21,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Authenticated routes for profiles
