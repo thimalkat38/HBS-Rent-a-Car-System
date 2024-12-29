@@ -96,96 +96,165 @@
             <!-- Form Section -->
             <div class="content">
                 <!-- Form Section -->
-                <form method="POST" class="form-section" action="{{ route('bookings.store') }}"
-                    enctype="multipart/form-data">
+                <form method="POST" class="form-section" action="{{ route('bookings.store') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="form-section">
-
                         <div class="form-row">
-                            <select name="title" class="selection-list" required>
+                            <select name="title" class="selection-list">
                                 <option value="" disabled selected>Title</option>
                                 <option value="Mr">Mr</option>
                                 <option value="Mrs">Mrs</option>
                             </select>
-                            <input type="text" name="full_name" id="full_name" placeholder="Full Name" required
-                                autocomplete="off">
-                            <!-- Moved outside the form row to ensure proper positioning -->
-                            <ul id="customer-list" class="list-group" style="position: absolute; display: none;">
-                            </ul>
+                            @error('title')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                
+                            <input type="text" name="full_name" id="full_name" placeholder="Full Name" required autocomplete="off">
+                            @error('full_name')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                
+                            <ul id="customer-list" class="list-group" style="position: absolute; display: none;"></ul>
                             <input type="text" name="mobile_number" placeholder="Mobile number">
+                            @error('mobile_number')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                
                             <input type="text" name="nic" placeholder="NIC">
+                            @error('nic')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                
                             <input type="text" name="deposit" placeholder="Deposit (Eg - RS ##### or Bike etc. )">
+                            @error('deposit')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
-
-                        <!-- Customer List Dropdown -->
-
+                
                         <div class="form-row">
-                            <input type="text" id="vehicle_number" name="vehicle_number" list="vehicle_numbers"
-                                class="block w-full mt-1" placeholder="Enter vehicle number" maxlength="8" oninput="formatVehicleNumber(this)" required>
-                            {{-- <datalist id="vehicle_numbers"> --}}
-                                <!-- Options will be populated dynamically using JavaScript -->
-                            </datalist>
-                            <input type="text" name="vehicle_name" id="vehicle_name" class="block w-full mt-1"
-                            placeholder="Vehicle Name" required readonly>
-                            <input type="text" name="fuel_type" id="fuel_type" class="block w-full mt-1"
-                                placeholder="Fuel Type" required readonly>
-                            <input type="text" name="price_per_day" id="price_per_day" class="block w-full mt-1"
-                                placeholder="Price Per Day (LKR)" required readonly>
-                                <input type="text" name="officer" placeholder="Released Officer" >
-
+                            <input type="text" id="vehicle_number" name="vehicle_number" list="vehicle_numbers" class="block w-full mt-1" placeholder="Enter vehicle number" maxlength="8" oninput="formatVehicleNumber(this)">
+                            @error('vehicle_number')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                
+                            <input type="text" name="vehicle_name" id="vehicle_name" class="block w-full mt-1" placeholder="Vehicle Name" required readonly>
+                            @error('vehicle_name')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                
+                            <input type="text" name="fuel_type" id="fuel_type" class="block w-full mt-1" placeholder="Fuel Type" required readonly>
+                            @error('fuel_type')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                
+                            <input type="text" name="price_per_day" id="price_per_day" class="block w-full mt-1" placeholder="Price Per Day (LKR)" required readonly>
+                            @error('price_per_day')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                
+                            <input type="text" name="officer" placeholder="Released Officer">
+                            @error('officer')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
-
-
+                
                         <div class="form-row">
-                            <input type="date" name="from_date" placeholder="From Date" required
-                                min="<?php echo date('Y-m-d'); ?>" onclick="this.showPicker()">
-                                <input type="time" name="booking_time" class="small-input" required onclick="this.showPicker()">
-                                <input type="date" name="to_date" placeholder="To Date" required
-                                min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" onclick="this.showPicker()">                            
+                            <input type="date" name="from_date" placeholder="From Date" required min="{{ date('Y-m-d') }}" onclick="this.showPicker()">
+                            @error('from_date')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                
+                            <input type="time" name="booking_time" class="small-input" required onclick="this.showPicker()">
+                            @error('booking_time')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                
+                            <input type="date" name="to_date" placeholder="To Date" required min="{{ date('Y-m-d', strtotime('+1 day')) }}" onclick="this.showPicker()">
+                            @error('to_date')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                
                             <input type="time" name="arrival_time" class="small-input" required onclick="this.showPicker()">
+                            @error('arrival_time')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                
                             <input type="number" name="days" id="days" placeholder="Total Days" readonly>
+                            @error('days')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
-                        
+                
                         <div class="form-row">
                             <input type="text" name="additional_chagers" placeholder="Before Additional Chagers (LKR)">
+                            @error('additional_chagers')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                
                             <input type="text" name="reason" placeholder="Reason for Additional Chagers">
+                            @error('reason')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                
                             <input type="text" name="discount_price" placeholder="Discount Price (LKR)">
+                            @error('discount_price')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                
                             <input type="text" name="payed" placeholder="PAYED">
+                            @error('payed')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                
                             <input type="text" name="price" placeholder="Total Price (LKR)" readonly>
+                            @error('price')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
-
-                        <!-- Upload Sections in Form Row -->
+                
                         <div class="form-row">
                             <div class="upload-section">
                                 <label for="driving_photos" class="upload-label">
                                     <p>Vehicle Photos Before Release</p>
-                                    <input type="file" name="driving_photos[]" id="driving_photos" multiple
-                                        class="file-input">
+                                    <input type="file" name="driving_photos[]" id="driving_photos" multiple class="file-input">
                                 </label>
+                                @error('driving_photos')
+                                <span class="error-message">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="upload-section">
                                 <label for="nic_photos" class="upload-label">
                                     <p>Driving Lisance and NIC</p>
-                                    <input type="file" name="nic_photos[]" id="nic_photos" multiple
-                                        class="file-input">
+                                    <input type="file" name="nic_photos[]" id="nic_photos" multiple class="file-input">
                                 </label>
+                                @error('nic_photos')
+                                <span class="error-message">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="upload-section">
                             <label for="deposit_img" class="upload-label">
                                 <p>Deposited Vehicle Images (If any)</p>
-                                <input type="file" name="deposit_img[]" id="deposit_img" multiple
-                                    class="file-input">
+                                <input type="file" name="deposit_img[]" id="deposit_img" multiple class="file-input">
                             </label>
+                            @error('deposit_img')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
-
                     </div>
-                    <!-- Submit Buttons -->
                     <div class="submit-container">
                         <button type="reset" class="btn-submit">CANCEL</button>
                         <button type="submit" class="btn-submit">SUBMIT</button>
                     </div>
                 </form>
+                
+                <style>
+                .error-message {
+                    color: red;
+                    font-size: 0.875rem;
+                }
+                </style>
+                
             </div>
         </div>
 

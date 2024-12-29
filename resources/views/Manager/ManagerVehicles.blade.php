@@ -122,6 +122,12 @@
                                 <button type="submit" class="btn-search">SEARCH</button>
                                 <a href="{{ url('manager/vehicles') }}" class="btn-search">Clear</a>
                             </div>
+                            <div class="flex justify-center items-center bg-gray-100 p-4 rounded-lg shadow-md">
+                                <div class="text-center">
+                                    <h2 class="text-lg font-semibold text-gray-700">Total Vehicles = {{ \App\Models\Vehicle::count() }}</h2>
+                                </div>
+                            </div>
+                            
                         </form>
                         
                         

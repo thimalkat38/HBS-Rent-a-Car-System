@@ -214,3 +214,43 @@ Route::middleware(['manager'])->get('/postbookings/{postBooking}/edit', [PostBoo
 Route::middleware(['manager'])->put('/postbookings/{postBooking}', [PostBookingController::class, 'update'])->name('postbookings.update');
 Route::middleware(['manager'])->delete('/postbookings/{postBooking}', [PostBookingController::class, 'destroy'])->name('postbookings.destroy');
 
+
+
+Route::get('/link', function () {
+    $source = storage_path('app/public');
+    $destination = public_path('storage');
+
+    if (!file_exists($destination)) {
+        mkdir($destination, 0777, true);
+    }
+
+    function copyDirectory($source, $destination) {
+        $directory = opendir($source);
+
+        // Ensure destination directory exists
+        if (!file_exists($destination)) {
+            mkdir($destination, 0777, true);
+        }
+
+        while (($file = readdir($directory)) !== false) {
+            if ($file !== '.' && $file !== '..') {
+                $srcFile = $source . DIRECTORY_SEPARATOR . $file;
+                $destFile = $destination . DIRECTORY_SEPARATOR . $file;
+
+                if (is_dir($srcFile)) {
+                    // Recursively copy directories
+                    copyDirectory($srcFile, $destFile);
+                } else {
+                    // Copy files
+                    copy($srcFile, $destFile);
+                }
+            }
+        }
+
+        closedir($directory);
+    }
+
+    copyDirectory($source, $destination);
+
+    return 'Files and directories copied to public/storage successfully.';
+});
