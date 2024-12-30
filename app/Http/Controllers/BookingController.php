@@ -14,32 +14,32 @@ class BookingController extends Controller
     public function index(Request $request)
     {
         $query = Booking::query();
-    
+
         if ($request->filled('mobile_number')) {
             $query->where('mobile_number', 'LIKE', "%" . $request->input('mobile_number') . "%");
         }
-    
+
         if ($request->filled('full_name')) {
             $query->where('full_name', 'LIKE', "%" . $request->input('full_name') . "%");
         }
-    
+
         if ($request->filled('vehicle_number')) {
             $query->where('vehicle_number', 'LIKE', "%" . $request->input('vehicle_number') . "%");
         }
-    
+
         if ($request->filled('id')) {
             $query->where('id', $request->input('id')); // Exact match for ID
         }
-    
+
         if ($request->filled('status')) {
             $query->where('status', $request->input('status'));
         }
-    
+
         $bookings = $query->orderBy('created_at', 'desc')->get();
-    
+
         return view('Manager.ManagerBookings', compact('bookings'));
     }
-    
+
 
 
 
@@ -163,10 +163,10 @@ class BookingController extends Controller
             'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
             'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);
-    
+
         // Update basic details
         $booking->update($validatedData);
-    
+
         // Handling Driving Photos (if new ones are uploaded)
         if ($request->hasFile('driving_photos')) {
             // Delete old photos
@@ -175,7 +175,7 @@ class BookingController extends Controller
                     Storage::disk('public')->delete($oldPhoto);
                 }
             }
-    
+
             // Store new photos
             $drivingPhotos = [];
             foreach ($request->file('driving_photos') as $photo) {
@@ -184,7 +184,7 @@ class BookingController extends Controller
             }
             $booking->driving_photos = $drivingPhotos;
         }
-    
+
         // Handling NIC Photos (if new ones are uploaded)
         if ($request->hasFile('nic_photos')) {
             // Delete old photos
@@ -193,7 +193,7 @@ class BookingController extends Controller
                     Storage::disk('public')->delete($oldPhoto);
                 }
             }
-    
+
             // Store new photos
             $nicPhotos = [];
             foreach ($request->file('nic_photos') as $photo) {
@@ -202,13 +202,13 @@ class BookingController extends Controller
             }
             $booking->nic_photos = $nicPhotos;
         }
-    
+
         // Save JSON fields explicitly
         $booking->save();
-    
+
         return redirect()->route('bookings.index')->with('success', 'Booking updated successfully.');
     }
-    
+
 
     // Delete a booking
     public function destroy(Booking $booking)
@@ -239,13 +239,22 @@ class BookingController extends Controller
         // Pass data to the calendar view
         return view('Manager.ManagerDashboard', compact('bookingCounts', 'currentMonth', 'currentYear'));
     }
- 
-    
+
+    public function getBookingsByDate(Request $request)
+    {
+        $date = $request->input('date');
+        $bookings = Booking::whereDate('from_date', $date)->get();
+
+        return response()->json(['bookings' => $bookings]);
+    }
+
+
+
     public function postBooking($id)
     {
         // Fetch the booking details using the ID
         $booking = Booking::findOrFail($id);
-    
+
         // Pass the relevant details to the view
         return view('Manager.PostBooking', compact('booking'));
     }

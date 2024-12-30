@@ -80,6 +80,8 @@ Route::middleware(['manager'])->put('bookings/{booking}', [BookingController::cl
 Route::middleware(['manager'])->delete('bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy'); // Delete booking
 Route::middleware(['manager'])->get('/bookings/{id}', [BookingController::class, 'show'])->name('bookings.show');
 Route::middleware(['manager'])->get('/manager/dashboard', [BookingController::class, 'calendarView'])->name('manager.dashboard');
+Route::middleware(['manager'])->get('/manager/bookings', [BookingController::class, 'getBookingsByDate']);
+
 
 
 
