@@ -247,6 +247,9 @@
                             <label for="price">Paid Amount</label>
                             <input type="text" name="paid" id="payed" value="{{$booking->payed}}"
                                 readonly>
+                                <label for="price">Payment Note</label>
+                                <input type="text" name="method"value="{{$booking->method}}"
+                                    readonly>
                             <label for="price" style="color: #c82333">Due (Amount remaining to be paid by the
                                 customer)</label>
                             <input type="text" name="due" id="price" value="{{$booking->price }}"

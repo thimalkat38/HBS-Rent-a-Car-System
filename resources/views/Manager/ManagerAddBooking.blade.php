@@ -201,8 +201,13 @@
                             <span class="error-message">{{ $message }}</span>
                             @enderror
                 
-                            <input type="text" name="payed" placeholder="PAYED">
+                            <input type="text" name="payed" placeholder="PAID">
                             @error('payed')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+
+                            <input type="text" name="method" placeholder="Paid Method (Note)">
+                            @error('method')
                             <span class="error-message">{{ $message }}</span>
                             @enderror
                 

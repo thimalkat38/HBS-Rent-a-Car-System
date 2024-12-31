@@ -29,6 +29,7 @@ class Booking extends Model
         'payed',
         'price',
         'reason',
+        'method',
         'driving_photos',
         'nic_photos',
         'deposit',        
