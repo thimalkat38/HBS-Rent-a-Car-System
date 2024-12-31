@@ -106,6 +106,11 @@
                     @error('officer')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
+                    <label for="method" class="form-label">Payment Note</label>
+                    <input type="text" name="method" class="form-control" value="{{ old('method', $booking->method) }}" >
+                    @error('method')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-row">

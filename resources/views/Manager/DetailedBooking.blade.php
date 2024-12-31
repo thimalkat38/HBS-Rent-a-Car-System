@@ -94,6 +94,7 @@
                         <p><strong>Additional Charges:</strong><span id="addChg"> LKR {{ number_format($booking->additional_chagers, 2) }}</p>
                         <p><strong>Discount Price:</strong><span id="discountPrice"> LKR {{ number_format($booking->discount_price, 2) }}</p>
                         <p><strong>Paid Amount:</strong><span id="PaidAmunt"> LKR {{ number_format($booking->payed, 2) }}</p>
+                        <p><strong>Payment Note: </strong>{{($booking->method)}}</p>    
                         <p><strong>Amount Due:</strong><span id="due"> LKR {{ number_format($booking->price, 2) }}</p>
                         <p><strong>Reason For Additional Charges:</strong> <span id="reason">{{ $booking->reason }}</span></p>
 

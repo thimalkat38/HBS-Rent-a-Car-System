@@ -185,17 +185,38 @@
                         fetch(`/manager/bookings?date=${date}`)
                             .then(response => response.json())
                             .then(data => {
-                                if (data.bookings && data.bookings.length > 0) {
-                                    modalContent.innerHTML = `
+                                let inBookingsHtml = '';
+                                let outBookingsHtml = '';
+    
+                                if (data.in_bookings && data.in_bookings.length > 0) {
+                                    inBookingsHtml = `
+                                        <h3>OUT</h3>
                                         <ul>
-                                            ${data.bookings.map(booking => `
+                                            ${data.in_bookings.map(booking => `
                                                 <li>
-                                                    ${booking.full_name} - ${booking.vehicle_name} [${booking.vehicle_number}] - ${booking.booking_time}
-                                                </li>`).join('')}
+                                                    ${booking.vehicle_number} - ${booking.vehicle_name} [${booking.booking_time}]
+                                                </li>
+                                            `).join('')}
                                         </ul>`;
                                 } else {
-                                    modalContent.innerHTML = '<p>No bookings on this day.</p>';
+                                    inBookingsHtml = '<h3>Out</h3><p>No vehicles are booked to go out on this day.</p>';
                                 }
+    
+                                if (data.out_bookings && data.out_bookings.length > 0) {
+                                    outBookingsHtml = `
+                                        <h3>IN</h3>
+                                        <ul>
+                                            ${data.out_bookings.map(booking => `
+                                                <li>
+                                                    ${booking.vehicle_number} - ${booking.vehicle_name} [${booking.booking_time}]
+                                                </li>
+                                            `).join('')}
+                                        </ul>`;
+                                } else {
+                                    outBookingsHtml = '<h3>In</h3><p>No Vehicles Returns on this day.</p>';
+                                }
+    
+                                modalContent.innerHTML = inBookingsHtml + outBookingsHtml;
                                 modal.classList.remove('hidden');
                             })
                             .catch(error => {
@@ -211,6 +232,7 @@
             });
         });
     </script>
+    
     
     <style>
         .hidden {

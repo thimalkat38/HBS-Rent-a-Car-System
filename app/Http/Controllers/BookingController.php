@@ -53,7 +53,7 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required',
+            'title' => 'nullable',
             'full_name' => 'required|string|max:255',
             'mobile_number' => 'required',
             'nic' => 'nullable|string|max:20',
@@ -68,6 +68,7 @@ class BookingController extends Controller
             'to_date' => 'required|date',
             'officer' => 'nullable|string',
             'reason' => 'nullable|string',
+            'method' => 'nullable|string',
             'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'deposit_img.*' => 'nullable|file|mimes:jpg,jpeg,png',
@@ -159,6 +160,7 @@ class BookingController extends Controller
             'from_date' => 'required|date',
             'to_date' => 'required|date',
             'officer' => 'nullable|string',
+            'method' => 'nullable|string',
             'payed' => 'nullable|numeric',
             'price' => 'nullable|numeric',
             'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
@@ -244,11 +246,19 @@ class BookingController extends Controller
     public function getBookingsByDate(Request $request)
     {
         $date = $request->input('date');
-        $bookings = Booking::whereDate('from_date', $date)->get();
-
-        return response()->json(['bookings' => $bookings]);
+    
+        // Get bookings for the 'from_date' (IN)
+        $inBookings = Booking::whereDate('from_date', $date)->get();
+    
+        // Get bookings for the 'to_date' (OUT)
+        $outBookings = Booking::whereDate('to_date', $date)->get();
+    
+        return response()->json([
+            'in_bookings' => $inBookings,
+            'out_bookings' => $outBookings
+        ]);
     }
-
+    
 
 
     public function postBooking($id)
