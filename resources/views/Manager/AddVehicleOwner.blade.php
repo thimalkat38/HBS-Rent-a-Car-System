@@ -91,12 +91,13 @@
                 </nav>
             </div>
 
+
             <!-- Form Section -->
+
             <div class="content">
-                <form action="{{ route('manager.storevehicle') }}" method="POST" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('vehicle_owners.store') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="form-section">
-
                         {{-- error handling --}}
                         @if ($errors->any())
                             <div class="alert alert-danger">
@@ -107,51 +108,41 @@
                                 </ul>
                             </div>
                         @endif
-                        <div class="form-row">
-                            <input type="text" name="vehicle_number" placeholder="Register Number" id="vehicle_number" maxlength="8" oninput="formatVehicleNumber(this)" />                           
-                                <input type="text" name="vehicle_name" id="vehicle_name" placeholder="Vehicle Model" autocomplete="off">
-                                <ul id="model-suggestions" class="list-group" style="position: absolute; display: none;">
-                                </ul>
-                        </div>
-                        
-                        
-                        <div class="form-row">
-                            <select name="vehicle_type" class="selection-list">
-                                <option value="" disabled selected>Vehicle Type</option>
-                                <option value="Car">Car</option>
-                                <option value="Van">Van</option>
-                                <option value="Bus">Bus</option>
-                                <option value="Other">Other</option>
-                            </select>
-                            <input type="text" name="vehicle_model" placeholder="Manufacturer">
-                        </div>
-                        <div class="form-row">
-                            <input type="text" name="engine_number" placeholder="Engine Number">
-                            <select name="fuel_type" class="selection-list">
-                                <option value="" disabled selected>Fuel Type</option>
-                                <option value="Petrol">Petrol</option>
-                                <option value="Diesel">Diesel</option>
-                                <option value="Electric">Electric</option>
-                            </select>
-                        </div>
-                        <div class="form-row">
-                            <input type="text" name="chassis_number" placeholder="Chassis Number">
-                            <input type="text" name="model_year" placeholder="Year Of Manufacture">
-                        </div>
-                        <div class="form-row">
-                            <input type="text" name="price_per_day" placeholder="Price Per Day">
-                            <input type="text" name="free_km" placeholder="Free KM">
-                            <input type="text" name="extra_km_chg" placeholder="Extra 1 KM Charge">                      
-                        </div>
-                        <div class="upload-section">
-                            <p>Add Vehicle Images</p>
-                            <input type="file" name="images[]" accept="image/*" multiple>
-                        </div>
 
+                        <div class="form-row">
+                            <select id="title" name="title" class="selection-list">
+                                <option value="" disabled selected>Title</option>
+                                <option value="Mr">Mr</option>
+                                <option value="Mrs">Mrs</option>
+                            </select>
+                            <input type="text" id="full_name" name="full_name" placeholder="Full name" required>
+                        </div>
+                        <div class="form-row">
+                            <input type="text" id="vehicle_number" name="vehicle_number" placeholder="Vehicle number" required>
+                            <input type="text" id="vehicle_name" name="vehicle_name" placeholder="Vehicle_Name">
+                        </div>
+                        <div class="form-row">
+                            <input type="tel" id="phone" name="phone" placeholder="Mobile number" required>
+                            <input type="text" id="address" name="address" placeholder="Address">
+                        </div>
+                        <div class="form-row">
+                            <input type="date" id="start_date" name="start_date" placeholder="Start Date" required>
+                            <input type="date" id="end_date" name="end_date" placeholder="End date">
+                        </div>
+                        <div class="form-row">
+                            <input type="text" id="rental_amnt" name="rental_amnt" placeholder="Rental Amount" required>
+                            <input type="text" id="monthly_km" name="monthly_km" placeholder="Monthly KM" required>
+                            <input type="text" id="extra_km_chg" name="extra_km_chg" placeholder="Extra KM Chagers" required>
+                        </div>
+                        <div class="form-row">
+                            <input type="text" id="acc_no" name="acc_no" placeholder="Bank Account Number" required>
+                            <input type="text" id="bank_detais" name="bank_detais" placeholder="Bank Details (Bank, Bank Name, Owner Name or etc.)">
+                        </div>
                     </div>
+                    <!-- Submit Button -->
                     <div class="submit-container">
-                        <button type="reset" class="btn-submit">CANCEL</button>
-                        <button type="submit" class="btn-submit">SUBMIT</button>
+                        <button type="submit" class="btn-submit">CANCEL</button>
+                        <button type="submit" class="btn-submit">Submit</button>
                     </div>
                 </form>
             </div>
@@ -162,89 +153,29 @@
             <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>
         </div>
     </div>
-    
-    <script>
-        $(document).ready(function() {
-            $('#vehicle_name').on('keyup', function() {
-                let query = $(this).val();
-                if (query.length >= 2) {
-                    $.ajax({
-                        url: "{{ route('getVehicleModels') }}",
-                        type: "GET",
-                        data: { query: query },
-                        success: function(data) {
-                            // Remove duplicate models from data
-                            let uniqueData = Array.from(new Set(data));
-    
-                            let dropdown = $('#model-suggestions');
-                            dropdown.empty().show();
-                            if (uniqueData.length) {
-                                $.each(uniqueData, function(index, model) {
-                                    dropdown.append(`<div class="list-group-item" onclick="selectModel('${model}')">${model}</div>`);
-                                });
-                            } else {
-                                dropdown.append(`<div class="list-group-item">No results found. Type to Add New model.</div>`);
-                            }
-                        }
-                    });
-                } else {
-                    $('#model-suggestions').hide();
-                }
-            });
-    
-            // Function to set the selected model in the input field and hide the dropdown
-            window.selectModel = function(model) {
-                $('#vehicle_name').val(model);
-                $('#model-suggestions').hide();
-            };
-    
-            // Hide dropdown when clicking outside of it
-            $(document).on('click', function(event) {
-                if (!$(event.target).closest('#vehicle_name, #model-suggestions').length) {
-                    $('#model-suggestions').hide();
-                }
-            });
-        });
-    </script>
-    <script>
-        function formatVehicleNumber(input) {
-            // Remove all characters that are not uppercase letters, digits, or "-"
-            input.value = input.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
-            
-            // Ensure it follows the pattern "AAA-1234"
-            const match = input.value.match(/^([A-Z]{0,3})(-?)([0-9]{0,4})$/);
-            if (match) {
-                input.value = (match[1] || '') + (match[3] ? '-' + match[3] : '');
-            }
-        }
-        </script>
-    
-
-<style>
-    #model-suggestions {
-        background-color: #fff;
-            border: 1px solid #ccc;
-            max-height: 200px;
-            /* Adjust based on your preference */
-            overflow-y: auto;
-            list-style-type: none;
-            padding: 1%;
-            margin-top: 3%;
-            margin-left: 38%;
-            width: 35%;
-            align-content: left;
-    }
-
-    #model-suggestions .list-group-item {
-        padding: 10px;
-        cursor: pointer;
-    }
-
-    #model-suggestions .list-group-item:hover {
-        background-color: #f0f0f0;
-    }
-</style>
-
 </body>
+<script>
+    var input = document.querySelector("#phone");
+    window.intlTelInput(input, {
+        initialCountry: "auto",
+        geoIpLookup: function(success, failure) {
+            fetch("https://ipinfo.io", {
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                })
+                .then(function(resp) {
+                    return resp.json();
+                })
+                .then(function(resp) {
+                    success(resp.country);
+                })
+                .catch(function() {
+                    success("us");
+                });
+        },
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+    });
+</script>
 
 </html>

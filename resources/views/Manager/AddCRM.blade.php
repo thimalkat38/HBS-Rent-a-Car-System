@@ -48,6 +48,7 @@
                 <div class="dropdown-menu">
                     <a class="dropdown-link" href="{{ url('addvehicle') }}">Add Vehicle</a>
                     <a class="dropdown-link" href="{{ url('manager/vehicles') }}">List Vehicle</a>
+                    <a class="dropdown-link" href="{{ url('vehicle_owners') }}">Vehicle Owner Management</a>
                 </div>
             </div>
             <div class="nav-item">
