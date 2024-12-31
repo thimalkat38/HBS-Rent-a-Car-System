@@ -101,6 +101,11 @@
                     @error('deposit')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
+                    <label for="officer" class="form-label">Released Officer</label>
+                    <input type="text" name="officer" id="officer" class="form-control" value="{{ old('officer', $booking->officer) }}" >
+                    @error('officer')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-row">
