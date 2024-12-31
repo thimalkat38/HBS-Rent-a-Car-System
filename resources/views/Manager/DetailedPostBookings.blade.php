@@ -59,8 +59,6 @@
                         <p><strong>Mobile Number:</strong> <span id="mobileNumber">{{ $postBooking->mobile_number }}</span></p>
                         
                         <h5 class="card-title text-primary mt-3 mb-2">Booking Information</h5>
-                        {{-- <p style="color: red"><strong>postBooking ID:</strong> <span id="id">{{ $postBooking->id }}</span></p> --}}
-                        {{-- <p><strong>Vehicle Number:</strong> <span id="vehicleNumber">{{ $postBooking->vehicle_number }}</span></p> --}}
                         <p><strong>Vehicle:</strong> <span id="vehicleModel">{{ $postBooking->vehicle }} [{{ $postBooking->vehicle_number }}]</span></p>
                         <p><strong>From Date:</strong> <span id="fromDate">{{ $postBooking->from_date }}</span></p>
                         <p><strong>To Date:</strong> <span id="toDate">{{ $postBooking->to_date }}</span></p>
@@ -80,7 +78,7 @@
                         <p><strong>Deposit Refunded:</strong> <span id="depositRefunded">{{ $postBooking->deposit_refunded ? 'Yes' : 'No' }}</span></p>
                         <p><strong>Vehicle Checked:</strong> <span id="vehicleChecked">{{ $postBooking->vehicle_checked ? 'Yes' : 'No' }}</span></p>
                         <p><strong>Due Paid:</strong> <span id="vehicleChecked">{{ $postBooking->due_paid ? 'Yes' : 'No' }}</span></p>
-                        <p><strong>Officer:</strong> <span id="officer">{{ $postBooking->officer }}</span></p>
+                        <p><strong>Recived Officer:</strong> <span id="officer">{{ $postBooking->officer }}</span></p>
                         <p><strong>Total Income:</strong> <span id="totalIncome">LKR {{ number_format($postBooking->total_income, 2) }}</span></p>
 
                     </div>

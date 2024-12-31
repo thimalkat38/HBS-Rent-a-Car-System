@@ -109,7 +109,7 @@
                             <span class="error-message">{{ $message }}</span>
                             @enderror
                 
-                            <input type="text" name="full_name" id="full_name" placeholder="Full Name" required autocomplete="off">
+                            <input type="text" name="full_name" id="full_name" placeholder="Full Name"  autocomplete="off">
                             @error('full_name')
                             <span class="error-message">{{ $message }}</span>
                             @enderror
@@ -137,17 +137,17 @@
                             <span class="error-message">{{ $message }}</span>
                             @enderror
                 
-                            <input type="text" name="vehicle_name" id="vehicle_name" class="block w-full mt-1" placeholder="Vehicle Name" required readonly>
+                            <input type="text" name="vehicle_name" id="vehicle_name" class="block w-full mt-1" placeholder="Vehicle Name"  readonly>
                             @error('vehicle_name')
                             <span class="error-message">{{ $message }}</span>
                             @enderror
                 
-                            <input type="text" name="fuel_type" id="fuel_type" class="block w-full mt-1" placeholder="Fuel Type" required readonly>
+                            <input type="text" name="fuel_type" id="fuel_type" class="block w-full mt-1" placeholder="Fuel Type"  readonly>
                             @error('fuel_type')
                             <span class="error-message">{{ $message }}</span>
                             @enderror
                 
-                            <input type="text" name="price_per_day" id="price_per_day" class="block w-full mt-1" placeholder="Price Per Day (LKR)" required readonly>
+                            <input type="text" name="price_per_day" id="price_per_day" class="block w-full mt-1" placeholder="Price Per Day (LKR)"  readonly>
                             @error('price_per_day')
                             <span class="error-message">{{ $message }}</span>
                             @enderror
@@ -159,22 +159,22 @@
                         </div>
                 
                         <div class="form-row">
-                            <input type="date" name="from_date" placeholder="From Date" required min="{{ date('Y-m-d') }}" onclick="this.showPicker()">
+                            <input type="date" name="from_date" placeholder="From Date"  min="{{ date('Y-m-d') }}" onclick="this.showPicker()">
                             @error('from_date')
                             <span class="error-message">{{ $message }}</span>
                             @enderror
                 
-                            <input type="time" name="booking_time" class="small-input" required onclick="this.showPicker()">
+                            <input type="time" name="booking_time" class="small-input"  onclick="this.showPicker()">
                             @error('booking_time')
                             <span class="error-message">{{ $message }}</span>
                             @enderror
                 
-                            <input type="date" name="to_date" placeholder="To Date" required min="{{ date('Y-m-d', strtotime('+1 day')) }}" onclick="this.showPicker()">
+                            <input type="date" name="to_date" placeholder="To Date"  min="{{ date('Y-m-d', strtotime('+1 day')) }}" onclick="this.showPicker()">
                             @error('to_date')
                             <span class="error-message">{{ $message }}</span>
                             @enderror
                 
-                            <input type="time" name="arrival_time" class="small-input" required onclick="this.showPicker()">
+                            <input type="time" name="arrival_time" class="small-input"  onclick="this.showPicker()">
                             @error('arrival_time')
                             <span class="error-message">{{ $message }}</span>
                             @enderror
