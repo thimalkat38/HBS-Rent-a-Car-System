@@ -14,6 +14,7 @@ use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CrmController;
 use App\Http\Controllers\PostBookingController;
+use App\Http\Controllers\VehicleOwnerController;
 // use App\Models\Employee;
 
 Route::get('/', function () {
@@ -215,6 +216,16 @@ Route::middleware(['manager'])->get('/postbookings/{postBooking}', [PostBookingC
 Route::middleware(['manager'])->get('/postbookings/{postBooking}/edit', [PostBookingController::class, 'edit'])->name('postbookings.edit');
 Route::middleware(['manager'])->put('/postbookings/{postBooking}', [PostBookingController::class, 'update'])->name('postbookings.update');
 Route::middleware(['manager'])->delete('/postbookings/{postBooking}', [PostBookingController::class, 'destroy'])->name('postbookings.destroy');
+
+
+
+Route::get('vehicle_owners', [VehicleOwnerController::class, 'index'])->name('vehicle_owners.index');
+Route::get('vehicle_owners/create', [VehicleOwnerController::class, 'create'])->name('vehicle_owners.create');
+Route::post('vehicle_owners', [VehicleOwnerController::class, 'store'])->name('vehicle_owners.store');
+Route::get('vehicle_owners/{vehicleOwner}', [VehicleOwnerController::class, 'show'])->name('vehicle_owners.show');
+Route::get('vehicle_owners/{vehicleOwner}/edit', [VehicleOwnerController::class, 'edit'])->name('vehicle_owners.edit');
+Route::put('vehicle_owners/{vehicleOwner}', [VehicleOwnerController::class, 'update'])->name('vehicle_owners.update');
+Route::delete('vehicle_owners/{vehicleOwner}', [VehicleOwnerController::class, 'destroy'])->name('vehicle_owners.destroy');
 
 
 

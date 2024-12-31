@@ -11,6 +11,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
+
+    <style>
+        /* Custom CSS to reduce the row size */
+        .table td,
+        .table th {
+            padding: 5px;
+            /* Reduce padding to make rows smaller */
+            vertical-align: middle;
+            /* Center content vertically */
+        }
+
+        /* Styling for action buttons */
+        .action-buttons a {
+            padding: 5px 10px;
+            text-decoration: none;
+            color: white;
+            border-radius: 4px;
+        }
+
+        .edit-button {
+            background-color: #4CAF50;
+            /* Green */
+        }
+
+        .delete-button {
+            background-color: #f44336;
+            /* Red */
+        }
+
+        .action-buttons a:hover {
+            opacity: 0.8;
+        }
+    </style>
 </head>
 
 <body>
@@ -45,7 +78,7 @@
                                 alt="Dashboard" class="nav-icon"> DASHBOARD</a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link"><img src="{{ asset('images/2.png') }}" alt="Vehicles" class="nav-icon">
+                        <a class="nav-link active"><img src="{{ asset('images/2.png') }}" alt="Vehicles" class="nav-icon">
                             VEHICLES</a>
                         <div class="dropdown-menu">
                             <a class="dropdown-link" href="{{ url('addvehicle') }}">Add Vehicle</a>
@@ -63,7 +96,7 @@
                         </div>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link active"><img src="{{ asset('images/4.png') }}" alt="Customers" class="nav-icon">
+                        <a class="nav-link"><img src="{{ asset('images/4.png') }}" alt="Customers" class="nav-icon">
                             CUSTOMERS</a>
                         <div class="dropdown-menu">
                             <a class="dropdown-link" href="{{ url('/customers/create') }}">Add Customer</a>
@@ -91,67 +124,77 @@
                 </nav>
             </div>
 
-
-            <!-- Form Section -->
-
             <div class="content">
-                <form method="POST" action="{{ route('customers.store') }}" enctype="multipart/form-data">
-                    @csrf
+                <div class="card6-form-row">
                     <div class="form-section">
-                        {{-- error handling --}}
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
+                        {{-- Search --}}
+                        <form action="{{ url('vehicle_owners') }}" method="GET">
+                            <div class="form-row">
+                                <!-- Full Name Search Field -->
+                                <input type="text" name="full_name" placeholder="Search by Full Name" value="{{ request('full_name') }}">
+                        
+                                <!-- Vehicle Number Search Field -->
+                                <input type="text" name="vehicle_number" placeholder="Search by Vehicle Number" value="{{ request('vehicle_number') }}">
+                        
+                                <div class="card1">
+                                    <div class="card1-content">
+                                        <button type="submit" class="btn-search">SEARCH</button>||
+                                        <a href="{{ url('/vehicle_owners') }}" class="btn-search">Clear</a>
+                                    </div>
+                                </div>
                             </div>
-                        @endif
+                        </form>
+                        
+                        <div class="card1-content">
+                            <div class="welcome-message">
+                                {{-- <h1>Hi! Welcome Back</h1> --}}
+                            </div>
+                            <div class="card1-submit-container">
+                                <a class="nav-link" href="{{ route('vehicle_owners.create') }}"
+                                    class="card1-btn-submit">Add Vehicle Owner</a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
 
-                        <div class="form-row">
-                            <select id="title" name="title" class="selection-list">
-                                <option value="" disabled selected>Title</option>
-                                <option value="Mr">Mr</option>
-                                <option value="Mrs">Mrs</option>
-                            </select>
-                            <input type="text" id="full_name" name="full_name" placeholder="Full name" required>
-                        </div>
-                        <div class="form-row">
-                            <input type="tel" id="phone" name="phone" placeholder="Mobile number" required>
-                            <input type="tel" id="whatsapp" name="whatsapp" placeholder="+94 71 123 4567" required 
-                            pattern="^\+\d{1,3} \d{2,3} \d{3} \d{4}$" 
-                            title="Please enter a valid phone number with country code (e.g., +94 71 123 4567)">
-                                                 <input type="email" id="email" name="email" placeholder="E-mail address">
-                        </div>
-                        <div class="form-row">
-                            <input type="text" id="nic" name="nic" placeholder="NIC Number" required>
-                            <input type="text" id="address" name="address" class="address-input"
-                                placeholder="Address" required>
-                        </div>
-                        <div class="form-row">
-                            <div class="upload-section">
-                                <label for="nic_photos" class="upload-label">
-                                    <p>Upload NIC</p>
-                                    <input type="file" name="nic_photos[]" id="nic_photos" multiple
-                                        class="file-input">
-                                </label>
-                            </div>
-                            <div class="upload-section">
-                                <label for="dl_photos" class="upload-label">
-                                    <p>Upload Driving Lisance</p>
-                                    <input type="file" name="dl_photos[]" id="dl_photos" multiple
-                                        class="file-input">
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Submit Button -->
-                    <div class="submit-container">
-                        <button type="submit" class="btn-submit">CANCEL</button>
-                        <button type="submit" class="btn-submit">Submit</button>
-                    </div>
-                </form>
+                <!-- Table Content -->
+                <div class="table-content">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                {{-- <th>CUS ID</th> --}}
+                                <th>Owner Name</th>
+                                <th>Vehicle</th>
+                                <th>M/NUMBER</th>
+                                <th>Address</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($vehicleOwners as $vehicleOwner)
+                            <tr onclick="window.location='{{ route('vehicle_owners.show', $vehicleOwner->id) }}'" style="cursor: pointer;">
+                                <td>{{ $vehicleOwner->title }}. {{ $vehicleOwner->full_name }}</td>
+                                <td>{{ $vehicleOwner->vehicle_name }}[{{ $vehicleOwner->vehicle_number}}]</td>
+                                <td>{{ $vehicleOwner->phone }}</td>
+                                <td>{{ $vehicleOwner->address }}</td>
+                                <td>{{ $vehicleOwner->start_date }}</td>
+                                <td>{{ $vehicleOwner->end_date ?? 'No End Date Exists' }}</td>
+                                <td class="button-cell">
+                                    <a href="{{ route('vehicle_owners.edit', $vehicleOwner->id) }}" class="btn-edit">Edit</a>
+                                    <form action="{{ route('vehicle_owners.destroy', $vehicleOwner->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this vehicleowner?')">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                        </table>
+                </div>
             </div>
         </div>
 
@@ -161,28 +204,5 @@
         </div>
     </div>
 </body>
-<script>
-    var input = document.querySelector("#phone");
-    window.intlTelInput(input, {
-        initialCountry: "auto",
-        geoIpLookup: function(success, failure) {
-            fetch("https://ipinfo.io", {
-                    headers: {
-                        "Accept": "application/json"
-                    }
-                })
-                .then(function(resp) {
-                    return resp.json();
-                })
-                .then(function(resp) {
-                    success(resp.country);
-                })
-                .catch(function() {
-                    success("us");
-                });
-        },
-        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
-    });
-</script>
 
 </html>
