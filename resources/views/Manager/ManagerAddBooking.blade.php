@@ -451,7 +451,7 @@
             list-style-type: none;
             padding: 0;
             margin-top: 3%;
-            margin-left: 19%;
+            margin-left: 15%;
             width: 20%;
             align-content: left;
         }
