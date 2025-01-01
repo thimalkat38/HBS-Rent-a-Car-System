@@ -20,11 +20,7 @@
             box-sizing: border-box;
             background-color: #f8f9fa;
         }
-        .container {
-            max-height: 90vh; /* Adjusts max height to fit within the screen */
-            overflow-y: auto;
-            padding: 1rem;
-        }
+
         .card-body {
             padding: 0.5rem; /* Reduces padding inside cards */
         }
@@ -33,26 +29,26 @@
         }
         /* Font size adjustments */
         h1 {
-            font-size: 1.5rem; /* Reduced main heading font size */
+            font-size: 2rem; /* Reduced main heading font size */
+            text-align: center;
+            margin-left: 20%;
         }
-        h5, h6 {
-            font-size: 1rem; /* Reduced subheading font size */
+        h5 {
+            font-size: 1.6rem; /* Reduced subheading font size */
+            margin-bottom: 0;
+            te
         }
         p, button, .text-muted {
-            font-size: 0.875rem; /* Reduced paragraph and button font size */
+            font-size: 1.2rem; /* Reduced paragraph and button font size */
         }
     </style>
 </head>
 <body>
-
-    <div class="container my-3">
-        <div class="row">
-            <div class="col-12">
-                <h1 class="text-center mb-3">vehicle's Details</h1>
-
+<div class="container">
+    <div class="content">
                 @if($vehicle)
-                <div class="card shadow-sm">
-                    <div class="card-body">
+                <div class="form-section">
+                        <h1>vehicle's Details</h1>
                         <h5 class="card-title text-primary mb-3">Vehicle Informations</h5>
                         <p><strong>Vehcile:</strong> <span id="fullName">{{ $vehicle->vehicle_model }} {{ $vehicle->vehicle_name }} [{{ $vehicle->vehicle_type }}]</span></p>
                         <p><strong>Register Number:</strong> <span id="mobileNumber">{{ $vehicle->vehicle_number }}</span></p>
@@ -67,9 +63,8 @@
 
                         <!-- Photos Section -->
                         <h5 class="card-title text-primary mt-3 mb-2">Photos</h5>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
+                            <div class="form-section">
+                               
                                     @if(!empty($vehicle->images))
                                         @foreach($vehicle->images as $photo)
                                             <div class="col-6 col-md-4 col-lg-3 mb-3">
@@ -80,26 +75,27 @@
                                         <p class="text-muted">No Images for this vehicle.</p>
                                     @endif
                                 </div>
-                            </div>
-                        </div>
+                        
 
                         <!-- Edit and Delete Buttons -->
-                        <div class="mt-3">
-                            <a href="{{ route('vehicles.edit', $vehicle->id) }}" class="btn btn-warning">Edit vehicle</a>
+                        <div class="submit-container">
+                            <div class="form-row">
+                            <a href="{{ route('vehicles.edit', $vehicle->id) }}" class="btn-edit">Edit vehicle</a>
 
-                            <form action="{{ route('vehicles.destroy', $vehicle->id) }}" method="POST" class="d-inline">
+                            <form action="{{ route('vehicles.destroy', $vehicle->id) }}" method="POST" >
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this vehicle?')">Delete vehicle</button>
+                                <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this vehicle?')">Delete vehicle</button>
                             </form>
                         </div>
-                    </div>
+                        </div>
+                    
                 </div>
                 @else
                 <p class="text-center text-danger mt-3">No vehicle found.</p>
                 @endif
-            </div>
-        </div>
+    </div>
     </div>  
 </body>
 </html>
+
