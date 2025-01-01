@@ -128,73 +128,72 @@
                 <div class="card6-form-row">
                     <div class="form-section">
                         {{-- Search --}}
-                        <form action="{{ url('vehicle_owners') }}" method="GET">
+                        <form action="{{ url('ownerpayments') }}" method="GET">
                             <div class="form-row">
                                 <!-- Full Name Search Field -->
-                                <input type="text" name="full_name" placeholder="Search by Full Name" value="{{ request('full_name') }}">
-                        
-                                <!-- Vehicle Number Search Field -->
-                                <input type="text" name="vehicle_number" placeholder="Search by Vehicle Number" value="{{ request('vehicle_number') }}">
-                        
+                                <input 
+                                    type="text" 
+                                    name="full_name" 
+                                    placeholder="Type Owners Name to Find Payments" 
+                                    value="{{ request('full_name') }}" 
+                                >
                                 <div class="card1">
                                     <div class="card1-content">
-                                        <button type="submit" class="btn-search">SEARCH</button>||
-                                        <a href="{{ url('/vehicle_owners') }}" class="btn-search">Clear</a>
+                                        <button type="submit" class="btn-search">SEARCH</button> ||
+                                        <a href="{{ url('ownerpayments') }}" class="btn-search">Clear</a>
                                     </div>
                                 </div>
                             </div>
                         </form>
                         
+                        
                         <div class="card1-content">
-                            <div class="card1-submit-container">
-                                <a class="nav-link" href="{{ route('ownerpayments.index') }}"
-                                    class="card1-btn-submit">Payment Informations</a>
+                            <div class="welcome-message">
+                                {{-- <h1>Hi! Welcome Back</h1> --}}
                             </div>
                             <div class="card1-submit-container">
-                                <a class="nav-link" href="{{ route('vehicle_owners.create') }}"
-                                    class="card1-btn-submit">Add Vehicle Owner</a>
+                                <a class="nav-link" href="{{ route('ownerpayments.create') }}"
+                                    class="card1-btn-submit">Add New Payment</a>
                             </div>
                         </div>
                         
                     </div>
                 </div>
-
                 <!-- Table Content -->
                 <div class="table-content">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                {{-- <th>CUS ID</th> --}}
                                 <th>Owner Name</th>
                                 <th>Vehicle</th>
-                                <th>M/NUMBER</th>
-                                <th>Address</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
+                                <th>Payment Date</th>
+                                <th>Paid Amount</th>
+                                <th>Bank Details</th>
+                                <th>Account Number</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($vehicleOwners as $vehicleOwner)
-                            <tr onclick="window.location='{{ route('vehicle_owners.show', $vehicleOwner->id) }}'" style="cursor: pointer;">
-                                <td>{{ $vehicleOwner->title }}. {{ $vehicleOwner->full_name }}</td>
-                                <td>{{ $vehicleOwner->vehicle_name }}[{{ $vehicleOwner->vehicle_number}}]</td>
-                                <td>{{ $vehicleOwner->phone }}</td>
-                                <td>{{ $vehicleOwner->address }}</td>
-                                <td>{{ $vehicleOwner->start_date }}</td>
-                                <td>{{ $vehicleOwner->end_date ?? 'No End Date Exists' }}</td>
-                                <td class="button-cell">
-                                    <a href="{{ route('vehicle_owners.edit', $vehicleOwner->id) }}" class="btn-edit">Edit</a>
-                                    <form action="{{ route('vehicle_owners.destroy', $vehicleOwner->id) }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this vehicleowner?')">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
+                            @foreach ($ownerpayments as $ownerpayment)
+                                <tr>
+                                    <td>{{ $ownerpayment->full_name }}</td>
+                                    <td>{{ $ownerpayment->vehicle }}</td>
+                                    <td>{{ $ownerpayment->date }}</td>
+                                    <td>{{ $ownerpayment->paid_amnt }}</td>
+                                    <td>{{ $ownerpayment->bank_details }}</td>
+                                    <td>{{ $ownerpayment->acc_no }}</td>
+                                    <td class="button-cell">
+                                        <a href="{{ route('ownerpayments.edit', $ownerpayment->id) }}" class="btn-edit">Edit</a>
+                                        <form action="{{ route('ownerpayments.destroy', $ownerpayment->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this payment?')">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
-                        </table>
+                    </table>                    
                 </div>
             </div>
         </div>

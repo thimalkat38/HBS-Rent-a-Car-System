@@ -15,6 +15,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CrmController;
 use App\Http\Controllers\PostBookingController;
 use App\Http\Controllers\VehicleOwnerController;
+use App\Http\Controllers\OwnerpaymentController;
 // use App\Models\Employee;
 
 Route::get('/', function () {
@@ -219,13 +220,13 @@ Route::middleware(['manager'])->delete('/postbookings/{postBooking}', [PostBooki
 
 
 
-Route::get('vehicle_owners', [VehicleOwnerController::class, 'index'])->name('vehicle_owners.index');
-Route::get('vehicle_owners/create', [VehicleOwnerController::class, 'create'])->name('vehicle_owners.create');
-Route::post('vehicle_owners', [VehicleOwnerController::class, 'store'])->name('vehicle_owners.store');
-Route::get('vehicle_owners/{vehicleOwner}', [VehicleOwnerController::class, 'show'])->name('vehicle_owners.show');
-Route::get('vehicle_owners/{vehicleOwner}/edit', [VehicleOwnerController::class, 'edit'])->name('vehicle_owners.edit');
-Route::put('vehicle_owners/{vehicleOwner}', [VehicleOwnerController::class, 'update'])->name('vehicle_owners.update');
-Route::delete('vehicle_owners/{vehicleOwner}', [VehicleOwnerController::class, 'destroy'])->name('vehicle_owners.destroy');
+Route::middleware(['manager'])->get('vehicle_owners', [VehicleOwnerController::class, 'index'])->name('vehicle_owners.index');
+Route::middleware(['manager'])->get('vehicle_owners/create', [VehicleOwnerController::class, 'create'])->name('vehicle_owners.create');
+Route::middleware(['manager'])->post('vehicle_owners', [VehicleOwnerController::class, 'store'])->name('vehicle_owners.store');
+Route::middleware(['manager'])->get('vehicle_owners/{vehicleOwner}', [VehicleOwnerController::class, 'show'])->name('vehicle_owners.show');
+Route::middleware(['manager'])->get('vehicle_owners/{vehicleOwner}/edit', [VehicleOwnerController::class, 'edit'])->name('vehicle_owners.edit');
+Route::middleware(['manager'])->put('vehicle_owners/{vehicleOwner}', [VehicleOwnerController::class, 'update'])->name('vehicle_owners.update');
+Route::middleware(['manager'])->delete('vehicle_owners/{vehicleOwner}', [VehicleOwnerController::class, 'destroy'])->name('vehicle_owners.destroy');
 
 
 
@@ -267,3 +268,13 @@ Route::get('/link', function () {
 
     return 'Files and directories copied to public/storage successfully.';
 });
+
+
+
+Route::middleware(['manager'])->get('ownerpayments', [OwnerpaymentController::class, 'index'])->name('ownerpayments.index');
+Route::middleware(['manager'])->get('ownerpayments/create', [OwnerpaymentController::class, 'create'])->name('ownerpayments.create');
+Route::middleware(['manager'])->post('ownerpayments', [OwnerpaymentController::class, 'store'])->name('ownerpayments.store');
+Route::middleware(['manager'])->get('ownerpayments/{ownerpayment}', [OwnerpaymentController::class, 'show'])->name('ownerpayments.show');
+Route::middleware(['manager'])->get('ownerpayments/{ownerpayment}/edit', [OwnerpaymentController::class, 'edit'])->name('ownerpayments.edit');
+Route::middleware(['manager'])->put('ownerpayments/{ownerpayment}', [OwnerpaymentController::class, 'update'])->name('ownerpayments.update');
+Route::middleware(['manager'])->delete('ownerpayments/{ownerpayment}', [OwnerpaymentController::class, 'destroy'])->name('ownerpayments.destroy');
