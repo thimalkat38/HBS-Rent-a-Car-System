@@ -111,6 +111,8 @@
                                 <option value="" disabled selected>Select Title</option>
                                 <option value="Mr" {{ old('title') == 'Mr' ? 'selected' : '' }}>Mr</option>
                                 <option value="Mrs" {{ old('title') == 'Mrs' ? 'selected' : '' }}>Mrs</option>
+                                <option value="Miss" {{ old('title') == 'Miss' ? 'selected' : '' }}>Miss</option>
+                                <option value="Ms" {{ old('title') == 'Ms' ? 'selected' : '' }}>Ms</option>
                             </select>
                             @error('title')
                                 <div class="error-message">{{ $message }}</div>
