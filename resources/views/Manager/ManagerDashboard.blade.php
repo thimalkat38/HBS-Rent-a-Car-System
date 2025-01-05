@@ -259,6 +259,7 @@
             position: absolute;
             right: 10px;
             cursor: pointer;
+            color: red
         }
     </style>
 </body>

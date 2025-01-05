@@ -220,7 +220,7 @@
                             <input type="text" name="full_name" id="full_name" value="{{ $booking->full_name }}"
                                 readonly>
                             <label for="v_name">NIC</label>
-                            <input type="text" name="nic" id="nic" value="{{ $booking->nic }}" readonly>
+                            <input type="text" name="nic" id="nic" value="{{ $booking->nic }}">
                             <label for="from-date">Contact Number</label>
                             <input type="text" name="mobile_number" id="mobile_number"
                                 value="{{ $booking->mobile_number }}" readonly>
@@ -318,10 +318,12 @@
                                     <input type="hidden" name="vehicle_checked" value="0">
                                     <input type="checkbox" name="vehicle_checked" id="checked" value="1">
                                     <label for="checked">Vehicle Checked</label>
-                                    <div class="form-row">
-                                        <label for="officer">Checked <br>Officer's Name</label>
-                                        <input type="text" name="officer" id="officer" >
-                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <label for="officer">Relesed <br>Officer's Name</label>
+                                    <input type="text" name="rel_officer" id="rel_officer" value="{{$booking->officer}}" readonly>
+                                    <label for="officer">Checked <br>Officer's Name</label>
+                                    <input type="text" name="officer" id="officer" >
                                 </div>
 
 

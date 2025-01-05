@@ -50,7 +50,7 @@
                     @enderror
 
                     <label for="nic" class="form-label">NIC</label>
-                    <input type="text" name="nic" id="nic" class="form-control" value="{{ old('nic', $booking->nic) }}" readonly>
+                    <input type="text" name="nic" id="nic" class="form-control" value="{{ old('nic', $booking->nic) }}" >
                     @error('nic')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
