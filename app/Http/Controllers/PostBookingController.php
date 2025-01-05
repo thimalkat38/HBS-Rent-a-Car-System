@@ -74,15 +74,21 @@ class PostBookingController extends Controller
             'deposit_refunded' => 'nullable|boolean',
             'vehicle_checked' => 'nullable|boolean',
             'officer' => 'nullable|string',
+            'rel_officer' => 'nullable|string',
         ]);
     
         PostBooking::create($validated);
-
+    
         $booking = Booking::find($request->id); // Assuming `id` is passed in the form
-    $booking->update(['status' => 'Completed']);
+    
+        if ($booking) {
+            $booking->update(['status' => 'Completed']);
+            $booking->delete(); // Deletes the booking record after updating the status
+        }
     
         return redirect()->route('bookings.index');
     }
+    
     
 
     /**

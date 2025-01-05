@@ -33,6 +33,7 @@ class PostBooking extends Model
         'deposit_refunded',
         'vehicle_checked',
         'officer',
+        'rel_officer',
     ];
 
     protected $casts = [
