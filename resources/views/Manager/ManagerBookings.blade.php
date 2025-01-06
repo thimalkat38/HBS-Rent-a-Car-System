@@ -144,7 +144,7 @@
                                 <th>Discount Price</th>
                                 <th>Payed</th>
                                 <th>Balance</th>
-                                <th>Actions</th>
+                                <th style="width: 300px;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>

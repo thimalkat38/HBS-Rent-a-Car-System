@@ -86,13 +86,13 @@
 
                 <div class="form-row">
                     <label for="vehicle_number" class="form-label">Vehicle Number</label>
-                    <input type="text" name="vehicle_number" id="vehicle_number" class="form-control" value="{{ old('vehicle_number', $booking->vehicle_number) }}" readonly>
+                    <input type="text" name="vehicle_number" id="vehicle_number" class="form-control" value="{{ old('vehicle_number', $booking->vehicle_number) }}">
                     @error('vehicle_number')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
 
                     <label for="vehicle_name" class="form-label">Vehicle Name</label>
-                    <input type="text" name="vehicle_name" id="vehicle_name" class="form-control" value="{{ old('vehicle_name', $booking->vehicle_name) }}" readonly>
+                    <input type="text" name="vehicle_name" id="vehicle_name" class="form-control" value="{{ old('vehicle_name', $booking->vehicle_name) }}">
                     @error('vehicle_name')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -112,7 +112,33 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
-
+                <div class ="form-row">
+                    <label for="additional_chagers" class="form-label">Additional Chagers</label>
+                    <input type="text" name="additional_chagers" class="form-control" value="{{ old('additional_chagers', $booking->additional_chagers) }}" >
+                    @error('additional_chagers')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                    <label for="reason" class="form-label">Reason For Add chg</label>
+                    <input type="text" name="reason" class="form-control" value="{{ old('reason', $booking->reason) }}" >
+                    @error('reason')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                    <label for="discount_price" class="form-label">Discount Price</label>
+                    <input type="text" name="discount_price" class="form-control" value="{{ old('discount_price', $booking->discount_price) }}" >
+                    @error('discount_price')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                    <label for="payed" class="form-label">Paid</label>
+                    <input type="text" name="payed" class="form-control" value="{{ old('payed', $booking->payed) }}" >
+                    @error('payed')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                    <label for="price" class="form-label">Total Price</label>
+                    <input type="text" name="price" class="form-control" value="{{ old('price', $booking->price) }}" >
+                    @error('price')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
                 <div class="form-row">
                     <label for="driving_photos" class="form-label">Update Driving Photos</label>
                     <input type="file" name="driving_photos[]" id="driving_photos" class="form-control" multiple>
