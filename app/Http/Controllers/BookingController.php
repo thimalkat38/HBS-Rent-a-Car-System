@@ -163,6 +163,11 @@ class BookingController extends Controller
             'method' => 'nullable|string',
             'payed' => 'nullable|numeric',
             'price' => 'nullable|numeric',
+            'discount_price' =>'nullable|string',
+            'additional_chagers'=>'nullable|string',
+            'price' =>'nullable|string',
+            'deposit' =>'nullable|string',
+            'reason' =>'nullable|string',
             'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
             'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);
