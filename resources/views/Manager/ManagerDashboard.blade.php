@@ -209,7 +209,7 @@
                                         <ul>
                                             ${data.out_bookings.map(booking => `
                                                 <li>
-                                                    ${booking.vehicle_number} - ${booking.vehicle_name} [${booking.booking_time}]
+                                                    ${booking.vehicle_number} - ${booking.vehicle_name} [${booking.arrival_time}]
                                                 </li>
                                             `).join('')}
                                         </ul>`;
