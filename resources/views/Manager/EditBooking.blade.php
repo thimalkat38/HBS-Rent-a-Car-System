@@ -86,7 +86,7 @@
 
                 <div class="form-row">
                     <label for="vehicle_number" class="form-label">Vehicle Number</label>
-                    <input type="text" name="vehicle_number" id="vehicle_number" class="form-control" value="{{ old('vehicle_number', $booking->vehicle_number) }}">
+                    <input type="text" id="vehicle_number" name="vehicle_number" list="vehicle_numbers" class="block w-full mt-1" placeholder="Enter vehicle number" maxlength="8" oninput="formatVehicleNumber(this)">
                     @error('vehicle_number')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -114,7 +114,7 @@
                 </div>
                 <div class ="form-row">
                     <label for="additional_chagers" class="form-label">Additional Chagers</label>
-                    <input type="text" name="additional_chagers" class="form-control" value="{{ old('additional_chagers', $booking->additional_chagers) }}" >
+                    <input type="text" name="additional_chagers" class="form-control" id="additional_chagers" value="{{ old('additional_chagers', $booking->additional_chagers) }}" >
                     @error('additional_chagers')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -124,17 +124,17 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                     <label for="discount_price" class="form-label">Discount Price</label>
-                    <input type="text" name="discount_price" class="form-control" value="{{ old('discount_price', $booking->discount_price) }}" >
+                    <input type="text" name="discount_price" class="form-control" id="discount_price" value="{{ old('discount_price', $booking->discount_price) }}" >
                     @error('discount_price')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                     <label for="payed" class="form-label">Paid</label>
-                    <input type="text" name="payed" class="form-control" value="{{ old('payed', $booking->payed) }}" >
+                    <input type="text" name="payed" class="form-control" id="payed" value="{{ old('payed', $booking->payed) }}" >
                     @error('payed')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                     <label for="price" class="form-label">Total Price</label>
-                    <input type="text" name="price" class="form-control" value="{{ old('price', $booking->price) }}" >
+                    <input type="text" name="price" class="form-control" id="price" value="{{ old('price', $booking->price) }}" >
                     @error('price')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -163,4 +163,83 @@
         </form>
     </div>
 </body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const additionalChagers = document.getElementById('additional_chagers');
+        const discountPrice = document.getElementById('discount_price');
+        const payed = document.getElementById('payed');
+        const price = document.getElementById('price');
+    
+        // Store the initial values
+        let initialAdditionalChagers = parseFloat(additionalChagers.value) || 0;
+        let initialDiscountPrice = parseFloat(discountPrice.value) || 0;
+        let initialPayed = parseFloat(payed.value) || 0;
+        let initialPrice = parseFloat(price.value) || 0;
+    
+        function calculateTotalPrice() {
+            // Get the current values
+            const currentAdditionalChagers = parseFloat(additionalChagers.value) || 0;
+            const currentDiscountPrice = parseFloat(discountPrice.value) || 0;
+            const currentPayed = parseFloat(payed.value) || 0;
+    
+            // Calculate the differences
+            const additionalDiff = currentAdditionalChagers - initialAdditionalChagers;
+            const discountDiff = currentDiscountPrice - initialDiscountPrice;
+            const payedDiff = currentPayed - initialPayed;
+    
+            // Update the initial values to the current ones
+            initialAdditionalChagers = currentAdditionalChagers;
+            initialDiscountPrice = currentDiscountPrice;
+            initialPayed = currentPayed;
+    
+            // Update the price based on the differences
+            let totalPrice = initialPrice + additionalDiff - discountDiff - payedDiff;
+    
+            // Update the price field
+            price.value = totalPrice.toFixed(2); // Keep two decimal places
+    
+            // Update the initial price to reflect the new total
+            initialPrice = totalPrice;
+        }
+    
+        // Attach the calculate function to the input events of the fields
+        additionalChagers.addEventListener('input', calculateTotalPrice);
+        discountPrice.addEventListener('input', calculateTotalPrice);
+        payed.addEventListener('input', calculateTotalPrice);
+    });
+    </script>
+    <script>
+        document.getElementById('vehicle_number').addEventListener('change', function() {
+    const vehicleNumber = this.value;
+
+    fetch(`/vehicles/get-details/${vehicleNumber}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.vehicle_name) {
+                document.getElementById('vehicle_name').value = `${data.vehicle_model} ${data.vehicle_name}`;
+            } else {
+                alert(data.message || 'Vehicle details not found');
+                document.getElementById('vehicle_name').value = '';
+            }
+        })
+        .catch(error => console.error('Error fetching vehicle details:', error));
+});
+
+    </script>  
+    <script>
+        function formatVehicleNumber(input) {
+            // Remove all characters that are not uppercase letters, digits, or "-"
+            input.value = input.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+            
+            // Ensure it follows the pattern "AAA-1234"
+            const match = input.value.match(/^([A-Z]{0,3})(-?)([0-9]{0,4})$/);
+            if (match) {
+                input.value = (match[1] || '') + (match[3] ? '-' + match[3] : '');
+            }
+        }  
+        </script>
+    
+    
+    
 </html>

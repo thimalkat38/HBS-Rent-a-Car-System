@@ -69,9 +69,14 @@ class BookingController extends Controller
             'officer' => 'nullable|string',
             'reason' => 'nullable|string',
             'method' => 'nullable|string',
+            'guarantor' => 'nullable|string',
+            'extra_km_chg' => 'nullable|string',
+            'free_km' => 'nullable|string',
+            'start_km' => 'nullable|string',
             'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'deposit_img.*' => 'nullable|file|mimes:jpg,jpeg,png',
+            'grnt_nic.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'status' => 'nullable',
         ]);
 
@@ -101,6 +106,9 @@ class BookingController extends Controller
         $booking->deposit_img = $request->hasFile('deposit_img')
             ? $this->uploadFiles($request->file('deposit_img'), 'deposit_img')
             : [];
+        $booking->grnt_nic = $request->hasFile('grnt_nic')
+            ? $this->uploadFiles($request->file('grnt_nic'), 'grnt_nic')
+            : [];            
 
         $booking->save();
 

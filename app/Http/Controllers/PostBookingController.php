@@ -75,6 +75,7 @@ class PostBookingController extends Controller
             'vehicle_checked' => 'nullable|boolean',
             'officer' => 'nullable|string',
             'rel_officer' => 'nullable|string',
+            'agn' => 'nullable|string',
         ]);
     
         PostBooking::create($validated);

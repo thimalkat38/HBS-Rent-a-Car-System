@@ -240,6 +240,20 @@
                             <input type="text" name="to_date" id="to_date" value="{{ $booking->to_date }}"
                                 readonly>
                         </div><br>
+                        <div class="form-row">
+                            <label for="start_km">Starting Mileage</label>
+                            <input type="text" name="start_km" id="start_km" value="{{ $booking->start_km }}" readonly>
+                            <label for="end_km">Ending Mileage</label>
+                            <input type="text" name="end_km" id="end_km" required>
+                            <label for="drived">Drived Mileage</label>
+                            <input type="text" name="drived" id="drived" readonly>
+                            <label for="free_km">Free KM</label>
+                            <input type="text" name="free_km" id="free_km" value="{{ $booking->free_km }}" readonly>
+                            <label for="over">Over Drived KM</label>
+                            <input type="text" name="over" id="over" readonly>
+                            <label for="extra_km_chg">Extra 1KM charges</label>
+                            <input type="text" name="extra_km_chg" id="extra_km_chg" value="{{ $booking->extra_km_chg }}" readonly>
+                        </div>
                         <h3>Billing Information</h3>
                         <div class="form-row">
                             <label for="price">Before Base Price</label>
@@ -324,6 +338,10 @@
                                     <input type="text" name="rel_officer" id="rel_officer" value="{{$booking->officer}}" readonly>
                                     <label for="officer">Checked <br>Officer's Name</label>
                                     <input type="text" name="officer" id="officer" >
+                                </div>
+                                <div class="form-row">
+                                    <label for="officer">Agreement <br>Number</label>
+                                    <input type="text" name="agn" id="agn" >
                                 </div>
 
 
@@ -410,73 +428,60 @@
     });
 </script>
 <script>
-    // Original due value
-    const originalDue = parseFloat(document.getElementById('price').value) || 0;
+    function updateCalculations() {
+        const startKm = parseFloat(document.getElementById('start_km').value) || 0;
+        const endKm = parseFloat(document.getElementById('end_km').value) || 0;
+        const freeKm = parseFloat(document.getElementById('free_km').value) || 0;
+        const extraKmChg = parseFloat(document.getElementById('extra_km_chg').value) || 0;
 
-    function clearDefaultValue(input) {
-        // Clear the value only if it is the default "0.00"
-        if (input.value === "0.00") {
-            input.value = "";
-        }
-    }
-
-    function updateDue() {
-        // Get input values
         const additionalCharges = parseFloat(document.getElementById('after_additional').value) || 0;
         const discountPrice = parseFloat(document.getElementById('after_discount').value) || 0;
-
-        // New input values for extra charges
-        const extraKmCharges = parseFloat(document.getElementById('extra_km').value) || 0;
         const extraHoursCharges = parseFloat(document.getElementById('extra_hours').value) || 0;
         const damageFee = parseFloat(document.getElementById('damage_fee').value) || 0;
+        const payed = parseFloat(document.getElementById('payed').value) || 0;
+
+        const basePrice = parseFloat(document.getElementById('base_price').value) || 0;
+
+        // Calculate drived and over
+        const drived = endKm - startKm;
+        document.getElementById('drived').value = drived;
+
+        const over = drived - freeKm;
+        document.getElementById('over').value = over;
+
+        // Calculate extra km charges
+        const extraKm = over > 0 ? over * extraKmChg : 0;
+        document.getElementById('extra_km').value = extraKm.toFixed(2);
 
         // Calculate the updated due
-        const updatedDue = originalDue + additionalCharges + extraKmCharges + extraHoursCharges + damageFee - discountPrice;
-
-        // Update the due (price) field
-        document.getElementById('price').value = updatedDue.toFixed(2); // Ensure two decimal places
-    }
-
-    function updateTotalIncome() {
-        // Get input values
-        const basePrice = parseFloat(document.getElementById('base_price').value) || 0;
-        const additionalCharges = parseFloat(document.getElementById('after_additional').value) || 0;
-        const discountPrice = parseFloat(document.getElementById('after_discount').value) || 0;
-
-        // New input values for extra charges
-        const extraKmCharges = parseFloat(document.getElementById('extra_km').value) || 0;
-        const extraHoursCharges = parseFloat(document.getElementById('extra_hours').value) || 0;
-        const damageFee = parseFloat(document.getElementById('damage_fee').value) || 0;
+        const updatedDue = basePrice - payed + additionalCharges + extraKm + extraHoursCharges + damageFee - discountPrice;
+        document.getElementById('price').value = updatedDue.toFixed(2);
 
         // Calculate total income
-        const totalIncome = basePrice + additionalCharges + extraKmCharges + extraHoursCharges + damageFee - discountPrice;
-
-        // Update the Total Income field
-        document.getElementById('total_income').value = totalIncome.toFixed(2); // Ensure two decimal places
+        const totalIncome = basePrice + additionalCharges + extraKm + extraHoursCharges + damageFee - discountPrice;
+        document.getElementById('total_income').value = totalIncome.toFixed(2);
     }
 
-    // Initialize fields on page load
     document.addEventListener("DOMContentLoaded", function () {
-        // Set default values for the input fields
-        document.getElementById('after_additional').value = "0.00";
-        document.getElementById('after_discount').value = "0.00";
-        document.getElementById('extra_km').value = "0.00";
-        document.getElementById('extra_hours').value = "0.00";
-        document.getElementById('damage_fee').value = "0.00";
+        // Set default values
+        document.getElementById('after_additional').value = "0";
+        document.getElementById('after_discount').value = "0";
+        document.getElementById('extra_km').value = "0";
+        document.getElementById('extra_hours').value = "0";
+        document.getElementById('damage_fee').value = "0";
 
         const basePrice = parseFloat(document.getElementById('base_price').value) || 0;
-        document.getElementById('total_income').value = basePrice.toFixed(2); // Set initial value
-    });
+        document.getElementById('total_income').value = basePrice.toFixed(2);
 
-    // Add event listeners to recalculate on input
-    document.querySelectorAll('#after_additional, #after_discount, #extra_km, #extra_hours, #damage_fee').forEach(input => {
-        input.addEventListener('input', () => {
-            updateDue();
-            updateTotalIncome();
+        // Add event listeners to recalculate on input
+        document.querySelectorAll('#end_km, #after_additional, #after_discount, #extra_km, #extra_hours, #damage_fee').forEach(input => {
+            input.addEventListener('input', updateCalculations);
         });
+
+        // Initial calculation
+        updateCalculations();
     });
 </script>
-
 <style>
     .modal {
         display: none;

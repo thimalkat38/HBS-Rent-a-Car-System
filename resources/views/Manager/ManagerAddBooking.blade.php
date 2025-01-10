@@ -130,6 +130,11 @@
                             @error('deposit')
                             <span class="error-message">{{ $message }}</span>
                             @enderror
+
+                            <input type="text" name="guarantor" placeholder="Guarantor">
+                            @error('guarantor')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
                 
                         <div class="form-row">
@@ -152,7 +157,17 @@
                             @error('price_per_day')
                             <span class="error-message">{{ $message }}</span>
                             @enderror
-                
+                                                        
+                            <input type="text" name="extra_km_chg" id="extra_km_chg" placeholder="price for 1 Ex KM">
+                            @error('extra_km_chg')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                                            
+                            <input type="text" name="free_km" id="free_km" placeholder="Free KM">
+                            @error('free_km')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+
                             <input type="text" name="officer" placeholder="Released Officer">
                             @error('officer')
                             <span class="error-message">{{ $message }}</span>
@@ -182,6 +197,12 @@
                 
                             <input type="number" name="days" id="days" placeholder="Total Days" readonly>
                             @error('days')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+
+                            
+                            <input type="text" name="start_km" placeholder="Starting KM">
+                            @error('start_km')
                             <span class="error-message">{{ $message }}</span>
                             @enderror
                         </div>
@@ -238,19 +259,30 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="upload-section">
-                            <label for="deposit_img" class="upload-label">
-                                <p>Deposited Vehicle Images (If any)</p>
-                                <input type="file" name="deposit_img[]" id="deposit_img" multiple class="file-input">
-                            </label>
-                            @error('deposit_img')
-                            <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
+                        <div class="form-row">
+                            <div class="upload-section">
+                                <label for="deposit_img" class="upload-label">
+                                    <p>Deposited Vehicle Images (If any)</p>
+                                    <input type="file" name="deposit_img[]" id="deposit_img" multiple class="file-input">
+                                </label>
+                                @error('deposit_img')
+                                <span class="error-message">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="upload-section">
+                                <label for="grnt_nic" class="upload-label">
+                                    <p>Guarantor's NIC (if any)</p>
+                                    <input type="file" name="grnt_nic[]" id="grnt_nic" multiple class="file-input">
+                                </label>
+                                @error('grnt_nic')
+                                <span class="error-message">{{ $message }}</span>
+                                @enderror
+                            </div>
+                    </div>
                     </div>
                     <div class="submit-container">
                         <button type="reset" class="btn-submit">CANCEL</button>
-                        <button type="submit" class="btn-submit">SUBMIT</button>
+                        <button type="submit" class="btn-submit">BOOK</button>
                     </div>
                 </form>
                 
@@ -277,15 +309,19 @@
     fetch(`/vehicles/get-details/${vehicleNumber}`)
         .then(response => response.json())
         .then(data => {
-            if (data.fuel_type && data.vehicle_name && data.vehicle_model && data.price_per_day) {
+            if (data.fuel_type && data.vehicle_name && data.vehicle_model && data.price_per_day && data.extra_km_chg && data.free_km ) {
                 document.getElementById('fuel_type').value = data.fuel_type;
                 document.getElementById('vehicle_name').value = `${data.vehicle_model} ${data.vehicle_name}`;
                 document.getElementById('price_per_day').value = data.price_per_day;
+                document.getElementById('extra_km_chg').value = data.extra_km_chg;
+                document.getElementById('free_km').value = data.free_km;
             } else {
                 alert(data.message || 'Vehicle details not found');
                 document.getElementById('fuel_type').value = '';
                 document.getElementById('vehicle_name').value = '';
                 document.getElementById('price_per_day').value = '';
+                document.getElementById('extra_km_chg').value = '';
+                document.getElementById('free_km').value = '';
             }
         })
         .catch(error => console.error('Error fetching vehicle details:', error));

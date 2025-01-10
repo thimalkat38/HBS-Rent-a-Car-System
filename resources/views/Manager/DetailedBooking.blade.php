@@ -91,16 +91,20 @@
                             <p><strong>Vehicle Number:</strong> <span
                                     id="vehicleNumber">{{ $booking->vehicle_number }}</span></p>
                             <p><strong>Vehicle:</strong> <span id="vehicleModel">{{ $booking->vehicle_name }}</span></p>
-                            <p><strong>From Date:</strong> <span id="fromDate">{{ $booking->from_date }}
-                                    {{ $booking->booking_time }}</span></p>
-                            <p><strong>To Date:</strong> <span id="toDate">{{ $booking->to_date }}
-                                    {{ $booking->arrival_time }}</span></p>
+                            <p><strong>From Date:</strong> <span id="fromDate">{{ $booking->from_date }}</span></p>
+                                     <p><strong>From:</strong> <span
+                                        id="from">{{ $booking->booking_time}}</span></p>        
+                            <p><strong>To Date:</strong> <span id="toDate">{{ $booking->to_date }}</span></p>
+                                    <p><strong>To:</strong> <span
+                                        id="to">{{ $booking->arrival_time}}</span></p>
                             <p><strong>Deposit:</strong> <span
                                     id="deposit">{{ $booking->deposit ?? 'No Deposit..' }}</span></p>
-                            <p><strong>Released Officer:</strong> <span id="deposit">{{ $booking->officer }}</span>
+                            <p><strong>Guarantor:</strong> <span
+                                    id="grnter">{{ $booking->guarantor ?? 'No Guarantor..' }}</span></p>
+                            <p><strong>Released Officer:</strong> <span id="ofiicer">{{ $booking->officer }}</span>
                             </p>
                             <br>
-                            <h6 style="color: red">Deposit Vehicle Images</h6>
+                            <h6 style="color: red">Guarantee Images</h6>
                             <div class="row">
                                 @if (!empty($booking->deposit_img))
                                     @foreach ($booking->deposit_img as $photo)
@@ -112,21 +116,31 @@
                                 @else
                                     <p class="text-muted">No Deposit item Image Available.</p>
                                 @endif
+                                @if (!empty($booking->grnt_nic))
+                                @foreach ($booking->grnt_nic as $photo)
+                                    <div class="col-6 col-md-4 col-lg-3 mb-3">
+                                        <img src="{{ asset('storage/' . $photo) }}" class="img-fluid img-thumbnail"
+                                            alt="Grnt Photo">
+                                    </div>
+                                @endforeach
+                            @else
+                                <p class="text-muted">No Guarantee Image Available.</p>
+                            @endif
                             </div><br>
 
 
                             <!-- Updated Bill Information -->
                             <h5 class="card-title text-primary mt-3 mb-2">Bill Information</h5>
-                            <p><strong>Based Price:</strong><span id="basedPrice"> LKR
+                            <p><strong>Based Price:</strong><span id="basedPrice">
                                     {{ number_format($booking->price_per_day * $booking->days, 2) }}</p>
-                            <p><strong>Additional Charges:</strong><span id="addChg"> LKR
+                            <p><strong>Additional Charges:</strong><span id="addChg"> 
                                     {{ number_format($booking->additional_chagers, 2) }}</p>
-                            <p><strong>Discount Price:</strong><span id="discountPrice"> LKR
+                            <p><strong>Discount Price:</strong><span id="discountPrice"> 
                                     {{ number_format($booking->discount_price, 2) }}</p>
-                            <p><strong>Paid Amount:</strong><span id="PaidAmunt"> LKR
+                            <p><strong>Paid Amount:</strong><span id="PaidAmunt"> 
                                     {{ number_format($booking->payed, 2) }}</p>
                             <p><strong>Payment Note: </strong>{{ $booking->method }}</p>
-                            <p><strong>Amount Due:</strong><span id="due"> LKR
+                            <p><strong>Amount Due:</strong><span id="due"> 
                                     {{ number_format($booking->price, 2) }}</p>
                             <p><strong>Reason For Additional Charges:</strong> <span
                                     id="reason">{{ $booking->reason }}</span></p>
@@ -189,7 +203,7 @@
 
             <!-- PDF Generation Buttons -->
             <div class="col-12 text-center mt-3">
-                <button onclick="generatePDF();" class="btn btn-info">Download PDF</button>
+                {{-- <button onclick="generatePDF();" class="btn btn-info">Download PDF</button> --}}
                 <button onclick="printPDF();" class="btn btn-secondary">Print PDF</button>
             </div>
 
@@ -207,7 +221,7 @@
             try {
                 // Add header with background and logo
                 const logo = new Image();
-                logo.src = '{{ asset('images/logo.png') }}';
+                logo.src = '{{ asset('images/logo1.png') }}';
 
                 logo.onload = function() {
                     doc.setFillColor(255, 170, 0); // Header background color
@@ -235,7 +249,7 @@
                     // Customer Information
                     doc.setFontSize(12);
                     doc.setFont("helvetica", "normal");
-                    doc.text('Customer Information:', 10, currentY);
+                    doc.text('Customer Informations', 10, currentY);
                     currentY += lineSpacing;
 
                     doc.text('Full Name: ' + (document.getElementById('fullName')?.textContent || 'N/A'), 10,
@@ -251,7 +265,7 @@
                     currentY += lineSpacing + 5; // Extra space before the next section
 
                     // Booking Information
-                    doc.text('Booking Information:', 10, currentY);
+                    doc.text('Booking Informations', 10, currentY);
                     currentY += lineSpacing;
 
                     doc.text('Booking ID: ' + (document.getElementById('id')?.textContent || 'N/A'), 13, currentY);
@@ -262,16 +276,24 @@
                     doc.text('Vehicle Model: ' + (document.getElementById('vehicleModel')?.textContent || 'N/A'),
                         10, currentY);
                     currentY += lineSpacing;
-                    doc.text('From: ' + (document.getElementById('fromDate')?.textContent || 'N/A'), 10, currentY);
-                    currentY += lineSpacing;
-                    doc.text('To: ' + (document.getElementById('toDate')?.textContent || 'N/A'), 10, currentY);
-                    currentY += lineSpacing;
+                    doc.text('Start Date: ' + (document.getElementById('fromDate')?.textContent || 'N/A'), 10,
+                            currentY);
+                        currentY += lineSpacing;
+                        doc.text('Start Time: ' + (document.getElementById('from')?.textContent || 'N/A'), 10,
+                            currentY);
+                        currentY += lineSpacing;
+                        doc.text('End Date: ' + (document.getElementById('toDate')?.textContent || 'N/A'), 10,
+                            currentY);
+                        currentY += lineSpacing;
+                        doc.text('End Time: ' + (document.getElementById('to')?.textContent || 'N/A'), 10,
+                            currentY);
+                        currentY += lineSpacing;
                     doc.text('Deposit: ' + (document.getElementById('deposit')?.textContent || 'N/A'), 10,
                     currentY);
                     currentY += lineSpacing + 5;
 
                     // Billing Information
-                    doc.text('Billing Information:', 10, currentY);
+                    doc.text('Billing Informations', 10, currentY);
                     currentY += lineSpacing;
 
                     const labelX = 10; // Left-side X coordinate for labels
@@ -279,34 +301,34 @@
 
                     doc.setFont('courier', 'normal'); // Use monospaced font for better alignment
                     doc.text('Base Price:', labelX, currentY);
-                    doc.text('LKR ' + (document.getElementById('basedPrice')?.textContent || 'N/A'), valueX,
+                    doc.text((document.getElementById('basedPrice')?.textContent || 'N/A'), valueX,
                         currentY, {
                             align: 'right'
                         });
                     currentY += lineSpacing;
 
                     doc.text('Additional Charges (+):', labelX, currentY);
-                    doc.text('LKR ' + (document.getElementById('addChg')?.textContent || 'N/A'), valueX, currentY, {
+                    doc.text((document.getElementById('addChg')?.textContent || 'N/A'), valueX, currentY, {
                         align: 'right'
                     });
                     currentY += lineSpacing;
 
                     doc.text('Discount Price (-):', labelX, currentY);
-                    doc.text('LKR ' + (document.getElementById('discountPrice')?.textContent || 'N/A'), valueX,
+                    doc.text((document.getElementById('discountPrice')?.textContent || 'N/A'), valueX,
                         currentY, {
                             align: 'right'
                         });
                     currentY += lineSpacing;
 
                     doc.text('Paid Amount (-):', labelX, currentY);
-                    doc.text('LKR ' + (document.getElementById('PaidAmunt')?.textContent || 'N/A'), valueX,
+                    doc.text((document.getElementById('PaidAmunt')?.textContent || 'N/A'), valueX,
                         currentY, {
                             align: 'right'
                         });
                     currentY += lineSpacing;
 
                     doc.text('Amount Due:', labelX, currentY);
-                    doc.text('LKR ' + (document.getElementById('due')?.textContent || 'N/A'), valueX, currentY, {
+                    doc.text((document.getElementById('due')?.textContent || 'N/A'), valueX, currentY, {
                         align: 'right'
                     });
 
@@ -391,7 +413,7 @@
 
         async function generatePDFContent(doc) {
             const logo = new Image();
-            logo.src = '{{ asset('images/logo.png') }}';
+            logo.src = '{{ asset('images/logo1.png') }}';
 
             return new Promise((resolve, reject) => {
                 logo.onload = function() {
@@ -403,7 +425,7 @@
 
                         // Add header text
                         doc.setFontSize(10);
-                        doc.setTextColor(255, 255, 255); // White text
+                        doc.setTextColor(0, 0, 0); // Black text
                         doc.text('Bulagala, Dambulla', 70, 15);
                         doc.text(
                             'Phone: +94 777425008 / +94 777425008 | Email: info@rentacarsrilankahbs.com',
@@ -424,8 +446,9 @@
 
                         // Customer Information
                         doc.setFontSize(12);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text('Customer Informations', 10, currentY);
                         doc.setFont('helvetica', 'normal');
-                        doc.text('Customer Information:', 10, currentY);
                         currentY += lineSpacing;
                         doc.text('Full Name: ' + (document.getElementById('fullName')?.textContent ||
                             'N/A'), 10, currentY);
@@ -441,9 +464,11 @@
                         currentY += lineSpacing + 5;
 
                         // Booking Information
-                        doc.text('Booking Information:', 10, currentY);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text('Booking Informations', 10, currentY);
+                        doc.setFont('helvetica', 'normal');
                         currentY += lineSpacing;
-                        doc.text('Booking ID: ' + (document.getElementById('id')?.textContent || 'N/A'), 13,
+                        doc.text('Booking ID: ' + (document.getElementById('id')?.textContent || 'N/A'), 10,
                             currentY);
                         currentY += lineSpacing;
                         doc.text('Vehicle Number: ' + (document.getElementById('vehicleNumber')
@@ -452,10 +477,16 @@
                         doc.text('Vehicle Model: ' + (document.getElementById('vehicleModel')
                             ?.textContent || 'N/A'), 10, currentY);
                         currentY += lineSpacing;
-                        doc.text('From: ' + (document.getElementById('fromDate')?.textContent || 'N/A'), 10,
+                        doc.text('Start Date: ' + (document.getElementById('fromDate')?.textContent || 'N/A'), 10,
                             currentY);
                         currentY += lineSpacing;
-                        doc.text('To: ' + (document.getElementById('toDate')?.textContent || 'N/A'), 10,
+                        doc.text('Start Time: ' + (document.getElementById('from')?.textContent || 'N/A'), 10,
+                            currentY);
+                        currentY += lineSpacing;
+                        doc.text('End Date: ' + (document.getElementById('toDate')?.textContent || 'N/A'), 10,
+                            currentY);
+                        currentY += lineSpacing;
+                        doc.text('End Time: ' + (document.getElementById('to')?.textContent || 'N/A'), 10,
                             currentY);
                         currentY += lineSpacing;
                         doc.text('Deposit: ' + (document.getElementById('deposit')?.textContent || 'N/A'),
@@ -463,43 +494,45 @@
                         currentY += lineSpacing + 5;
 
                         // Billing Information
-                        doc.text('Billing Information:', 10, currentY);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text('Billing Informations', 10, currentY);
+                        doc.setFont('helvetica', 'normal');
                         currentY += lineSpacing;
 
                         const labelX = 10; // X position for labels
                         const valueX = 200; // X position for values (aligned right)
 
                         doc.setFont('courier', 'normal'); // Monospaced font for alignment
-                        doc.text('Base Price:', labelX, currentY);
-                        doc.text('LKR ' + (document.getElementById('basedPrice')?.textContent || 'N/A'),
+                        doc.text('Base Price(LKR):', labelX, currentY);
+                        doc.text((document.getElementById('basedPrice')?.textContent || 'N/A'),
                             valueX, currentY, {
                                 align: 'right'
                             });
                         currentY += lineSpacing;
 
-                        doc.text('Additional Charges (+):', labelX, currentY);
-                        doc.text('LKR ' + (document.getElementById('addChg')?.textContent || 'N/A'), valueX,
+                        doc.text('Additional Charges(LKR) (+):', labelX, currentY);
+                        doc.text((document.getElementById('addChg')?.textContent || 'N/A'), valueX,
                             currentY, {
                                 align: 'right'
                             });
                         currentY += lineSpacing;
 
-                        doc.text('Discount Price (-):', labelX, currentY);
-                        doc.text('LKR ' + (document.getElementById('discountPrice')?.textContent || 'N/A'),
+                        doc.text('Discount Price(LKR) (-):', labelX, currentY);
+                        doc.text((document.getElementById('discountPrice')?.textContent || 'N/A'),
                             valueX, currentY, {
                                 align: 'right'
                             });
                         currentY += lineSpacing;
 
-                        doc.text('Paid Amount (-):', labelX, currentY);
-                        doc.text('LKR ' + (document.getElementById('PaidAmunt')?.textContent || 'N/A'),
+                        doc.text('Paid Amount(LKR) (-):', labelX, currentY);
+                        doc.text((document.getElementById('PaidAmunt')?.textContent || 'N/A'),
                             valueX, currentY, {
                                 align: 'right'
                             });
                         currentY += lineSpacing;
 
-                        doc.text('Amount Due:', labelX, currentY);
-                        doc.text('LKR ' + (document.getElementById('due')?.textContent || 'N/A'), valueX,
+                        doc.text('Amount Due(LKR):', labelX, currentY);
+                        doc.text((document.getElementById('due')?.textContent || 'N/A'), valueX,
                             currentY, {
                                 align: 'right'
                             });
