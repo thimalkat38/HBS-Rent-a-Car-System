@@ -111,7 +111,7 @@
                             <th>AGE</th>
                             <th>NIC</th>
                             <th>ADDRESS</th>
-                            <th>Actions</th>
+                            <th style="width: 150px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -131,9 +131,7 @@
                                 <td>{{ $employee->email }}</td>
                                 <td>{{ $employee->age }}</td>
                                 <td>{{ $employee->nic }}</td>
-                                <td class="text-start">
-                                    {!! nl2br(e($employee->address)) !!}
-                                </td>
+                                <td>{{ $employee->address }}</td>
                                 <td class="button-cell">
                                     <a href="{{ route('employees.edit', $employee->id) }}" class="btn-edit">Edit</a>
                                     <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" style="display:inline;">

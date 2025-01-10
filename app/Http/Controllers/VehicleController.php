@@ -230,7 +230,9 @@ class VehicleController extends Controller
                 'fuel_type' => $vehicle->fuel_type,
                 'vehicle_name' => $vehicle->vehicle_name,
                 'vehicle_model' => $vehicle->vehicle_model,
-                'price_per_day' => $vehicle->price_per_day
+                'price_per_day' => $vehicle->price_per_day,
+                'extra_km_chg' => $vehicle->extra_km_chg,
+                'free_km' => $vehicle->free_km
             ]);
         }
     

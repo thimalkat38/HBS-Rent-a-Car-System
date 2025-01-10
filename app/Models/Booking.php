@@ -34,12 +34,17 @@ class Booking extends Model
         'nic_photos',
         'deposit',        
         'deposit_img',    
-        'status',         
+        'status',
+        'guarantor',
+        'extra_km_chg',
+        'free_km',
+        'start_km'         
     ];
 
     protected $casts = [
         'driving_photos' => 'array',
         'nic_photos' => 'array',
-        'deposit_img' => 'array', 
+        'deposit_img' => 'array',
+        'grnt_nic' => 'array',
     ];
 }

@@ -34,6 +34,7 @@ class PostBooking extends Model
         'vehicle_checked',
         'officer',
         'rel_officer',
+        'agn',
     ];
 
     protected $casts = [
