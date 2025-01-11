@@ -359,15 +359,7 @@
                             70,
                             25
                         );
-
-                        // Reset text color and add main title
-                        doc.setTextColor(0, 0, 0); // Black text
-                        doc.setFontSize(16);
-                        doc.setFont('helvetica', 'bold');
-                        doc.text('Bill', 105, 50, {
-                            align: 'center'
-                        });
-
+                        
                         let currentY = 60; // Start Y position for content
                         const lineSpacing = 8; // Line spacing for sections
 

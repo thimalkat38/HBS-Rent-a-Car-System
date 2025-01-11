@@ -92,11 +92,9 @@
                                     id="vehicleNumber">{{ $booking->vehicle_number }}</span></p>
                             <p><strong>Vehicle:</strong> <span id="vehicleModel">{{ $booking->vehicle_name }}</span></p>
                             <p><strong>From Date:</strong> <span id="fromDate">{{ $booking->from_date }}</span></p>
-                                     <p><strong>From:</strong> <span
-                                        id="from">{{ $booking->booking_time}}</span></p>        
+                            <p><strong>From:</strong> <span id="from">{{ $booking->booking_time }}</span></p>
                             <p><strong>To Date:</strong> <span id="toDate">{{ $booking->to_date }}</span></p>
-                                    <p><strong>To:</strong> <span
-                                        id="to">{{ $booking->arrival_time}}</span></p>
+                            <p><strong>To:</strong> <span id="to">{{ $booking->arrival_time }}</span></p>
                             <p><strong>Deposit:</strong> <span
                                     id="deposit">{{ $booking->deposit ?? 'No Deposit..' }}</span></p>
                             <p><strong>Guarantor:</strong> <span
@@ -117,33 +115,29 @@
                                     <p class="text-muted">No Deposit item Image Available.</p>
                                 @endif
                                 @if (!empty($booking->grnt_nic))
-                                @foreach ($booking->grnt_nic as $photo)
-                                    <div class="col-6 col-md-4 col-lg-3 mb-3">
-                                        <img src="{{ asset('storage/' . $photo) }}" class="img-fluid img-thumbnail"
-                                            alt="Grnt Photo">
-                                    </div>
-                                @endforeach
-                            @else
-                                <p class="text-muted">No Guarantee Image Available.</p>
-                            @endif
+                                    @foreach ($booking->grnt_nic as $photo)
+                                        <div class="col-6 col-md-4 col-lg-3 mb-3">
+                                            <img src="{{ asset('storage/' . $photo) }}" class="img-fluid img-thumbnail"
+                                                alt="Grnt Photo">
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <p class="text-muted">No Guarantee Image Available.</p>
+                                @endif
                             </div><br>
 
 
                             <!-- Updated Bill Information -->
                             <h5 class="card-title text-primary mt-3 mb-2">Bill Information</h5>
-                            <p><strong>Based Price:</strong><span id="basedPrice">
-                                    {{ number_format($booking->price_per_day * $booking->days, 2) }}</p>
-                            <p><strong>Additional Charges:</strong><span id="addChg"> 
-                                    {{ number_format($booking->additional_chagers, 2) }}</p>
-                            <p><strong>Discount Price:</strong><span id="discountPrice"> 
-                                    {{ number_format($booking->discount_price, 2) }}</p>
-                            <p><strong>Paid Amount:</strong><span id="PaidAmunt"> 
-                                    {{ number_format($booking->payed, 2) }}</p>
+                            <p><strong>Based Price:</strong> <span
+                                    id="basedPrice">{{ $booking->price_per_day * $booking->days }}.00</span></p>
+                            <p><strong>Additional Charges:</strong> <span
+                                    id="addChg">{{ $booking->additional_chagers }}</span></p>
+                            <p><strong>Discount Price:</strong> <span
+                                    id="discountPrice">{{ $booking->discount_price }}</span></p>
+                            <p><strong>Paid Amount:</strong> <span id="PaidAmunt">{{ $booking->payed }}</span></p>
                             <p><strong>Payment Note: </strong>{{ $booking->method }}</p>
-                            <p><strong>Amount Due:</strong><span id="due"> 
-                                    {{ number_format($booking->price, 2) }}</p>
-                            <p><strong>Reason For Additional Charges:</strong> <span
-                                    id="reason">{{ $booking->reason }}</span></p>
+                            <p><strong>Amount Due:</strong> <span id="due">{{ $booking->price }}</span></p>
 
                             <!-- Photos Section -->
                             <h5 class="card-title text-primary mt-3 mb-2">Photos</h5>
@@ -209,185 +203,6 @@
 
         </div>
     </div>
-
-    <!-- Custom Script to Generate PDF -->
-    <script>
-        async function generatePDF() {
-            const {
-                jsPDF
-            } = window.jspdf;
-            const doc = new jsPDF();
-
-            try {
-                // Add header with background and logo
-                const logo = new Image();
-                logo.src = '{{ asset('images/logo1.png') }}';
-
-                logo.onload = function() {
-                    doc.setFillColor(255, 170, 0); // Header background color
-                    doc.rect(0, 0, 210, 40, 'F');
-                    doc.addImage(logo, 'PNG', 10, 10, 50, 20);
-
-                    doc.setFontSize(10);
-                    doc.setTextColor(255, 255, 255);
-                    doc.text("Bulagala, Dambulla", 70, 20);
-                    doc.text("Phone: +94 777425008 / +94 777425008 | Email: info@rentacarsrilankahbs.com", 70, 30);
-
-                    // Reset text color and position for the main content
-                    doc.setTextColor(0, 0, 0);
-                    let currentY = 50; // Initial Y position for content
-                    const lineSpacing = 10; // Space between lines
-
-                    // Title
-                    doc.setFontSize(18);
-                    doc.setFont("helvetica", "bold");
-                    doc.text("Booking Details", doc.internal.pageSize.getWidth() / 2, currentY, {
-                        align: "center"
-                    });
-                    currentY += 20; // Add space after the title
-
-                    // Customer Information
-                    doc.setFontSize(12);
-                    doc.setFont("helvetica", "normal");
-                    doc.text('Customer Informations', 10, currentY);
-                    currentY += lineSpacing;
-
-                    doc.text('Full Name: ' + (document.getElementById('fullName')?.textContent || 'N/A'), 10,
-                        currentY);
-                    currentY += lineSpacing;
-                    doc.text('Mobile Number: ' + (document.getElementById('mobileNumber')?.textContent || 'N/A'),
-                        10, currentY);
-                    currentY += lineSpacing;
-                    doc.text('NIC: ' + (document.getElementById('nic')?.textContent || 'N/A'), 10, currentY);
-                    currentY += lineSpacing;
-                    doc.text('Address: ' + (document.getElementById('address')?.textContent || 'N/A'), 10,
-                    currentY);
-                    currentY += lineSpacing + 5; // Extra space before the next section
-
-                    // Booking Information
-                    doc.text('Booking Informations', 10, currentY);
-                    currentY += lineSpacing;
-
-                    doc.text('Booking ID: ' + (document.getElementById('id')?.textContent || 'N/A'), 13, currentY);
-                    currentY += lineSpacing;
-                    doc.text('Vehicle Number: ' + (document.getElementById('vehicleNumber')?.textContent || 'N/A'),
-                        10, currentY);
-                    currentY += lineSpacing;
-                    doc.text('Vehicle Model: ' + (document.getElementById('vehicleModel')?.textContent || 'N/A'),
-                        10, currentY);
-                    currentY += lineSpacing;
-                    doc.text('Start Date: ' + (document.getElementById('fromDate')?.textContent || 'N/A'), 10,
-                            currentY);
-                        currentY += lineSpacing;
-                        doc.text('Start Time: ' + (document.getElementById('from')?.textContent || 'N/A'), 10,
-                            currentY);
-                        currentY += lineSpacing;
-                        doc.text('End Date: ' + (document.getElementById('toDate')?.textContent || 'N/A'), 10,
-                            currentY);
-                        currentY += lineSpacing;
-                        doc.text('End Time: ' + (document.getElementById('to')?.textContent || 'N/A'), 10,
-                            currentY);
-                        currentY += lineSpacing;
-                    doc.text('Deposit: ' + (document.getElementById('deposit')?.textContent || 'N/A'), 10,
-                    currentY);
-                    currentY += lineSpacing + 5;
-
-                    // Billing Information
-                    doc.text('Billing Informations', 10, currentY);
-                    currentY += lineSpacing;
-
-                    const labelX = 10; // Left-side X coordinate for labels
-                    const valueX = 190; // Right-side X coordinate for values
-
-                    doc.setFont('courier', 'normal'); // Use monospaced font for better alignment
-                    doc.text('Base Price:', labelX, currentY);
-                    doc.text((document.getElementById('basedPrice')?.textContent || 'N/A'), valueX,
-                        currentY, {
-                            align: 'right'
-                        });
-                    currentY += lineSpacing;
-
-                    doc.text('Additional Charges (+):', labelX, currentY);
-                    doc.text((document.getElementById('addChg')?.textContent || 'N/A'), valueX, currentY, {
-                        align: 'right'
-                    });
-                    currentY += lineSpacing;
-
-                    doc.text('Discount Price (-):', labelX, currentY);
-                    doc.text((document.getElementById('discountPrice')?.textContent || 'N/A'), valueX,
-                        currentY, {
-                            align: 'right'
-                        });
-                    currentY += lineSpacing;
-
-                    doc.text('Paid Amount (-):', labelX, currentY);
-                    doc.text((document.getElementById('PaidAmunt')?.textContent || 'N/A'), valueX,
-                        currentY, {
-                            align: 'right'
-                        });
-                    currentY += lineSpacing;
-
-                    doc.text('Amount Due:', labelX, currentY);
-                    doc.text((document.getElementById('due')?.textContent || 'N/A'), valueX, currentY, {
-                        align: 'right'
-                    });
-
-                    currentY += lineSpacing;
-                    doc.text('Reason For Additional Charges: ' + (document.getElementById('reason')?.textContent ||
-                        'N/A'), 10, currentY);
-
-                    // Add space for signature fields
-                    currentY += 10;
-
-                    // Signature Fields
-                    const pageWidth = doc.internal.pageSize.getWidth();
-                    const lineWidth = 80; // Width for each signature line
-                    const lineHeight = 0.5;
-
-                    // HBS Rental Car Signature (Left)
-                    const hbsX = 20; // Starting X for HBS
-                    doc.setFontSize(12);
-                    doc.text('HBS Rental Car:', hbsX, currentY);
-                    doc.setLineWidth(lineHeight);
-                    doc.line(hbsX, currentY + 15, hbsX + lineWidth, currentY + 15); // Draw a line
-
-                    // Customer Signature (Right)
-                    const customerX = pageWidth - lineWidth - 20; // Starting X for customer
-                    const customerName = document.getElementById('fullName')?.textContent || 'N/A';
-                    doc.text('Customer Signature (' + customerName + '):', customerX, currentY);
-                    doc.line(customerX, currentY + 15, customerX + lineWidth, currentY + 15); // Draw a line
-
-                    // Save the PDF
-                    doc.save('Booking_Details.pdf');
-                };
-
-                logo.onerror = function() {
-                    console.error('Logo could not be loaded. Check the path.');
-                    alert('Failed to load logo. PDF generation will proceed without it.');
-                    addContentWithoutLogo(doc); // Fallback in case logo fails
-                };
-            } catch (error) {
-                console.error('PDF Generation Error:', error);
-                alert('An error occurred while generating the PDF. Check the console for details.');
-            }
-        }
-
-        function addContentWithoutLogo(doc) {
-            doc.setFillColor(255, 170, 0);
-            doc.rect(0, 0, 210, 40, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(10);
-            doc.text('HBS Car Rental Management System', 70, 20);
-            doc.text('Booking Details', 70, 30);
-
-            doc.setTextColor(0, 0, 0);
-            doc.text('Booking Details Content', 10, 50);
-            doc.save('Booking_Details.pdf');
-        }
-    </script>
-
-
-
     <script>
         async function printPDF() {
             const {
@@ -477,13 +292,16 @@
                         doc.text('Vehicle Model: ' + (document.getElementById('vehicleModel')
                             ?.textContent || 'N/A'), 10, currentY);
                         currentY += lineSpacing;
-                        doc.text('Start Date: ' + (document.getElementById('fromDate')?.textContent || 'N/A'), 10,
+                        doc.text('Start Date: ' + (document.getElementById('fromDate')?.textContent ||
+                                'N/A'), 10,
                             currentY);
                         currentY += lineSpacing;
-                        doc.text('Start Time: ' + (document.getElementById('from')?.textContent || 'N/A'), 10,
+                        doc.text('Start Time: ' + (document.getElementById('from')?.textContent || 'N/A'),
+                            10,
                             currentY);
                         currentY += lineSpacing;
-                        doc.text('End Date: ' + (document.getElementById('toDate')?.textContent || 'N/A'), 10,
+                        doc.text('End Date: ' + (document.getElementById('toDate')?.textContent || 'N/A'),
+                            10,
                             currentY);
                         currentY += lineSpacing;
                         doc.text('End Time: ' + (document.getElementById('to')?.textContent || 'N/A'), 10,
@@ -562,7 +380,7 @@
                         const customerName = document.getElementById('fullName')?.textContent || 'N/A';
                         doc.text('Customer Signature (' + customerName + '):', customerX, currentY);
                         doc.line(customerX, currentY + 15, customerX + lineWidth, currentY +
-                        15); // Draw a line
+                            15); // Draw a line
 
                         resolve();
                     } catch (error) {
