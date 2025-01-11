@@ -318,7 +318,7 @@
                         currentY += lineSpacing;
 
                         const labelX = 10; // X position for labels
-                        const valueX = 200; // X position for values (aligned right)
+                        const valueX = 193; // X position for values (aligned right)
 
                         doc.setFont('courier', 'normal'); // Monospaced font for alignment
                         doc.text('Base Price(LKR):', labelX, currentY);
