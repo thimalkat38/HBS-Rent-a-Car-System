@@ -101,6 +101,8 @@
                                     id="grnter">{{ $booking->guarantor ?? 'No Guarantor..' }}</span></p>
                             <p><strong>Released Officer:</strong> <span id="ofiicer">{{ $booking->officer }}</span>
                             </p>
+                            <p><strong>Start KM:</strong> <span id="stratKm">{{ $booking->start_km }}</span>
+                            </p>
                             <br>
                             <h6 style="color: red">Guarantee Images</h6>
                             <div class="row">
@@ -307,6 +309,9 @@
                         doc.text('End Time: ' + (document.getElementById('to')?.textContent || 'N/A'), 10,
                             currentY);
                         currentY += lineSpacing;
+                        doc.text('Start KM: ' + (document.getElementById('stratKm')?.textContent || 'N/A'), 10,
+                            currentY);
+                        currentY += lineSpacing;
                         doc.text('Deposit: ' + (document.getElementById('deposit')?.textContent || 'N/A'),
                             10, currentY);
                         currentY += lineSpacing + 5;
@@ -318,7 +323,7 @@
                         currentY += lineSpacing;
 
                         const labelX = 10; // X position for labels
-                        const valueX = 200; // X position for values (aligned right)
+                        const valueX = 193; // X position for values (aligned right)
 
                         doc.setFont('courier', 'normal'); // Monospaced font for alignment
                         doc.text('Base Price(LKR):', labelX, currentY);
@@ -378,9 +383,19 @@
                         // Customer Signature (Right)
                         const customerX = pageWidth - lineWidth - 20; // Starting X for customer
                         const customerName = document.getElementById('fullName')?.textContent || 'N/A';
+
+                        // Save the current font size
+                        const originalFontSize = doc.getFontSize();
+
+                        // Set a smaller font size for the customer name
+                        doc.setFontSize(10); // Change 10 to your desired font size
                         doc.text('Customer Signature (' + customerName + '):', customerX, currentY);
+
+                        // Restore the original font size
+                        doc.setFontSize(originalFontSize);
+
                         doc.line(customerX, currentY + 15, customerX + lineWidth, currentY +
-                            15); // Draw a line
+                        15); // Draw a line
 
                         resolve();
                     } catch (error) {

@@ -208,22 +208,32 @@
                         </div>
                 
                         <div class="form-row">
-                            <input type="text" name="additional_chagers" placeholder="Before Additional Chagers (LKR)">
-                            @error('additional_chagers')
+                            <input 
+                            type="text" 
+                            name="additional_chagers" 
+                            placeholder="Before Additional Chagers (LKR)" 
+                            value="{{ old('additional_chagers', '0.00') }}">
+                        @error('additional_chagers')
                             <span class="error-message">{{ $message }}</span>
-                            @enderror
+                        @enderror
+                        
                 
                             <input type="text" name="reason" placeholder="Reason for Additional Chagers">
                             @error('reason')
                             <span class="error-message">{{ $message }}</span>
                             @enderror
                 
-                            <input type="text" name="discount_price" placeholder="Discount Price (LKR)">
-                            @error('discount_price')
+                            <input 
+                            type="text" 
+                            name="discount_price" 
+                            placeholder="Discount Price (LKR)" 
+                            value="{{ old('discount_price', '0.00') }}">
+                        @error('discount_price')
                             <span class="error-message">{{ $message }}</span>
-                            @enderror
+                        @enderror
+                        
                 
-                            <input type="text" name="payed" placeholder="PAID">
+                            <input type="text" name="payed" placeholder="PAID" value="{{ old('payed', '0.00') }}">
                             @error('payed')
                             <span class="error-message">{{ $message }}</span>
                             @enderror
