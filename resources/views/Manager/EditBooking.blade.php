@@ -86,7 +86,7 @@
 
                 <div class="form-row">
                     <label for="vehicle_number" class="form-label">Vehicle Number</label>
-                    <input type="text" id="vehicle_number" name="vehicle_number" list="vehicle_numbers" class="block w-full mt-1" placeholder="Enter vehicle number" maxlength="8" oninput="formatVehicleNumber(this)">
+                    <input type="text" id="vehicle_number" name="vehicle_number" list="vehicle_numbers" class="block w-full mt-1" placeholder="Enter vehicle number" value="{{ old('vehicle_name', $booking->vehicle_number) }}" maxlength="8" oninput="formatVehicleNumber(this)">
                     @error('vehicle_number')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -106,18 +106,24 @@
                     @error('officer')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
-                    <label for="method" class="form-label">Payment Note</label>
-                    <input type="text" name="method" class="form-control" value="{{ old('method', $booking->method) }}" >
-                    @error('method')
+                    <label for="start_km" class="form-label">Start Km</label>
+                    <input type="text" name="start_km" class="form-control" value="{{ old('start_km', $booking->start_km) }}" >
+                    @error('start_km')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class ="form-row">
                     <label for="additional_chagers" class="form-label">Additional Chagers</label>
-                    <input type="text" name="additional_chagers" class="form-control" id="additional_chagers" value="{{ old('additional_chagers', $booking->additional_chagers) }}" >
+                    <input 
+                        type="text" 
+                        name="additional_chagers" 
+                        class="form-control" 
+                        id="additional_chagers" 
+                        value="{{ old('additional_chagers', $booking->additional_chagers ?? '0.00') }}">
                     @error('additional_chagers')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
+                    
                     <label for="reason" class="form-label">Reason For Add chg</label>
                     <input type="text" name="reason" class="form-control" value="{{ old('reason', $booking->reason) }}" >
                     @error('reason')
@@ -131,6 +137,11 @@
                     <label for="payed" class="form-label">Paid</label>
                     <input type="text" name="payed" class="form-control" id="payed" value="{{ old('payed', $booking->payed) }}" >
                     @error('payed')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                    <label for="method" class="form-label">Payment Note</label>
+                    <input type="text" name="method" class="form-control" value="{{ old('method', $booking->method) }}" >
+                    @error('method')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                     <label for="price" class="form-label">Total Price</label>

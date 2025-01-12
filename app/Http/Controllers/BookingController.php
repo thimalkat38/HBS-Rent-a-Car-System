@@ -80,6 +80,9 @@ class BookingController extends Controller
             'status' => 'nullable',
         ]);
 
+        $validatedData['additional_chagers'] = $validatedData['additional_chagers'] ?? 0.00;
+        $validatedData['discount_price'] = $validatedData['discount_price'] ?? 0.00;
+
         // Calculate days and total price
         $fromDateTime = new \DateTime($request->input('from_date') . ' ' . $request->input('booking_time'));
         $toDateTime = new \DateTime($request->input('to_date') . ' ' . $request->input('arrival_time'));
@@ -176,9 +179,13 @@ class BookingController extends Controller
             'price' =>'nullable|string',
             'deposit' =>'nullable|string',
             'reason' =>'nullable|string',
+            'start_km' => 'nullable|string',
             'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
             'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);
+
+        $validatedData['additional_chagers'] = $validatedData['additional_chagers'] ?? 0.00;
+        $validatedData['discount_price'] = $validatedData['discount_price'] ?? 0.00;
 
         // Update basic details
         $booking->update($validatedData);
