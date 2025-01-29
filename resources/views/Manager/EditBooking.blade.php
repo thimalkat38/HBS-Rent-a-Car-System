@@ -96,19 +96,24 @@
                     @error('vehicle_name')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
+                    <label for="start_km" class="form-label">Start Km</label>
+                    <input type="text" name="start_km" class="form-control" value="{{ old('start_km', $booking->start_km) }}" >
+                    @error('start_km')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                     <label for="deposit" class="form-label">Deposit</label>
                     <input type="text" name="deposit" id="deposit" class="form-control" value="{{ old('deposit', $booking->deposit) }}" >
                     @error('deposit')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
+                    <label for="guarantor" class="form-label">Guarantor</label>
+                    <input type="text" name="guarantor" id="guarantor" class="form-control" value="{{ old('guarantor', $booking->guarantor) }}" >
+                    @error('guarantor')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                     <label for="officer" class="form-label">Released Officer</label>
                     <input type="text" name="officer" id="officer" class="form-control" value="{{ old('officer', $booking->officer) }}" >
                     @error('officer')
-                        <div class="text-danger">{{ $message }}</div>
-                    @enderror
-                    <label for="start_km" class="form-label">Start Km</label>
-                    <input type="text" name="start_km" class="form-control" value="{{ old('start_km', $booking->start_km) }}" >
-                    @error('start_km')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
