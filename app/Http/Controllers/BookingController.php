@@ -172,6 +172,7 @@ class BookingController extends Controller
             'to_date' => 'required|date',
             'officer' => 'nullable|string',
             'method' => 'nullable|string',
+            'guarantor' => 'nullable|string',
             'payed' => 'nullable|numeric',
             'price' => 'nullable|numeric',
             'discount_price' =>'nullable|string',
