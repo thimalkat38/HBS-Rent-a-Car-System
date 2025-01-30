@@ -200,6 +200,20 @@ public function show($id)
     }
 
     // Pass the customer data to the view
-    return view('Manager.ManagerDetailedEmployee', compact('employee'));    }
+    return view('Manager.ManagerDetailedEmployee', compact('employee'));  
+  }
+
+  
+  public function autocomplete(Request $request)
+  {
+      $query = $request->get('term', '');
+
+      $employees = Employee::where('emp_name', 'LIKE', $query . '%')
+                          ->distinct()
+                          ->pluck('emp_name'); // Fetch only emp_name column
+
+      return response()->json($employees);
+  }
+
 
 }

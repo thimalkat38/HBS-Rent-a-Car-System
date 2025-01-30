@@ -22,17 +22,17 @@
             </div>
             <div class="header-title">HBS RENT A CAR</div>
             <div class="card1">
-            <div class="card1-content">  
-                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
-                    @csrf
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
+                <div class="card1-content">
+                    <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
+                        @csrf
+                        <x-responsive-nav-link :href="route('logout')"
+                            onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('LogOut') }}
-                    </x-responsive-nav-link>
-                </form>
+                            {{ __('LogOut') }}
+                        </x-responsive-nav-link>
+                    </form>
+                </div>
             </div>
-        </div>
         </div>
 
         <!-- Main Content -->
@@ -45,7 +45,8 @@
                                 alt="Dashboard" class="nav-icon"> DASHBOARD</a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link active"><img src="{{ asset('images/2.png') }}" alt="Vehicles" class="nav-icon">
+                        <a class="nav-link active"><img src="{{ asset('images/2.png') }}" alt="Vehicles"
+                                class="nav-icon">
                             VEHICLES</a>
                         <div class="dropdown-menu">
                             <a class="dropdown-link" href="{{ url('addvehicle') }}">Add Vehicle</a>
@@ -71,19 +72,19 @@
                         </div>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link" href="{{ url('hr-management') }}"><img
-                                src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
+                        <a class="nav-link" href="{{ url('hr-management') }}"><img src="{{ asset('images/5.png') }}"
+                                alt="HRM" class="nav-icon"> HRM</a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}" alt="CRM"
-                                class="nav-icon"> CRM</a>
+                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}"
+                                alt="CRM" class="nav-icon"> CRM</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link" href="{{ route('inventory.index') }}">
                             <img src="{{ asset('images/7.png') }}" alt="Inventory" class="nav-icon">
                             INVENTORY
                         </a>
-                    </div>  
+                    </div>
                     {{-- <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> ACCOUNTING</a>
@@ -94,45 +95,62 @@
             <div class="content">
                 <div class="card6-form-row">
                     <div class="form-section">
-                        <form action="{{ route('vehicles.search') }}" method="GET">
+                        <form action="{{ route('vehicles.search') }}" method="GET" id="searchForm">
                             <div class="form-row">
-                                <input type="text" name="vehicle_number" placeholder="Search by V/NUMBER"
-                                    value="{{ request('vehicle_number') }}">
-                            
-                                <input type="text" name="vehicle_name" placeholder="Search by VEHICLE NAME"
-                                    value="{{ request('vehicle_name') }}">
-                            
-                                <select name="fuel_type">
+                                <!-- Vehicle Number Input (Auto-Search on Typing) -->
+                                <input type="text" name="vehicle_number" placeholder="Search by Vehicle Number"
+                                    value="{{ request('vehicle_number') }}" oninput="autoSubmitForm()">
+
+                                <!-- Vehicle Name Input (Auto-Search on Typing) -->
+                                <input type="text" name="vehicle_name" placeholder="Search by Vehicle Name"
+                                    value="{{ request('vehicle_name') }}" oninput="autoSubmitForm()">
+
+                                <!-- Fuel Type Dropdown (Hardcoded Options, Search on Selection) -->
+                                <select name="fuel_type" onchange="document.getElementById('searchForm').submit();">
                                     <option value="">Select Fuel Type</option>
-                                    <option value="Petrol" {{ request('fuel_type') == 'Petrol' ? 'selected' : '' }}>Petrol</option>
-                                    <option value="Diesel" {{ request('fuel_type') == 'Diesel' ? 'selected' : '' }}>Diesel</option>
-                                    <option value="Electric" {{ request('fuel_type') == 'Electric' ? 'selected' : '' }}>Electric</option>
+                                    <option value="Petrol" {{ request('fuel_type') == 'Petrol' ? 'selected' : '' }}>
+                                        Petrol</option>
+                                    <option value="Diesel" {{ request('fuel_type') == 'Diesel' ? 'selected' : '' }}>
+                                        Diesel</option>
+                                    <option value="Electric"
+                                        {{ request('fuel_type') == 'Electric' ? 'selected' : '' }}>Electric</option>
                                 </select>
-                        
-                                <!-- New ID Range Dropdown -->
-                                <select name="id_range">
+
+                                <!-- ID Range Dropdown (Search on Selection) -->
+                                <select name="id_range" onchange="document.getElementById('searchForm').submit();">
                                     <option value="">Select ID Range</option>
-                                    <option value="1-10" {{ request('id_range') == '1-10' ? 'selected' : '' }}>1-10</option>
-                                    <option value="11-20" {{ request('id_range') == '11-20' ? 'selected' : '' }}>11-20</option>
-                                    <option value="21-30" {{ request('id_range') == '21-30' ? 'selected' : '' }}>21-30</option>
-                                    <option value="31-40" {{ request('id_range') == '31-40' ? 'selected' : '' }}>31-40</option>
-                                    <option value="41-50" {{ request('id_range') == '41-50' ? 'selected' : '' }}>41-50</option>
-                                    <option value="50+" {{ request('id_range') == '50+' ? 'selected' : '' }}>50+</option>
+                                    <option value="1-10" {{ request('id_range') == '1-10' ? 'selected' : '' }}>1-10
+                                    </option>
+                                    <option value="11-20" {{ request('id_range') == '11-20' ? 'selected' : '' }}>
+                                        11-20</option>
+                                    <option value="21-30" {{ request('id_range') == '21-30' ? 'selected' : '' }}>
+                                        21-30</option>
+                                    <option value="31-40" {{ request('id_range') == '31-40' ? 'selected' : '' }}>
+                                        31-40</option>
+                                    <option value="41-50" {{ request('id_range') == '41-50' ? 'selected' : '' }}>
+                                        41-50</option>
+                                    <option value="50+" {{ request('id_range') == '50+' ? 'selected' : '' }}>50+
+                                    </option>
                                 </select>
-                            
-                                <button type="submit" class="btn-search">SEARCH</button>
+
+                                <!-- Remove Search Button -->
                                 <a href="{{ url('manager/vehicles') }}" class="btn-search">Clear</a>
                             </div>
+
                             <div class="flex justify-center items-center bg-gray-100 p-4 rounded-lg shadow-md">
                                 <div class="text-center">
-                                    <h2 class="text-lg font-semibold text-gray-700">Total Vehicles = {{ \App\Models\Vehicle::count() }}</h2>
+                                    <h2 class="text-lg font-semibold text-gray-700">Total Vehicles =
+                                        {{ \App\Models\Vehicle::count() }}</h2>
                                 </div>
                             </div>
-                            
                         </form>
-                        
-                        
-                        
+
+
+
+
+
+
+
                     </div>
                 </div>
 
@@ -156,15 +174,17 @@
                         </thead>
                         <tbody>
                             @foreach ($vehicles as $vehicle)
-                                <tr onclick="window.location='{{ route('vehicles.show', $vehicle->id) }}'" style="cursor: pointer;">
+                                <tr onclick="window.location='{{ route('vehicles.show', $vehicle->id) }}'"
+                                    style="cursor: pointer;">
                                     <td>{{ $vehicle->id }}</td>
                                     <td>
                                         @if ($vehicle->display_image)
-                                            <img src="{{ asset('storage/' . $vehicle->display_image) }}" alt="Car Image" style="width: 100px; height: auto;">
+                                            <img src="{{ asset('storage/' . $vehicle->display_image) }}"
+                                                alt="Car Image" style="width: 100px; height: auto;">
                                         @else
                                             No Image Available
                                         @endif
-                                    </td>                                    
+                                    </td>
                                     <td>{{ $vehicle->vehicle_model }}</td>
                                     <td>{{ $vehicle->vehicle_name }}</td>
                                     <td>{{ $vehicle->vehicle_number }}</td>
@@ -174,17 +194,20 @@
                                     <td>{{ $vehicle->free_km }}</td>
                                     <td>{{ $vehicle->extra_km_chg }}</td>
                                     <td class="button-cell">
-                                        <a href="{{ route('vehicles.edit', $vehicle->id) }}" class="btn-edit">Edit</a>
-                                        <form action="{{ route('vehicles.destroy', $vehicle->id) }}" method="POST" style="display:inline;">
+                                        <a href="{{ route('vehicles.edit', $vehicle->id) }}"
+                                            class="btn-edit">Edit</a>
+                                        <form action="{{ route('vehicles.destroy', $vehicle->id) }}" method="POST"
+                                            style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this vehicle?')">Delete</button>
+                                            <button type="submit" class="btn-delete"
+                                                onclick="return confirm('Are you sure you want to delete this vehicle?')">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
-                        </table>
+                    </table>
                 </div>
             </div>
         </div>
@@ -194,5 +217,18 @@
             <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>
         </div>
 </body>
+<script>
+    let typingTimer;
+
+    // Auto-submit form when typing (with delay)
+    function autoSubmitForm() {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            document.getElementById('searchForm').submit();
+        }, 500); // 0.5-second delay to prevent excessive requests
+    }
+</script>
+
+
 
 </html>

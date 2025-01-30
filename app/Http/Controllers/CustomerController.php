@@ -28,6 +28,7 @@ class CustomerController extends Controller
         return view('Manager.ManagerCustomers', compact('customers'));
     }
     
+    
 
     // Show the form for creating a new customer
     public function create()

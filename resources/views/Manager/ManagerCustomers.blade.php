@@ -55,17 +55,17 @@
             </div>
             <div class="header-title">HBS RENT A CAR</div>
             <div class="card1">
-            <div class="card1-content">  
-                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
-                    @csrf
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
+                <div class="card1-content">
+                    <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
+                        @csrf
+                        <x-responsive-nav-link :href="route('logout')"
+                            onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('LogOut') }}
-                    </x-responsive-nav-link>
-                </form>
+                            {{ __('LogOut') }}
+                        </x-responsive-nav-link>
+                    </form>
+                </div>
             </div>
-        </div>
         </div>
 
         <!-- Main Content -->
@@ -96,7 +96,8 @@
                         </div>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link active"><img src="{{ asset('images/4.png') }}" alt="Customers" class="nav-icon">
+                        <a class="nav-link active"><img src="{{ asset('images/4.png') }}" alt="Customers"
+                                class="nav-icon">
                             CUSTOMERS</a>
                         <div class="dropdown-menu">
                             <a class="dropdown-link" href="{{ url('/customers/create') }}">Add Customer</a>
@@ -104,19 +105,19 @@
                         </div>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link" href="{{ url('hr-management') }}"><img
-                                src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
+                        <a class="nav-link" href="{{ url('hr-management') }}"><img src="{{ asset('images/5.png') }}"
+                                alt="HRM" class="nav-icon"> HRM</a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}" alt="CRM"
-                                class="nav-icon"> CRM</a>
+                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}"
+                                alt="CRM" class="nav-icon"> CRM</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link" href="{{ route('inventory.index') }}">
                             <img src="{{ asset('images/7.png') }}" alt="Inventory" class="nav-icon">
                             INVENTORY
                         </a>
-                    </div>  
+                    </div>
                     {{-- <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> ACCOUNTING</a>
@@ -128,22 +129,19 @@
                 <div class="card6-form-row">
                     <div class="form-section">
                         {{-- Search --}}
-                        <form action="{{ url('customers') }}" method="GET">
+                        <form action="{{ url('customers') }}" method="GET" id="searchForm">
                             <div class="form-row">
-                                <!-- NIC Search Field -->
-                                <input type="text" name="nic" placeholder="Search by NIC" value="{{ request('nic') }}">
-                                
-                                <!-- Full Name Search Field -->
-                                <input type="text" name="full_name" placeholder="Search by Full Name" value="{{ request('full_name') }}">
-                                
-                                <div class="card1">
-                                    <div class="card1-content">
-                                        <button type="submit" class="btn-search">SEARCH</button>
-                                    </div>
-                                </div>
+                                <!-- NIC Search Field (Auto-Search on Typing) -->
+                                <input type="text" name="nic" placeholder="Search by NIC"
+                                    value="{{ request('nic') }}" oninput="autoSubmitForm()">
+
+                                <!-- Full Name Search Field (Auto-Search on Typing) -->
+                                <input type="text" name="full_name" placeholder="Search by Name"
+                                    value="{{ request('full_name') }}" oninput="autoSubmitForm()">
                             </div>
                         </form>
-                        
+
+
                     </div>
                 </div>
 
@@ -163,25 +161,29 @@
                         </thead>
                         <tbody>
                             @foreach ($customers as $customer)
-                                <tr onclick="window.location='{{ route('Customer.show', $customer->id) }}'" style="cursor: pointer;">
+                                <tr onclick="window.location='{{ route('Customer.show', $customer->id) }}'"
+                                    style="cursor: pointer;">
                                     <td>{{ $customer->id }}</td>
                                     <td>{{ $customer->full_name }}</td>
                                     <td>{{ $customer->phone }}</td>
                                     <td>{{ $customer->nic }}</td>
-                                    <td>{{ $customer->email?? 'No email exists'  }}</td>
+                                    <td>{{ $customer->email ?? 'No email exists' }}</td>
                                     <td>{{ $customer->address }}</td>
                                     <td class="button-cell">
-                                        <a href="{{ route('customers.edit', $customer->id) }}" class="btn-edit">Edit</a>
-                                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display:inline;">
+                                        <a href="{{ route('customers.edit', $customer->id) }}"
+                                            class="btn-edit">Edit</a>
+                                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST"
+                                            style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this customer?')">Delete</button>
+                                            <button type="submit" class="btn-delete"
+                                                onclick="return confirm('Are you sure you want to delete this customer?')">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
-                        </table>
+                    </table>
                 </div>
             </div>
         </div>
@@ -192,5 +194,16 @@
         </div>
     </div>
 </body>
+<script>
+    let typingTimer;
+
+    // Auto-submit form when typing (with delay)
+    function autoSubmitForm() {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            document.getElementById('searchForm').submit();
+        }, 500); // 0.5-second delay
+    }
+</script>
 
 </html>

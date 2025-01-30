@@ -97,34 +97,50 @@
                 <div class="card6-form-row">
                     <div class="form-section">
                         {{-- Search --}}
-                        <form action="{{ url('bookings') }}" method="GET">
+                        <form action="{{ url('bookings') }}" method="GET" id="searchForm">
                             <div class="form-row">
+                                <!-- Mobile Number Input (Auto-Search on Typing) -->
                                 <input type="text" name="mobile_number" placeholder="Search by Mobile Number"
-                                    value="{{ request('mobile_number') }}">
+                                    value="{{ request('mobile_number') }}" oninput="autoSubmitForm()">
+
+                                <!-- Full Name Input (Auto-Search on Typing) -->
                                 <input type="text" name="full_name" placeholder="Search by Full Name"
-                                    value="{{ request('full_name') }}">
-                                <input type="text" id="vehicle_number" name="vehicle_number" list="vehicle_numbers"
-                                    class="block w-full mt-1" placeholder="Search by vehicle number" maxlength="8"
-                                    oninput="formatVehicleNumber(this)" value="{{ request('vehicle_number') }}">
+                                    value="{{ request('full_name') }}" oninput="autoSubmitForm()">
+
+                                <!-- Vehicle Number Input (Auto-Search on Typing) -->
+                                <input type="text" id="vehicle_number" name="vehicle_number"
+                                    list="vehicle_numbers" class="block w-full mt-1"
+                                    placeholder="Search by vehicle number" maxlength="8"
+                                    value="{{ request('vehicle_number') }}" oninput="autoSubmitForm()">
+
+                                <!-- ID Input (Auto-Search on Typing) -->
                                 <input type="text" name="id" placeholder="Search by ID"
-                                    value="{{ request('id') }}">
-                        
-                                <!-- Status Dropdown -->
-                                <select name="status">
-                                    <option value="">Select Status</option>
-                                    <option value="Completed" {{ request('status') == 'Completed' ? 'selected' : '' }}>Completed</option>
-                                    <option value="Ongoing" {{ request('status') == 'Ongoing' ? 'selected' : '' }}>Ongoing</option>
-                                </select>
-                        
-                                <div class="card1">
-                                    <div class="card1-content">
-                                        <button type="submit" class="btn-search">SEARCH</button> ||
-                                        <a href="{{ url('/bookings') }}" class="btn-search">Clear</a>
-                                    </div>
-                                </div>
+                                    value="{{ request('id') }}" oninput="autoSubmitForm()">
+
+                                <!-- Status Dropdown (Auto-Search on Selection) -->
+
+
+                                <!-- Date Range Fields (Auto-Search on Change) -->
+                                <input type="date" name="from_date" value="{{ request('from_date') }}"
+                                    onchange="document.getElementById('searchForm').submit();"
+                                    placeholder="From Date">
+
+                                <input type="date" name="to_date" value="{{ request('to_date') }}"
+                                    onchange="document.getElementById('searchForm').submit();" placeholder="To Date">
+
+                                {{-- <select name="status" onchange="document.getElementById('searchForm').submit();">
+                                        <option value="">Select Status</option>
+                                        <option value="Completed" {{ request('status') == 'Completed' ? 'selected' : '' }}>Completed</option>
+                                        <option value="Ongoing" {{ request('status') == 'Ongoing' ? 'selected' : '' }}>Ongoing</option>
+                                    </select> --}}
+
+                                <!-- Remove Search Button (Auto-Submit Works) -->
+                                <a href="{{ url('/bookings') }}" class="btn-search">Clear</a>
                             </div>
                         </form>
-                        
+
+
+
 
 
                     </div>
@@ -163,18 +179,23 @@
                                     <td>{{ $booking->price }}</td>
                                     <td class="button-cell">
                                         @if ($booking->status !== 'Completed')
-                                            <a href="{{ route('bookings.postbooking', $booking->id) }}" class="btn-edit">View PostBooking</a>
+                                            <a href="{{ route('bookings.postbooking', $booking->id) }}"
+                                                class="btn-edit">View PostBooking</a>
                                         @else
-                                            <button class="btn-edit" disabled style="cursor: not-allowed; background: #ccc;">Completed</button>
+                                            <button class="btn-edit" disabled
+                                                style="cursor: not-allowed; background: #ccc;">Completed</button>
                                         @endif
-                                        <a href="{{ route('bookings.edit', $booking->id) }}" class="btn-edit">Edit</a>
-                                        <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" style="display:inline;">
+                                        <a href="{{ route('bookings.edit', $booking->id) }}"
+                                            class="btn-edit">Edit</a>
+                                        <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST"
+                                            style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this booking?')">Delete</button>
+                                            <button type="submit" class="btn-delete"
+                                                onclick="return confirm('Are you sure you want to delete this booking?')">Delete</button>
                                         </form>
                                     </td>
-                                    
+
                                 </tr>
                             @endforeach
                         </tbody>
@@ -192,11 +213,10 @@
 </body>
 <style>
     .btn-edit[disabled] {
-    background-color: #ccc;
-    color: #666;
-    cursor: not-allowed;
-}
-
+        background-color: #ccc;
+        color: #666;
+        cursor: not-allowed;
+    }
 </style>
 
 <script>
@@ -211,13 +231,26 @@
         }
     }
 </script>
+<script>
+    let typingTimer;
+
+    // Auto-submit form when typing (with delay)
+    function autoSubmitForm() {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            document.getElementById('searchForm').submit();
+        }, 500); // 0.5-second delay
+    }
+</script>
+
+
 <style>
     .btn-edit:disabled {
-    background-color: #ccc;
-    color: #666;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
+        background-color: #ccc;
+        color: #666;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
 </style>
+
 </html>

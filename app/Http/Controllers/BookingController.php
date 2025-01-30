@@ -14,31 +14,47 @@ class BookingController extends Controller
     public function index(Request $request)
     {
         $query = Booking::query();
-
+    
         if ($request->filled('mobile_number')) {
             $query->where('mobile_number', 'LIKE', "%" . $request->input('mobile_number') . "%");
         }
-
+    
         if ($request->filled('full_name')) {
             $query->where('full_name', 'LIKE', "%" . $request->input('full_name') . "%");
         }
-
+    
         if ($request->filled('vehicle_number')) {
             $query->where('vehicle_number', 'LIKE', "%" . $request->input('vehicle_number') . "%");
         }
-
+    
         if ($request->filled('id')) {
             $query->where('id', $request->input('id')); // Exact match for ID
         }
-
+    
         if ($request->filled('status')) {
             $query->where('status', $request->input('status'));
         }
-
+    
+        // Date Range Filtering
+        if ($request->filled('from_date')) {
+            $query->whereDate('from_date', '>=', $request->input('from_date'));
+        }
+    
+        if ($request->filled('to_date')) {
+            $query->whereDate('from_date', '<=', $request->input('to_date'));
+        }
+    
         $bookings = $query->orderBy('created_at', 'desc')->get();
-
-        return view('Manager.ManagerBookings', compact('bookings'));
+    
+        // Fetch distinct values for dropdowns
+        $vehicleNumbers = Booking::select('vehicle_number')->distinct()->pluck('vehicle_number');
+        $fullNames = Booking::select('full_name')->distinct()->pluck('full_name');
+        $statuses = Booking::select('status')->distinct()->pluck('status');
+    
+        return view('Manager.ManagerBookings', compact('bookings', 'vehicleNumbers', 'fullNames', 'statuses'));
     }
+    
+    
 
 
 

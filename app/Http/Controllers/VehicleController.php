@@ -269,9 +269,11 @@ class VehicleController extends Controller
         // Retrieve matching vehicles
         $vehicles = $query->get();
     
-        // Pass results to the view
         return view('Manager.ManagerVehicles', compact('vehicles'));
     }
+    
+    
+    
     
     
 
@@ -281,6 +283,27 @@ class VehicleController extends Controller
     $models = Vehicle::where('vehicle_name', 'LIKE', "%$search%")->pluck('vehicle_name');
 
     return response()->json($models);
+}
+
+public function autocomplete(Request $request)
+{
+    $query = $request->get('term', '');
+
+    $vehicleModels = Vehicle::where('vehicle_model', 'LIKE', $query . '%')
+                            ->distinct()
+                            ->pluck('vehicle_model');
+
+    return response()->json($vehicleModels);
+}
+public function autocompleteVehicleNumber(Request $request)
+{
+    $query = $request->get('term', '');
+
+    $vehicleNumbers = Vehicle::where('vehicle_number', 'LIKE', $query . '%')
+                             ->distinct()
+                             ->pluck('vehicle_number');
+
+    return response()->json($vehicleNumbers);
 }
 
 }
