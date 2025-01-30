@@ -278,3 +278,10 @@ Route::middleware(['manager'])->get('ownerpayments/{ownerpayment}', [Ownerpaymen
 Route::middleware(['manager'])->get('ownerpayments/{ownerpayment}/edit', [OwnerpaymentController::class, 'edit'])->name('ownerpayments.edit');
 Route::middleware(['manager'])->put('ownerpayments/{ownerpayment}', [OwnerpaymentController::class, 'update'])->name('ownerpayments.update');
 Route::middleware(['manager'])->delete('ownerpayments/{ownerpayment}', [OwnerpaymentController::class, 'destroy'])->name('ownerpayments.destroy');
+
+
+
+
+Route::middleware(['manager'])->get('/autocomplete-vehicle-models', [VehicleController::class, 'autocomplete']);
+Route::middleware(['manager'])->get('/autocomplete-vehicle-numbers', [VehicleController::class, 'autocompleteVehicleNumber']);
+Route::middleware(['manager'])->get('/autocomplete-employees', [EmployeeController::class, 'autocomplete']);
