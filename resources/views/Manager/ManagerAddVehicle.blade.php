@@ -277,27 +277,12 @@
     </script>
 </body>
 <style>
-    /* Style for input field */
-    /* #vehicle_model {
-        width: 100%;
-        padding: 10px;
-        font-size: 16px;
-        border: 2px solid #ccc;
-        border-radius: 5px;
-        outline: none;
-        transition: 0.3s;
-    } */
-
-    /* #vehicle_model:focus {
-        border-color: #ffffff;
-        box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.5);
-    } */
-
     /* Custom jQuery UI Autocomplete Dropdown */
     .ui-autocomplete {
         background: white;
         border: 1px solid #ccc;
         max-height: 200px;
+        width: 20%;
         overflow-y: auto;
         border-radius: 5px;
     }
@@ -306,7 +291,6 @@
     .ui-menu-item {
         padding: 10px;
         font-size: 16px;
-        cursor: pointer;
         transition: 0.3s;
     }
 
