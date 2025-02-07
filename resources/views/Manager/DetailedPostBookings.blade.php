@@ -84,6 +84,11 @@
                                     {{ $postBooking->vehicle_number }}</span></p>
                             <p><strong>From Date:</strong> <span id="fromDate">{{ $postBooking->from_date }}</span></p>
                             <p><strong>To Date:</strong> <span id="toDate">{{ $postBooking->to_date }}</span></p>
+                            <p><strong>Started Mileage:</strong> <span id="strat">{{ $postBooking->start_km }} KM</span></p>
+                            <p><strong>Free KM:</strong> <span id="free">{{ $postBooking->free_km }} KM</span></p>
+                            <p><strong>Ended Mileage:</strong> <span id="end">{{ $postBooking->end_km }} KM</span></p>
+                            <p><strong>Over Drived KM:</strong> <span id="over">{{ $postBooking->over }} KM</span></p>
+                            <p><strong>Extra 1KM Charges:</strong> <span id="kmchg">{{ $postBooking->extra_km_chg }}</span></p>
 
                             <h5 class="card-title text-primary mt-3 mb-2">Payment Details</h5>
                             <p><strong>Base Price(LKR):</strong> <span
@@ -139,206 +144,118 @@
     </div>
     <script>
         async function printPDF() {
-            const {
-                jsPDF
-            } = window.jspdf;
+            const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-
+    
             try {
-                // Generate the PDF content
                 await generatePDFContent(doc);
-
-                // Automatically open the print dialog
                 doc.autoPrint();
-                // This will open the PDF in a new tab for printing
                 const pdfBlob = doc.output('blob');
                 const pdfUrl = URL.createObjectURL(pdfBlob);
                 window.open(pdfUrl, '_blank');
             } catch (error) {
                 console.error('Print PDF Error:', error);
-                alert('An error occurred while printing the PDF. Check the console for details.');
+                alert('An error occurred while printing the PDF.');
             }
         }
-
+    
         async function generatePDFContent(doc) {
             const logo = new Image();
             logo.src = '{{ asset('images/logo1.png') }}';
-
+    
             return new Promise((resolve, reject) => {
-                logo.onload = function() {
+                logo.onload = function () {
                     try {
-                        // Add header background and logo
-                        doc.setFillColor(255, 170, 0); // Orange background
-                        doc.rect(0, 0, 210, 40, 'F'); // Fill rectangle for header
-                        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Logo position and size
-
-                        // Add header text
-                        doc.setFontSize(10);
-                        doc.setTextColor(0, 0, 0); // Black text
-                        doc.text('Bulagala, Dambulla', 70, 15);
-                        doc.text(
-                            'Phone: +94 777425008 / +94 777425008 | Email: info@rentacarsrilankahbs.com',
-                            70,
-                            25
-                        );
-
-                        let currentY = 60; // Start Y position for content
-                        const lineSpacing = 8; // Line spacing for sections
-
+                        // Header Background
+                        doc.setFillColor(255, 170, 0); // Orange
+                        doc.rect(0, 0, 210, 40, 'F');
+    
+                        // Logo & Company Info
+                        doc.addImage(logo, 'PNG', 10, 8, 45, 22);
+                        doc.setFontSize(11);
+                        doc.setTextColor(0, 0, 0);
+                        doc.text('Bulagala, Dambulla', 60, 15);
+                        doc.text('Phone: +94 777425008 | Email: info@rentacarsrilankahbs.com', 60, 25);
+    
+                        let currentY = 50;
+                        const lineSpacing = 8; // Increased spacing for readability
+    
+                        function sectionTitle(title) {
+                            doc.setFontSize(12);
+                            doc.setFont('helvetica', 'bold');
+                            doc.text(title, 10, currentY);
+                            currentY += lineSpacing;
+                            doc.setFont('helvetica', 'normal');
+                        }
+    
+                        function addRow(label, elementId) {
+                            doc.text(`${label} ${document.getElementById(elementId)?.textContent || 'N/A'}`, 10, currentY);
+                            currentY += lineSpacing;
+                        }
+    
                         // Customer Information
-                        doc.setFontSize(12);
-                        doc.setFont('helvetica', 'bold');
-                        doc.text('Customer Information', 10, currentY);
-
-                        // Reset font to normal for the following text
-                        doc.setFont('helvetica', 'normal');
-                        currentY += lineSpacing * 1.5;
-                        doc.text('Full Name: ' + (document.getElementById('fullName')?.textContent ||
-                            'N/A'), 10, currentY);
-                        currentY += lineSpacing;
-                        doc.text('Mobile Number: ' + (document.getElementById('mobileNumber')
-                            ?.textContent || 'N/A'), 10, currentY);
-                        currentY += lineSpacing;
-                        doc.text('NIC: ' + (document.getElementById('nic')?.textContent || 'N/A'), 10,
-                            currentY);
-                        currentY += lineSpacing * 1.5;
-
+                        sectionTitle('Customer Information');
+                        addRow('Full Name:', 'fullName');
+                        addRow('Mobile Number:', 'mobileNumber');
+                        addRow('NIC:', 'nic');
+    
                         // Booking Information
-                        doc.setFontSize(12);
-
-                        // Set font to bold for "Booking Information:"
-                        doc.setFont('helvetica', 'bold');
-                        doc.text('Booking Information', 10, currentY);
-
-                        // Reset font to normal for the following text
-                        doc.setFont('helvetica', 'normal');
-                        currentY += lineSpacing * 1.5;
-                        doc.text('Vehicle: ' + (document.getElementById('vehicleModel')?.textContent ||
-                            'N/A'), 10, currentY);
-                        currentY += lineSpacing;
-                        doc.text('From: ' + (document.getElementById('fromDate')?.textContent || 'N/A'), 10,
-                            currentY);
-                        currentY += lineSpacing;
-                        doc.text('To: ' + (document.getElementById('toDate')?.textContent || 'N/A'), 10,
-                            currentY);
-                        currentY += lineSpacing * 1.5;
-
+                        sectionTitle('Booking Information');
+                        addRow('Vehicle:', 'vehicleModel');
+                        addRow('From:', 'fromDate');
+                        addRow('To:', 'toDate');
+                        addRow('Started Mileage:', 'start');
+                        addRow('Free KM:', 'free');
+                        addRow('Ended Mileage:', 'end');
+                        addRow('Over Drived KM:', 'over');
+                        addRow('Charge Per Extra KM:', 'kmchg');
+    
                         // Billing Information
-                        doc.setFont('helvetica', 'bold');
-                        doc.text('Billing Information', 10, currentY);
-
-                        // Reset font to normal for the following text
-                        doc.setFont('helvetica', 'normal');
-                        currentY += lineSpacing * 1.5;
-
-                        const labelX = 10; // X position for labels
-                        const valueX = 193; // X position for values (aligned right)
-
-                        doc.setFont('courier', 'normal'); // Monospaced font for alignment
-                        doc.text('Base Price:', labelX, currentY);
-                        doc.text((document.getElementById('basePrice')?.textContent || 'N/A'),
-                            valueX, currentY, {
-                                align: 'right'
-                            });
-                        currentY += lineSpacing;
-
-                        doc.text('Additional Charges For Extra KM (+):', labelX, currentY);
-                        doc.text((document.getElementById('extraKm')?.textContent || '0.00'),
-                            valueX, currentY, {
-                                align: 'right'
-                            });
-                        currentY += lineSpacing;
-
-                        doc.text('Additional Charges For Extra Hours (+):', labelX, currentY);
-                        doc.text((document.getElementById('extraHours')?.textContent || 'N/A'),
-                            valueX, currentY, {
-                                align: 'right'
-                            });
-                        currentY += lineSpacing;
-
-                        doc.text('Damage Fee(+):', labelX, currentY);
-                        doc.text((document.getElementById('damageFee')?.textContent || 'N/A'),
-                            valueX, currentY, {
-                                align: 'right'
-                            });
-                        currentY += lineSpacing;
-
-                        doc.text('Other Additional Charges (+):', labelX, currentY);
-                        doc.text((document.getElementById('afterAdditional')?.textContent ||
-                            'N/A'), valueX, currentY, {
-                            align: 'right'
-                        });
-                        currentY += lineSpacing;
-
-                        doc.text('Discount Price (-):', labelX, currentY);
-                        doc.text((document.getElementById('afterDiscount')?.textContent || 'N/A'),
-                            valueX, currentY, {
-                                align: 'right'
-                            });
-                        currentY += lineSpacing;
-
-                        doc.text('Paid Amount (-):', labelX, currentY);
-                        doc.text((document.getElementById('paid')?.textContent || 'N/A'), valueX,
-                            currentY, {
-                                align: 'right'
-                            });
-                        currentY += lineSpacing;
-
-                        doc.text('Amount Due:', labelX, currentY);
-                        doc.text((document.getElementById('due')?.textContent || 'N/A'), valueX,
-                            currentY, {
-                                align: 'right'
-                            });
-                        currentY += lineSpacing;
-
-                        doc.text('Reason For Other Additional Charges: ' + (document.getElementById(
-                            'reason')?.textContent || 'N/A'), 10, currentY);
-
-                        // Add space for signature fields
-                        currentY += 20;
-
-                        // Signature Fields
-                        const pageWidth = doc.internal.pageSize.getWidth();
-                        const lineWidth = 80; // Width for each signature line
-                        const lineHeight = 0.5;
-
-                        // HBS Rental Car Signature (Left)
-                        const hbsX = 20; // Starting X for HBS
-                        doc.setFontSize(12);
-                        doc.text('HBS Rental Car:', hbsX, currentY);
-                        doc.setLineWidth(lineHeight);
-                        doc.line(hbsX, currentY + 15, hbsX + lineWidth, currentY + 15); // Draw a line
-
-                        // Customer Signature (Right)
-                        const customerX = pageWidth - lineWidth - 20; // Starting X for customer
-                        const customerName = document.getElementById('fullName')?.textContent || 'N/A';
-
-                        // Save the current font size
-                        const originalFontSize = doc.getFontSize();
-
-                        // Set a smaller font size for the customer name
-                        doc.setFontSize(10); // Change 10 to your desired font size
-                        doc.text('Customer Signature (' + customerName + '):', customerX, currentY);
-
-                        // Restore the original font size
-                        doc.setFontSize(originalFontSize);
-
-                        doc.line(customerX, currentY + 15, customerX + lineWidth, currentY +
-                        15); // Draw a line
-
-
+                        sectionTitle('Billing Information');
+                        const labelX = 10, valueX = 193;
+    
+                        function addBillRow(label, elementId) {
+                            doc.text(label, labelX, currentY);
+                            doc.text(document.getElementById(elementId)?.textContent || '0.00', valueX, currentY, { align: 'right' });
+                            currentY += lineSpacing;
+                        }
+    
+                        addBillRow('Base Price:', 'basePrice');
+                        addBillRow('Extra KM Charges:', 'extraKm');
+                        addBillRow('Extra Hour Charges:', 'extraHours');
+                        addBillRow('Damage Fee:', 'damageFee');
+                        addBillRow('Other Additional Charges:', 'afterAdditional');
+                        addBillRow('Discount (-):', 'afterDiscount');
+                        addBillRow('Paid Amount (-):', 'paid');
+                        addBillRow('Amount Due:', 'due');
+    
+                        doc.text('Reason: ' + (document.getElementById('reason')?.textContent || 'N/A'), 10, currentY);
+                        currentY += 15; // Increased spacing before signatures
+    
+                        // Signature Section - Moved lower for better layout
+                        doc.setFontSize(11);
+                        const signatureY = 250;
+                        doc.text('HBS Rental Car:', 30, signatureY);
+                        doc.line(30, signatureY + 10, 100, signatureY + 10);
+    
+                        const customerX = 120;
+                        doc.text('Customer Signature:', customerX, signatureY);
+                        doc.line(customerX, signatureY + 10, 190, signatureY + 10);
+    
                         resolve();
                     } catch (error) {
                         reject(error);
                     }
                 };
-
-                logo.onerror = function() {
+    
+                logo.onerror = function () {
                     reject('Logo image failed to load.');
                 };
             });
         }
     </script>
+    
+    
 
 </body>
 

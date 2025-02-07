@@ -35,6 +35,11 @@ class PostBooking extends Model
         'officer',
         'rel_officer',
         'agn',
+        'start_km',
+        'end_km',
+        'free_km',
+        'over',
+        'extra_km_chg',
     ];
 
     protected $casts = [

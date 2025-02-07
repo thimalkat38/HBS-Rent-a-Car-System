@@ -76,6 +76,11 @@ class PostBookingController extends Controller
             'officer' => 'nullable|string',
             'rel_officer' => 'nullable|string',
             'agn' => 'nullable|string',
+            'start_km' => 'nullable|string',
+            'end_km' => 'nullable|string',
+            'free_km' => 'nullable|string',
+            'over' => 'nullable|string',
+            'extra_km_chg' => 'nullable|string',
         ]);
     
         PostBooking::create($validated);
