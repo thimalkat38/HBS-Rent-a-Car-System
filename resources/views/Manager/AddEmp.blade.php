@@ -83,10 +83,15 @@
                             INVENTORY
                         </a>
                     </div>
-                    {{-- <div class="nav-item">
+                    <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
-                                class="nav-icon"> ACCOUNTING (under development...)</a>
-                    </div> --}}
+                                class="nav-icon"> Finance</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                                </div>
+                    </div>
                 </nav>
             </div>
             <!-- Form Section -->
@@ -137,6 +142,19 @@
                             @error('mobile_number')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
+                            <input type="email" name="email" placeholder="E-mail Address" value="{{ old('email') }}" 
+                                   class="@error('email') is-invalid @enderror" required>
+                            @error('email')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+
+                            <input type="text" name="address" placeholder="Address" value="{{ old('address') }}" 
+                                   class="@error('address') is-invalid @enderror" required>
+                            @error('address')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-row">
                             <input type="text" name="bank" placeholder="Bank Name" value="{{ old('bank') }}" 
                                    class="@error('bank') is-invalid @enderror" required>
                             @error('bank')
@@ -148,15 +166,9 @@
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
 
-                            <input type="email" name="email" placeholder="E-mail Address" value="{{ old('email') }}" 
-                                   class="@error('email') is-invalid @enderror" required>
-                            @error('email')
-                                <div class="error-message">{{ $message }}</div>
-                            @enderror
-
-                            <input type="text" name="address" placeholder="Address" value="{{ old('address') }}" 
-                                   class="@error('address') is-invalid @enderror" required>
-                            @error('address')
+                            <input type="text" name="salary" placeholder="Salary Per Month" value="{{ old('salary') }}" 
+                                   class="@error('salary') is-invalid @enderror" required>
+                            @error('salary')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
                         </div>

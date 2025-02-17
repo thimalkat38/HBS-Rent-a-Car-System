@@ -13,16 +13,23 @@ class OwnerpaymentController extends Controller
      */
     public function index(Request $request)
     {
-        $ownerpayments = collect(); // Start with an empty collection
+        $query = Ownerpayment::query();
     
-        // Check if 'full_name' parameter exists
-        if ($request->filled('full_name')) {
-            // Perform the query only if the 'full_name' is provided
-            $ownerpayments = Ownerpayment::where('full_name', 'LIKE', '%' . $request->input('full_name') . '%')->get();
+        // Filter by owner_id if provided
+        if ($request->filled('owner_id')) {
+            $query->where('owner_id', $request->input('owner_id'));
         }
+    
+        // Additional filter by full_name if needed
+        if ($request->filled('full_name')) {
+            $query->where('full_name', 'LIKE', '%' . $request->input('full_name') . '%');
+        }
+    
+        $ownerpayments = $query->get();
     
         return view('Manager.AllOwnerPay', compact('ownerpayments'));
     }
+    
     
 
     /**
@@ -30,9 +37,10 @@ class OwnerpaymentController extends Controller
      */
     public function create()
     {
-        $vehicleOwners = VehicleOwner::select('id', 'full_name','title')->get();
-        return view('Manager.AddOwnerPay' , compact('vehicleOwners'));
+        $vehicleOwners = VehicleOwner::select('id', 'full_name', 'title', 'owner_id', 'vehicle_number')->get();
+        return view('Manager.AddOwnerPay', compact('vehicleOwners'));
     }
+    
 
     /**
      * Store a newly created resource in storage.
@@ -41,6 +49,7 @@ class OwnerpaymentController extends Controller
     {
         $request->validate([
             'full_name' => 'required|exists:vehicleowners,id', // Validate the selected ID exists in vehicleowners table
+            'owner_id'=> 'required|string|max:255',
             'vehicle' => 'required|string|max:255',
             'date' => 'required|date',
             'paid_amnt' => 'required|string',
@@ -57,6 +66,7 @@ class OwnerpaymentController extends Controller
         // Store the data in the ownerpayments table
         Ownerpayment::create([
             'full_name' => $fullNameWithTitle, // Store the owner's full name with title
+            'owner_id' => $request->owner_id, 
             'vehicle' => $request->vehicle,
             'date' => $request->date,
             'paid_amnt' => $request->paid_amnt,
@@ -64,7 +74,7 @@ class OwnerpaymentController extends Controller
             'acc_no' => $request->acc_no,
         ]);
     
-        return redirect()->route('ownerpayments.index')
+        return redirect()->route('vehicle_owners.index')
                          ->with('success', 'Owner payment created successfully.');
     }
     

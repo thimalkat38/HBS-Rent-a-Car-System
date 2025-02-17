@@ -162,4 +162,15 @@ class CustomerController extends Controller
             ], 404);
         }
     }
+    public function searche(Request $request)
+    {
+        $search = $request->input('q');
+        $customers = Customer::where('full_name', 'LIKE', "%{$search}%")
+                            ->select('id','full_name')
+                            ->get();
+    
+        return response()->json($customers);
+    }
+    
+
 }

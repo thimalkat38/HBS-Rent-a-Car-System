@@ -85,10 +85,15 @@
                             INVENTORY
                         </a>
                     </div>
-                    {{-- <div class="nav-item">
+                    <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
-                                class="nav-icon"> ACCOUNTING</a>
-                    </div> --}}
+                                class="nav-icon"> Finance</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                                </div>
+                    </div>
                 </nav>
             </div>
 
@@ -111,21 +116,27 @@
                         @endif
 
                         <div class="form-row">
-                            <select id="full_name" name="full_name">
+                            <select id="full_name" name="full_name" onchange="updateFields()">
                                 <option value="" disabled selected>Select Vehicle Owner</option>
                                 @foreach ($vehicleOwners as $owner)
-                                    <option value="{{ $owner->id }}">{{ $owner->title }} {{ $owner->full_name }}
+                                    <option value="{{ $owner->id }}" 
+                                            data-owner_id="{{ $owner->owner_id }}" 
+                                            data-vehicle_number="{{ $owner->vehicle_number }}">
+                                        {{ $owner->title }} {{ $owner->full_name }}
                                     </option>
                                 @endforeach
                             </select>
+                            
 
-                            <input type="text" id="vehicle" name="vehicle" placeholder="Vehicle">
+                            <input type="text" id="owner_id" name="owner_id" placeholder="Owner ID" readonly>
+                            <input type="text" id="vehicle" name="vehicle" placeholder="Vehicle" readonly>
+                            
                         </div>
 
                         <div class="form-row">
                             <input type="date" id="date" name="date" placeholder="Date">
-                            <input type="text" id="paid_amnt" name="paid_amnt" placeholder="Paid Amount"
-                                oninput="formatNumber(this)" />
+                            <input type="text" id="paid_amnt" name="paid_amnt" placeholder="Paid Amount (Rs)"
+                                 />
 
                         </div>
 
@@ -150,7 +161,7 @@
         </div>
     </div>
 </body>
-<script>
+{{-- <script>
     function formatNumber(input) {
         // Remove all non-numeric characters except commas
         let value = input.value.replace(/,/g, '');
@@ -158,6 +169,21 @@
         // Add commas back to the string as appropriate
         input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
+</script> --}}
+<script>
+    function updateFields() {
+        var select = document.getElementById("full_name");
+        var selectedOption = select.options[select.selectedIndex];
+
+        // Get values from selected option
+        var ownerId = selectedOption.getAttribute("data-owner_id");
+        var vehicle = selectedOption.getAttribute("data-vehicle_number");
+
+        // Update input fields
+        document.getElementById("owner_id").value = ownerId ? ownerId : "";
+        document.getElementById("vehicle").value = vehicle ? vehicle : "";
+    }
 </script>
+
 
 </html>

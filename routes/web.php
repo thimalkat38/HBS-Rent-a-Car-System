@@ -16,7 +16,11 @@ use App\Http\Controllers\CrmController;
 use App\Http\Controllers\PostBookingController;
 use App\Http\Controllers\VehicleOwnerController;
 use App\Http\Controllers\OwnerpaymentController;
-// use App\Models\Employee;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\SalaryController;
+use App\Http\Controllers\ProfitLossController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -285,3 +289,47 @@ Route::middleware(['manager'])->delete('ownerpayments/{ownerpayment}', [Ownerpay
 Route::middleware(['manager'])->get('/autocomplete-vehicle-models', [VehicleController::class, 'autocomplete']);
 Route::middleware(['manager'])->get('/autocomplete-vehicle-numbers', [VehicleController::class, 'autocompleteVehicleNumber']);
 Route::middleware(['manager'])->get('/autocomplete-employees', [EmployeeController::class, 'autocomplete']);
+
+
+
+// Service Routes
+Route::middleware(['manager'])->get('/services', [ServiceController::class, 'index'])->name('services.index'); // List all services
+Route::middleware(['manager'])->get('/services/create', [ServiceController::class, 'create'])->name('services.create'); // Show form to create a new service
+Route::middleware(['manager'])->post('/services', [ServiceController::class, 'store'])->name('services.store'); // Store new service
+Route::middleware(['manager'])->get('/services/{service}', [ServiceController::class, 'show'])->name('services.show'); // Show specific service
+Route::middleware(['manager'])->get('/services/{service}/edit', [ServiceController::class, 'edit'])->name('services.edit'); // Show form to edit service
+Route::middleware(['manager'])->put('/services/{service}', [ServiceController::class, 'update'])->name('services.update'); // Update service
+Route::middleware(['manager'])->delete('/services/{service}', [ServiceController::class, 'destroy'])->name('services.destroy'); // Delete service
+
+
+
+
+
+
+Route::middleware(['manager'])->get('/expenses', [ExpenseController::class, 'index'])->name('expenses.index');
+Route::middleware(['manager'])->get('/expenses/create', [ExpenseController::class, 'create'])->name('expenses.create');
+Route::middleware(['manager'])->post('/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
+Route::middleware(['manager'])->get('/expenses/{id}', [ExpenseController::class, 'show'])->name('expenses.show');
+Route::middleware(['manager'])->get('/expenses/{id}/edit', [ExpenseController::class, 'edit'])->name('expenses.edit');
+Route::middleware(['manager'])->put('/expenses/{id}', [ExpenseController::class, 'update'])->name('expenses.update');
+Route::middleware(['manager'])->delete('/expenses/{id}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
+
+
+
+
+
+Route::middleware(['manager'])->get('/employees/search', [EmployeeController::class, 'searche'])->name('employees.search');
+Route::middleware(['manager'])->get('/customers/search', [CustomerController::class, 'searche'])->name('customers.search');
+
+Route::middleware(['manager'])->get('/expenses/download/{id}', [ExpenseController::class, 'download'])->name('expenses.download');
+
+Route::middleware(['manager'])->get('/api/vehicles/search', [VehicleController::class, 'searchVehicles'])->name('api.vehicles.search');
+
+
+
+Route::middleware(['manager'])->post('/salary/store', [SalaryController::class, 'store'])->name('salary.store');
+
+
+
+
+Route::middleware(['manager'])->get('/profit-loss-report', [ProfitLossController::class, 'index'])->name('profit.loss');

@@ -305,5 +305,20 @@ public function autocompleteVehicleNumber(Request $request)
 
     return response()->json($vehicleNumbers);
 }
+public function searchVehicles(Request $request)
+{
+    $query = $request->input('query'); // Get the search input
+
+    if (!$query) {
+        return response()->json(['error' => 'Query parameter is missing'], 400);
+    }
+
+    // Fetch matching vehicle numbers
+    $vehicles = Vehicle::where('vehicle_number', 'LIKE', "%{$query}%")
+                ->limit(10)
+                ->pluck('vehicle_number');
+
+    return response()->json($vehicles);
+}
 
 }

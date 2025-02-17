@@ -88,6 +88,9 @@
                             </p>
                             <p><strong>Remaining Leaves:</strong> <span
                                     id="nic">{{ $employee->remaining_leaves }}</span></p>
+                            <p><strong>Salary Per Month:</strong> RS <span id="salary">
+                                    {{ number_format($employee->salary, 2) }}
+                                </span></p>
                             <p><strong>Bank:</strong> <span id="nic">{{ $employee->bank }}</span></p>
                             <p><strong>Bank Account Number:</strong> <span
                                     id="nic">{{ $employee->acc_number }}</span></p>
@@ -104,7 +107,9 @@
                                         @if (!empty($employee->photo))
                                             @foreach ($employee->photo as $photo)
                                                 <div class="col-6 col-md-4 col-lg-3 mb-3">
-                                                    <img src="{{ asset('storage/' . $photo) }}" class="img-fluid img-thumbnail medium-thumbnail" alt="NIC Photo">
+                                                    <img src="{{ asset('storage/' . $photo) }}"
+                                                        class="img-fluid img-thumbnail medium-thumbnail"
+                                                        alt="NIC Photo">
                                                 </div>
                                             @endforeach
                                         @else
@@ -113,7 +118,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <h5 class="card-title text-primary mt-3 mb-2">Document About Employee</h5>
                             <div class="row">
                                 <div class="col-md-6">
@@ -121,7 +126,9 @@
                                         @if (!empty($employee->doc_photos))
                                             @foreach ($employee->doc_photos as $doc_photo)
                                                 <div class="col-6 col-md-4 col-lg-3 mb-3">
-                                                    <img src="{{ asset('storage/' . $doc_photo) }}" class="img-fluid img-thumbnail medium-thumbnail" alt="Document Photo">
+                                                    <img src="{{ asset('storage/' . $doc_photo) }}"
+                                                        class="img-fluid img-thumbnail medium-thumbnail"
+                                                        alt="Document Photo">
                                                 </div>
                                             @endforeach
                                         @else
@@ -130,8 +137,8 @@
                                     </div>
                                 </div>
                             </div>
-                            
-                            
+
+
 
                         </div>
                     </div>
@@ -144,12 +151,18 @@
 </body>
 <style>
     .medium-thumbnail {
-        max-width: 750px; /* Maximum width */
-        max-height: 750px; /* Maximum height */
-        width: auto; /* Automatically adjust width while maintaining aspect ratio */
-        height: auto; /* Automatically adjust height while maintaining aspect ratio */
-        border: 1px solid #ddd; /* Optional: Add a border for styling */
-        padding: 5px; /* Optional: Add padding for better spacing */
+        max-width: 750px;
+        /* Maximum width */
+        max-height: 750px;
+        /* Maximum height */
+        width: auto;
+        /* Automatically adjust width while maintaining aspect ratio */
+        height: auto;
+        /* Automatically adjust height while maintaining aspect ratio */
+        border: 1px solid #ddd;
+        /* Optional: Add a border for styling */
+        padding: 5px;
+        /* Optional: Add padding for better spacing */
     }
 </style>
 

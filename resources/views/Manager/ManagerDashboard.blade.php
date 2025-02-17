@@ -84,6 +84,15 @@
                             <img src="{{ asset('images/7.png') }}" alt="Inventory" class="nav-icon"> INVENTORY
                         </a>
                     </div>
+                    <div class="nav-item">
+                        <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
+                                class="nav-icon"> Finance</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                                </div>
+                    </div>
                 </nav>
             </div>
 
@@ -178,7 +187,7 @@
             const modal = document.getElementById('bookingModal');
             const modalContent = document.getElementById('bookingDetails');
             const closeModalBtn = document.querySelector('.close-btn');
-    
+
             document.querySelectorAll('.calendar-day').forEach(day => {
                 day.addEventListener('click', () => {
                     const date = day.getAttribute('data-date');
@@ -188,35 +197,37 @@
                             .then(data => {
                                 let inBookingsHtml = '';
                                 let outBookingsHtml = '';
-    
+
                                 if (data.in_bookings && data.in_bookings.length > 0) {
                                     inBookingsHtml = `
                                         <h3>OUT</h3>
                                         <ul>
                                             ${data.in_bookings.map(booking => `
-                                                <li>
-                                                    ${booking.vehicle_number} - ${booking.vehicle_name} [${booking.booking_time}]
-                                                </li>
-                                            `).join('')}
+                                                    <li>
+                                                        ${booking.vehicle_number} - ${booking.vehicle_name} [${booking.booking_time}]
+                                                    </li>
+                                                `).join('')}
                                         </ul>`;
                                 } else {
-                                    inBookingsHtml = '<h3>Out</h3><p>No vehicles are booked to go out on this day.</p>';
+                                    inBookingsHtml =
+                                        '<h3>Out</h3><p>No vehicles are booked to go out on this day.</p>';
                                 }
-    
+
                                 if (data.out_bookings && data.out_bookings.length > 0) {
                                     outBookingsHtml = `
                                         <h3>IN</h3>
                                         <ul>
                                             ${data.out_bookings.map(booking => `
-                                                <li>
-                                                    ${booking.vehicle_number} - ${booking.vehicle_name} [${booking.arrival_time}]
-                                                </li>
-                                            `).join('')}
+                                                    <li>
+                                                        ${booking.vehicle_number} - ${booking.vehicle_name} [${booking.arrival_time}]
+                                                    </li>
+                                                `).join('')}
                                         </ul>`;
                                 } else {
-                                    outBookingsHtml = '<h3>In</h3><p>No Vehicles Returns on this day.</p>';
+                                    outBookingsHtml =
+                                        '<h3>In</h3><p>No Vehicles Returns on this day.</p>';
                                 }
-    
+
                                 modalContent.innerHTML = inBookingsHtml + outBookingsHtml;
                                 modal.classList.remove('hidden');
                             })
@@ -227,14 +238,14 @@
                     }
                 });
             });
-    
+
             closeModalBtn.addEventListener('click', () => {
                 modal.classList.add('hidden');
             });
         });
     </script>
-    
-    
+
+
     <style>
         .hidden {
             display: none;

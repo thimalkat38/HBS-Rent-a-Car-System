@@ -20,17 +20,17 @@
             </div>
             <div class="header-title">HBS RENT A CAR</div>
             <div class="card1">
-            <div class="card1-content">  
-                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
-                    @csrf
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('LogOut') }}
-                    </x-responsive-nav-link>
-                </form>
+                <div class="card1-content">  
+                    <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
+                        @csrf
+                        <x-responsive-nav-link :href="route('logout')"
+                            onclick="event.preventDefault();
+                                            this.closest('form').submit();">
+                            {{ __('LogOut') }}
+                        </x-responsive-nav-link>
+                    </form>
+                </div>
             </div>
-        </div>
         </div>
 
         <!-- Main Content -->
@@ -81,11 +81,16 @@
                             <img src="{{ asset('images/7.png') }}" alt="Inventory" class="nav-icon">
                             INVENTORY
                         </a>
-                    </div>  
-                    {{-- <div class="nav-item">
+                    </div>
+                    <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
-                                class="nav-icon"> ACCOUNTING (under development...)</a>
-                    </div> --}}
+                                class="nav-icon"> Finance</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                                </div>
+                    </div>
                 </nav>
             </div>
 
@@ -97,7 +102,12 @@
                         @csrf
                         <div class="form-row">
                             <input type="text" name="it_name" placeholder="Item Name" value="{{ old('it_name') }}" required>
-                            <input type="number" name="quantity" placeholder="Stock" value="{{ old('quantity') }}" required>
+                            <input type="date" name="date" placeholder="Date" value="{{ old('date') }}" required>
+                        </div>
+                        <div class="form-row">
+                            <input type="number" name="quantity" id="quantity" placeholder="Quantity" value="{{ old('quantity') }}" required>
+                            <input type="text" name="price_per_unit" id="price_per_unit" placeholder="Price Per Unit" value="{{ old('price_per_unit') }}" required>
+                            <input type="text" name="total_price" id="total_price" placeholder="Total Price" value="{{ old('total_price') }}" required>
                         </div>
                         <div class="upload-section">
                             <label for="it_images" class="upload-label">
@@ -134,5 +144,32 @@
             <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>
         </div>
     </div>
+
+    <!-- JavaScript for Auto Calculation -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const quantityInput = document.getElementById("quantity");
+            const pricePerUnitInput = document.getElementById("price_per_unit");
+            const totalPriceInput = document.getElementById("total_price");
+
+            function calculateValues() {
+                let quantity = parseFloat(quantityInput.value);
+                let pricePerUnit = parseFloat(pricePerUnitInput.value);
+                let totalPrice = parseFloat(totalPriceInput.value);
+
+                if (!isNaN(quantity) && !isNaN(pricePerUnit)) {
+                    totalPriceInput.value = (quantity * pricePerUnit).toFixed(2);
+                } else if (!isNaN(totalPrice) && !isNaN(quantity)) {
+                    pricePerUnitInput.value = (totalPrice / quantity).toFixed(2);
+                } else if (!isNaN(totalPrice) && !isNaN(pricePerUnit)) {
+                    quantityInput.value = (totalPrice / pricePerUnit).toFixed(2);
+                }
+            }
+
+            quantityInput.addEventListener("input", calculateValues);
+            pricePerUnitInput.addEventListener("input", calculateValues);
+            totalPriceInput.addEventListener("input", calculateValues);
+        });
+    </script>
 </body>
 </html>
