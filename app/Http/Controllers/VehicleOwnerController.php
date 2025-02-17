@@ -58,11 +58,12 @@ class VehicleOwnerController extends Controller
             'acc_no' => 'nullable|string|max:255',
             'bank_detais' => 'nullable|string',
         ]);
-
+    
+        // Create new vehicle owner (owner_id is auto-generated)
         VehicleOwner::create($validated);
-
+    
         return redirect()->route('vehicle_owners.index')->with('success', 'Vehicle owner created successfully.');
-    }
+    }    
 
     /**
      * Display the specified resource.

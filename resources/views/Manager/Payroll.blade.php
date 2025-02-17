@@ -82,10 +82,15 @@
                             INVENTORY
                         </a>
                     </div>                    
-                    {{-- <div class="nav-item">
+                    <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
-                                class="nav-icon"> ACCOUNTING</a>
-                    </div> --}}
+                                class="nav-icon"> Finance</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                                </div>
+                    </div>
                 </nav>
             </div>
         <div class="content">
@@ -132,6 +137,11 @@
                                 <a class="nav-link" href="{{ url('payrolls/create') }}">Add Payment</a>
                             </div>
                         </div>
+                        <div class="card1-content">
+                            <div class="card1-submit-container">
+                                <button class="nav-link" id="salaryPaidBtn">Salary Paid</button>
+                            </div>
+                        </div>                        
                     </div>
                 <div class="table-content">
                 
@@ -252,7 +262,93 @@
 .dropdown-item:hover {
     background: #f0f0f0;
 }
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    margin: 15% auto;
+    width: 30%;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.close {
+    color: red;
+    font-size: 25px;
+    float: right;
+    cursor: pointer;
+}
+
+.confirm-btn {
+    background-color: green;
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
 
     </style>
+    <!-- Salary Paid Confirmation Modal -->
+<div id="salaryPaidModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Confirm Salary Payment</h2>
+        <form id="salaryPaidForm" method="POST" action="{{ route('salary.store') }}">
+            @csrf
+            <label for="month">Select Month:</label>
+            <select name="month" id="month" required>
+                <option value="" disabled selected>Select Month</option>
+                <option value="January">January</option>
+                <option value="February">February</option>
+                <option value="March">March</option>
+                <option value="April">April</option>
+                <option value="May">May</option>
+                <option value="June">June</option>
+                <option value="July">July</option>
+                <option value="August">August</option>
+                <option value="September">September</option>
+                <option value="October">October</option>
+                <option value="November">November</option>
+                <option value="December">December</option>
+            </select>
+            <button type="submit" class="confirm-btn">Confirm</button>
+        </form>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("salaryPaidModal");
+        const btn = document.getElementById("salaryPaidBtn");
+        const closeBtn = document.querySelector(".close");
+
+        btn.addEventListener("click", function (event) {
+            event.preventDefault();
+            modal.style.display = "block";
+        });
+
+        closeBtn.addEventListener("click", function () {
+            modal.style.display = "none";
+        });
+
+        window.addEventListener("click", function (event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+    });
+</script>
+
 </body>
 </html>

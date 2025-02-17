@@ -117,10 +117,15 @@
                             INVENTORY
                         </a>
                     </div>  
-                    {{-- <div class="nav-item">
+                    <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
-                                class="nav-icon"> ACCOUNTING</a>
-                    </div> --}}
+                                class="nav-icon"> Finance</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                                </div>
+                    </div>
                 </nav>
             </div>
 
@@ -147,8 +152,8 @@
                         
                         <div class="card1-content">
                             <div class="card1-submit-container">
-                                <a class="nav-link" href="{{ route('ownerpayments.index') }}"
-                                    class="card1-btn-submit">Payment Informations</a>
+                                <a class="nav-link" href="{{ route('ownerpayments.create') }}"
+                                    class="card1-btn-submit">Add Payment</a>
                             </div>
                             <div class="card1-submit-container">
                                 <a class="nav-link" href="{{ route('vehicle_owners.create') }}"
@@ -184,13 +189,14 @@
                                 <td>{{ $vehicleOwner->start_date }}</td>
                                 <td>{{ $vehicleOwner->end_date ?? 'No End Date Exists' }}</td>
                                 <td class="button-cell">
+                                    <a href="{{ route('ownerpayments.index', ['owner_id' => $vehicleOwner->owner_id]) }}" class="btn-blue">Payments</a>
                                     <a href="{{ route('vehicle_owners.edit', $vehicleOwner->id) }}" class="btn-edit">Edit</a>
                                     <form action="{{ route('vehicle_owners.destroy', $vehicleOwner->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this vehicleowner?')">Delete</button>
                                     </form>
-                                </td>
+                                </td>                                
                             </tr>
                         @endforeach
                         </tbody>

@@ -35,6 +35,7 @@ class EmployeeController extends Controller
             'emp_name' => 'required|string|max:255',
             'nic' => 'required|string|max:20|unique:employees,nic',
             'mobile_number' => 'required|string|max:15',
+            'salary' => 'nullable|string',
             'acc_number'  => 'required|string|max:30',
             'bank' => 'required|string',
             'email' => 'required|email|unique:employees,email',
@@ -67,6 +68,10 @@ class EmployeeController extends Controller
             }
         }
     
+        // Set salary and remaining_salary values
+        $salary = $request->salary ?? '0'; // Default to '0' if null
+        $remainingSalary = $salary; // Remaining salary should be the same as salary initially
+    
         // Create Employee
         Employee::create([
             'emp_id' => $empId,
@@ -74,6 +79,8 @@ class EmployeeController extends Controller
             'emp_name' => $request->emp_name,
             'nic' => $request->nic,
             'mobile_number' => $request->mobile_number,
+            'salary'  => $salary,
+            'remaining_salary' => $remainingSalary, // Set remaining_salary same as salary
             'acc_number' => $request->acc_number,
             'bank' => $request->bank,
             'email' => $request->email,
@@ -87,6 +94,7 @@ class EmployeeController extends Controller
     
         return redirect()->route('employees.index')->with('success', 'Employee added successfully!');
     }
+    
         
     /**
      * Show the form for editing the specified employee.
@@ -105,6 +113,7 @@ class EmployeeController extends Controller
         $request->validate([
             'emp_name' => 'required|string|max:255',
             'mobile_number' => 'required|string|max:15',
+            'salary' => 'nullable|string',
             'acc_number' => 'required|string|max:30',
             'bank' => 'required|string',
             'join_date' => 'required|date',
@@ -215,5 +224,14 @@ public function show($id)
       return response()->json($employees);
   }
 
-
+  public function searche(Request $request)
+  {
+      $search = $request->input('q');
+      $employees = Employee::where('emp_name', 'LIKE', "%{$search}%")
+                          ->select('emp_id', 'emp_name')
+                          ->get();
+  
+      return response()->json($employees);
+  }
+  
 }

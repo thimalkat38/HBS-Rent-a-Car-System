@@ -47,11 +47,29 @@ class PayrollController extends Controller
             'paid_date' => 'required|date',
             'paid_amnt' => 'required|numeric',
         ]);
-
+    
+        // Retrieve the employee based on emp_id
+        $employee = \App\Models\Employee::where('emp_id', $validated['emp_id'])->first();
+    
+        if (!$employee) {
+            return redirect()->back()->with('error', 'Employee not found.');
+        }
+    
+        // Update advanced_salary (Add paid_amnt)
+        $employee->advanced_salary = ($employee->advanced_salary ?? 0) + $validated['paid_amnt'];
+    
+        // Update remaining_salary (Reduce paid_amnt)
+        $employee->remaining_salary = ($employee->remaining_salary ?? 0) - $validated['paid_amnt'];
+    
+        // Save the updated employee data
+        $employee->save();
+    
+        // Store payroll data
         Payroll::create($validated);
-
+    
         return redirect()->route('payrolls.index')->with('success', 'Payroll added successfully!');
     }
+    
 
     // Display the specified payroll
     public function show($id)

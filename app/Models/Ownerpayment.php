@@ -13,7 +13,8 @@ class Ownerpayment extends Model
     
     protected $fillable = [
 
-        'full_name', 
+        'full_name',
+        'owner_id', 
         'vehicle',
         'date', 
         'paid_amnt', 

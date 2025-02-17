@@ -45,6 +45,9 @@ class InventoryController extends Controller
         $request->validate([
             'it_name' => 'required',
             'quantity' => 'required|integer',
+            'date'=> 'nullable|string',
+            'price_per_unit'=> 'nullable|string',
+            'total_price' => 'nullable|string',
             'it_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
     
@@ -67,6 +70,9 @@ class InventoryController extends Controller
             'Itm_id' => $nextItmId,
             'it_name' => $request->input('it_name'),
             'quantity' => $request->input('quantity'),
+            'date' => $request->input('date'),
+            'price_per_unit' => $request->input('price_per_unit'),
+            'total_price' => $request->input('total_price'),
             'it_images' => json_encode($images), // Store images as JSON
         ]);
     
@@ -87,6 +93,9 @@ class InventoryController extends Controller
             'Itm_id' => 'required|unique:inventories,Itm_id,' . $id,
             'it_name' => 'required',
             'quantity' => 'required|integer',
+            'date'=> 'nullable|string',
+            'price_per_unit'=> 'nullable|string',
+            'total_price' => 'nullable|string',
             'it_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
     
@@ -117,6 +126,9 @@ class InventoryController extends Controller
             'Itm_id' => $request->input('Itm_id'),
             'it_name' => $request->input('it_name'),
             'quantity' => $request->input('quantity'),
+            'date' => $request->input('date'),
+            'price_per_unit' => $request->input('price_per_unit'),
+            'total_price' => $request->input('total_price'),
             'it_images' => json_encode($images), // Save new image paths as JSON
         ]);
     

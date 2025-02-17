@@ -48,14 +48,14 @@
     <div class="container my-3">
         <div class="row">
             <div class="col-12">
-                <h1 class="text-center mb-3">Customer's Details</h1>
+                <h1 class="text-center mb-3">Vehicle OWner's Details</h1>
 
                 @if($vehicleOwner)
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title text-primary mb-3">Informations</h5>
                         <p><strong>Full Name:</strong> <span id="fullName">{{ $vehicleOwner->title }} {{ $vehicleOwner->full_name }}</span></p>
-                        <p><strong>Full Name:</strong> <span id="vehicle">{{ $vehicleOwner->vehicle_name }} [{{ $vehicleOwner->vehicle_number }}]</span></p>
+                        <p><strong>Vehicle:</strong> <span id="vehicle">{{ $vehicleOwner->vehicle_name }} [{{ $vehicleOwner->vehicle_number }}]</span></p>
                         <p><strong>Mobile Number:</strong> <span id="mobileNumber">{{ $vehicleOwner->phone }}</span></p>
                         <p><strong>Address:</strong> <span id="address">{{ $vehicleOwner->address}}</span></p>
                         <p><strong>Start Date:</strong> <span id="start_date">{{ $vehicleOwner->start_date}}</span></p>
