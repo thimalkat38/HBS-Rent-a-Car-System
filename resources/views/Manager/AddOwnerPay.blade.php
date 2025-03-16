@@ -116,21 +116,21 @@
                         @endif
 
                         <div class="form-row">
-                            <select id="full_name" name="full_name" onchange="updateFields()">
-                                <option value="" disabled selected>Select Vehicle Owner</option>
+                            <select id="vehicle" name="vehicle" onchange="updateOwner()">
+                                <option value="" disabled selected>Select Vehicle</option>
                                 @foreach ($vehicleOwners as $owner)
-                                    <option value="{{ $owner->id }}" 
+                                    <option value="{{ $owner->vehicle_number }}" 
                                             data-owner_id="{{ $owner->owner_id }}" 
-                                            data-vehicle_number="{{ $owner->vehicle_number }}">
-                                        {{ $owner->title }} {{ $owner->full_name }}
+                                            data-full_name="{{ $owner->title }} {{ $owner->full_name }}"
+                                            data-acc_no="{{ $owner->acc_no }}"
+                                            data-bank_details="{{ $owner->bank_detais }}">
+                                        {{ $owner->vehicle_number }}
                                     </option>
                                 @endforeach
                             </select>
-                            
-
-                            <input type="text" id="owner_id" name="owner_id" placeholder="Owner ID" readonly>
-                            <input type="text" id="vehicle" name="vehicle" placeholder="Vehicle" readonly>
-                            
+                        
+                            <input type="text" id="owner_id" name="owner_id" placeholder="Owner ID" value="" readonly>
+                            <input type="text" id="full_name" name="full_name" placeholder="Full Name" readonly>
                         </div>
 
                         <div class="form-row">
@@ -141,8 +141,15 @@
                         </div>
 
                         <div class="form-row">
-                            <input type="text" id="bank_details" name="bank_details" placeholder="Bank Details">
-                            <input type="text" id="acc_no" name="acc_no" placeholder="Account Number">
+                            <input type="text" id="bank_details" name="bank_details" placeholder="Bank Details"readonly>
+                            <input type="text" id="acc_no" name="acc_no" placeholder="Account Number" readonly>
+                        </div>
+                        <div class="upload-section">
+                            <p>Add Image of Receipt</p>
+                            <input type="file" name="receipt[]" accept="image/*" multiple>
+                            @error('receipt')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <!-- Submit Button -->
@@ -161,29 +168,24 @@
         </div>
     </div>
 </body>
-{{-- <script>
-    function formatNumber(input) {
-        // Remove all non-numeric characters except commas
-        let value = input.value.replace(/,/g, '');
 
-        // Add commas back to the string as appropriate
-        input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
-</script> --}}
 <script>
-    function updateFields() {
-        var select = document.getElementById("full_name");
+    function updateOwner() {
+        var select = document.getElementById("vehicle");
         var selectedOption = select.options[select.selectedIndex];
 
         // Get values from selected option
         var ownerId = selectedOption.getAttribute("data-owner_id");
-        var vehicle = selectedOption.getAttribute("data-vehicle_number");
+        var fullName = selectedOption.getAttribute("data-full_name");
+        var accNo = selectedOption.getAttribute("data-acc_no");
+        var bankDetails = selectedOption.getAttribute("data-bank_details");
 
         // Update input fields
         document.getElementById("owner_id").value = ownerId ? ownerId : "";
-        document.getElementById("vehicle").value = vehicle ? vehicle : "";
+        document.getElementById("full_name").value = fullName ? fullName : "";
+        document.getElementById("acc_no").value = accNo ? accNo : "";
+        document.getElementById("bank_details").value = bankDetails ? bankDetails : "";
     }
 </script>
-
 
 </html>

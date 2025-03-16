@@ -186,7 +186,12 @@
                                 <span class="error-message">{{ $message }}</span>
                             @enderror
 
-                            <input type="text" name="free_km" id="free_km" placeholder="Free KM">
+                            <input type="text" name="free_kmd" id="free_kmd" placeholder="Free KM Per Day">
+                            @error('free_kmd')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+
+                            <input type="text" name="free_km" id="all_free_km" placeholder="Free KM" readonly>
                             @error('free_km')
                                 <span class="error-message">{{ $message }}</span>
                             @enderror
@@ -338,34 +343,6 @@
             <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>
         </div>
     </div>
-
-    {{-- <script>
-        document.getElementById('vehicle_number').addEventListener('change', function() {
-            const vehicleNumber = this.value;
-
-            fetch(`/vehicles/get-details/${vehicleNumber}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.fuel_type && data.vehicle_name && data.vehicle_model && data.price_per_day && data
-                        .extra_km_chg && data.free_km) {
-                        document.getElementById('fuel_type').value = data.fuel_type;
-                        document.getElementById('vehicle_name').value =
-                            `${data.vehicle_model} ${data.vehicle_name}`;
-                        document.getElementById('price_per_day').value = data.price_per_day;
-                        document.getElementById('extra_km_chg').value = data.extra_km_chg;
-                        document.getElementById('free_km').value = data.free_km;
-                    } else {
-                        alert(data.message || 'Vehicle details not found');
-                        document.getElementById('fuel_type').value = '';
-                        document.getElementById('vehicle_name').value = '';
-                        document.getElementById('price_per_day').value = '';
-                        document.getElementById('extra_km_chg').value = '';
-                        document.getElementById('free_km').value = '';
-                    }
-                })
-                .catch(error => console.error('Error fetching vehicle details:', error));
-        });
-    </script> --}}
 
     <script>
         $(document).ready(function() {
@@ -560,10 +537,10 @@
                                 $("#vehicle_name").val(`${data.vehicle_model} ${data.vehicle_name}`);
                                 $("#price_per_day").val(data.price_per_day);
                                 $("#extra_km_chg").val(data.extra_km_chg);
-                                $("#free_km").val(data.free_km);
+                                $("#free_kmd").val(data.free_km);
                             } else {
                                 alert(data.message || "Vehicle details not found");
-                                $("#fuel_type, #vehicle_name, #price_per_day, #extra_km_chg, #free_km")
+                                $("#fuel_type, #vehicle_name, #price_per_day, #extra_km_chg, #free_kmd")
                                     .val('');
                             }
                         })
@@ -574,7 +551,7 @@
             // Clear vehicle selection and unlock input
             $("#clear_vehicle").on("click", function() {
                 $("#vehicle_number").val("").prop("readonly", false).focus();
-                $("#fuel_type, #vehicle_name, #price_per_day, #extra_km_chg, #free_km").val('');
+                $("#fuel_type, #vehicle_name, #price_per_day, #extra_km_chg, #free_kmd").val('');
                 $(this).hide(); // Hide clear button
             });
         });
@@ -610,6 +587,44 @@
             });
         });
     </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function calculateDays() {
+            let fromDate = document.querySelector("input[name='from_date']").value;
+            let toDate = document.querySelector("input[name='to_date']").value;
+            
+            if (fromDate && toDate) {
+                let start = new Date(fromDate);
+                let end = new Date(toDate);
+                
+                let difference = Math.ceil((end - start) / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+                
+                if (difference > 0) {
+                    document.getElementById("days").value = difference;
+                } else {
+                    document.getElementById("days").value = 0; // Ensure no negative values
+                }
+                
+                calculateFreeKM(); // Recalculate free_km when days update
+            }
+        }
+
+        function calculateFreeKM() {
+            let freeKmPerDay = parseFloat(document.getElementById("free_kmd").value) || 0;
+            let totalDays = parseFloat(document.getElementById("days").value) || 0;
+            let totalFreeKm = freeKmPerDay * totalDays;
+            
+            document.getElementById("all_free_km").value = totalFreeKm;
+        }
+
+        // Event Listeners
+        document.getElementById("free_kmd").addEventListener("input", calculateFreeKM);
+        document.getElementById("days").addEventListener("input", calculateFreeKM);
+        document.querySelector("input[name='from_date']").addEventListener("change", calculateDays);
+        document.querySelector("input[name='to_date']").addEventListener("change", calculateDays);
+    });
+</script>
+
 
 
 

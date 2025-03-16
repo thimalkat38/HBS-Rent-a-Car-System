@@ -32,11 +32,15 @@ class VehicleOwner extends Model
     protected static function boot()
     {
         parent::boot();
-
+    
         static::creating(function ($vehicleOwner) {
             $lastOwner = self::orderBy('id', 'desc')->first();
             $nextId = $lastOwner ? ((int)substr($lastOwner->owner_id, 2) + 1) : 1;
             $vehicleOwner->owner_id = 'VO' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
+            
+            // Set default rem_rental as rental_amnt
+            $vehicleOwner->rem_rental = $vehicleOwner->rental_amnt;
         });
     }
+    
 }

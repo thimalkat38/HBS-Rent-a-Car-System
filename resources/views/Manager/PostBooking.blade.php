@@ -204,11 +204,11 @@
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> Finance</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
-                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
-                                </div>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                            <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                            {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                        </div>
                     </div>
                 </nav>
             </div>
@@ -238,60 +238,83 @@
                             <label for="v_name">Vehicle</label>
                             <input type="text" name="vehicle" id="vehicle_name"
                                 value="{{ $booking->vehicle_name }}" readonly>
-                            <label for="from-date">FROM</label>
+                            {{-- <label for="from-date">FROM</label>
                             <input type="text" name="from_date" id="from-date" value="{{ $booking->from_date }}"
                                 readonly>
                             <label for="to-date">TO</label>
                             <input type="text" name="to_date" id="to_date" value="{{ $booking->to_date }}"
+                                readonly> --}}
+                            <label for="price_per_day">Price Per Day</label>
+                            <input type="text" name="price_per_day" id="price_per_day"
+                                value="{{ $booking->price_per_day }}" readonly>
+                            <label for="free_kmd">Free Km Per Day</label>
+                            <input type="text" name="free_kmd" id="free_kmd" value="{{ $booking->free_kmd }}"
                                 readonly>
                         </div><br>
                         <div class="form-row">
+                            <label for="from-date">FROM</label>
+                            <input type="text" name="from_date" id="from-date" value="{{ $booking->from_date }}" readonly>
+                            
+                            <label for="to-date">TO</label>
+                            <input type="text" name="to_date" id="to_date" value="{{ $booking->to_date }}" readonly>
+                            
+                            <label for="ar-date">Arrived Date</label>
+                            <input type="date" name="ar_date" id="ar_date" required>
+                            
+                            <label for="ex-date">Extended Days</label>
+                            <input type="text" name="ex_date" id="ex_date" readonly>
+                        </div><br>
+                        <div class="form-row">
                             <label for="start_km">Starting Mileage</label>
-                            <input type="text" name="start_km" id="start_km" value="{{ $booking->start_km }}" readonly>
+                            <input type="text" name="start_km" id="start_km" value="{{ $booking->start_km }}"
+                                readonly>
                             <label for="end_km">Ending Mileage</label>
                             <input type="text" name="end_km" id="end_km" required>
                             <label for="drived">Drived Mileage</label>
                             <input type="text" name="drived" id="drived" readonly>
                             <label for="free_km">Free KM</label>
-                            <input type="text" name="free_km" id="free_km" value="{{ $booking->free_km }}" readonly>
+                            <input type="text" name="free_km" id="free_km" value="{{ $booking->free_km }}"
+                                readonly>
                             <label for="over">Over Drived KM</label>
                             <input type="text" name="over" id="over" readonly>
                             <label for="extra_km_chg">Extra 1KM charges</label>
-                            <input type="text" name="extra_km_chg" id="extra_km_chg" value="{{ $booking->extra_km_chg }}" readonly>
+                            <input type="text" name="extra_km_chg" id="extra_km_chg"
+                                value="{{ $booking->extra_km_chg }}" readonly>
                         </div>
                         <h3>Billing Information</h3>
                         <div class="form-row">
                             <label for="price">Before Base Price</label>
                             <input type="text" name="base_price" id="base_price"
-                                value="{{($booking->price + $booking->payed)}}" readonly>                            
+                                value="{{ $booking->price + $booking->payed }}" readonly>
                             <label for="price">Paid Amount</label>
-                            <input type="text" name="paid" id="payed" value="{{$booking->payed}}"
+                            <input type="text" name="paid" id="payed" value="{{ $booking->payed }}"
                                 readonly>
-                                <label for="price">Payment Note</label>
-                                <input type="text" name="method"value="{{$booking->method}}"
-                                    readonly>
+                            <label for="price">Payment Note</label>
+                            <input type="text" name="method"value="{{ $booking->method }}" readonly>
                             <label for="price" style="color: #c82333">Due (Amount remaining to be paid by the
                                 customer)</label>
-                            <input type="text" name="due" id="price" value="{{$booking->price }}"
+                            <input type="text" name="due" id="price" value="{{ $booking->price }}"
                                 readonly>
                         </div><br>
                         <div class="form-row">
                             <label for="extra_km">Extral KM Charges</label>
                             <input type="text" name="extra_km" id="extra_km"onfocus="clearDefaultValue(this);">
                             <label for="extra_hours">Extra hours Charges</label>
-                            <input type="text" name="extra_hours" id="extra_hours"onfocus="clearDefaultValue(this);">
+                            <input type="text" name="extra_hours"
+                                id="extra_hours"onfocus="clearDefaultValue(this);">
                             <label for="damage_fee">Damage fee</label>
-                            <input type="text" name="damage_fee" id="damage_fee" onfocus="clearDefaultValue(this);">
+                            <input type="text" name="damage_fee" id="damage_fee"
+                                onfocus="clearDefaultValue(this);">
                         </div><br>
                         <div class="form-row">
-                        <label for="after_additional">Other Additional Charges</label>
-                        <input type="text" name="after_additional" id="after_additional" value="0.00"
-                            onfocus="clearDefaultValue(this);" oninput="updateDue(); updateTotalIncome();">
-                    <label for="charge">Reason for Other Additional Charges</label>
-                    <input type="text" name="reason" id="reason">
-                    <label for="after_discount">After Discount Price</label>
-                    <input type="text" name="after_discount" id="after_discount" value="0.00"
-                        onfocus="clearDefaultValue(this);" oninput="updateDue(); updateTotalIncome();">
+                            <label for="after_additional">Other Additional Charges</label>
+                            <input type="text" name="after_additional" id="after_additional" value="0.00"
+                                onfocus="clearDefaultValue(this);" oninput="updateDue(); updateTotalIncome();">
+                            <label for="charge">Reason for Other Additional Charges</label>
+                            <input type="text" name="reason" id="reason">
+                            <label for="after_discount">After Discount Price</label>
+                            <input type="text" name="after_discount" id="after_discount" value="0.00"
+                                onfocus="clearDefaultValue(this);" oninput="updateDue(); updateTotalIncome();">
                         </div><br>
                         <div class="form-row">
                             <label for="total_income">Total Income</label>
@@ -340,13 +363,14 @@
                                 </div>
                                 <div class="form-row">
                                     <label for="officer">Relesed <br>Officer's Name</label>
-                                    <input type="text" name="rel_officer" id="rel_officer" value="{{$booking->officer}}" readonly>
+                                    <input type="text" name="rel_officer" id="rel_officer"
+                                        value="{{ $booking->officer }}" readonly>
                                     <label for="officer">Checked <br>Officer's Name</label>
-                                    <input type="text" name="officer" id="officer" >
+                                    <input type="text" name="officer" id="officer">
                                 </div>
                                 <div class="form-row">
                                     <label for="officer">Agreement <br>Number</label>
-                                    <input type="text" name="agn" id="agn" >
+                                    <input type="text" name="agn" id="agn">
                                 </div>
 
 
@@ -459,7 +483,8 @@
         document.getElementById('extra_km').value = extraKm.toFixed(2);
 
         // Calculate the updated due
-        const updatedDue = basePrice - payed + additionalCharges + extraKm + extraHoursCharges + damageFee - discountPrice;
+        const updatedDue = basePrice - payed + additionalCharges + extraKm + extraHoursCharges + damageFee -
+            discountPrice;
         document.getElementById('price').value = updatedDue.toFixed(2);
 
         // Calculate total income
@@ -467,7 +492,7 @@
         document.getElementById('total_income').value = totalIncome.toFixed(2);
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         // Set default values
         document.getElementById('after_additional').value = "0";
         document.getElementById('after_discount').value = "0";
@@ -479,14 +504,53 @@
         document.getElementById('total_income').value = basePrice.toFixed(2);
 
         // Add event listeners to recalculate on input
-        document.querySelectorAll('#end_km, #after_additional, #after_discount, #extra_km, #extra_hours, #damage_fee').forEach(input => {
-            input.addEventListener('input', updateCalculations);
-        });
+        document.querySelectorAll(
+            '#end_km, #after_additional, #after_discount, #extra_km, #extra_hours, #damage_fee').forEach(
+            input => {
+                input.addEventListener('input', updateCalculations);
+            });
 
         // Initial calculation
         updateCalculations();
     });
 </script>
+<script>
+    document.getElementById('ar_date').addEventListener('change', function () {
+        let toDate = document.getElementById('to_date').value;
+        let arDate = this.value;
+        let exDateField = document.getElementById('ex_date');
+        let basePriceField = document.getElementById('base_price');
+        let freeKmField = document.getElementById('free_km');
+        let freeKmdField = document.getElementById('free_kmd');
+        let pricePerDayField = document.getElementById('price_per_day');
+
+        if (toDate && arDate) {
+            let toDateObj = new Date(toDate);
+            let arDateObj = new Date(arDate);
+
+            let diffTime = arDateObj - toDateObj;
+            let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+            let extendedDays = diffDays > 0 ? diffDays : 0; // Ensure no negative values
+            exDateField.value = extendedDays;
+
+            if (extendedDays > 0) {
+                let freeKmd = parseFloat(freeKmdField.value) || 0;
+                let pricePerDay = parseFloat(pricePerDayField.value) || 0;
+                let basePrice = parseFloat(basePriceField.value) || 0;
+                let freeKm = parseFloat(freeKmField.value) || 0;
+
+                // Calculate additional free KM
+                let additionalFreeKm = freeKmd * extendedDays;
+                freeKmField.value = freeKm + additionalFreeKm;
+
+                // Calculate additional base price
+                let additionalPrice = pricePerDay * extendedDays;
+                basePriceField.value = basePrice + additionalPrice;
+            }
+        }
+    });
+</script>
+
 <style>
     .modal {
         display: none;

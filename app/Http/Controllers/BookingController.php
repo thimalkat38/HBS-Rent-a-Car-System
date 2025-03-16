@@ -88,6 +88,7 @@ class BookingController extends Controller
             'guarantor' => 'nullable|string',
             'extra_km_chg' => 'nullable|string',
             'free_km' => 'nullable|string',
+            'free_kmd' => 'nullable|string',
             'start_km' => 'nullable|string',
             'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',

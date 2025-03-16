@@ -37,7 +37,7 @@ class OwnerpaymentController extends Controller
      */
     public function create()
     {
-        $vehicleOwners = VehicleOwner::select('id', 'full_name', 'title', 'owner_id', 'vehicle_number')->get();
+        $vehicleOwners = VehicleOwner::select('id', 'full_name', 'title', 'owner_id', 'vehicle_number','acc_no','bank_detais')->get();
         return view('Manager.AddOwnerPay', compact('vehicleOwners'));
     }
     
@@ -48,35 +48,52 @@ class OwnerpaymentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'full_name' => 'required|exists:vehicleowners,id', // Validate the selected ID exists in vehicleowners table
-            'owner_id'=> 'required|string|max:255',
+            'full_name' => 'required',
+            'owner_id' => 'required|string|max:255',
             'vehicle' => 'required|string|max:255',
             'date' => 'required|date',
-            'paid_amnt' => 'required|string',
+            'paid_amnt' => 'required|numeric',
             'bank_details' => 'nullable|string|max:255',
             'acc_no' => 'required|string|max:255',
+            'receipt.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
     
-        // Retrieve the vehicle owner based on the selected ID
-        $vehicleOwner = VehicleOwner::find($request->full_name);
+        $receiptPaths = [];
     
-        // Concatenate the title with the full name
+        if ($request->hasFile('receipt')) {
+            foreach ($request->file('receipt') as $receipt) {
+                $receiptPaths[] = $receipt->store('Ownerpay_receipts', 'public');
+            }
+        }
+    
+        $vehicleOwner = VehicleOwner::where('owner_id', $request->owner_id)->first();
+    
+        if (!$vehicleOwner) {
+            return back()->withErrors(['error' => 'Vehicle owner not found!']);
+        }
+    
         $fullNameWithTitle = $vehicleOwner->title . ' ' . $vehicleOwner->full_name;
     
-        // Store the data in the ownerpayments table
+        // Save owner payment
         Ownerpayment::create([
-            'full_name' => $fullNameWithTitle, // Store the owner's full name with title
-            'owner_id' => $request->owner_id, 
+            'full_name' => $fullNameWithTitle,
+            'owner_id' => $request->owner_id,
             'vehicle' => $request->vehicle,
             'date' => $request->date,
             'paid_amnt' => $request->paid_amnt,
             'bank_details' => $request->bank_details,
             'acc_no' => $request->acc_no,
+            'receipt' => $receiptPaths,
         ]);
     
-        return redirect()->route('vehicle_owners.index')
-                         ->with('success', 'Owner payment created successfully.');
+        // Update remaining rental amount
+        $vehicleOwner->decrement('rem_rental', $request->paid_amnt);
+    
+        return redirect()->route('vehicle_owners.index')->with('success', 'Owner payment created successfully.');
     }
+    
+    
+    
     
 
     /**

@@ -11,6 +11,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
+    <!-- Include jQuery and jQuery UI -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+
 </head>
 
 <body>
@@ -182,5 +187,23 @@
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
     });
 </script>
-
+<script>
+    $(document).ready(function() {
+        $("#vehicle_number").autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: "{{ url('/get-vehicle-numbers') }}",
+                    data: {
+                        query: request.term
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        response(data);
+                    }
+                });
+            },
+            minLength: 1
+        });
+    });
+</script>
 </html>

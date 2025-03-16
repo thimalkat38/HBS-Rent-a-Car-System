@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     {
         // Add your command to the scheduler
         $schedule->command('bookings:delete-completed')->hourly();
+        $schedule->command('rental:reset')->monthlyOn(1, '00:00');
     }
 
     /**

@@ -10,10 +10,14 @@ class ServiceController extends Controller
     public function index(Request $request)
     {
         $vehicle_number = $request->query('vehicle_number'); // Get vehicle number from URL
-        $services = Service::where('vehicle_number', $vehicle_number)->get(); // Filter services
+        $services = Service::where('vehicle_number', $vehicle_number)->get(); // Fetch all services
+        $latestService = Service::where('vehicle_number', $vehicle_number)
+                                ->orderBy('created_at', 'desc')
+                                ->first(); // Get the most recent service record
     
-        return view('Manager.Services', compact('services', 'vehicle_number'));
+        return view('Manager.Services', compact('services', 'vehicle_number', 'latestService'));
     }
+    
     
     
 
@@ -28,9 +32,12 @@ class ServiceController extends Controller
             'vehicle_number' => 'required|string',
             'invoice_number' => 'nullable|string',
             'type' => 'required|string',
+            'current_mileage' => 'nullable|string',
+            'next_mileage' => 'nullable|string',
             'amnt' => 'nullable|string',
             'station' => 'nullable|string',
             'date' => 'nullable|date',
+            'next_date' => 'nullable|date',
         ]);
     
         $service = Service::create($request->all());
@@ -58,12 +65,15 @@ class ServiceController extends Controller
     public function update(Request $request, Service $service)
     {
         $request->validate([
-            'vehicle_number' => 'nullable|string',
+            'vehicle_number' => 'required|string',
             'invoice_number' => 'nullable|string',
-            'type' => 'nullable|string',
+            'type' => 'required|string',
+            'current_mileage' => 'nullable|string',
+            'next_mileage' => 'nullable|string',
             'amnt' => 'nullable|string',
             'station' => 'nullable|string',
             'date' => 'nullable|date',
+            'next_date' => 'nullable|date',
         ]);
 
         $service->update($request->all());
