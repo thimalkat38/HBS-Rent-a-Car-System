@@ -19,8 +19,11 @@ class Ownerpayment extends Model
         'date', 
         'paid_amnt', 
         'bank_details', 
-        'acc_no', 
+        'acc_no',
+        'receipt' 
 
     ];
-    
+    protected $casts = [
+        'receipt' => 'array',
+    ];
 }

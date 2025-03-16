@@ -321,4 +321,14 @@ public function searchVehicles(Request $request)
     return response()->json($vehicles);
 }
 
+
+public function getVehicleNumbers(Request $request)
+{
+    $search = $request->input('query');
+    $vehicleNumbers = Vehicle::where('vehicle_number', 'LIKE', "%{$search}%")
+        ->pluck('vehicle_number');
+
+    return response()->json($vehicleNumbers);
+}
+
 }

@@ -13,8 +13,11 @@ class Service extends Model
         'vehicle_number',
         'invoice_number',
         'type',
+        'current_mileage',
+        'next_mileage',
         'amnt',
         'station',
         'date',
+        'next_date'
     ];
 }

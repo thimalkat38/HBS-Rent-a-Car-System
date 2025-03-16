@@ -83,7 +83,9 @@
                             <p><strong>Register Number:</strong> <span id="vehicleNumber">
                                     {{ $postBooking->vehicle_number }}</span></p>
                             <p><strong>From Date:</strong> <span id="fromDate">{{ $postBooking->from_date }}</span></p>
-                            <p><strong>To Date:</strong> <span id="toDate">{{ $postBooking->to_date }}</span></p>
+                            <p><strong>Arrived Date:</strong> <span id="toDate">{{ $postBooking->ar_date }}</span></p>
+                            <p><strong>Extra Days:</strong> <span id="exDate">{{ $postBooking->ex_date }}</span></p>
+                            <p><strong>Price Per Day:</strong> <span id="ppd">{{ $postBooking->price_per_day }}</span></p>
                             <p><strong>Started Mileage:</strong> <span id="strat">{{ $postBooking->start_km }} KM</span></p>
                             <p><strong>Free KM:</strong> <span id="free">{{ $postBooking->free_km }} KM</span></p>
                             <p><strong>Ended Mileage:</strong> <span id="end">{{ $postBooking->end_km }} KM</span></p>
@@ -203,7 +205,9 @@
                         sectionTitle('Booking Information');
                         addRow('Vehicle:', 'vehicleModel');
                         addRow('From:', 'fromDate');
-                        addRow('To:', 'toDate');
+                        addRow('Arrived Date:', 'toDate');
+                        addRow('Extra Days:', 'exDate');
+                        addRow('Price Per Day:', 'ppd');
                         addRow('Started Mileage:', 'start');
                         addRow('Free KM:', 'free');
                         addRow('Ended Mileage:', 'end');

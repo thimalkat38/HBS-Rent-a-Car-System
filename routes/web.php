@@ -333,3 +333,9 @@ Route::middleware(['manager'])->post('/salary/store', [SalaryController::class, 
 
 
 Route::middleware(['manager'])->get('/profit-loss-report', [ProfitLossController::class, 'index'])->name('profit.loss');
+
+
+
+
+Route::middleware(['manager'])->get('/get-vehicle-numbers', [VehicleController::class, 'getVehicleNumbers']);
+

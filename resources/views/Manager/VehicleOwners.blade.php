@@ -174,6 +174,7 @@
                                 <th>Vehicle</th>
                                 <th>M/NUMBER</th>
                                 <th>Address</th>
+                                <th>Due Payments</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
                                 <th>Action</th>
@@ -186,6 +187,7 @@
                                 <td>{{ $vehicleOwner->vehicle_name }}[{{ $vehicleOwner->vehicle_number}}]</td>
                                 <td>{{ $vehicleOwner->phone }}</td>
                                 <td>{{ $vehicleOwner->address }}</td>
+                                <td>{{ $vehicleOwner->rem_rental }}</td>
                                 <td>{{ $vehicleOwner->start_date }}</td>
                                 <td>{{ $vehicleOwner->end_date ?? 'No End Date Exists' }}</td>
                                 <td class="button-cell">

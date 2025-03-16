@@ -220,21 +220,24 @@
                         <div class="form-row">
                             <input type="text" name="vehicle_number" value="{{ $vehicle_number }}" readonly>
                             <input type="text" name="invoice_number" placeholder="Invoice Number">
+                            <input type="text" name="amnt" placeholder="Amount">
                         </div>
                         
                         <div class="form-row">
-                            <select name="type" required>
+                            <select name="type" id="serviceType" required>
                                 <option value="">Service Type</option>
                                 <option value="Oil Change">Oil Change</option>
                                 <option value="Maintenance">Maintenance</option>
                                 <option value="Repair">Repair</option>
                             </select>
-                            <input type="text" name="amnt" placeholder="Amount">
+                            <input type="text" name="current_mileage" placeholder="Current Mileage">
+                            <input type="text" name="next_mileage" id="nextMileage" placeholder="Next Mileage" disabled>
                         </div>
                         
                         <div class="form-row">
                             <input type="text" name="station" placeholder="Service Station">
                             <input type="date" name="date">
+                            <input type="date" name="next_date" id="nextDate" disabled>
                         </div>
                         
                         <div class="btn-container">
@@ -244,6 +247,15 @@
                     
                             <!-- Service Details Table -->
                             <h2>Service Records for {{ $vehicle_number }}</h2>
+
+                            <h2>Next Oil Change Mileage: 
+                                {{ $latestService ? $latestService->next_mileage : 'N/A' }}
+                            </h2>
+                            
+                            <h2>Next Oil Change Date: 
+                                {{ $latestService ? $latestService->next_date : 'N/A' }}
+                            </h2>
+                            
 
                             <!-- Filters -->
                                 <div class="form-row">
@@ -348,5 +360,19 @@
             filterTable();
         });
     });
+    </script>
+    <script>
+        document.getElementById("serviceType").addEventListener("change", function() {
+            let nextMileage = document.getElementById("nextMileage");
+            let nextDate = document.getElementById("nextDate");
+    
+            if (this.value === "Oil Change") {
+                nextMileage.removeAttribute("disabled");
+                nextDate.removeAttribute("disabled");
+            } else {
+                nextMileage.setAttribute("disabled", "true");
+                nextDate.setAttribute("disabled", "true");
+            }
+        });
     </script>
 </html>

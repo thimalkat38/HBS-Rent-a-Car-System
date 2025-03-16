@@ -38,6 +38,7 @@ class Booking extends Model
         'guarantor',
         'extra_km_chg',
         'free_km',
+        'free_kmd',
         'start_km'         
     ];
 
