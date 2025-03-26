@@ -121,8 +121,8 @@ class EmployeeController extends Controller
             'age' => 'required',
             'nic' => 'required|string|max:12',
             'address' => 'required|string',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'doc_photos.*' => 'file|mimes:pdf,doc,docx,jpeg,png,jpg,gif|max:5120', // Validate doc_photos
+            'photo.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'doc_photos.*' => 'nullable|file|mimes:pdf,doc,docx,jpeg,png,jpg,gif|max:5120', 
         ]);
     
         $employee = Employee::findOrFail($id);
@@ -130,24 +130,82 @@ class EmployeeController extends Controller
         // Update basic employee fields
         $employee->update($request->only(['emp_name', 'mobile_number', 'acc_number', 'bank', 'join_date', 'email', 'age', 'nic', 'address']));
     
-        // Handle image uploads
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $file) {
-                $path = $file->store('employees/images', 'public');
-                $employee->images()->create(['path' => $path]); // Assuming there's a relationship for images
+        // Handle photo update
+        $photoPaths = $employee->photo ?? [];
+    
+        if ($request->hasFile('photo')) {
+            foreach ($photoPaths as $path) {
+                Storage::disk('public')->delete($path);
             }
+    
+            $photoPaths = [];
+            foreach ($request->file('photo') as $file) {
+                $photoPaths[] = $file->store('employee_photos', 'public');
+            }
+    
+            $employee->update(['photo' => $photoPaths]);
         }
     
-        // Handle document photo uploads
+        // Handle document photo update
+        $docPhotoPaths = $employee->doc_photos ?? [];
+    
         if ($request->hasFile('doc_photos')) {
-            foreach ($request->file('doc_photos') as $docFile) {
-                $path = $docFile->store('employees/documents', 'public');
-                $employee->docPhotos()->create(['path' => $path]); // Assuming there's a relationship for doc_photos
+            foreach ($docPhotoPaths as $path) {
+                Storage::disk('public')->delete($path);
             }
+    
+            $docPhotoPaths = [];
+            foreach ($request->file('doc_photos') as $docFile) {
+                $docPhotoPaths[] = $docFile->store('employee_documents', 'public');
+            }
+    
+            $employee->update(['doc_photos' => $docPhotoPaths]);
         }
+    
+        // Run the copy storage function
+        $this->copyStorageToPublic();
     
         return redirect()->route('employees.index')->with('success', 'Employee updated successfully!');
     }
+    
+    // Function to copy storage to public
+    private function copyStorageToPublic()
+    {
+        $source = storage_path('app/public');
+        $destination = public_path('storage');
+    
+        if (!file_exists($destination)) {
+            mkdir($destination, 0777, true);
+        }
+    
+        $this->copyDirectory($source, $destination);
+    }
+    
+    // Helper function to copy directories
+    private function copyDirectory($source, $destination)
+    {
+        $directory = opendir($source);
+    
+        if (!file_exists($destination)) {
+            mkdir($destination, 0777, true);
+        }
+    
+        while (($file = readdir($directory)) !== false) {
+            if ($file !== '.' && $file !== '..') {
+                $srcFile = $source . DIRECTORY_SEPARATOR . $file;
+                $destFile = $destination . DIRECTORY_SEPARATOR . $file;
+    
+                if (is_dir($srcFile)) {
+                    $this->copyDirectory($srcFile, $destFile);
+                } else {
+                    copy($srcFile, $destFile);
+                }
+            }
+        }
+    
+        closedir($directory);
+    }
+    
     
     
     /**

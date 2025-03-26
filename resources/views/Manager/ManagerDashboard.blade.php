@@ -255,32 +255,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     <style>
-        .hidden {
-            display: none;
-        }
+.hidden {
+    display: none;
+}
 
-        .modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-        }
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    max-width: 90vw; /* Ensures modal doesn’t exceed viewport width */
+    max-height: 90vh; /* Ensures modal doesn’t exceed viewport height */
+    overflow: auto; /* Allows scrolling if content is too large */
+}
 
-        .modal-content {
-            position: relative;
-        }
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Ensures content takes full width of modal */
+}
 
-        .close-btn {
-            position: absolute;
-            right: 10px;
-            cursor: pointer;
-            color: red
-        }
-    </style>
+.close-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+    color: red;
+    font-size: 1.7em; /* Slightly larger close button */
+    font-weight: bold;
+}
+
 </body>
 
 </html>

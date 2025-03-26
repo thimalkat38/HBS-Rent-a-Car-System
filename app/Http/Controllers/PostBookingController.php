@@ -86,17 +86,19 @@ class PostBookingController extends Controller
             'extra_km_chg' => 'nullable|string',
         ]);
     
-        PostBooking::create($validated);
+        $postBooking = PostBooking::create($validated);
     
-        $booking = Booking::find($request->id); // Assuming `id` is passed in the form
+        $booking = Booking::find($request->id);
     
         if ($booking) {
             $booking->update(['status' => 'Completed']);
             $booking->delete(); // Deletes the booking record after updating the status
         }
     
-        return redirect()->route('bookings.index');
+        return redirect()->route('postbookings.show', $postBooking)
+            ->with('success', 'Booking created successfully.');
     }
+    
     
     
 

@@ -112,6 +112,10 @@
                     @error('address')
                         <div class="error-message">{{ $message }}</div>
                     @enderror
+                        <label for="photo">Upload New Employee Image(optional)</label>
+                        <input type="file" name="photo[]" multiple>
+                        <label for="doc_photos">Upload New Documents(optional)</label>
+                        <input type="file" name="doc_photos[]" multiple>
                 </div>
         
                 <!-- Submit and Cancel Buttons -->
