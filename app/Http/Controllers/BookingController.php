@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\Customer;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -286,16 +287,30 @@ class BookingController extends Controller
         $date = $request->input('date');
     
         // Get bookings for the 'from_date' (IN)
-        $inBookings = Booking::whereDate('from_date', $date)->get();
+        $inBookings = Booking::whereDate('from_date', $date)->pluck('vehicle_number');
     
         // Get bookings for the 'to_date' (OUT)
-        $outBookings = Booking::whereDate('to_date', $date)->get();
+        $outBookings = Booking::whereDate('to_date', $date)->pluck('vehicle_number');
+    
+        // Get all booked vehicles for the selected date
+        $bookedVehicles = $inBookings->merge($outBookings)->unique();
+    
+        // Get all vehicle numbers from vehicles table
+        $allVehicles = Vehicle::pluck('vehicle_number');
+    
+        // Get available vehicles (not in bookedVehicles)
+        $availableVehicles = $allVehicles->diff($bookedVehicles);
+    
+        // Fetch vehicle details for available vehicles
+        $availableVehiclesData = Vehicle::whereIn('vehicle_number', $availableVehicles)->get();
     
         return response()->json([
-            'in_bookings' => $inBookings,
-            'out_bookings' => $outBookings
+            'in_bookings' => Booking::whereDate('from_date', $date)->get(),
+            'out_bookings' => Booking::whereDate('to_date', $date)->get(),
+            'available_vehicles' => $availableVehiclesData
         ]);
     }
+    
     
 
 

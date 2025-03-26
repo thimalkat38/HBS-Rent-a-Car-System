@@ -339,3 +339,4 @@ Route::middleware(['manager'])->get('/profit-loss-report', [ProfitLossController
 
 Route::middleware(['manager'])->get('/get-vehicle-numbers', [VehicleController::class, 'getVehicleNumbers']);
 
+// Route::view('/markat', 'Manager.Markat'); attend route

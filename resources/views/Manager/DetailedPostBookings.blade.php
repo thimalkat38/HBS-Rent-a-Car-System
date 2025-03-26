@@ -109,6 +109,8 @@
                                     id="paid">{{ $postBooking->paid }}</span></p>
                             <p><strong>Final Amount Due(paid)(LKR):</strong> <span
                                     id="due">{{ $postBooking->due }}</span></p>
+                                    <p><strong>Total(LKR):</strong> <span
+                                        id="totalIncome">{{ $postBooking->total_income }}</span></p>
                             <p><strong>Reason for Additional Charges:</strong> <span
                                     id="reason">{{ $postBooking->reason }}</span></p>
 
@@ -123,8 +125,6 @@
                                     id="officer">{{ $postBooking->officer }}</span></p>
                             <p><strong>Released Officer:</strong> <span
                                     id="officer">{{ $postBooking->rel_officer }}</span></p>
-                            <p><strong>Total Income:</strong> <span id="totalIncome">LKR
-                                    {{ number_format($postBooking->total_income, 2) }}</span></p>
 
                         </div>
                     </div>
@@ -140,6 +140,8 @@
     <div class="col-12 text-center mt-3">
         {{-- <button onclick="generatePDF();" class="btn btn-info">Download PDF</button> --}}
         <button onclick="printPDF();" class="btn btn-secondary">Print PDF</button>
+        <a href="{{ route('bookings.index') }}" class="btn btn-secondary">Back</a>
+
     </div>
 
     </div>
@@ -208,7 +210,7 @@
                         addRow('Arrived Date:', 'toDate');
                         addRow('Extra Days:', 'exDate');
                         addRow('Price Per Day:', 'ppd');
-                        addRow('Started Mileage:', 'start');
+                        addRow('Started Mileage:', 'strat');
                         addRow('Free KM:', 'free');
                         addRow('Ended Mileage:', 'end');
                         addRow('Over Drived KM:', 'over');
@@ -226,12 +228,11 @@
     
                         addBillRow('Base Price:', 'basePrice');
                         addBillRow('Extra KM Charges:', 'extraKm');
-                        addBillRow('Extra Hour Charges:', 'extraHours');
+                        addBillRow('Total Price:', 'totalIncome');
                         addBillRow('Damage Fee:', 'damageFee');
                         addBillRow('Other Additional Charges:', 'afterAdditional');
                         addBillRow('Discount (-):', 'afterDiscount');
-                        addBillRow('Paid Amount (-):', 'paid');
-                        addBillRow('Amount Due:', 'due');
+                        addBillRow('Total Price:', 'totalIncome');
     
                         doc.text('Reason: ' + (document.getElementById('reason')?.textContent || 'N/A'), 10, currentY);
                         currentY += 15; // Increased spacing before signatures

@@ -183,96 +183,112 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const modal = document.getElementById('bookingModal');
-            const modalContent = document.getElementById('bookingDetails');
-            const closeModalBtn = document.querySelector('.close-btn');
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('bookingModal');
+    const modalContent = document.getElementById('bookingDetails');
+    const closeModalBtn = document.querySelector('.close-btn');
 
-            document.querySelectorAll('.calendar-day').forEach(day => {
-                day.addEventListener('click', () => {
-                    const date = day.getAttribute('data-date');
-                    if (date) {
-                        fetch(`/manager/bookings?date=${date}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                let inBookingsHtml = '';
-                                let outBookingsHtml = '';
+    document.querySelectorAll('.calendar-day').forEach(day => {
+        day.addEventListener('click', () => {
+            const date = day.getAttribute('data-date');
+            if (date) {
+                fetch(`/manager/bookings?date=${date}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        let inBookingsHtml = '';
+                        let outBookingsHtml = '';
+                        let availableVehiclesHtml = '';
 
-                                if (data.in_bookings && data.in_bookings.length > 0) {
-                                    inBookingsHtml = `
-                                        <h3>OUT</h3>
-                                        <ul>
-                                            ${data.in_bookings.map(booking => `
-                                                    <li>
-                                                        ${booking.vehicle_number} - ${booking.vehicle_name} [${booking.booking_time}]
-                                                    </li>
-                                                `).join('')}
-                                        </ul>`;
-                                } else {
-                                    inBookingsHtml =
-                                        '<h3>Out</h3><p>No vehicles are booked to go out on this day.</p>';
-                                }
+                        if (data.in_bookings.length > 0) {
+                            inBookingsHtml = `
+                                <h3>OUT</h3>
+                                <ul>
+                                    ${data.in_bookings.map(booking => `
+                                        <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.booking_time}]</li>
+                                    `).join('')}
+                                </ul>`;
+                        } else {
+                            inBookingsHtml = '<h3>Out</h3><p>No vehicles are booked to go out on this day.</p>';
+                        }
 
-                                if (data.out_bookings && data.out_bookings.length > 0) {
-                                    outBookingsHtml = `
-                                        <h3>IN</h3>
-                                        <ul>
-                                            ${data.out_bookings.map(booking => `
-                                                    <li>
-                                                        ${booking.vehicle_number} - ${booking.vehicle_name} [${booking.arrival_time}]
-                                                    </li>
-                                                `).join('')}
-                                        </ul>`;
-                                } else {
-                                    outBookingsHtml =
-                                        '<h3>In</h3><p>No Vehicles Returns on this day.</p>';
-                                }
+                        if (data.out_bookings.length > 0) {
+                            outBookingsHtml = `
+                                <h3>IN</h3>
+                                <ul>
+                                    ${data.out_bookings.map(booking => `
+                                        <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.arrival_time}]</li>
+                                    `).join('')}
+                                </ul>`;
+                        } else {
+                            outBookingsHtml = '<h3>In</h3><p>No Vehicles Return on this day.</p>';
+                        }
 
-                                modalContent.innerHTML = inBookingsHtml + outBookingsHtml;
-                                modal.classList.remove('hidden');
-                            })
-                            .catch(error => {
-                                modalContent.innerHTML = '<p>Error loading bookings.</p>';
-                                console.error(error);
-                            });
-                    }
-                });
-            });
+                        if (data.available_vehicles.length > 0) {
+                            availableVehiclesHtml = `
+                                <h3>Available Vehicles</h3>
+                                <ul>
+                                    ${data.available_vehicles.map(vehicle => `
+                                        <li>${vehicle.vehicle_number} - ${vehicle.vehicle_name}</li>
+                                    `).join('')}
+                                </ul>`;
+                        } else {
+                            availableVehiclesHtml = '<h3>Available Vehicles</h3><p>No vehicles available on this day.</p>';
+                        }
 
-            closeModalBtn.addEventListener('click', () => {
-                modal.classList.add('hidden');
-            });
+                        modalContent.innerHTML = inBookingsHtml + outBookingsHtml + availableVehiclesHtml;
+                        modal.classList.remove('hidden');
+                    })
+                    .catch(error => {
+                        modalContent.innerHTML = '<p>Error loading bookings.</p>';
+                        console.error(error);
+                    });
+            }
         });
+    });
+
+    closeModalBtn.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
+});
+
     </script>
 
 
     <style>
-        .hidden {
-            display: none;
-        }
+.hidden {
+    display: none;
+}
 
-        .modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-        }
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    max-width: 90vw; /* Ensures modal doesn’t exceed viewport width */
+    max-height: 90vh; /* Ensures modal doesn’t exceed viewport height */
+    overflow: auto; /* Allows scrolling if content is too large */
+}
 
-        .modal-content {
-            position: relative;
-        }
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Ensures content takes full width of modal */
+}
 
-        .close-btn {
-            position: absolute;
-            right: 10px;
-            cursor: pointer;
-            color: red
-        }
-    </style>
+.close-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+    color: red;
+    font-size: 1.7em; /* Slightly larger close button */
+    font-weight: bold;
+}
+
 </body>
 
 </html>
