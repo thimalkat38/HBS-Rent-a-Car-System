@@ -228,7 +228,6 @@
     
                         addBillRow('Base Price:', 'basePrice');
                         addBillRow('Extra KM Charges:', 'extraKm');
-                        addBillRow('Total Price:', 'totalIncome');
                         addBillRow('Damage Fee:', 'damageFee');
                         addBillRow('Other Additional Charges:', 'afterAdditional');
                         addBillRow('Discount (-):', 'afterDiscount');
