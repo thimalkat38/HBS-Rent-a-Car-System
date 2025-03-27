@@ -350,10 +350,10 @@
             $('#full_name').on('input', function() {
                 var query = $(this).val();
 
-                if (query.length >= 2) {
+                if (query.length >= 1) {
                     // Fetch matching customer names from the server
                     $.ajax({
-                        url: '/customers/search', // Route to get customer names
+                        url: '/customers/searchb', // Route to get customer names
                         method: 'GET',
                         data: {
                             query: query
@@ -368,14 +368,14 @@
                                         .full_name + '">' +
                                         customer.full_name + '</li>'
                                     );
-                                });
-                            } else {
-                                $('#customer-list').append(
-                                    '<li class="list-group-item add-customer-item" style="font-weight:bold; color: blue;">' +
-                                    'Add Customer' +
-                                    '</li>'
-                                );
-                            }
+                                });}
+                            // } else {
+                            //     $('#customer-list').append(
+                            //         '<li class="list-group-item add-customer-item" style="font-weight:bold; color: blue;">' +
+                            //         'Add Customer' +
+                            //         '</li>'
+                            //     );
+                            // }
                         }
                     });
                 } else {

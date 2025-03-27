@@ -55,6 +55,10 @@ Route::middleware(['manager'])->post('/customers', [CustomerController::class, '
 Route::middleware(['manager'])->get('/customers/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
 Route::middleware(['manager'])->put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
 Route::middleware(['manager'])->delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
+Route::middleware(['manager'])->get('/customers/searchb', [CustomerController::class, 'search']);
+Route::middleware(['manager'])->get('customers/{id}', [CustomerController::class, 'show'])->name('Customer.show');
+Route::middleware(['manager'])->get('/customers/get-details/{id}', [CustomerController::class, 'getCustomerDetails']);
+Route::middleware(['manager'])->get('/customers/search', [CustomerController::class, 'searche'])->name('customers.search');
 
 
 
@@ -94,9 +98,6 @@ Route::middleware(['manager'])->get('/manager/bookings', [BookingController::cla
 //Other functionality routes
 // Route::middleware(['manager'])->get('/vehicles/search', [VehicleController::class, 'search'])->name('vehicles.search');
 Route::middleware(['manager'])->get('/vehicles/get-details/{vehicle_number}', [VehicleController::class, 'getDetails'])->name('vehicles.getDetails');
-Route::middleware(['manager'])->get('/customers/search', [CustomerController::class, 'search']);
-Route::middleware(['manager'])->get('customers/{id}', [CustomerController::class, 'show'])->name('Customer.show');
-Route::middleware(['manager'])->get('/customers/get-details/{id}', [CustomerController::class, 'getCustomerDetails']);
 Route::middleware(['manager'])->get('/get-vehicle-models', [VehicleController::class, 'getVehicleModels'])->name('getVehicleModels');
 
 
@@ -319,10 +320,7 @@ Route::middleware(['manager'])->delete('/expenses/{id}', [ExpenseController::cla
 
 
 Route::middleware(['manager'])->get('/employees/search', [EmployeeController::class, 'searche'])->name('employees.search');
-Route::middleware(['manager'])->get('/customers/search', [CustomerController::class, 'searche'])->name('customers.search');
-
 Route::middleware(['manager'])->get('/expenses/download/{id}', [ExpenseController::class, 'download'])->name('expenses.download');
-
 Route::middleware(['manager'])->get('/api/vehicles/search', [VehicleController::class, 'searchVehicles'])->name('api.vehicles.search');
 
 

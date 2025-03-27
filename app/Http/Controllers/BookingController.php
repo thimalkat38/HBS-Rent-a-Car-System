@@ -133,6 +133,17 @@ class BookingController extends Controller
 
         $booking->save();
 
+        if (!empty($request->input('nic')) && !Customer::where('nic', $request->input('nic'))->exists()) {
+            // Store customer data in customers table only if NIC is unique
+            Customer::create([
+                'title' => $request->input('title'),
+                'full_name' => $request->input('full_name'),
+                'phone' => $request->input('mobile_number'),
+                'nic' => $request->input('nic'),
+                // Add more fields if necessary
+            ]);
+        }
+
         return redirect()->route('bookings.show', ['id' => $booking->id])
             ->with('success', 'Booking created successfully.');
     }
@@ -321,5 +332,5 @@ class BookingController extends Controller
 
         // Pass the relevant details to the view
         return view('Manager.PostBooking', compact('booking'));
-    }
+    }   
 }

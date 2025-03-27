@@ -40,13 +40,13 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:10',
+            'title' => 'nullable|string|max:10',
             'full_name' => 'required|string|max:255',
             'phone' => 'required|numeric|digits_between:10,15',
             'whatsapp' => 'nullable|max:20',
             'email' => 'nullable|email|max:255', // Make email optional
-            'nic' => 'required|string|max:12|unique:customers,nic',
-            'address' => 'required|string|max:255',
+            'nic' => 'nullable|string|max:12|unique:customers,nic',
+            'address' => 'nullable|string|max:255',
             'nic_photos.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'dl_photos.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
