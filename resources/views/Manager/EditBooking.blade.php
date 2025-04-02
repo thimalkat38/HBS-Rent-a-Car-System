@@ -54,6 +54,12 @@
                     @error('nic')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
+
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" name="address" id="address" class="form-control" value="{{ old('address', $booking->address) }}" >
+                    @error('address')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-row">

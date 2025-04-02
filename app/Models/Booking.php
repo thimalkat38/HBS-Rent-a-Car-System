@@ -14,6 +14,7 @@ class Booking extends Model
         'full_name',
         'mobile_number',
         'nic',
+        'address',
         'booking_time',
         'arrival_time',
         'price_per_day',

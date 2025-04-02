@@ -90,11 +90,11 @@
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> Finance</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
-                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
-                                </div>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                            <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                            {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                        </div>
                     </div>
                 </nav>
             </div>
@@ -150,6 +150,17 @@
                             <input type="text" name="model_year" placeholder="Year Of Manufacture">
                         </div>
                         <div class="form-row">
+                            <div>
+                                <label for="license_exp_date">License Expire Date</label>
+                                <input type="date" id="license_exp_date" name="license_exp_date">
+                            </div>
+                            <div>
+                                <label for="insurance_exp_date">Insurance Expire Date</label>
+                                <input type="date" id="insurance_exp_date" name="insurance_exp_date">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
                             <input type="text" name="price_per_day" placeholder="Price Per Day">
                             <input type="text" name="free_km" placeholder="Free KM">
                             <input type="text" name="extra_km_chg" placeholder="Extra 1 KM Charge">
@@ -195,12 +206,12 @@
                                 $.each(uniqueData, function(index, model) {
                                     dropdown.append(
                                         `<div class="list-group-item" onclick="selectModel('${model}')">${model}</div>`
-                                        );
+                                    );
                                 });
                             } else {
                                 dropdown.append(
                                     `<div class="list-group-item">No results found. Type to Add New model.</div>`
-                                    );
+                                );
                             }
                         }
                     });
@@ -237,30 +248,6 @@
     </script>
 
 
-    <style>
-        #model-suggestions {
-            background-color: #fff;
-            border: 1px solid #ccc;
-            max-height: 200px;
-            /* Adjust based on your preference */
-            overflow-y: auto;
-            list-style-type: none;
-            padding: 1%;
-            margin-top: 3%;
-            margin-left: 38%;
-            width: 35%;
-            align-content: left;
-        }
-
-        #model-suggestions .list-group-item {
-            padding: 10px;
-            cursor: pointer;
-        }
-
-        #model-suggestions .list-group-item:hover {
-            background-color: #f0f0f0;
-        }
-    </style>
     <script>
         $(document).ready(function() {
             $("#vehicle_model").autocomplete({
@@ -310,6 +297,39 @@
         background-color: #007bff !important;
         color: white !important;
         border-radius: 5px;
+    }
+
+    #model-suggestions {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        max-height: 200px;
+        /* Adjust based on your preference */
+        overflow-y: auto;
+        list-style-type: none;
+        padding: 1%;
+        margin-top: 3%;
+        margin-left: 38%;
+        width: 35%;
+        align-content: left;
+    }
+
+    #model-suggestions .list-group-item {
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    #model-suggestions .list-group-item:hover {
+        background-color: #f0f0f0;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 20px;
+    }
+
+    .form-row div {
+        display: flex;
+        flex-direction: column;
     }
 </style>
 

@@ -15,47 +15,47 @@ class BookingController extends Controller
     public function index(Request $request)
     {
         $query = Booking::query();
-    
+
         if ($request->filled('mobile_number')) {
             $query->where('mobile_number', 'LIKE', "%" . $request->input('mobile_number') . "%");
         }
-    
+
         if ($request->filled('full_name')) {
             $query->where('full_name', 'LIKE', "%" . $request->input('full_name') . "%");
         }
-    
+
         if ($request->filled('vehicle_number')) {
             $query->where('vehicle_number', 'LIKE', "%" . $request->input('vehicle_number') . "%");
         }
-    
+
         if ($request->filled('id')) {
             $query->where('id', $request->input('id')); // Exact match for ID
         }
-    
+
         if ($request->filled('status')) {
             $query->where('status', $request->input('status'));
         }
-    
+
         // Date Range Filtering
         if ($request->filled('from_date')) {
             $query->whereDate('from_date', '>=', $request->input('from_date'));
         }
-    
+
         if ($request->filled('to_date')) {
             $query->whereDate('from_date', '<=', $request->input('to_date'));
         }
-    
+
         $bookings = $query->orderBy('created_at', 'desc')->get();
-    
+
         // Fetch distinct values for dropdowns
         $vehicleNumbers = Booking::select('vehicle_number')->distinct()->pluck('vehicle_number');
         $fullNames = Booking::select('full_name')->distinct()->pluck('full_name');
         $statuses = Booking::select('status')->distinct()->pluck('status');
-    
+
         return view('Manager.ManagerBookings', compact('bookings', 'vehicleNumbers', 'fullNames', 'statuses'));
     }
-    
-    
+
+
 
 
 
@@ -74,6 +74,7 @@ class BookingController extends Controller
             'full_name' => 'required|string|max:255',
             'mobile_number' => 'required',
             'nic' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
             'deposit' => 'nullable',
             'booking_time' => 'required',
             'arrival_time' => 'required',
@@ -97,10 +98,10 @@ class BookingController extends Controller
             'grnt_nic.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'status' => 'nullable',
         ]);
-    
+
         $validatedData['additional_chagers'] = $validatedData['additional_chagers'] ?? 0.00;
         $validatedData['discount_price'] = $validatedData['discount_price'] ?? 0.00;
-    
+
         // Calculate days and total price
         $fromDateTime = new \DateTime($request->input('from_date') . ' ' . $request->input('booking_time'));
         $toDateTime = new \DateTime($request->input('to_date') . ' ' . $request->input('arrival_time'));
@@ -111,12 +112,12 @@ class BookingController extends Controller
         $discountPrice = $request->input('discount_price') ?? 0;
         $payed = $request->input('payed') ?? 0;
         $totalPrice = ($pricePerDay * $days) + $additionalCharges - $discountPrice - $payed;
-    
+
         $request->merge(['days' => $days, 'price' => $totalPrice]);
-    
+
         // Save booking data
         $booking = new Booking($request->except(['driving_photos', 'nic_photos', 'deposit_img']));
-    
+
         // Handle file uploads
         $booking->driving_photos = $request->hasFile('driving_photos')
             ? $this->uploadFiles($request->file('driving_photos'), 'driving_photos')
@@ -130,9 +131,9 @@ class BookingController extends Controller
         $booking->grnt_nic = $request->hasFile('grnt_nic')
             ? $this->uploadFiles($request->file('grnt_nic'), 'grnt_nic')
             : [];
-    
+
         $booking->save();
-    
+
         if (!empty($request->input('nic')) && !Customer::where('nic', $request->input('nic'))->exists()) {
             // Store customer data in customers table only if NIC is unique
             Customer::create([
@@ -140,18 +141,20 @@ class BookingController extends Controller
                 'full_name' => $request->input('full_name'),
                 'phone' => $request->input('mobile_number'),
                 'nic' => $request->input('nic'),
+                'address' => $request->input('address'),
             ]);
         }
-    
+
         // Auto-run the directory linking function
         $source = storage_path('app/public');
         $destination = public_path('storage');
-    
+
         if (!file_exists($destination)) {
             mkdir($destination, 0777, true);
         }
-    
-        function copyDirectory($source, $destination) {
+
+        function copyDirectory($source, $destination)
+        {
             $directory = opendir($source);
             if (!file_exists($destination)) {
                 mkdir($destination, 0777, true);
@@ -170,7 +173,7 @@ class BookingController extends Controller
             closedir($directory);
         }
         copyDirectory($source, $destination);
-    
+
         return redirect()->route('bookings.show', ['id' => $booking->id])
             ->with('success', 'Booking created successfully.');
     }
@@ -218,6 +221,7 @@ class BookingController extends Controller
             'full_name' => 'required|string|max:255',
             'mobile_number' => 'required',
             'nic' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
             'deposit' => 'nullable',
             'booking_time' => 'required',
             'arrival_time' => 'required',
@@ -231,11 +235,11 @@ class BookingController extends Controller
             'guarantor' => 'nullable|string',
             'payed' => 'nullable|numeric',
             'price' => 'nullable|numeric',
-            'discount_price' =>'nullable|string',
-            'additional_chagers'=>'nullable|string',
-            'price' =>'nullable|string',
-            'deposit' =>'nullable|string',
-            'reason' =>'nullable|string',
+            'discount_price' => 'nullable|string',
+            'additional_chagers' => 'nullable|string',
+            'price' => 'nullable|string',
+            'deposit' => 'nullable|string',
+            'reason' => 'nullable|string',
             'start_km' => 'nullable|string',
             'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
             'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
@@ -298,60 +302,6 @@ class BookingController extends Controller
         return redirect()->route('bookings.index')->with('success', 'Booking deleted successfully.');
     }
 
-
-
-    public function calendarView()
-    {
-        // Get the current month and year for the calendar
-        $currentMonth = request()->input('month', now()->month);
-        $currentYear = request()->input('year', now()->year);
-
-        // Calculate the start and end of the selected month
-        $startDate = Carbon::createFromDate($currentYear, $currentMonth, 1)->startOfMonth();
-        $endDate = $startDate->copy()->endOfMonth();
-
-        // Fetch bookings grouped by day
-        $bookingCounts = Booking::whereBetween('from_date', [$startDate, $endDate])
-            ->selectRaw('DATE(from_date) as date, COUNT(*) as count')
-            ->groupBy('date')
-            ->pluck('count', 'date');
-
-        // Pass data to the calendar view
-        return view('Manager.ManagerDashboard', compact('bookingCounts', 'currentMonth', 'currentYear'));
-    }
-
-    public function getBookingsByDate(Request $request)
-    {
-        $date = $request->input('date');
-    
-        // Get bookings for the 'from_date' (IN)
-        $inBookings = Booking::whereDate('from_date', $date)->pluck('vehicle_number');
-    
-        // Get bookings for the 'to_date' (OUT)
-        $outBookings = Booking::whereDate('to_date', $date)->pluck('vehicle_number');
-    
-        // Get all booked vehicles for the selected date
-        $bookedVehicles = $inBookings->merge($outBookings)->unique();
-    
-        // Get all vehicle numbers from vehicles table
-        $allVehicles = Vehicle::pluck('vehicle_number');
-    
-        // Get available vehicles (not in bookedVehicles)
-        $availableVehicles = $allVehicles->diff($bookedVehicles);
-    
-        // Fetch vehicle details for available vehicles
-        $availableVehiclesData = Vehicle::whereIn('vehicle_number', $availableVehicles)->get();
-    
-        return response()->json([
-            'in_bookings' => Booking::whereDate('from_date', $date)->get(),
-            'out_bookings' => Booking::whereDate('to_date', $date)->get(),
-            'available_vehicles' => $availableVehiclesData
-        ]);
-    }
-    
-    
-
-
     public function postBooking($id)
     {
         // Fetch the booking details using the ID
@@ -359,5 +309,5 @@ class BookingController extends Controller
 
         // Pass the relevant details to the view
         return view('Manager.PostBooking', compact('booking'));
-    }   
+    }
 }

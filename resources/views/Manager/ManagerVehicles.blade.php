@@ -199,9 +199,13 @@
                                     <td>{{ $vehicle->free_km }}</td>
                                     <td>{{ $vehicle->extra_km_chg }}</td>
                                     <td class="button-cell">
+                                        <a href="{{ route('vehicle.renewDocs', $vehicle->id) }}" class="btn-blue">
+                                            Doc Renewed
+                                        </a>
+                                        
                                         <a href="{{ route('services.index', ['vehicle_number' => $vehicle->vehicle_number]) }}" class="btn-blue">
                                             Services
-                                        </a>                                        
+                                        </a>                                    
                                             <a href="{{ route('vehicles.edit', $vehicle->id) }}"
                                                 class="btn-edit">Edit</a>
                                         <form action="{{ route('vehicles.destroy', $vehicle->id) }}" method="POST"
