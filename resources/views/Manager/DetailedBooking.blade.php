@@ -243,12 +243,13 @@
                         // Add header text
                         doc.setFontSize(10);
                         doc.setTextColor(0, 0, 0); // Black text
-                        doc.text('Bulagala, Dambulla', 70, 15);
+                        doc.text('Mirisgoniyawa Junction, Bulagala, Dambulla', 70, 15);
                         doc.text(
-                            'Phone: +94 777425008 / +94 777425008 | Email: info@rentacarsrilankahbs.com',
+                            'Phone: +94 77 743 5008 | +94  742 5008 | +94 76 887 8088',
                             70,
                             25
                         );
+                        doc.text('Website: info@rentacarsrilankahbs.com', 70, 35);
 
                         // Reset text color and add main title
                         doc.setTextColor(0, 0, 0); // Black text

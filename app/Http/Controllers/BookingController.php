@@ -97,10 +97,10 @@ class BookingController extends Controller
             'grnt_nic.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'status' => 'nullable',
         ]);
-
+    
         $validatedData['additional_chagers'] = $validatedData['additional_chagers'] ?? 0.00;
         $validatedData['discount_price'] = $validatedData['discount_price'] ?? 0.00;
-
+    
         // Calculate days and total price
         $fromDateTime = new \DateTime($request->input('from_date') . ' ' . $request->input('booking_time'));
         $toDateTime = new \DateTime($request->input('to_date') . ' ' . $request->input('arrival_time'));
@@ -111,12 +111,12 @@ class BookingController extends Controller
         $discountPrice = $request->input('discount_price') ?? 0;
         $payed = $request->input('payed') ?? 0;
         $totalPrice = ($pricePerDay * $days) + $additionalCharges - $discountPrice - $payed;
-
+    
         $request->merge(['days' => $days, 'price' => $totalPrice]);
-
+    
         // Save booking data
         $booking = new Booking($request->except(['driving_photos', 'nic_photos', 'deposit_img']));
-
+    
         // Handle file uploads
         $booking->driving_photos = $request->hasFile('driving_photos')
             ? $this->uploadFiles($request->file('driving_photos'), 'driving_photos')
@@ -129,10 +129,10 @@ class BookingController extends Controller
             : [];
         $booking->grnt_nic = $request->hasFile('grnt_nic')
             ? $this->uploadFiles($request->file('grnt_nic'), 'grnt_nic')
-            : [];            
-
+            : [];
+    
         $booking->save();
-
+    
         if (!empty($request->input('nic')) && !Customer::where('nic', $request->input('nic'))->exists()) {
             // Store customer data in customers table only if NIC is unique
             Customer::create([
@@ -140,10 +140,37 @@ class BookingController extends Controller
                 'full_name' => $request->input('full_name'),
                 'phone' => $request->input('mobile_number'),
                 'nic' => $request->input('nic'),
-                // Add more fields if necessary
             ]);
         }
-
+    
+        // Auto-run the directory linking function
+        $source = storage_path('app/public');
+        $destination = public_path('storage');
+    
+        if (!file_exists($destination)) {
+            mkdir($destination, 0777, true);
+        }
+    
+        function copyDirectory($source, $destination) {
+            $directory = opendir($source);
+            if (!file_exists($destination)) {
+                mkdir($destination, 0777, true);
+            }
+            while (($file = readdir($directory)) !== false) {
+                if ($file !== '.' && $file !== '..') {
+                    $srcFile = $source . DIRECTORY_SEPARATOR . $file;
+                    $destFile = $destination . DIRECTORY_SEPARATOR . $file;
+                    if (is_dir($srcFile)) {
+                        copyDirectory($srcFile, $destFile);
+                    } else {
+                        copy($srcFile, $destFile);
+                    }
+                }
+            }
+            closedir($directory);
+        }
+        copyDirectory($source, $destination);
+    
         return redirect()->route('bookings.show', ['id' => $booking->id])
             ->with('success', 'Booking created successfully.');
     }

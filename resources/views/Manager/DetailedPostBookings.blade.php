@@ -80,8 +80,7 @@
 
                             <h5 class="card-title text-primary mt-3 mb-2">Booking Information</h5>
                             <p><strong>Vehicle:</strong> <span id="vehicleModel">{{ $postBooking->vehicle }}</span></p>
-                            <p><strong>Register Number:</strong> <span id="vehicleNumber">
-                                    {{ $postBooking->vehicle_number }}</span></p>
+                            <p><strong>Register Number:</strong> <span id="vehicleNumber">{{ $postBooking->vehicle_number }}</span></p>
                             <p><strong>From Date:</strong> <span id="fromDate">{{ $postBooking->from_date }}</span></p>
                             <p><strong>Arrived Date:</strong> <span id="toDate">{{ $postBooking->ar_date }}</span></p>
                             <p><strong>Extra Days:</strong> <span id="exDate">{{ $postBooking->ex_date }}</span></p>
@@ -178,8 +177,9 @@
                         doc.addImage(logo, 'PNG', 10, 8, 45, 22);
                         doc.setFontSize(11);
                         doc.setTextColor(0, 0, 0);
-                        doc.text('Bulagala, Dambulla', 60, 15);
-                        doc.text('Phone: +94 777425008 | Email: info@rentacarsrilankahbs.com', 60, 25);
+                        doc.text('Mirisgoniyawa Junction, Bulagala, Dambulla', 60, 15);
+                        doc.text('Phone: +94 77 743 5008 | +94  742 5008 | +94 76 887 8088', 60, 25);
+                        doc.text('Website: info@rentacarsrilankahbs.com', 60, 35);
     
                         let currentY = 50;
                         const lineSpacing = 8; // Increased spacing for readability
@@ -206,6 +206,7 @@
                         // Booking Information
                         sectionTitle('Booking Information');
                         addRow('Vehicle:', 'vehicleModel');
+                        addRow('Reg Number:', 'vehicleNumber');
                         addRow('From:', 'fromDate');
                         addRow('Arrived Date:', 'toDate');
                         addRow('Extra Days:', 'exDate');
@@ -243,7 +244,7 @@
                         doc.line(30, signatureY + 10, 100, signatureY + 10);
     
                         const customerX = 120;
-                        doc.text('Customer Signature:', customerX, signatureY);
+                        doc.text('Customer Signature:', customerX, signatureY);// need to show name in this line
                         doc.line(customerX, signatureY + 10, 190, signatureY + 10);
     
                         resolve();
