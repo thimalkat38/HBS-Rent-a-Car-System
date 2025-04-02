@@ -94,11 +94,11 @@
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> Finance</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
-                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
-                                </div>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                            <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                            {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                        </div>
                     </div>
                 </nav>
             </div>
@@ -135,6 +135,11 @@
 
                             <input type="text" name="nic" placeholder="NIC">
                             @error('nic')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+
+                            <input type="text" name="address" placeholder="Address">
+                            @error('address')
                                 <span class="error-message">{{ $message }}</span>
                             @enderror
 
@@ -368,7 +373,8 @@
                                         .full_name + '">' +
                                         customer.full_name + '</li>'
                                     );
-                                });}
+                                });
+                            }
                             // } else {
                             //     $('#customer-list').append(
                             //         '<li class="list-group-item add-customer-item" style="font-weight:bold; color: blue;">' +
@@ -412,9 +418,17 @@
                                 $('input[name="nic"]').val(
                                     ''); // Clear the field if NIC not found
                             }
+
+                            if (data.address) {
+                                $('input[name="address"]').val(data.address); // Autofill NIC
+                            } else {
+                                $('input[name="address"]').val(
+                                    ''); // Clear the field if Address not found
+                            }
                         } else {
-                            $('input[name="mobile_number"], input[name="nic"]').val(
-                                ''); // Clear all fields if no data found
+                            $('input[name="mobile_number"], input[name="nic"],input[name="address"]', )
+                                .val(
+                                    ''); // Clear all fields if no data found
                             alert('Customer details not found');
                         }
                     },
@@ -517,7 +531,7 @@
                 autoFocus: true,
                 select: function(event, ui) {
                     $("#vehicle_number").val(ui.item.value).prop("readonly", true).trigger(
-                    "change"); // Lock input & trigger event
+                        "change"); // Lock input & trigger event
                     $("#clear_vehicle").show(); // Show clear button
                     return false;
                 }
@@ -587,43 +601,44 @@
             });
         });
     </script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        function calculateDays() {
-            let fromDate = document.querySelector("input[name='from_date']").value;
-            let toDate = document.querySelector("input[name='to_date']").value;
-            
-            if (fromDate && toDate) {
-                let start = new Date(fromDate);
-                let end = new Date(toDate);
-                
-                let difference = Math.ceil((end - start) / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
-                
-                if (difference > 0) {
-                    document.getElementById("days").value = difference;
-                } else {
-                    document.getElementById("days").value = 0; // Ensure no negative values
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            function calculateDays() {
+                let fromDate = document.querySelector("input[name='from_date']").value;
+                let toDate = document.querySelector("input[name='to_date']").value;
+
+                if (fromDate && toDate) {
+                    let start = new Date(fromDate);
+                    let end = new Date(toDate);
+
+                    let difference = Math.ceil((end - start) / (1000 * 60 * 60 *
+                    24)); // Convert milliseconds to days
+
+                    if (difference > 0) {
+                        document.getElementById("days").value = difference;
+                    } else {
+                        document.getElementById("days").value = 0; // Ensure no negative values
+                    }
+
+                    calculateFreeKM(); // Recalculate free_km when days update
                 }
-                
-                calculateFreeKM(); // Recalculate free_km when days update
             }
-        }
 
-        function calculateFreeKM() {
-            let freeKmPerDay = parseFloat(document.getElementById("free_kmd").value) || 0;
-            let totalDays = parseFloat(document.getElementById("days").value) || 0;
-            let totalFreeKm = freeKmPerDay * totalDays;
-            
-            document.getElementById("all_free_km").value = totalFreeKm;
-        }
+            function calculateFreeKM() {
+                let freeKmPerDay = parseFloat(document.getElementById("free_kmd").value) || 0;
+                let totalDays = parseFloat(document.getElementById("days").value) || 0;
+                let totalFreeKm = freeKmPerDay * totalDays;
 
-        // Event Listeners
-        document.getElementById("free_kmd").addEventListener("input", calculateFreeKM);
-        document.getElementById("days").addEventListener("input", calculateFreeKM);
-        document.querySelector("input[name='from_date']").addEventListener("change", calculateDays);
-        document.querySelector("input[name='to_date']").addEventListener("change", calculateDays);
-    });
-</script>
+                document.getElementById("all_free_km").value = totalFreeKm;
+            }
+
+            // Event Listeners
+            document.getElementById("free_kmd").addEventListener("input", calculateFreeKM);
+            document.getElementById("days").addEventListener("input", calculateFreeKM);
+            document.querySelector("input[name='from_date']").addEventListener("change", calculateDays);
+            document.querySelector("input[name='to_date']").addEventListener("change", calculateDays);
+        });
+    </script>
 
 
 

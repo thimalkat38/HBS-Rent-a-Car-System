@@ -13,6 +13,7 @@ use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CrmController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PostBookingController;
 use App\Http\Controllers\VehicleOwnerController;
 use App\Http\Controllers\OwnerpaymentController;
@@ -74,6 +75,9 @@ Route::middleware(['manager'])->get('/manager/vehicles/{id}/edit', [VehicleContr
 Route::middleware(['manager'])->put('/manager/vehicles/{id}', [VehicleController::class, 'update'])->name('vehicles.update');
 Route::middleware(['manager'])->delete('/manager/vehicles/{id}', [VehicleController::class, 'destroy'])->name('vehicles.destroy');
 Route::middleware(['manager'])->get('vehicles/{id}', [VehicleController::class, 'show'])->name('vehicles.show');
+Route::middleware(['manager'])->get('/vehicle/{id}/renew-docs', [VehicleController::class, 'renewDocs'])->name('vehicle.renewDocs');
+Route::middleware(['manager'])->get('/vehicles/get-details/{vehicle_number}', [VehicleController::class, 'getDetails'])->name('vehicles.getDetails');
+Route::middleware(['manager'])->get('/get-vehicle-models', [VehicleController::class, 'getVehicleModels'])->name('getVehicleModels');
 
 
 
@@ -89,16 +93,14 @@ Route::middleware(['manager'])->get('bookings/{booking}/edit', [BookingControlle
 Route::middleware(['manager'])->put('bookings/{booking}', [BookingController::class, 'update'])->name('bookings.update'); // Update booking
 Route::middleware(['manager'])->delete('bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy'); // Delete booking
 Route::middleware(['manager'])->get('/bookings/{id}', [BookingController::class, 'show'])->name('bookings.show');
-Route::middleware(['manager'])->get('/manager/dashboard', [BookingController::class, 'calendarView'])->name('manager.dashboard');
-Route::middleware(['manager'])->get('/manager/bookings', [BookingController::class, 'getBookingsByDate']);
+Route::middleware(['manager'])->get('/manager/bookings', [DashboardController::class, 'getBookingsByDate']);
 
 
 
 
 //Other functionality routes
 // Route::middleware(['manager'])->get('/vehicles/search', [VehicleController::class, 'search'])->name('vehicles.search');
-Route::middleware(['manager'])->get('/vehicles/get-details/{vehicle_number}', [VehicleController::class, 'getDetails'])->name('vehicles.getDetails');
-Route::middleware(['manager'])->get('/get-vehicle-models', [VehicleController::class, 'getVehicleModels'])->name('getVehicleModels');
+
 
 
 
@@ -337,4 +339,4 @@ Route::middleware(['manager'])->get('/profit-loss-report', [ProfitLossController
 
 Route::middleware(['manager'])->get('/get-vehicle-numbers', [VehicleController::class, 'getVehicleNumbers']);
 
-// Route::view('/markat', 'Manager.Markat'); attend route
+Route::middleware(['manager'])->get('/manager/dashboard', [DashboardController::class, 'calendarView'])->name('manager.dashboard');

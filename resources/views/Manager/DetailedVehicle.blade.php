@@ -61,6 +61,10 @@
                         <p><strong>Free KM Range:</strong> <span id="nic">{{ $vehicle->free_km }}</span></p>
                         <p><strong>Price For Additional 1KM:</strong> <span id="nic">{{ $vehicle->extra_km_chg }}</span></p>
 
+                        <h5 class="card-title text-primary mb-3">Documents Informations</h5>
+                        <p><strong>License Expire Date:</strong> <span id="nic">{{ $vehicle->license_exp_date }}</span></p>
+                        <p><strong>Insurance Expire Date:</strong> <span id="nic">{{ $vehicle->insurance_exp_date }}</span></p>
+
                         <!-- Photos Section -->
                         <h5 class="card-title text-primary mt-3 mb-2">Photos</h5>
                             <div class="form-section">

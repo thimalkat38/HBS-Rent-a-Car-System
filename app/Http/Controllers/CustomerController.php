@@ -11,24 +11,24 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         $query = Customer::query();
-    
+
         // Filter by NIC if provided
         if ($request->filled('nic')) {
             $query->where('nic', 'LIKE', '%' . $request->input('nic') . '%');
         }
-    
+
         // Filter by Full Name if provided
         if ($request->filled('full_name')) {
             $query->where('full_name', 'LIKE', '%' . $request->input('full_name') . '%');
         }
-    
+
         // Get the filtered customers
         $customers = $query->get();
-    
+
         return view('Manager.ManagerCustomers', compact('customers'));
     }
-    
-    
+
+
 
     // Show the form for creating a new customer
     public function create()
@@ -103,13 +103,13 @@ class CustomerController extends Controller
     {
         // Delete the specified customer
         $customer->delete();
-    
+
         // Reorder the IDs
         $this->reorderCustomerIds();
-    
+
         return redirect()->route('customers.index')->with('success', 'Customer deleted and IDs reordered successfully.');
     }
-    
+
     /**
      * Reorder the IDs of the customers to maintain sequential order.
      */
@@ -117,7 +117,7 @@ class CustomerController extends Controller
     {
         $customers = Customer::orderBy('id')->get();
         $counter = 1;
-    
+
         foreach ($customers as $customer) {
             if ($customer->id != $counter) {
                 $customer->id = $counter;
@@ -126,7 +126,7 @@ class CustomerController extends Controller
             $counter++;
         }
     }
-    
+
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -155,6 +155,7 @@ class CustomerController extends Controller
             return response()->json([
                 'phone' => $customer->phone,
                 'nic' => $customer->nic,
+                'address' => $customer->address,
             ]);
         } else {
             return response()->json([
@@ -166,11 +167,9 @@ class CustomerController extends Controller
     {
         $search = $request->input('q');
         $customers = Customer::where('full_name', 'LIKE', "%{$search}%")
-                            ->select('id','full_name')
-                            ->get();
-    
+            ->select('id', 'full_name')
+            ->get();
+
         return response()->json($customers);
     }
-    
-
 }

@@ -15,16 +15,16 @@ class VehicleController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-    
+
         if ($search) {
             $vehicles = Vehicle::where('vehicle_number', 'LIKE', "%{$search}%")->get();
         } else {
             $vehicles = Vehicle::all();
         }
-    
+
         return view('Manager.ManagerVehicles', compact('vehicles', 'search'));
     }
-    
+
 
     public function show($id)
     {
@@ -36,7 +36,8 @@ class VehicleController extends Controller
         }
 
         // Pass the customer data to the view
-        return view('Manager.DetailedVehicle', compact('vehicle'));    }
+        return view('Manager.DetailedVehicle', compact('vehicle'));
+    }
 
     /**
      * Show the form for creating a new vehicle.
@@ -60,6 +61,8 @@ class VehicleController extends Controller
             'fuel_type' => 'required|string|max:255',
             'chassis_number' => 'required|string|max:255',
             'model_year' => 'required|integer|min:1886|max:' . date('Y'),
+            'license_exp_date' => 'required|date',
+            'insurance_exp_date' => 'required|date',
             'price_per_day' => 'required|string|max:255',
             'free_km' => 'required|string|max:255',
             'extra_km_chg' => 'required|string|max:255',
@@ -92,9 +95,11 @@ class VehicleController extends Controller
             'fuel_type' => $request->fuel_type,
             'chassis_number' => $request->chassis_number,
             'model_year' => $request->model_year,
+            'license_exp_date' => $request->license_exp_date,
+            'insurance_exp_date' => $request->insurance_exp_date,
             'price_per_day' => $request->price_per_day,
             'free_km' => $request->free_km,
-            'extra_km_chg'=> $request->extra_km_chg,
+            'extra_km_chg' => $request->extra_km_chg,
             'features' => $features,
             'images' => $images,
             'display_image' => $images[0] ?? null,
@@ -128,6 +133,8 @@ class VehicleController extends Controller
             'fuel_type' => 'required|string|max:255',
             'chassis_number' => 'required|string|max:255',
             'model_year' => 'required|integer|min:1886|max:' . date('Y'),
+            'license_exp_date' => 'required|date',
+            'insurance_exp_date' => 'required|date',
             'price_per_day' => 'required|string|max:255',
             'free_km' => 'required|string|max:255',
             'extra_km_chg' => 'required|string|max:255',
@@ -168,6 +175,8 @@ class VehicleController extends Controller
             'fuel_type' => $request->fuel_type,
             'chassis_number' => $request->chassis_number,
             'model_year' => $request->model_year,
+            'license_exp_date' => $request->license_exp_date,
+            'insurance_exp_date' => $request->insurance_exp_date,
             'price_per_day' => $request->price_per_day,
             'free_km' => $request->free_km,
             'extra_km_chg' => $request->extra_km_chg,
@@ -175,10 +184,9 @@ class VehicleController extends Controller
             'images' => $images,
             'display_image' => $request->input('display_image') ?? $vehicle->display_image, // Ensure this line
         ]);
-        
+
 
         return redirect('manager/vehicles')->with('success', 'Vehicle updated successfully!');
-
     }
 
 
@@ -188,21 +196,21 @@ class VehicleController extends Controller
     public function destroy($id)
     {
         $vehicle = Vehicle::findOrFail($id);
-    
+
         // Delete the vehicle images from storage
         foreach ($vehicle->images as $image) {
             Storage::disk('public')->delete($image);
         }
-    
+
         // Delete the vehicle record
         $vehicle->delete();
-    
+
         // Reorder the IDs
         $this->reorderVehicleIds();
-    
+
         return redirect('manager/vehicles')->with('success', 'Vehicle deleted and IDs reordered successfully!');
     }
-    
+
     /**
      * Reorder the IDs of the vehicles to maintain sequential order.
      */
@@ -210,7 +218,7 @@ class VehicleController extends Controller
     {
         $vehicles = Vehicle::orderBy('id')->get();
         $counter = 1;
-    
+
         foreach ($vehicles as $vehicle) {
             if ($vehicle->id != $counter) {
                 $vehicle->id = $counter;
@@ -219,12 +227,12 @@ class VehicleController extends Controller
             $counter++;
         }
     }
-    
 
-    public function getDetails($vehicle_number) 
+
+    public function getDetails($vehicle_number)
     {
         $vehicle = Vehicle::where('vehicle_number', $vehicle_number)->first();
-    
+
         if ($vehicle) {
             return response()->json([
                 'fuel_type' => $vehicle->fuel_type,
@@ -235,27 +243,27 @@ class VehicleController extends Controller
                 'free_km' => $vehicle->free_km
             ]);
         }
-    
+
         return response()->json(['message' => 'Vehicle not found'], 404);
     }
-    
 
-    public function search(Request $request) 
+
+    public function search(Request $request)
     {
         $query = Vehicle::query();
-    
+
         if ($request->filled('vehicle_number')) {
             $query->where('vehicle_number', 'LIKE', "%{$request->vehicle_number}%");
         }
-    
+
         if ($request->filled('vehicle_name')) {
             $query->where('vehicle_name', 'LIKE', "%{$request->vehicle_name}%");
         }
-    
+
         if ($request->filled('fuel_type')) {
             $query->where('fuel_type', $request->fuel_type);
         }
-    
+
         if ($request->filled('id_range')) {
             $idRange = $request->id_range;
             if ($idRange === '50+') {
@@ -265,70 +273,81 @@ class VehicleController extends Controller
                 $query->whereBetween('id', [(int)$start, (int)$end]);
             }
         }
-    
+
         // Retrieve matching vehicles
         $vehicles = $query->get();
-    
+
         return view('Manager.ManagerVehicles', compact('vehicles'));
     }
-    
-    
-    
-    
-    
+
+
+
+
+
 
     public function getVehicleModels(Request $request)
-{
-    $search = $request->input('query');
-    $models = Vehicle::where('vehicle_name', 'LIKE', "%$search%")->pluck('vehicle_name');
+    {
+        $search = $request->input('query');
+        $models = Vehicle::where('vehicle_name', 'LIKE', "%$search%")->pluck('vehicle_name');
 
-    return response()->json($models);
-}
-
-public function autocomplete(Request $request)
-{
-    $query = $request->get('term', '');
-
-    $vehicleModels = Vehicle::where('vehicle_model', 'LIKE', $query . '%')
-                            ->distinct()
-                            ->pluck('vehicle_model');
-
-    return response()->json($vehicleModels);
-}
-public function autocompleteVehicleNumber(Request $request)
-{
-    $query = $request->get('term', '');
-
-    $vehicleNumbers = Vehicle::where('vehicle_number', 'LIKE', $query . '%')
-                             ->distinct()
-                             ->pluck('vehicle_number');
-
-    return response()->json($vehicleNumbers);
-}
-public function searchVehicles(Request $request)
-{
-    $query = $request->input('query'); // Get the search input
-
-    if (!$query) {
-        return response()->json(['error' => 'Query parameter is missing'], 400);
+        return response()->json($models);
     }
 
-    // Fetch matching vehicle numbers
-    $vehicles = Vehicle::where('vehicle_number', 'LIKE', "%{$query}%")
-                ->limit(10)
-                ->pluck('vehicle_number');
+    public function autocomplete(Request $request)
+    {
+        $query = $request->get('term', '');
 
-    return response()->json($vehicles);
-}
+        $vehicleModels = Vehicle::where('vehicle_model', 'LIKE', $query . '%')
+            ->distinct()
+            ->pluck('vehicle_model');
+
+        return response()->json($vehicleModels);
+    }
+    public function autocompleteVehicleNumber(Request $request)
+    {
+        $query = $request->get('term', '');
+
+        $vehicleNumbers = Vehicle::where('vehicle_number', 'LIKE', $query . '%')
+            ->distinct()
+            ->pluck('vehicle_number');
+
+        return response()->json($vehicleNumbers);
+    }
+    public function searchVehicles(Request $request)
+    {
+        $query = $request->input('query'); // Get the search input
+
+        if (!$query) {
+            return response()->json(['error' => 'Query parameter is missing'], 400);
+        }
+
+        // Fetch matching vehicle numbers
+        $vehicles = Vehicle::where('vehicle_number', 'LIKE', "%{$query}%")
+            ->limit(10)
+            ->pluck('vehicle_number');
+
+        return response()->json($vehicles);
+    }
 
 
-public function getVehicleNumbers(Request $request)
-{
-    $search = $request->input('query');
-    $vehicleNumbers = Vehicle::where('vehicle_number', 'LIKE', "%{$search}%")
-        ->pluck('vehicle_number');
+    public function getVehicleNumbers(Request $request)
+    {
+        $search = $request->input('query');
+        $vehicleNumbers = Vehicle::where('vehicle_number', 'LIKE', "%{$search}%")
+            ->pluck('vehicle_number');
 
-    return response()->json($vehicleNumbers);
-}
+        return response()->json($vehicleNumbers);
+    }
+    public function renewDocs($id)
+    {
+        $vehicle = Vehicle::findOrFail($id);
 
+        // Add one year to the dates
+        $vehicle->license_exp_date = \Carbon\Carbon::parse($vehicle->license_exp_date)->addYear();
+        $vehicle->insurance_exp_date = \Carbon\Carbon::parse($vehicle->insurance_exp_date)->addYear();
+
+        $vehicle->save();
+
+        return redirect()->back()->with('success', 'Documents renewed successfully.');
+    }
 }

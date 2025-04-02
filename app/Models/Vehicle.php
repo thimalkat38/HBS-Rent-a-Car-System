@@ -18,6 +18,8 @@ class Vehicle extends Model
         'fuel_type',
         'chassis_number',
         'model_year',
+        'license_exp_date',
+        'insurance_exp_date',
         'price_per_day',
         'free_km',
         'extra_km_chg',

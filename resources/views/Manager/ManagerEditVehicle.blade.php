@@ -70,6 +70,12 @@
                 <label for="model_year">Model Year</label>
                 <input type="number" name="model_year" value="{{ old('model_year', $vehicle->model_year) }}" readonly>
             </div>
+            <div class="form-row">
+                <label for="license_exp_date">License Expire Date</label>
+                <input type="date" name="license_exp_date" value="{{ old('license_exp_date', $vehicle->license_exp_date) }}">
+                <label for="insurance_exp_date">Insurance Expire Date</label>
+                <input type="date" name="insurance_exp_date" value="{{ old('insurance_exp_date', $vehicle->insurance_exp_date) }}">
+            </div>
 
 
             <div class="form-row">
