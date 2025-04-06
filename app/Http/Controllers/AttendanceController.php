@@ -4,71 +4,75 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Attendance;
+use App\Models\Employee;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AttendanceController extends Controller
 {
     // Display a listing of attendance records
     public function index(Request $request)
     {
-        $query = Attendance::query();
+        $monthInput = $request->input('month') ?? Carbon::now()->format('Y-m');
     
-        // Apply filters
-        if ($request->has('emp_name') && $request->emp_name != '') {
+        $month = Carbon::parse($monthInput);
+    
+        $query = DB::table('attendances')
+            ->select(
+                'emp_id',
+                'emp_name',
+                DB::raw("SUM(CASE WHEN type = 'Normal' THEN 1 ELSE 0 END) as normal_days"),
+                DB::raw("SUM(CASE WHEN type = 'Half Day' THEN 1 ELSE 0 END) as half_days"),
+                DB::raw("SUM(CASE WHEN type = 'Leave' THEN 1 ELSE 0 END) as leave_days")
+            )
+            ->whereMonth('date', $month->month)
+            ->whereYear('date', $month->year)
+            ->groupBy('emp_id', 'emp_name');
+    
+        if ($request->filled('emp_name')) {
             $query->where('emp_name', 'like', '%' . $request->emp_name . '%');
         }
-        if ($request->has('date') && $request->date != '') {
-            $query->where('date', $request->date);
-        }
     
-        $attendances = $query->get(); // Fetch the filtered results
+        $attendances = $query->get();
     
-        return view('Manager.Attendance', compact('attendances'));
+        return view('Manager.Attendance', compact('attendances', 'monthInput'));
     }
+    
     
     
 
     // Show the form for creating a new attendance record
     public function create()
     {
-        return view('Manager.AddAttendance');
+        $employees = Employee::all(); // fetch all employees
+        return view('Manager.AddAttendance', compact('employees'));
     }
+    
 
     // Store a newly created attendance record
-    public function store(Request $request)
+    public function store($id, $type)
     {
-        $request->validate([
-            'emp_id' => 'required|string|max:255',
-            'emp_name' => 'required|string|max:255',
-            'date' => 'required|date',
-            'type' => 'required|string',
+        $employee = Employee::findOrFail($id);
+
+        $today = Carbon::today()->toDateString();
+
+        // Check if attendance already marked for today
+        $existing = Attendance::where('emp_id', $employee->emp_id)
+            ->where('date', $today)
+            ->first();
+
+        if ($existing) {
+            return redirect()->back()->with('error', 'Attendance Already Marked for Today');
+        }
+
+        Attendance::create([
+            'emp_id'    => $employee->emp_id,
+            'emp_name'  => $employee->emp_name,
+            'date'      => $today,
+            'type'      => $type,
         ]);
 
-        Attendance::create($request->all());
-
-        return redirect()->route('attendances.index')->with('success', 'Attendance record created successfully!');
-    }
-
-    // Show the form for editing the specified attendance record
-    public function edit($id)
-    {
-        $attendance = Attendance::findOrFail($id);
-        return view('attendances.edit', compact('attendance'));
-    }
-
-    // Update the specified attendance record
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'emp_id' => 'required|string|max:255',
-            'emp_name' => 'required|string|max:255',
-            'date' => 'required|date',
-            'type' => 'required|string',
-        ]);
-
-        $attendance = Attendance::findOrFail($id);
-        $attendance->update($request->all());
-
-        return redirect()->route('attendances.index')->with('success', 'Attendance record updated successfully!');
+        return redirect()->back()->with('success', 'Attendance Marked Successfully');
     }
 
     // Remove the specified attendance record
@@ -79,6 +83,5 @@ class AttendanceController extends Controller
 
         return redirect()->route('attendances.index')->with('success', 'Attendance record deleted successfully!');
     }
-    
-    
+
 }

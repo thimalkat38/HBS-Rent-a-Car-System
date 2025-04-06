@@ -22,17 +22,17 @@
             </div>
             <div class="header-title">HBS RENT A CAR</div>
             <div class="card1">
-            <div class="card1-content">  
-                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
-                    @csrf
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
+                <div class="card1-content">
+                    <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
+                        @csrf
+                        <x-responsive-nav-link :href="route('logout')"
+                            onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('LogOut') }}
-                    </x-responsive-nav-link>
-                </form>
+                            {{ __('LogOut') }}
+                        </x-responsive-nav-link>
+                    </form>
+                </div>
             </div>
-        </div>
         </div>
 
         <!-- Main Content -->
@@ -75,8 +75,8 @@
                                 src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}" alt="CRM"
-                                class="nav-icon"> CRM</a>
+                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}"
+                                alt="CRM" class="nav-icon"> CRM</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link" href="{{ route('inventory.index') }}">
@@ -84,85 +84,62 @@
                             INVENTORY
                         </a>
                     </div>
-                    <div class="nav-item">
+                    {{-- <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
-                                class="nav-icon"> Finance</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
-                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
-                                </div>
-                    </div>
+                                class="nav-icon"> ACCOUNTING (under development...)</a>
+                    </div> --}}
                 </nav>
             </div>
 
-        <div class="content">
-            <div class="card1">
-                    <div class="card1-content">
-                    <a href="{{ route('hrmanagement') }}" class="btn-submit">Back</a>
-                    </div>
-                </div>
+            <div class="content">
                 <div class="card1">
                     <div class="card1-content">
-                    <a href="{{ route('attendances.create') }}" class="btn-submit">Add Attendance</a>
+                        <a href="{{ route('hrmanagement') }}" class="btn-submit">Back</a>
                     </div>
                 </div>
 
-            <!-- Filter Form -->
-            <form method="GET" action="{{ route('attendances.index') }}">
-                <div class="form-section">
-                    <!-- Employee Name Filter -->
-                    <div class="form-row">
-                        <input type="text" name="emp_name" value="{{ request('emp_name') }}" class="form-control"
-                            placeholder="Search by Employee Name">
+                <!-- Filter Form -->
+                <form id="attendance-filter-form" method="GET" action="{{ route('attendances.index') }}">
+                    <div class="form-section">
+                        <div class="form-row">
+                            <!-- Employee Name -->
+                            <input type="text" name="emp_name"class="form-control"
+                                placeholder="Search by Employee Name" id="emp-name-input">
 
-                    <!-- Date Filter -->
-                        <input type="date" name="date" value="{{ request('date') }}" class="form-control">
-
-                    <!-- Filter Button -->
-                        <button type="submit" class="btn-submit">Filter</button>
-                        <a href="{{ route('attendances.index') }}" class="btn-submit">Reset</a>
+                            <!-- Month Picker -->
+                            <input type="month" name="month" value="{{ $monthInput }}" class="form-control"
+                                id="month-input">
+                        </div>
                     </div>
+                </form>
+                <div class="table-content">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Employee ID</th>
+                                <th>Employee Name</th>
+                                <th>Normal Working Days</th>
+                                <th>Half Days</th>
+                                <th>Leave Days</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($attendances as $attendance)
+                                <tr>
+
+                                    <td>{{ $attendance->emp_id }}</td>
+                                    <td>{{ $attendance->emp_name }}</td>
+                                    <td>{{ $attendance->normal_days }}</td>
+                                    <td>{{ $attendance->half_days }}</td>
+                                    <td>{{ $attendance->leave_days }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+
+                    </table>
                 </div>
-            </form>
-            <div class="table-content">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Employee ID</th>
-                        <th>Employee Name</th>
-                        <th>Date</th>
-                        <th>Type</th>
-                        {{-- <th>Actions</th> --}}
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($attendances as $attendance)
-                        <tr>
-                            <td>{{ $attendance->id }}</td>
-                            <td>{{ $attendance->emp_id }}</td>
-                            <td>{{ $attendance->emp_name }}</td>
-                            <td>{{ $attendance->date }}</td>
-                            <td>{{ $attendance->type }}</td>
-                            {{-- <td>
-                                <a href="{{ route('attendances.edit', $attendance->id) }}"
-                                    class="btn btn-warning btn-sm">Edit</a>
-                                <form action="{{ route('attendances.destroy', $attendance->id) }}" method="POST"
-                                    style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Are you sure you want to delete this record?')">Delete</button>
-                                </form>
-                            </td> --}}
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            </div>
         </div>
-    </div>
-</div>
         <!-- Footer -->
         <div class="footer">
             <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>
@@ -170,5 +147,24 @@
     </div>
     <script src="Dashboard.js"></script>
 </body>
+<script>
+    const form = document.getElementById('attendance-filter-form');
+    const empNameInput = document.getElementById('emp-name-input');
+    const monthInput = document.getElementById('month-input');
+
+    // Submit on month change
+    monthInput.addEventListener('change', () => {
+        form.submit();
+    });
+
+    // Submit on typing (with delay)
+    let typingTimer;
+    empNameInput.addEventListener('input', () => {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            form.submit();
+        }, 500); // delay for user to stop typing
+    });
+</script>
 
 </html>

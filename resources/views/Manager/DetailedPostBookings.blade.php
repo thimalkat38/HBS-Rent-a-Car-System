@@ -234,7 +234,7 @@
                         addBillRow('Discount (-):', 'afterDiscount');
                         addBillRow('Total Price:', 'totalIncome');
     
-                        doc.text('Reason: ' + (document.getElementById('reason')?.textContent || 'N/A'), 10, currentY);
+                        doc.text('Reason For Addtional Chargers: ' + (document.getElementById('reason')?.textContent || 'N/A'), 10, currentY);
                         currentY += 15; // Increased spacing before signatures
     
                         // Signature Section - Moved lower for better layout

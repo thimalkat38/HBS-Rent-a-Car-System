@@ -166,7 +166,7 @@
 
                     <!-- Payroll -->
                     <div class="card shadow-sm bg-magenta text-white">
-                        <a class="link" href="{{ 'attendances' }}">
+                        <a class="link" href="{{ 'attendances/create' }}">
                             <div class="card-body">
                                 <div class="image-wrapper">
                                     <img src="{{ asset('images/H4.png') }}" alt="attendance" class="card-image">

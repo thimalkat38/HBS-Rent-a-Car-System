@@ -179,9 +179,9 @@ Route::middleware(['manager'])->delete('/payrolls/{id}', [PayrollController::cla
 
 
 // Attendances Control CRUD Routes
-Route::middleware(['manager'])->get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index'); // List all records
+Route::middleware(['manager'])->get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
 Route::middleware(['manager'])->get('/attendances/create', [AttendanceController::class, 'create'])->name('attendances.create'); // Show form
-Route::middleware(['manager'])->post('/attendances', [AttendanceController::class, 'store'])->name('attendances.store'); // Store data
+Route::post('attendance/store/{id}/{type}', [AttendanceController::class, 'store'])->name('attendance.store');
 Route::middleware(['manager'])->get('/attendances/{id}/edit', [AttendanceController::class, 'edit'])->name('attendances.edit'); // Edit form
 Route::middleware(['manager'])->put('/attendances/{id}', [AttendanceController::class, 'update'])->name('attendances.update'); // Update data
 Route::middleware(['manager'])->delete('/attendances/{id}', [AttendanceController::class, 'destroy'])->name('attendances.destroy'); // Delete data
