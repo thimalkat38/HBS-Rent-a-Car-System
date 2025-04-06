@@ -88,11 +88,11 @@
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> Finance</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
-                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
-                                </div>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                            <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                            {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                        </div>
                     </div>
                 </nav>
             </div>
@@ -198,23 +198,26 @@
                                     <td>{{ $vehicle->price_per_day }}</td>
                                     <td>{{ $vehicle->free_km }}</td>
                                     <td>{{ $vehicle->extra_km_chg }}</td>
-                                    <td class="button-cell">
-                                        <a href="{{ route('vehicle.renewDocs', $vehicle->id) }}" class="btn-blue">
-                                            Doc Renewed
-                                        </a>
-                                        
-                                        <a href="{{ route('services.index', ['vehicle_number' => $vehicle->vehicle_number]) }}" class="btn-blue">
-                                            Services
-                                        </a>                                    
+                                    <td>
+                                        <div style="display: flex; justify-content: center; gap: 5px;">
+                                            <a href="{{ route('vehicle.renewDocs', $vehicle->id) }}" class="btn-blue"
+                                                onclick="return confirmRenewal();">
+                                                Doc Renewed
+                                            </a>
+
+                                            <a href="{{ route('services.index', ['vehicle_number' => $vehicle->vehicle_number]) }}"
+                                                class="btn-blue">
+                                                Services
+                                            </a>
                                             <a href="{{ route('vehicles.edit', $vehicle->id) }}"
                                                 class="btn-edit">Edit</a>
-                                        <form action="{{ route('vehicles.destroy', $vehicle->id) }}" method="POST"
-                                            style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn-delete"
-                                                onclick="return confirm('Are you sure you want to delete this vehicle?')">Delete</button>
-                                        </form>
+                                            <form action="{{ route('vehicles.destroy', $vehicle->id) }}"
+                                                method="POST" style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn-delete"
+                                                    onclick="return confirm('Are you sure you want to delete this vehicle?')">Delete</button>
+                                            </form>
                                     </td>
                                 </tr>
                             @endforeach
@@ -240,7 +243,11 @@
         }, 500); // 0.5-second delay to prevent excessive requests
     }
 </script>
-
+<script>
+    function confirmRenewal() {
+        return confirm("Are you sure documents are renewed? Expiry date will be extended by 1 year.");
+    }
+</script>
 
 
 </html>
