@@ -5,15 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\Leave;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LeaveController extends Controller
 {
     // Display all leave requests
     public function index()
     {
-        $leaves = Leave::orderBy('created_at', 'desc')->get();
+        $businessId = Auth::user()->business_id;
+    
+        $leaves = Leave::where('business_id', $businessId)
+                       ->orderBy('created_at', 'desc')
+                       ->get();
+    
         return view('Manager.LeaveRequest', compact('leaves'));
     }
+    
     
 
     // Show the form for creating a new leave request
@@ -35,11 +42,15 @@ class LeaveController extends Controller
             'leave_days' => 'required',
         ]);
     
-        // Default status is already set to 'pending' in the model
+        // Inject business_id
+        $validated['business_id'] = Auth::user()->business_id;
+    
+        // Create leave with business ID
         Leave::create($validated);
     
         return redirect()->route('leaves.index')->with('success', 'Leave request created successfully.');
     }
+    
     
 
     // Show the details of a specific leave request
@@ -122,23 +133,28 @@ class LeaveController extends Controller
     
     
 
-public function showApprovedLeaves()
-{
-    // Fetch only leaves with 'approved' status
-    $approvedLeaves = Leave::where('status', 'accepted')->get();
-
-    // Ensure the path matches the folder structure
-    return view('Manager.ApprovedLeaves', compact('approvedLeaves'));
-}
-
-public function showRejectededLeaves()
-{
-    // Fetch only leaves with 'approved' status
-    $rejectedLeaves = Leave::where('status', 'rejected')->get();
-
-    // Ensure the path matches the folder structure
-    return view('Manager.RejectedLeaves', compact('rejectedLeaves'));
-}
+    public function showApprovedLeaves()
+    {
+        $businessId = Auth::user()->business_id;
+    
+        $approvedLeaves = Leave::where('status', 'accepted')
+                               ->where('business_id', $businessId)
+                               ->get();
+    
+        return view('Manager.ApprovedLeaves', compact('approvedLeaves'));
+    }
+    
+    public function showRejectededLeaves()
+    {
+        $businessId = Auth::user()->business_id;
+    
+        $rejectedLeaves = Leave::where('status', 'rejected')
+                               ->where('business_id', $businessId)
+                               ->get();
+    
+        return view('Manager.RejectedLeaves', compact('rejectedLeaves'));
+    }
+    
 
 
 }

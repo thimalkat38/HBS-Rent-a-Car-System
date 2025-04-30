@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Crm;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CrmController extends Controller
 {
@@ -12,7 +13,9 @@ class CrmController extends Controller
      */
     public function index()
     {
-        $crms = Crm::all();
+        $businessId = Auth::user()->business_id; // Get the logged-in user's business ID
+    
+        $crms = crm::where('business_id', $businessId)->get(); // Filter by business_id
         return view('Manager.CRM', compact('crms'));
     }
 
@@ -36,8 +39,19 @@ class CrmController extends Controller
             'subject' => 'required|string|max:255',
             'note' => 'nullable|string',
         ]);
+        $businessId = Auth::user()->business_id;
 
-        Crm::create($request->all());
+        // Crm::create($request->all());
+
+
+        Crm::create([
+            'business_id' => $businessId,
+            'full_name' => $request->full_name,
+            'phone' => $request->phone,
+            'date' => $request->date,
+            'subject' => $request->subject,
+            'note' => $request->note,
+        ]);
 
         return redirect()->route('crms.upcoming')->with('success', 'CRM entry created successfully.');
     }
@@ -88,7 +102,9 @@ class CrmController extends Controller
 
     public function upcomingSchedule(Request $request)
     {
-        $query = Crm::query();
+        $businessId = Auth::user()->business_id;
+    
+        $query = Crm::where('business_id', $businessId);
     
         // Apply filters if present
         if ($request->filled('full_name')) {
@@ -99,11 +115,12 @@ class CrmController extends Controller
             $query->whereDate('date', '=', $request->input('date'));
         }
     
-        // Fetch filtered results or all upcoming entries
+        // Fetch filtered results
         $crms = $query->orderBy('date', 'asc')->get();
     
         return view('Manager.CRM', compact('crms'));
     }
+    
     
 
 }

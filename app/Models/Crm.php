@@ -11,10 +11,16 @@ class Crm extends Model
 
     protected $fillable = [
 
+        'business_id',
         'full_name',
         'phone',
         'date',
         'subject',
         'note',
     ];
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
 }

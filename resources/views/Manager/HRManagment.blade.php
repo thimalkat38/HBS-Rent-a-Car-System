@@ -20,19 +20,25 @@
             <div class="logo-section">
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
-            <div class="header-title">HBS RENT A CAR</div>
+            @php
+    $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
+@endphp
+
+<div class="header-title">
+    {{ $bName ?? 'Business Name' }}
+</div>
             <div class="card1">
-            <div class="card1-content">  
-                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
-                    @csrf
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
+                <div class="card1-content">
+                    <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
+                        @csrf
+                        <x-responsive-nav-link :href="route('logout')"
+                            onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('LogOut') }}
-                    </x-responsive-nav-link>
-                </form>
+                            {{ __('LogOut') }}
+                        </x-responsive-nav-link>
+                    </form>
+                </div>
             </div>
-        </div>
         </div>
 
         <!-- Main Content -->
@@ -75,8 +81,8 @@
                                 src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}" alt="CRM"
-                                class="nav-icon"> CRM</a>
+                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}"
+                                alt="CRM" class="nav-icon"> CRM</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link" href="{{ route('inventory.index') }}">
@@ -87,11 +93,11 @@
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> Finance</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
-                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
-                                </div>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                            <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                            {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                        </div>
                     </div>
                 </nav>
             </div>
@@ -108,7 +114,9 @@
                                     <img src="{{ asset('images/H1.png') }}" alt="regstaff" class="card-image">
                                 </div>
                                 <h5 class="card-title">Registered Staff</h5>
-                                <p class="card-text">{{ \App\Models\Employee::count() }}</p>
+                                <p class="card-text">
+                                    {{ \App\Models\Employee::where('business_id', auth()->user()->business_id)->count() }}
+                                </p>
                             </div>
                         </a>
                     </div>
@@ -121,7 +129,9 @@
                                     <img src="{{ asset('images/H2.png') }}" alt="leavereq" class="card-image">
                                 </div>
                                 <h5 class="card-title">Requested Leaves</h5>
-                                <p class="card-text">{{ \App\Models\Leave::count() }}</p>
+                                <p class="card-text">
+                                    {{ \App\Models\Leave::where('business_id', auth()->user()->business_id)->count() }}
+                                </p>
                             </div>
                         </a>
                     </div>
@@ -134,7 +144,9 @@
                                     <img src="{{ asset('images/H3.png') }}"alt="apprvdleave" class="card-image">
                                 </div>
                                 <h5 class="card-title">Approved Leaves</h5>
-                                <p class="card-text">{{ \App\Models\Leave::where('status', 'Accepted')->count() }}</p>
+                                <p class="card-text">
+                                    {{ \App\Models\Leave::where('business_id', auth()->user()->business_id)->where('status', 'Accepted')->count() }}
+                                </p>
                             </div>
                         </a>
                     </div>
@@ -147,7 +159,9 @@
                                     <img src="{{ asset('images/H4.png') }}" alt="rejleave" class="card-image">
                                 </div>
                                 <h5 class="card-title">Rejected Leaves</h5>
-                                <p class="card-text">{{ \App\Models\Leave::where('status', 'rejected')->count() }}</p>
+                                <p class="card-text">
+                                    {{ \App\Models\Leave::where('business_id', auth()->user()->business_id)->where('status', 'rejected')->count() }}
+                                </p>
                             </div>
                         </a>
                     </div>

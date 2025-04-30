@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Payroll;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PayrollController extends Controller
 {
     // Display a listing of payrolls
     public function index(Request $request)
     {
-        $query = Payroll::query();
+        $businessId = Auth::user()->business_id;
+    
+        $query = Payroll::where('business_id', $businessId);
     
         // Filter by Employee ID
         if ($request->filled('emp_id')) {
@@ -29,27 +32,38 @@ class PayrollController extends Controller
     }
     
     
+    
 
     // Show the form for creating a new payroll
     public function create()
     {
-        return view('Manager.AddPayroll');
+        $businessId = Auth::user()->business_id;
+    
+        // Fetch only employees related to the logged-in user's business
+        $employees = \App\Models\Employee::where('business_id', $businessId)->get();
+    
+        return view('Manager.AddPayroll', compact('employees'));
     }
+    
 
     // Store a newly created payroll in the database
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'emp_id' => 'required|string|max:255',
-            'emp_name' => 'required|string|max:255',
-            'acc_num' => 'required|string|max:255',
-            'note' => 'nullable|string|max:500',
-            'paid_date' => 'required|date',
-            'paid_amnt' => 'required|numeric',
+            'emp_id'     => 'required|string|max:255',
+            'emp_name'   => 'required|string|max:255',
+            'acc_num'    => 'required|string|max:255',
+            'note'       => 'nullable|string|max:500',
+            'paid_date'  => 'required|date',
+            'paid_amnt'  => 'required|numeric',
         ]);
     
-        // Retrieve the employee based on emp_id
-        $employee = \App\Models\Employee::where('emp_id', $validated['emp_id'])->first();
+        $businessId = Auth::user()->business_id;
+    
+        // Retrieve the employee based on emp_id and business_id
+        $employee = \App\Models\Employee::where('emp_id', $validated['emp_id'])
+                    ->where('business_id', $businessId)
+                    ->first();
     
         if (!$employee) {
             return redirect()->back()->with('error', 'Employee not found.');
@@ -64,11 +78,15 @@ class PayrollController extends Controller
         // Save the updated employee data
         $employee->save();
     
+        // Add business_id to the validated array before creating payroll
+        $validated['business_id'] = $businessId;
+    
         // Store payroll data
-        Payroll::create($validated);
+        \App\Models\Payroll::create($validated);
     
         return redirect()->route('payrolls.index')->with('success', 'Payroll added successfully!');
     }
+    
     
 
     // Display the specified payroll

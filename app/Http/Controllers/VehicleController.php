@@ -6,24 +6,22 @@ use Illuminate\Http\Request;
 use App\Models\Vehicle;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class VehicleController extends Controller
 {
     /**
      * Display a listing of the vehicles.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $search = $request->input('search');
-
-        if ($search) {
-            $vehicles = Vehicle::where('vehicle_number', 'LIKE', "%{$search}%")->get();
-        } else {
-            $vehicles = Vehicle::all();
-        }
-
-        return view('Manager.ManagerVehicles', compact('vehicles', 'search'));
+        $businessId = Auth::user()->business_id;
+    
+        $vehicles = \App\Models\Vehicle::where('business_id', $businessId)->get();
+    
+        return view('Manager.ManagerVehicles', compact('vehicles'));
     }
+    
 
 
     public function show($id)
@@ -69,6 +67,8 @@ class VehicleController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
+        $businessId = Auth::user()->business_id;
+
         $images = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
@@ -103,6 +103,7 @@ class VehicleController extends Controller
             'features' => $features,
             'images' => $images,
             'display_image' => $images[0] ?? null,
+            'business_id' => $businessId,
         ]);
 
         return redirect('manager/vehicles')->with('success', 'Vehicle Added successfully!'); // this line is not working
@@ -250,20 +251,22 @@ class VehicleController extends Controller
 
     public function search(Request $request)
     {
-        $query = Vehicle::query();
-
+        $businessId = Auth::user()->business_id;
+    
+        $query = Vehicle::where('business_id', $businessId);
+    
         if ($request->filled('vehicle_number')) {
             $query->where('vehicle_number', 'LIKE', "%{$request->vehicle_number}%");
         }
-
+    
         if ($request->filled('vehicle_name')) {
             $query->where('vehicle_name', 'LIKE', "%{$request->vehicle_name}%");
         }
-
+    
         if ($request->filled('fuel_type')) {
             $query->where('fuel_type', $request->fuel_type);
         }
-
+    
         if ($request->filled('id_range')) {
             $idRange = $request->id_range;
             if ($idRange === '50+') {
@@ -273,12 +276,12 @@ class VehicleController extends Controller
                 $query->whereBetween('id', [(int)$start, (int)$end]);
             }
         }
-
-        // Retrieve matching vehicles
+    
         $vehicles = $query->get();
-
+    
         return view('Manager.ManagerVehicles', compact('vehicles'));
     }
+    
 
 
 

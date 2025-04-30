@@ -12,7 +12,8 @@ class VehicleOwner extends Model
     protected $table = 'vehicleowners'; 
 
     protected $fillable = [
-        'owner_id',  // Add this line
+        'business_id',
+        'owner_id', 
         'title',
         'full_name',
         'vehicle_number',
@@ -43,4 +44,9 @@ class VehicleOwner extends Model
         });
     }
     
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
 }

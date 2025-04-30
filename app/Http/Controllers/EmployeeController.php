@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeController extends Controller
 {
@@ -13,9 +14,13 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = Employee::all();
+        $businessId = Auth::user()->business_id; // Get the logged-in user's business ID
+    
+        $employees = Employee::where('business_id', $businessId)->get(); // Filter by business_id
+    
         return view('Manager.ManagerEmployees', compact('employees'));
     }
+    
     
     /**
      * Show the form for creating a new employee.
@@ -46,6 +51,7 @@ class EmployeeController extends Controller
             'photo.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'doc_photos.*' => 'file|mimes:pdf,doc,docx,jpeg,png,jpg,gif|max:5120'
         ]);
+        $businessId = Auth::user()->business_id;
     
         // Auto-generate emp_id
         $lastEmployee = Employee::orderBy('id', 'desc')->first();
@@ -74,6 +80,7 @@ class EmployeeController extends Controller
     
         // Create Employee
         Employee::create([
+            'business_id' => $businessId,
             'emp_id' => $empId,
             'title' => $request->title,
             'emp_name' => $request->emp_name,
@@ -269,18 +276,21 @@ public function show($id)
     // Pass the customer data to the view
     return view('Manager.ManagerDetailedEmployee', compact('employee'));  
   }
-
   
+
   public function autocomplete(Request $request)
   {
       $query = $request->get('term', '');
-
-      $employees = Employee::where('emp_name', 'LIKE', $query . '%')
+      $businessId = Auth::user()->business_id;
+  
+      $employees = Employee::where('business_id', $businessId) // Filter by business_id
+                          ->where('emp_name', 'LIKE', $query . '%')
                           ->distinct()
-                          ->pluck('emp_name'); // Fetch only emp_name column
-
+                          ->pluck('emp_name');
+  
       return response()->json($employees);
   }
+  
 
   public function searche(Request $request)
   {

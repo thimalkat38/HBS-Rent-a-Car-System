@@ -10,6 +10,7 @@ class Service extends Model
     use HasFactory;
 
     protected $fillable = [
+        'business_id',
         'vehicle_number',
         'invoice_number',
         'type',
@@ -20,4 +21,9 @@ class Service extends Model
         'date',
         'next_date'
     ];
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
 }

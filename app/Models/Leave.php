@@ -11,6 +11,7 @@ class Leave extends Model
 
     // Specify the mass-assignable attributes
     protected $fillable = [
+        'business_id',
         'emp_id',
         'emp_name',
         'type',
@@ -47,5 +48,10 @@ class Leave extends Model
     public function isRejected()
     {
         return $this->status === self::STATUS_REJECTED;
+    }
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
     }
 }

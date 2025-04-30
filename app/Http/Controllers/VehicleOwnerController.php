@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\VehicleOwner;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class VehicleOwnerController extends Controller
 {
@@ -12,7 +13,10 @@ class VehicleOwnerController extends Controller
      */
     public function index(Request $request)
     {
-        $query = VehicleOwner::query();
+        $businessId = Auth::user()->business_id;
+    
+        // Start the query scoped by business_id
+        $query = VehicleOwner::where('business_id', $businessId);
     
         // Filter by Full Name if provided
         if ($request->filled('full_name')) {
@@ -28,7 +32,7 @@ class VehicleOwnerController extends Controller
         $vehicleOwners = $query->get();
     
         return view('Manager.VehicleOwners', compact('vehicleOwners'));
-    }
+    }    
     
     /**
      * Show the form for creating a new resource.
@@ -59,11 +63,15 @@ class VehicleOwnerController extends Controller
             'bank_detais' => 'nullable|string',
         ]);
     
-        // Create new vehicle owner (owner_id is auto-generated)
+        // Attach business_id
+        $validated['business_id'] = Auth::user()->business_id;
+    
+        // Create the vehicle owner
         VehicleOwner::create($validated);
     
         return redirect()->route('vehicle_owners.index')->with('success', 'Vehicle owner created successfully.');
-    }    
+    }
+        
 
     /**
      * Display the specified resource.

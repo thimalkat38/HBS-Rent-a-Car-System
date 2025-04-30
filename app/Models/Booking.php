@@ -10,6 +10,7 @@ class Booking extends Model
     use HasFactory;
 
     protected $fillable = [
+        'business_id',
         'title',
         'full_name',
         'mobile_number',
@@ -49,4 +50,9 @@ class Booking extends Model
         'deposit_img' => 'array',
         'grnt_nic' => 'array',
     ];
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
 }

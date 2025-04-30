@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class Expense extends Model
 {
@@ -13,7 +14,7 @@ class Expense extends Model
     protected $table = 'expenses';
 
     protected $fillable = [
-        'ref_no', 'cat', 'date', 'for_emp', 'for_cus','fuel_for', 'docs', 'amnt', 'note'
+        'ref_no', 'cat', 'date', 'for_emp', 'for_cus', 'fuel_for', 'docs', 'amnt', 'note', 'business_id' // Add business_id to fillable
     ];
 
     /**
@@ -35,6 +36,7 @@ class Expense extends Model
 
         static::creating(function ($expense) {
             $expense->ref_no = self::generateRefNo();
+            $expense->business_id = Auth::user()->business_id; // Automatically set business_id when creating a new expense
         });
     }
 

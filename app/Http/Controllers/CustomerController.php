@@ -4,13 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
     // Display a listing of customers
     public function index(Request $request)
     {
-        $query = Customer::query();
+
+        $businessId = Auth::user()->business_id;
+        $query = Customer::where('business_id', $businessId);
+
+        // $query = Customer::query();
 
         // Filter by NIC if provided
         if ($request->filled('nic')) {
@@ -51,6 +56,8 @@ class CustomerController extends Controller
             'dl_photos.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        $businessId = Auth::user()->business_id;
+
         $nicPhotos = [];
         $dlPhotos = [];
 
@@ -68,6 +75,7 @@ class CustomerController extends Controller
 
         $validated['nic_photos'] = $nicPhotos;
         $validated['dl_photos'] = $dlPhotos;
+        $validated['business_id'] = $businessId;
 
         Customer::create($validated);
 
