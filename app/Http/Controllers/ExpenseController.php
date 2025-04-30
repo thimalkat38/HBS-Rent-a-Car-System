@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 
 use Illuminate\Http\Request;
@@ -19,9 +20,16 @@ class ExpenseController extends Controller
      */
     public function index()
     {
-        $expenses = Expense::orderBy('date', 'desc')->get();
+        $businessId = Auth::user()->business_id; // Get logged-in user's business_id
+    
+        // Fetch only expenses associated with the business_id
+        $expenses = Expense::where('business_id', $businessId)
+                            ->orderBy('date', 'desc')
+                            ->get();
+    
         return view('Manager.ListExpenses', compact('expenses'));
     }
+     
 
     /**
      * Show the form for creating a new expense.
@@ -29,12 +37,17 @@ class ExpenseController extends Controller
 
 
 
-    public function create()
-    {
-        $employees = Employee::select('emp_id', 'emp_name')->get(); // Fetching only required columns
-        $customers = Customer::select('id', 'full_name')->get(); // Fetch customers
-        return view('Manager.AddExpenses', compact('employees'));
-    }
+     public function create()
+     {
+         $businessId = Auth::user()->business_id; // Get logged-in user's business_id
+     
+         // Fetch employees and customers based on business_id
+         $employees = Employee::select('emp_id', 'emp_name')->where('business_id', $businessId)->get(); 
+         $customers = Customer::select('id', 'full_name')->where('business_id', $businessId)->get(); 
+     
+         return view('Manager.AddExpenses', compact('employees', 'customers'));
+     }
+     
 
 
     /**
@@ -44,43 +57,47 @@ class ExpenseController extends Controller
 
 
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'cat' => 'required|string',
-            'date' => 'required|date',
-            'for_emp' => 'nullable|exists:employees,emp_id', // Ensure valid employee ID
-            'for_cus' => 'nullable|exists:customers,id', // Ensure valid customer ID
-            'fuel_for' =>'nullable|string',
-            'docs' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx|max:2048',
-            'amnt' => 'required|numeric',
-            'note' => 'nullable|string',
-        ]);
-
-        // Fetch full names from related tables
-        $customerName = $request->for_cus ? DB::table('customers')->where('id', $request->for_cus)->value('full_name') : null;
-        $employeeName = $request->for_emp ? DB::table('employees')->where('emp_id', $request->for_emp)->value('emp_name') : null;
-
-        // Handle file upload
-        $filePath = null;
-        if ($request->hasFile('docs')) {
-            $filePath = $request->file('docs')->store('expenses', 'public'); // Saves to storage/app/public/expenses
-        }
-
-        // Save to database
-        $expense = new Expense();
-        $expense->cat = $request->cat;
-        $expense->date = $request->date;
-        $expense->for_emp = $employeeName; // Store Employee Name
-        $expense->for_cus = $customerName; // Store Customer Name
-        $expense->fuel_for = $request->fuel_for;
-        $expense->docs = $filePath;  // Store only path
-        $expense->amnt = $request->amnt;
-        $expense->note = $request->note;
-        $expense->save();
-
-        return redirect()->back()->with('success', 'Expense saved successfully!');
-    }
+     public function store(Request $request)
+     {
+         $validated = $request->validate([
+             'cat' => 'required|string',
+             'date' => 'required|date',
+             'for_emp' => 'nullable|exists:employees,emp_id', // Ensure valid employee ID
+             'for_cus' => 'nullable|exists:customers,id', // Ensure valid customer ID
+             'fuel_for' => 'nullable|string',
+             'docs' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx|max:2048',
+             'amnt' => 'required|numeric',
+             'note' => 'nullable|string',
+         ]);
+     
+         $businessId = Auth::user()->business_id; // Get logged-in user's business_id
+     
+         // Fetch full names from related tables
+         $customerName = $request->for_cus ? DB::table('customers')->where('id', $request->for_cus)->value('full_name') : null;
+         $employeeName = $request->for_emp ? DB::table('employees')->where('emp_id', $request->for_emp)->value('emp_name') : null;
+     
+         // Handle file upload
+         $filePath = null;
+         if ($request->hasFile('docs')) {
+             $filePath = $request->file('docs')->store('expenses', 'public'); // Saves to storage/app/public/expenses
+         }
+     
+         // Save to database
+         $expense = new Expense();
+         $expense->cat = $request->cat;
+         $expense->date = $request->date;
+         $expense->for_emp = $employeeName; // Store Employee Name
+         $expense->for_cus = $customerName; // Store Customer Name
+         $expense->fuel_for = $request->fuel_for;
+         $expense->docs = $filePath;  // Store only path
+         $expense->amnt = $request->amnt;
+         $expense->note = $request->note;
+         $expense->business_id = $businessId; // Associate with business_id
+         $expense->save();
+     
+         return redirect()->back()->with('success', 'Expense saved successfully!');
+     }
+     
 
 
 

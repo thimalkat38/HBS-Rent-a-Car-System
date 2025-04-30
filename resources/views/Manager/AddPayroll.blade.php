@@ -99,8 +99,14 @@
                     <form action="{{ route('payrolls.store') }}" method="POST">
                         @csrf
                         <div class="form-row">
-                            <input type="text" id="emp-id" name="emp_id" placeholder="Enter EMP ID" required autocomplete="off">
-                            <div id="emp-id-list" class="dropdown-list"></div>
+                            <select name="emp_id" id="emp-id" required onchange="autoFillName()">
+                                <option value="">-- Select Employee --</option>
+                                @foreach ($employees as $employee)
+                                    <option value="{{ $employee->emp_id }}" data-name="{{ $employee->emp_name }}">
+                                        {{ $employee->emp_id }} - {{ $employee->emp_name }}
+                                    </option>
+                                @endforeach
+                            </select>
                             @error('emp_id')
                                 <span class="error-message">{{ $message }}</span>
                             @enderror
@@ -209,4 +215,11 @@
 
     </style>    
 </body>
+<script>
+    function autoFillName() {
+        var select = document.getElementById('emp-id');
+        var name = select.options[select.selectedIndex].getAttribute('data-name');
+        document.getElementById('emp-name').value = name;
+    }
+    </script>    
 </html>

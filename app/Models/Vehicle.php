@@ -10,6 +10,7 @@ class Vehicle extends Model
     use HasFactory;
 
     protected $fillable = [
+        'business_id',
         'vehicle_name',
         'vehicle_type',
         'vehicle_number',
@@ -32,4 +33,9 @@ class Vehicle extends Model
         'features' => 'array',
         'images' => 'array',
     ];
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
 }

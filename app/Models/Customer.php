@@ -11,6 +11,7 @@ class Customer extends Model
 
     // Specify which attributes can be mass-assigned
     protected $fillable = [
+        'business_id',
         'title', 
         'full_name', 
         'phone',
@@ -27,4 +28,9 @@ class Customer extends Model
         'nic_photos' => 'array',
         'dl_photos' => 'array',
     ];
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
 }

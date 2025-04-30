@@ -147,7 +147,13 @@
             <div class="logo-section">
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
-            <div class="header-title">HBS Rent a Car</div>
+            @php
+    $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
+@endphp
+
+<div class="header-title">
+    {{ $bName ?? 'Business Name' }}
+</div>
             <a href="#" class="sign-out"> Sign Out</a>
         </div>
 

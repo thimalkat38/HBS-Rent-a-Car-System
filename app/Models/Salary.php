@@ -10,9 +10,14 @@ class Salary extends Model
     use HasFactory;
 
     protected $fillable = [
+        'business_id',
         'date',
         'month',
         'amnt',
         'advanced_amnt'
     ];
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
 }

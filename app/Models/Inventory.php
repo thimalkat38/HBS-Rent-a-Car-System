@@ -13,6 +13,8 @@ class Inventory extends Model
 
     // Specify which attributes can be mass-assigned
     protected $fillable = [
+
+        'business_id',
         'Itm_id',
         'it_name', 
         'quantity',
@@ -26,4 +28,9 @@ class Inventory extends Model
     protected $casts = [
         'it_images' => 'array',
     ];
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
 }

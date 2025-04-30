@@ -11,9 +11,16 @@ class Attendance extends Model
 
     protected $fillable = [
 
+        'business_id',
         'emp_id',
         'emp_name',
         'date',
         'type',
     ];
+
+    public function business()
+{
+    return $this->belongsTo(Business::class);
+}
+
 }

@@ -4,19 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
     public function index(Request $request)
     {
+        $businessId = Auth::user()->business_id;
         $vehicle_number = $request->query('vehicle_number'); // Get vehicle number from URL
-        $services = Service::where('vehicle_number', $vehicle_number)->get(); // Fetch all services
-        $latestService = Service::where('vehicle_number', $vehicle_number)
+    
+        // Fetch services belonging to the same business
+        $services = Service::where('business_id', $businessId)
+                            ->where('vehicle_number', $vehicle_number)
+                            ->get();
+    
+        $latestService = Service::where('business_id', $businessId)
+                                ->where('vehicle_number', $vehicle_number)
                                 ->orderBy('created_at', 'desc')
-                                ->first(); // Get the most recent service record
+                                ->first();
     
         return view('Manager.Services', compact('services', 'vehicle_number', 'latestService'));
     }
+    
     
     
     
@@ -40,7 +49,10 @@ class ServiceController extends Controller
             'next_date' => 'nullable|date',
         ]);
     
-        $service = Service::create($request->all());
+        $data = $request->all();
+        $data['business_id'] = Auth::user()->business_id; // Attach business_id
+    
+        $service = Service::create($data);
     
         if ($request->ajax()) {
             return response()->json(['service' => $service], 201);
@@ -49,6 +61,7 @@ class ServiceController extends Controller
         return redirect()->route('services.index', ['vehicle_number' => $request->vehicle_number])
                          ->with('success', 'Service added successfully!');
     }
+    
     
     
 

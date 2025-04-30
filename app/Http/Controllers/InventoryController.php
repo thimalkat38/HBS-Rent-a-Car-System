@@ -5,19 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class InventoryController extends Controller
 {
     // Display all inventory items
     public function index(Request $request)
     {
+        $businessId = Auth::user()->business_id;
+    
         $searchName = $request->input('search_name');
         $searchId = $request->input('search_id');
     
-        // Query builder
-        $query = Inventory::query();
+        // Begin query scoped by business_id
+        $query = Inventory::where('business_id', $businessId);
     
-        // Add conditions based on search inputs
+        // Apply additional filters
         if ($searchName) {
             $query->where('it_name', 'LIKE', "%{$searchName}%");
         }
@@ -31,6 +34,7 @@ class InventoryController extends Controller
     
         return view('Manager.Inventory', compact('inventories', 'searchName', 'searchId'));
     }
+    
     
 
     // Show the form for creating a new item
@@ -50,6 +54,8 @@ class InventoryController extends Controller
             'total_price' => 'nullable|string',
             'it_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        $businessId = Auth::user()->business_id;
     
         // Generate the next Itm_id
         $lastInventory = Inventory::orderBy('Itm_id', 'desc')->first();
@@ -74,6 +80,7 @@ class InventoryController extends Controller
             'price_per_unit' => $request->input('price_per_unit'),
             'total_price' => $request->input('total_price'),
             'it_images' => json_encode($images), // Store images as JSON
+            'business_id' => $businessId,
         ]);
     
         return redirect()->route('inventory.index')->with('success', 'Item added successfully!');

@@ -32,7 +32,7 @@ class AuthenticatedSessionController extends Controller
 
         if($request->user()->userType === 'admin'){
             
-            return redirect('admin/dashboard');
+            return redirect('superadmin');
         }
         if($request->user()->userType ==='manager'){
 

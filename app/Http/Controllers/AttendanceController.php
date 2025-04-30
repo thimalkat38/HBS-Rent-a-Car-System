@@ -7,6 +7,8 @@ use App\Models\Attendance;
 use App\Models\Employee;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
 
 class AttendanceController extends Controller
 {
@@ -14,9 +16,12 @@ class AttendanceController extends Controller
     public function index(Request $request)
     {
         $monthInput = $request->input('month') ?? Carbon::now()->format('Y-m');
-    
+
         $month = Carbon::parse($monthInput);
-    
+
+        // Get the business_id of the currently logged-in user
+        $businessId = Auth::user()->business_id;
+
         $query = DB::table('attendances')
             ->select(
                 'emp_id',
@@ -28,26 +33,30 @@ class AttendanceController extends Controller
             ->whereMonth('date', $month->month)
             ->whereYear('date', $month->year)
             ->groupBy('emp_id', 'emp_name');
-    
+
         if ($request->filled('emp_name')) {
             $query->where('emp_name', 'like', '%' . $request->emp_name . '%');
         }
-    
+
         $attendances = $query->get();
-    
+
         return view('Manager.Attendance', compact('attendances', 'monthInput'));
     }
-    
-    
-    
+
+
+
 
     // Show the form for creating a new attendance record
     public function create()
     {
-        $employees = Employee::all(); // fetch all employees
+        $businessId = \Illuminate\Support\Facades\Auth::user()?->business_id;
+    
+        // Fetch employees belonging to the logged-in user's business
+        $employees = Employee::where('business_id', $businessId)->get();
+    
         return view('Manager.AddAttendance', compact('employees'));
     }
-    
+
 
     // Store a newly created attendance record
     public function store($id, $type)
@@ -70,6 +79,7 @@ class AttendanceController extends Controller
             'emp_name'  => $employee->emp_name,
             'date'      => $today,
             'type'      => $type,
+            'business_id'  => Auth::user()->business_id,
         ]);
 
         return redirect()->back()->with('success', 'Attendance Marked Successfully');
@@ -83,5 +93,4 @@ class AttendanceController extends Controller
 
         return redirect()->route('attendances.index')->with('success', 'Attendance record deleted successfully!');
     }
-
 }

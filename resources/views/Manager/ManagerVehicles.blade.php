@@ -20,7 +20,13 @@
             <div class="logo-section">
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
-            <div class="header-title">HBS RENT A CAR</div>
+            @php
+    $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
+@endphp
+
+<div class="header-title">
+    {{ $bName ?? 'Business Name' }}
+</div>
             <div class="card1">
                 <div class="card1-content">
                     <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
@@ -144,8 +150,9 @@
 
                             <div class="flex justify-center items-center bg-gray-100 p-4 rounded-lg shadow-md">
                                 <div class="text-center">
-                                    <h2 class="text-lg font-semibold text-gray-700">Total Vehicles =
-                                        {{ \App\Models\Vehicle::count() }}</h2>
+                                    <h2 class="text-lg font-semibold text-gray-700">
+                                        Total Vehicles = {{ \App\Models\Vehicle::where('business_id', auth()->user()->business_id)->count() }}
+                                    </h2>                                    
                                 </div>
                             </div>
                         </form>

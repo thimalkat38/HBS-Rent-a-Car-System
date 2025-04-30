@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\PostBooking;
 use App\Models\Booking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostBookingController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
     public function index(Request $request)
     {
         // Get the query parameters
@@ -18,8 +20,8 @@ class PostBookingController extends Controller
         $fromDate = $request->input('from_date');
         $order = $request->input('order');
     
-        // Start building the query
-        $query = PostBooking::query();
+        // Start building the query with business_id scoping
+        $query = PostBooking::where('business_id', Auth::user()->business_id);
     
         // Apply filters
         if ($vehicleNumber) {
@@ -43,6 +45,7 @@ class PostBookingController extends Controller
         return view('Manager.AllPostBookings', compact('postBookings'));
     }
     
+    
     public function create()
     {
         return view('Manager.PostBooking');
@@ -50,6 +53,8 @@ class PostBookingController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -86,18 +91,22 @@ class PostBookingController extends Controller
             'extra_km_chg' => 'nullable|string',
         ]);
     
+        // Inject current user's business_id
+        $validated['business_id'] = Auth::user()->business_id;
+    
         $postBooking = PostBooking::create($validated);
     
         $booking = Booking::find($request->id);
     
         if ($booking) {
             $booking->update(['status' => 'Completed']);
-            $booking->delete(); // Deletes the booking record after updating the status
+            $booking->delete(); // Optional: keep if you want to remove from active bookings
         }
     
         return redirect()->route('postbookings.show', $postBooking)
             ->with('success', 'Booking created successfully.');
     }
+    
     
     
     

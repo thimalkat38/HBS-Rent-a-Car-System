@@ -11,6 +11,7 @@ class Employee extends Model
 
     protected $fillable = [
 
+        'business_id',
         'emp_id',
         'title',
         'emp_name',
@@ -35,4 +36,9 @@ class Employee extends Model
         'photo' => 'array',
         'doc_photos' => 'array',
     ];
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
 }

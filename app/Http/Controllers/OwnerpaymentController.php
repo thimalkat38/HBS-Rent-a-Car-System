@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ownerpayment;
 use App\Models\VehicleOwner;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OwnerpaymentController extends Controller
 {
@@ -13,14 +14,16 @@ class OwnerpaymentController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Ownerpayment::query();
+        $businessId = Auth::user()->business_id;
+    
+        $query = Ownerpayment::where('business_id', $businessId);
     
         // Filter by owner_id if provided
         if ($request->filled('owner_id')) {
             $query->where('owner_id', $request->input('owner_id'));
         }
     
-        // Additional filter by full_name if needed
+        // Filter by full_name if provided
         if ($request->filled('full_name')) {
             $query->where('full_name', 'LIKE', '%' . $request->input('full_name') . '%');
         }
@@ -31,13 +34,19 @@ class OwnerpaymentController extends Controller
     }
     
     
+    
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        $vehicleOwners = VehicleOwner::select('id', 'full_name', 'title', 'owner_id', 'vehicle_number','acc_no','bank_detais')->get();
+        $businessId = Auth::user()->business_id;
+    
+        $vehicleOwners = VehicleOwner::where('business_id', $businessId)
+            ->select('id', 'full_name', 'title', 'owner_id', 'vehicle_number', 'acc_no', 'bank_detais')
+            ->get();
+    
         return view('Manager.AddOwnerPay', compact('vehicleOwners'));
     }
     
@@ -74,8 +83,11 @@ class OwnerpaymentController extends Controller
     
         $fullNameWithTitle = $vehicleOwner->title . ' ' . $vehicleOwner->full_name;
     
-        // Save owner payment
+        $businessId = Auth::user()->business_id;
+    
+        // Save owner payment with business_id
         Ownerpayment::create([
+            'business_id' => $businessId,
             'full_name' => $fullNameWithTitle,
             'owner_id' => $request->owner_id,
             'vehicle' => $request->vehicle,
@@ -91,6 +103,7 @@ class OwnerpaymentController extends Controller
     
         return redirect()->route('vehicle_owners.index')->with('success', 'Owner payment created successfully.');
     }
+    
     
     
     

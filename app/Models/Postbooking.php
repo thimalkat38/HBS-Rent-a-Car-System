@@ -12,6 +12,7 @@ class PostBooking extends Model
     protected $table = 'postbookings';
 
     protected $fillable = [
+        'business_id',
         'full_name',
         'nic',
         'mobile_number',
@@ -50,4 +51,9 @@ class PostBooking extends Model
         'deposit_refunded' => 'boolean',
         'vehicle_checked' => 'boolean',
     ];
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
 }

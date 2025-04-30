@@ -11,6 +11,7 @@ class Payroll extends Model
 
     protected $fillable = [
         
+        'business_id',
         'emp_id',
         'emp_name',
         'acc_num',
@@ -19,4 +20,9 @@ class Payroll extends Model
         'paid_amnt',
         
     ];
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
 }
