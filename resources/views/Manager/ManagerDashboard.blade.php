@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBS Car Rental Management System</title>
+    <title>Car Rental Management System</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <!-- Google Fonts for Oxanium -->
@@ -21,12 +21,12 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             @php
-    $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
-@endphp
+                $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
+            @endphp
 
-<div class="header-title">
-    {{ $bName ?? 'Business Name' }}
-</div>
+            <div class="header-title">
+                {{ $bName ?? 'Business Name' }}
+            </div>
             <div class="card1">
                 <div class="card1-content">
                     <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
@@ -114,51 +114,51 @@
                     </div>
                 </div>
                 @if ($expiringVehicles->isNotEmpty())
-                <div class="alert-box">
-                    <h3>🚨 Document Expiry Alert 🚨</h3>
-                    <ul>
-                        @foreach ($expiringVehicles as $vehicle)
-                            @php
-                                $licenseExpiryDate = \Carbon\Carbon::parse($vehicle->license_exp_date);
-                                $insuranceExpiryDate = \Carbon\Carbon::parse($vehicle->insurance_exp_date);
-                                $today = now();
-            
-                                $licenseDaysLeft = ceil($today->diffInDays($licenseExpiryDate, false));
-                                $insuranceDaysLeft = ceil($today->diffInDays($insuranceExpiryDate, false));
-                            @endphp
-            
-                            @if ($licenseDaysLeft >= 0 && $licenseDaysLeft <= 10)
-                                <li>🚗 {{ $vehicle->vehicle_number }} - License expires in
-                                    <strong>{{ $licenseDaysLeft }}</strong>
-                                    {{ $licenseDaysLeft == 1 ? 'day' : 'days' }}
-                                    (Expiry Date: {{ $licenseExpiryDate->format('d M Y') }})
-                                </li>
-                            @elseif($licenseDaysLeft < 0)
-                                <li>🚗 {{ $vehicle->vehicle_number }} - License expired
-                                    <strong>{{ abs($licenseDaysLeft) }}</strong>
-                                    {{ abs($licenseDaysLeft) == 1 ? 'day' : 'days' }}
-                                    ago (Expiry Date: {{ $licenseExpiryDate->format('d M Y') }})
-                                </li>
-                            @endif
-            
-                            @if ($insuranceDaysLeft >= 0 && $insuranceDaysLeft <= 10)
-                                <li>🚗 {{ $vehicle->vehicle_number }} - Insurance expires in
-                                    <strong>{{ $insuranceDaysLeft }}</strong>
-                                    {{ $insuranceDaysLeft == 1 ? 'day' : 'days' }}
-                                    (Expiry Date: {{ $insuranceExpiryDate->format('d M Y') }})
-                                </li>
-                            @elseif($insuranceDaysLeft < 0)
-                                <li>🚗 {{ $vehicle->vehicle_number }} - Insurance expired
-                                    <strong>{{ abs($insuranceDaysLeft) }}</strong>
-                                    {{ abs($insuranceDaysLeft) == 1 ? 'day' : 'days' }}
-                                    ago (Expiry Date: {{ $insuranceExpiryDate->format('d M Y') }})
-                                </li>
-                            @endif
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            
+                    <div class="alert-box">
+                        <h3>🚨 Document Expiry Alert 🚨</h3>
+                        <ul>
+                            @foreach ($expiringVehicles as $vehicle)
+                                @php
+                                    $licenseExpiryDate = \Carbon\Carbon::parse($vehicle->license_exp_date);
+                                    $insuranceExpiryDate = \Carbon\Carbon::parse($vehicle->insurance_exp_date);
+                                    $today = now();
+
+                                    $licenseDaysLeft = ceil($today->diffInDays($licenseExpiryDate, false));
+                                    $insuranceDaysLeft = ceil($today->diffInDays($insuranceExpiryDate, false));
+                                @endphp
+
+                                @if ($licenseDaysLeft >= 0 && $licenseDaysLeft <= 10)
+                                    <li>🚗 {{ $vehicle->vehicle_number }} - License expires in
+                                        <strong>{{ $licenseDaysLeft }}</strong>
+                                        {{ $licenseDaysLeft == 1 ? 'day' : 'days' }}
+                                        (Expiry Date: {{ $licenseExpiryDate->format('d M Y') }})
+                                    </li>
+                                @elseif($licenseDaysLeft < 0)
+                                    <li>🚗 {{ $vehicle->vehicle_number }} - License expired
+                                        <strong>{{ abs($licenseDaysLeft) }}</strong>
+                                        {{ abs($licenseDaysLeft) == 1 ? 'day' : 'days' }}
+                                        ago (Expiry Date: {{ $licenseExpiryDate->format('d M Y') }})
+                                    </li>
+                                @endif
+
+                                @if ($insuranceDaysLeft >= 0 && $insuranceDaysLeft <= 10)
+                                    <li>🚗 {{ $vehicle->vehicle_number }} - Insurance expires in
+                                        <strong>{{ $insuranceDaysLeft }}</strong>
+                                        {{ $insuranceDaysLeft == 1 ? 'day' : 'days' }}
+                                        (Expiry Date: {{ $insuranceExpiryDate->format('d M Y') }})
+                                    </li>
+                                @elseif($insuranceDaysLeft < 0)
+                                    <li>🚗 {{ $vehicle->vehicle_number }} - Insurance expired
+                                        <strong>{{ abs($insuranceDaysLeft) }}</strong>
+                                        {{ abs($insuranceDaysLeft) == 1 ? 'day' : 'days' }}
+                                        ago (Expiry Date: {{ $insuranceExpiryDate->format('d M Y') }})
+                                    </li>
+                                @endif
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
 
 
                 <!-- Calendar Section -->
@@ -258,8 +258,8 @@
                                 <h3>OUT</h3>
                                 <ul>
                                     ${data.in_bookings.map(booking => `
-                                            <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.booking_time}]</li>
-                                        `).join('')}
+                                                <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.booking_time}]</li>
+                                            `).join('')}
                                 </ul>`;
                                 } else {
                                     inBookingsHtml =
@@ -271,8 +271,8 @@
                                 <h3>IN</h3>
                                 <ul>
                                     ${data.out_bookings.map(booking => `
-                                            <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.arrival_time}]</li>
-                                        `).join('')}
+                                                <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.arrival_time}]</li>
+                                            `).join('')}
                                 </ul>`;
                                 } else {
                                     outBookingsHtml =
@@ -284,8 +284,8 @@
                                 <h3>Available Vehicles</h3>
                                 <ul>
                                     ${data.available_vehicles.map(vehicle => `
-                                            <li>${vehicle.vehicle_number} - ${vehicle.vehicle_name}</li>
-                                        `).join('')}
+                                                <li>${vehicle.vehicle_number} - ${vehicle.vehicle_name}</li>
+                                            `).join('')}
                                 </ul>`;
                                 } else {
                                     availableVehiclesHtml =

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBS Car Rental Management System</title>
+    <title>Car Rental Management System</title>
     <!-- Google Fonts for Oxanium -->
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
@@ -238,18 +238,16 @@
                         // Add header background and logo
                         doc.setFillColor(255, 170, 0); // Orange background
                         doc.rect(0, 0, 210, 40, 'F'); // Fill rectangle for header
-                        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Logo position and size
+                        // doc.addImage(logo, 'PNG', 10, 10, 50, 20); 
 
                         // Add header text
                         doc.setFontSize(10);
                         doc.setTextColor(0, 0, 0); // Black text
-                        doc.text('Mirisgoniyawa Junction, Bulagala, Dambulla', 70, 15);
-                        doc.text(
-                            'Phone: +94 77 743 5008 | +94  742 5008 | +94 76 887 8088',
-                            70,
-                            25
-                        );
-                        doc.text('Website: info@rentacarsrilankahbs.com', 70, 35);
+                        doc.text(businessData.address || 'No Address', 70, 15);
+                        doc.text(`Phone: ${businessData.b_phone || 'N/A'}`, 70, 25);
+                        doc.text(`Email: ${businessData.email || 'N/A'}`, 70, 35);
+
+
 
                         // Reset text color and add main title
                         doc.setTextColor(0, 0, 0); // Black text
@@ -310,7 +308,8 @@
                         doc.text('End Time: ' + (document.getElementById('to')?.textContent || 'N/A'), 10,
                             currentY);
                         currentY += lineSpacing;
-                        doc.text('Start KM: ' + (document.getElementById('stratKm')?.textContent || 'N/A'), 10,
+                        doc.text('Start KM: ' + (document.getElementById('stratKm')?.textContent || 'N/A'),
+                            10,
                             currentY);
                         currentY += lineSpacing;
                         doc.text('Deposit: ' + (document.getElementById('deposit')?.textContent || 'N/A'),
@@ -396,7 +395,7 @@
                         doc.setFontSize(originalFontSize);
 
                         doc.line(customerX, currentY + 15, customerX + lineWidth, currentY +
-                        15); // Draw a line
+                            15); // Draw a line
 
                         resolve();
                     } catch (error) {
@@ -409,6 +408,9 @@
                 };
             });
         }
+    </script>
+    <script>
+        const businessData = @json($business);
     </script>
 
 </body>

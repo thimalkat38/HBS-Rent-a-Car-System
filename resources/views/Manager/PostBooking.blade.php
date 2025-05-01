@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBS Car Rental Management System</title>
+    <title>Car Rental Management System</title>
     <!-- Google Fonts for Oxanium -->
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
@@ -148,12 +148,12 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             @php
-    $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
-@endphp
+                $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
+            @endphp
 
-<div class="header-title">
-    {{ $bName ?? 'Business Name' }}
-</div>
+            <div class="header-title">
+                {{ $bName ?? 'Business Name' }}
+            </div>
             <a href="#" class="sign-out"> Sign Out</a>
         </div>
 
@@ -259,14 +259,16 @@
                         </div><br>
                         <div class="form-row">
                             <label for="from-date">FROM</label>
-                            <input type="text" name="from_date" id="from-date" value="{{ $booking->from_date }}" readonly>
-                            
+                            <input type="text" name="from_date" id="from-date" value="{{ $booking->from_date }}"
+                                readonly>
+
                             <label for="to-date">TO</label>
-                            <input type="text" name="to_date" id="to_date" value="{{ $booking->to_date }}" readonly>
-                            
+                            <input type="text" name="to_date" id="to_date" value="{{ $booking->to_date }}"
+                                readonly>
+
                             <label for="ar-date">Arrived Date</label>
                             <input type="date" name="ar_date" id="ar_date" required>
-                            
+
                             <label for="ex-date">Extended Days</label>
                             <input type="text" name="ex_date" id="ex_date" readonly>
                         </div><br>
@@ -521,7 +523,7 @@
     });
 </script>
 <script>
-    document.getElementById('ar_date').addEventListener('change', function () {
+    document.getElementById('ar_date').addEventListener('change', function() {
         let toDate = document.getElementById('to_date').value;
         let arDate = this.value;
         let exDateField = document.getElementById('ex_date');

@@ -20,18 +20,18 @@ class SalaryController extends Controller
         $request->validate([
             'month' => 'required|string'
         ]);
-    
+
         $businessId = Auth::user()->business_id; // Get current user's business ID
-    
+
         // Get the current date
         $currentDate = Carbon::now()->toDateString();
-    
+
         // Calculate sum of remaining_salary for employees of this business
         $totalRemainingSalary = Employee::where('business_id', $businessId)->sum('remaining_salary');
-    
+
         // Calculate sum of advanced_salary for employees of this business
         $totalAdvancedSalary = Employee::where('business_id', $businessId)->sum('advanced_salary');
-    
+
         // Store the data in the salaries table
         Salary::create([
             'date' => $currentDate,
@@ -40,7 +40,7 @@ class SalaryController extends Controller
             'advanced_amnt' => $totalAdvancedSalary,
             'business_id' => $businessId,
         ]);
-    
+
         // Reset employee salary fields for this business only
         DB::transaction(function () use ($businessId) {
             Employee::where('business_id', $businessId)->update([
@@ -48,8 +48,7 @@ class SalaryController extends Controller
                 'remaining_salary' => DB::raw('salary')
             ]);
         });
-    
+
         return redirect()->back()->with('success', 'Salary Payment Recorded and Employee Salary Reset Successfully!');
     }
-    
 }

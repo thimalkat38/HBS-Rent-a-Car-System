@@ -14,7 +14,16 @@ class Expense extends Model
     protected $table = 'expenses';
 
     protected $fillable = [
-        'ref_no', 'cat', 'date', 'for_emp', 'for_cus', 'fuel_for', 'docs', 'amnt', 'note', 'business_id' // Add business_id to fillable
+        'ref_no',
+        'cat',
+        'date',
+        'for_emp',
+        'for_cus',
+        'fuel_for',
+        'docs',
+        'amnt',
+        'note',
+        'business_id' // Add business_id to fillable
     ];
 
     /**

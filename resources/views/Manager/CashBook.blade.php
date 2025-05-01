@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBS Car Rental Management System</title>
+    <title>Car Rental Management System</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <!-- Google Fonts for Oxanium -->
@@ -16,6 +16,7 @@
             font-family: Arial, sans-serif;
             background-color: #f8f9fa;
         }
+
         .report-container {
             background-color: #ddd;
             padding: 20px;
@@ -24,6 +25,7 @@
             margin: 30px auto;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
         }
+
         .filter-section {
             display: flex;
             justify-content: space-between;
@@ -33,6 +35,7 @@
             border-radius: 5px;
             margin-bottom: 10px;
         }
+
         .filter-section input {
             padding: 8px;
             border: 1px solid #ccc;
@@ -40,6 +43,7 @@
             font-size: 14px;
             width: 200px;
         }
+
         .filter-section .filter-btn {
             background-color: #34568B;
             color: white;
@@ -50,9 +54,11 @@
             border: none;
             cursor: pointer;
         }
+
         .filter-section .filter-btn:hover {
             background-color: #2b3e63;
         }
+
         .section-title {
             background-color: #a8e6a3;
             padding: 10px;
@@ -60,41 +66,49 @@
             border-radius: 5px;
             margin-top: 10px;
         }
+
         .grid-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
+
         .table-container {
             background-color: white;
             padding: 10px;
             border-radius: 5px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
         }
-        th, td {
+
+        th,
+        td {
             padding: 8px;
             border: 1px solid #ddd;
             text-align: left;
         }
+
         th {
             background-color: #6ca0dc;
             font-weight: bold;
         }
+
         .cash-in-hand {
             margin-top: 10px;
             background-color: white;
             padding: 10px;
             border-radius: 5px;
         }
+
         .cash-in-hand th {
             background-color: #e5e5e5;
         }
     </style>
-    
+
 </head>
 
 <body>
@@ -105,12 +119,12 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             @php
-    $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
-@endphp
+                $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
+            @endphp
 
-<div class="header-title">
-    {{ $bName ?? 'Business Name' }}
-</div>
+            <div class="header-title">
+                {{ $bName ?? 'Business Name' }}
+            </div>
             <div class="card1">
                 <div class="card1-content">
                     <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
@@ -177,17 +191,17 @@
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> Finance</a>
-                                <div class="dropdown-menu">
-                                    {{-- <a class="dropdown-link" href="{{ url('/customers/create') }}">Expences</a> --}}
-                                    <a class="dropdown-link" href="{{ url('customers') }}">P/L Report</a>
-                                    <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a>
-                                </div>
-                                
+                        <div class="dropdown-menu">
+                            {{-- <a class="dropdown-link" href="{{ url('/customers/create') }}">Expences</a> --}}
+                            <a class="dropdown-link" href="{{ url('customers') }}">P/L Report</a>
+                            <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a>
+                        </div>
+
                     </div>
                 </nav>
             </div>
             <div class="report-container">
-    
+
                 <!-- Filter Section -->
                 <div class="filter-section">
                     <button class="filter-btn">From</button>
@@ -196,7 +210,7 @@
                     <input type="text" placeholder="MM/DD/YYYY">
                     <button class="filter-btn">Search</button>
                 </div>
-            
+
                 <!-- Cash Inflow & Cash Outflow -->
                 <div class="grid-container">
                     <div>
@@ -242,7 +256,7 @@
                         </div>
                     </div>
                 </div>
-            
+
                 <!-- Cash In Hand -->
                 <div class="section-title">Cash In Hand</div>
                 <div class="cash-in-hand">
@@ -265,7 +279,7 @@
                         </tr>
                     </table>
                 </div>
-            
+
             </div>
         </div>
 
@@ -275,4 +289,5 @@
         </div>
     </div>
 </body>
+
 </html>

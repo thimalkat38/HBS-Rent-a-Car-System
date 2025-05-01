@@ -12,14 +12,14 @@ class Customer extends Model
     // Specify which attributes can be mass-assigned
     protected $fillable = [
         'business_id',
-        'title', 
-        'full_name', 
+        'title',
+        'full_name',
         'phone',
-        'whatsapp', 
-        'email', 
-        'nic', 
-        'address', 
-        'nic_photos', 
+        'whatsapp',
+        'email',
+        'nic',
+        'address',
+        'nic_photos',
         'dl_photos'
     ];
 

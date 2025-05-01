@@ -16,28 +16,28 @@ class UserManagementController extends Controller
     {
         $search = $request->input('search');
         $businessId = $request->input('business_id');
-    
+
         $query = User::query();
-    
+
         if ($search) {
             $query->where('User_number', 'LIKE', "%{$search}%");
         }
-    
+
         if ($businessId) {
             $query->where('business_id', $businessId);
         }
-    
+
         $Users = $query->get();
-    
+
         return view('SuperAdmin.AllUsers', compact('Users', 'search', 'businessId'));
     }
-    
 
-    
+
+
     public function create()
     {
         $businesses = Business::all();
-        return view('SuperAdmin.UserCreate',compact('businesses')); // Create this blade view
+        return view('SuperAdmin.UserCreate', compact('businesses')); // Create this blade view
     }
 
     public function store(Request $request)
@@ -54,7 +54,7 @@ class UserManagementController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'userType' =>$request->userType,
+            'userType' => $request->userType,
             'business_id' => $request->business_id, // <-- Get business_id from dropdown
         ]);
 
@@ -103,13 +103,11 @@ class UserManagementController extends Controller
             'user_id' => 'required|exists:users,id',
             'password' => 'required|min:6|confirmed',
         ]);
-    
+
         $user = User::findOrFail($request->user_id);
         $user->password = Hash::make($request->password);
         $user->save();
-    
+
         return redirect()->back()->with('success', 'Password updated successfully.');
     }
-    
-
 }

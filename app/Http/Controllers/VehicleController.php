@@ -16,12 +16,12 @@ class VehicleController extends Controller
     public function index()
     {
         $businessId = Auth::user()->business_id;
-    
+
         $vehicles = \App\Models\Vehicle::where('business_id', $businessId)->get();
-    
+
         return view('Manager.ManagerVehicles', compact('vehicles'));
     }
-    
+
 
 
     public function show($id)
@@ -252,21 +252,21 @@ class VehicleController extends Controller
     public function search(Request $request)
     {
         $businessId = Auth::user()->business_id;
-    
+
         $query = Vehicle::where('business_id', $businessId);
-    
+
         if ($request->filled('vehicle_number')) {
             $query->where('vehicle_number', 'LIKE', "%{$request->vehicle_number}%");
         }
-    
+
         if ($request->filled('vehicle_name')) {
             $query->where('vehicle_name', 'LIKE', "%{$request->vehicle_name}%");
         }
-    
+
         if ($request->filled('fuel_type')) {
             $query->where('fuel_type', $request->fuel_type);
         }
-    
+
         if ($request->filled('id_range')) {
             $idRange = $request->id_range;
             if ($idRange === '50+') {
@@ -276,12 +276,12 @@ class VehicleController extends Controller
                 $query->whereBetween('id', [(int)$start, (int)$end]);
             }
         }
-    
+
         $vehicles = $query->get();
-    
+
         return view('Manager.ManagerVehicles', compact('vehicles'));
     }
-    
+
 
 
 

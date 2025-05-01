@@ -1,6 +1,4 @@
-{{-- @extends('layouts.app') --}}
 
-{{-- @section('content') --}}
 <div class="container">
     <h2>Create New User</h2>
 
@@ -45,12 +43,11 @@
         <div>
             <label>User Type:</label>
             <select name="userType" required>
-                <option value="user">User</option>
-                <option value="manager">Manager</option>
-                <option value="admin">Admin</option>
+                {{-- <option value="user">User</option> --}}
+                <option value="manager">Cashier</option>
+                {{-- <option value="admin">Admin</option> --}}
             </select>
         </div>
         <button type="submit">Create User</button>
     </form>
 </div>
-{{-- @endsection --}}

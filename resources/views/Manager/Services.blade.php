@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBS Car Rental Management System</title>
+    <title>Car Rental Management System</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <!-- Google Fonts for Oxanium -->
@@ -16,14 +16,14 @@
             font-family: Arial, sans-serif;
             background-color: #eee;
         }
-        
+
         /* Add Service Section */
         .section-title {
             font-size: 1.2rem;
             font-weight: bold;
             margin-bottom: 10px;
         }
-        
+
         .form-container {
             background-color: #E6E0F8;
             padding: 20px;
@@ -39,7 +39,8 @@
             margin-bottom: 10px;
         }
 
-        input, select {
+        input,
+        select {
             width: 48%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -80,19 +81,20 @@
             margin: 0 auto;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
         }
-        
-        th, td {
+
+        th,
+        td {
             padding: 8px;
             border: 1px solid #ddd;
             text-align: left;
         }
-        
+
         th {
             background-color: red;
             color: white;
@@ -121,7 +123,6 @@
             display: inline-block;
             margin-bottom: 20px;
         }
-
     </style>
 
 </head>
@@ -134,12 +135,12 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             @php
-    $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
-@endphp
+                $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
+            @endphp
 
-<div class="header-title">
-    {{ $bName ?? 'Business Name' }}
-</div>
+            <div class="header-title">
+                {{ $bName ?? 'Business Name' }}
+            </div>
             <div class="card1">
                 <div class="card1-content">
                     <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
@@ -165,7 +166,8 @@
                         </a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link active"><img src="{{ asset('images/2.png') }}" alt="Vehicles" class="nav-icon">
+                        <a class="nav-link active"><img src="{{ asset('images/2.png') }}" alt="Vehicles"
+                                class="nav-icon">
                             VEHICLES</a>
                         <div class="dropdown-menu">
                             <a class="dropdown-link" href="{{ url('addvehicle') }}">Add Vehicle</a>
@@ -206,11 +208,11 @@
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> Finance</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
-                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
-                                </div>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                            <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                            {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                        </div>
                     </div>
                 </nav>
             </div>
@@ -222,13 +224,13 @@
                     @csrf
                     <div class="form-section">
                         <div class="section-title">Add Service</div>
-                        
+
                         <div class="form-row">
                             <input type="text" name="vehicle_number" value="{{ $vehicle_number }}" readonly>
                             <input type="text" name="invoice_number" placeholder="Invoice Number">
                             <input type="text" name="amnt" placeholder="Amount">
                         </div>
-                        
+
                         <div class="form-row">
                             <select name="type" id="serviceType" required>
                                 <option value="">Service Type</option>
@@ -237,50 +239,52 @@
                                 <option value="Repair">Repair</option>
                             </select>
                             <input type="text" name="current_mileage" placeholder="Current Mileage">
-                            <input type="text" name="next_mileage" id="nextMileage" placeholder="Next Mileage" disabled>
+                            <input type="text" name="next_mileage" id="nextMileage" placeholder="Next Mileage"
+                                disabled>
                         </div>
-                        
+
                         <div class="form-row">
                             <input type="text" name="station" placeholder="Service Station">
                             <input type="date" name="date">
                             <input type="date" name="next_date" id="nextDate" disabled>
                         </div>
-                        
+
                         <div class="btn-container">
                             <button type="reset" class="btn-submit">Clear</button>
                             <button type="submit" class="btn-submit">SUBMIT</button>
                         </div>
-                    
-                            <!-- Service Details Table -->
-                            <h2>Service Records for {{ $vehicle_number }}</h2>
 
-                            <h2>Next Oil Change Mileage: 
-                                {{ $latestService ? $latestService->next_mileage : 'N/A' }}
-                            </h2>
-                            
-                            <h2>Next Oil Change Date: 
-                                {{ $latestService ? $latestService->next_date : 'N/A' }}
-                            </h2>
-                            
+                        <!-- Service Details Table -->
+                        <h2>Service Records for {{ $vehicle_number }}</h2>
 
-                            <!-- Filters -->
-                                <div class="form-row">
-                                    <label for="startDate">Start Date:</label>
-                                    <input type="date" id="startDate" class="form-control">
-                                    <label for="endDate">End Date:</label>
-                                    <input type="date" id="endDate" class="form-control">
-                                </div>
-                                <div class="form-row">
-                                    <label for="typeFilter">Type:</label>
-                                    <input type="text" id="typeFilter" class="form-control" placeholder="Filter by Type">
-                                    <label for="invoiceFilter">Invoice No:</label>
-                                    <input type="text" id="invoiceFilter" class="form-control" placeholder="Filter by Invoice No">
-                                </div>
+                        <h2>Next Oil Change Mileage:
+                            {{ $latestService ? $latestService->next_mileage : 'N/A' }}
+                        </h2>
 
-                                <!-- Clear Button -->
-                                <div class="btn-container">
-                                <button id="clearFilters" class="btn-submit">Clear Filters</button>
-                                </div>
+                        <h2>Next Oil Change Date:
+                            {{ $latestService ? $latestService->next_date : 'N/A' }}
+                        </h2>
+
+
+                        <!-- Filters -->
+                        <div class="form-row">
+                            <label for="startDate">Start Date:</label>
+                            <input type="date" id="startDate" class="form-control">
+                            <label for="endDate">End Date:</label>
+                            <input type="date" id="endDate" class="form-control">
+                        </div>
+                        <div class="form-row">
+                            <label for="typeFilter">Type:</label>
+                            <input type="text" id="typeFilter" class="form-control" placeholder="Filter by Type">
+                            <label for="invoiceFilter">Invoice No:</label>
+                            <input type="text" id="invoiceFilter" class="form-control"
+                                placeholder="Filter by Invoice No">
+                        </div>
+
+                        <!-- Clear Button -->
+                        <div class="btn-container">
+                            <button id="clearFilters" class="btn-submit">Clear Filters</button>
+                        </div>
                         <!-- Table -->
                         <div class="table-content">
                             <table class="table table-bordered">
@@ -294,7 +298,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="serviceTable">
-                                    @foreach($services as $service)
+                                    @foreach ($services as $service)
                                         <tr>
                                             <td>{{ $service->date }}</td>
                                             <td>{{ $service->type }}</td>
@@ -309,40 +313,41 @@
                     </div>
                 </form>
             </div>
-            </div>
-                <!-- Footer -->
-                <div class="footer">
-                    <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>
-                </div>
-            </div>
-    
+        </div>
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>
+        </div>
+    </div>
+
 </body>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         let startDate = document.getElementById("startDate");
         let endDate = document.getElementById("endDate");
         let typeFilter = document.getElementById("typeFilter");
         let invoiceFilter = document.getElementById("invoiceFilter");
         let clearButton = document.getElementById("clearFilters");
-    
+
         function filterTable() {
             let startValue = startDate.value ? new Date(startDate.value) : null;
             let endValue = endDate.value ? new Date(endDate.value) : null;
             let typeValue = typeFilter.value.toLowerCase();
             let invoiceValue = invoiceFilter.value.toLowerCase();
-    
+
             let rows = document.querySelectorAll("#serviceTable tr");
-    
+
             rows.forEach(row => {
                 let dateText = row.cells[0].textContent;
                 let rowDate = dateText ? new Date(dateText) : null;
                 let type = row.cells[1].textContent.toLowerCase();
                 let invoice = row.cells[2].textContent.toLowerCase();
-    
-                let dateMatch = (!startValue || rowDate >= startValue) && (!endValue || rowDate <= endValue);
+
+                let dateMatch = (!startValue || rowDate >= startValue) && (!endValue || rowDate <=
+                    endValue);
                 let typeMatch = type.includes(typeValue) || typeValue === '';
                 let invoiceMatch = invoice.includes(invoiceValue) || invoiceValue === '';
-    
+
                 if (dateMatch && typeMatch && invoiceMatch) {
                     row.style.display = "";
                 } else {
@@ -350,15 +355,15 @@
                 }
             });
         }
-    
+
         // Event Listeners for Filters
         startDate.addEventListener("input", filterTable);
         endDate.addEventListener("input", filterTable);
         typeFilter.addEventListener("input", filterTable);
         invoiceFilter.addEventListener("input", filterTable);
-    
+
         // Clear Filters
-        clearButton.addEventListener("click", function () {
+        clearButton.addEventListener("click", function() {
             startDate.value = "";
             endDate.value = "";
             typeFilter.value = "";
@@ -366,19 +371,20 @@
             filterTable();
         });
     });
-    </script>
-    <script>
-        document.getElementById("serviceType").addEventListener("change", function() {
-            let nextMileage = document.getElementById("nextMileage");
-            let nextDate = document.getElementById("nextDate");
-    
-            if (this.value === "Oil Change") {
-                nextMileage.removeAttribute("disabled");
-                nextDate.removeAttribute("disabled");
-            } else {
-                nextMileage.setAttribute("disabled", "true");
-                nextDate.setAttribute("disabled", "true");
-            }
-        });
-    </script>
+</script>
+<script>
+    document.getElementById("serviceType").addEventListener("change", function() {
+        let nextMileage = document.getElementById("nextMileage");
+        let nextDate = document.getElementById("nextDate");
+
+        if (this.value === "Oil Change") {
+            nextMileage.removeAttribute("disabled");
+            nextDate.removeAttribute("disabled");
+        } else {
+            nextMileage.setAttribute("disabled", "true");
+            nextDate.setAttribute("disabled", "true");
+        }
+    });
+</script>
+
 </html>

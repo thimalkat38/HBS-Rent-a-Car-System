@@ -38,7 +38,7 @@ class BusinessController extends Controller
         // Pass the customer data to the view
         return view('SuperAdmin.DetailedBusiness', compact('Business'));
     }
-  
+
     public function create()
     {
         return view('SuperAdmin.AddBusiness');
@@ -55,8 +55,8 @@ class BusinessController extends Controller
             'address' => 'required|string|max:255',
             'reg_date' => 'required|date',
         ]);
-   
-    
+
+
         Business::create([
             // 'b_id' => $generatedBId,
             'b_name' => $request->b_name,
@@ -68,10 +68,10 @@ class BusinessController extends Controller
             'status' => 'active', // Default status
             'reg_date' => $request->reg_date,
         ]);
-    
+
         return redirect('superadmin')->with('success', 'Business Added successfully!');
     }
-    
+
 
     public function edit($id)
     {
@@ -82,7 +82,7 @@ class BusinessController extends Controller
     public function update(Request $request, $id)
     {
         $business = Business::findOrFail($id);
-    
+
         $request->validate([
             'b_name' => 'required|string|max:255',
             'o_name' => 'required|string|max:255',
@@ -91,7 +91,7 @@ class BusinessController extends Controller
             'o_phone' => 'required|string|max:255',
             'address' => 'required|string|max:255',
         ]);
-    
+
         $business->update([
             'b_name' => $request->b_name,
             'o_name' => $request->o_name,
@@ -100,7 +100,7 @@ class BusinessController extends Controller
             'o_phone' => $request->o_phone,
             'address' => $request->address,
         ]);
-    
+
         return redirect('superadmin')->with('success', 'Business updated successfully!');
     }
 

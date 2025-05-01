@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBS Car Rental Management System</title>
+    <title>Car Rental Management System</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <!-- Google Fonts for Oxanium -->
@@ -90,12 +90,12 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             @php
-    $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
-@endphp
+                $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
+            @endphp
 
-<div class="header-title">
-    {{ $bName ?? 'Business Name' }}
-</div>
+            <div class="header-title">
+                {{ $bName ?? 'Business Name' }}
+            </div>
             <div class="card1">
                 <div class="card1-content">
                     <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
@@ -160,93 +160,95 @@
                         </a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link active" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
-                                class="nav-icon"> Finance</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
-                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
-                                </div>
+                        <a class="nav-link active" href="#"><img src="{{ asset('images/8.png') }}"
+                                alt="Accounting" class="nav-icon"> Finance</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                            <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                            {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                        </div>
                     </div>
                 </nav>
             </div>
             <div class="content">
                 <form>
-                <!-- Expenses Table -->
-                <div class="form-section">
-                    <div class="form-row">
-                        <label for="startDate">Start Date:</label>
-                        <input type="date" id="startDate" class="form-control">
-                        <label for="endDate">End Date:</label>
-                        <input type="date" id="endDate" class="form-control">
-                    </div>
-                    <div class="form-row">
-                        <label for="refNoFilter">Reference No:</label>
-                        <input type="text" id="refNoFilter" class="form-control" placeholder="Filter by Ref No(REF****)">
-                        <label for="expenseForFilter">Expenses For:</label>
-                        <input type="text" id="expenseForFilter" class="form-control" placeholder="Filter by Employee/Customer">
-                    </div>
-                    <div class="form-row">
-                        <label for="minAmount">Min Amount:</label>
-                        <input type="number" id="minAmount" class="form-control" placeholder="Min RS">
-                        <label for="maxAmount">Max Amount:</label>
-                        <input type="number" id="maxAmount" class="form-control" placeholder="Max RS">
-                    </div>
-                    <div class="form-row">
-                        <button id="clearFilters" class="btn-submit">Clear Filters</button>
-                        <a href="{{ url('expenses/create') }}" class="btn-submit">Add Expences</a>
+                    <!-- Expenses Table -->
+                    <div class="form-section">
+                        <div class="form-row">
+                            <label for="startDate">Start Date:</label>
+                            <input type="date" id="startDate" class="form-control">
+                            <label for="endDate">End Date:</label>
+                            <input type="date" id="endDate" class="form-control">
                         </div>
-                </div>
-            
-                <!-- Clear Button -->
+                        <div class="form-row">
+                            <label for="refNoFilter">Reference No:</label>
+                            <input type="text" id="refNoFilter" class="form-control"
+                                placeholder="Filter by Ref No(REF****)">
+                            <label for="expenseForFilter">Expenses For:</label>
+                            <input type="text" id="expenseForFilter" class="form-control"
+                                placeholder="Filter by Employee/Customer">
+                        </div>
+                        <div class="form-row">
+                            <label for="minAmount">Min Amount:</label>
+                            <input type="number" id="minAmount" class="form-control" placeholder="Min RS">
+                            <label for="maxAmount">Max Amount:</label>
+                            <input type="number" id="maxAmount" class="form-control" placeholder="Max RS">
+                        </div>
+                        <div class="form-row">
+                            <button id="clearFilters" class="btn-submit">Clear Filters</button>
+                            <a href="{{ url('expenses/create') }}" class="btn-submit">Add Expences</a>
+                        </div>
+                    </div>
 
-                <!-- Expenses Table -->
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Category</th>
-                            <th>Expenses For</th>
-                            <th>Note</th>
-                            <th>Paid Amount</th>
-                            <th>Document</th> 
-                        </tr>
-                    </thead>
-                    <tbody id="expensesTable">
-                        @foreach ($expenses as $expense)
-                            <tr data-ref="{{ $expense->ref_no }}">
-                                <td>{{ $expense->date }}</td>
-                                <td>{{ $expense->cat }}</td>
-                                <td>
-                                    @if ($expense->for_emp)
-                                        Employee: {{ $expense->for_emp }}
-                                    @elseif($expense->for_cus)
-                                        Customer: {{ $expense->for_cus }}
-                                    @else
-                                        N/A
-                                    @endif
-                                </td>
-                                <td>{{ $expense->note }}</td>
-                                <td>{{ number_format($expense->amnt, 2) }}</td>
-                                <td>
-                                    @if ($expense->docs)
-                                        {{-- <a href="{{ asset('storage/expenses/' . $expense->docs) }}" target="_blank">
+                    <!-- Clear Button -->
+
+                    <!-- Expenses Table -->
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Category</th>
+                                <th>Expenses For</th>
+                                <th>Note</th>
+                                <th>Paid Amount</th>
+                                <th>Document</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expensesTable">
+                            @foreach ($expenses as $expense)
+                                <tr data-ref="{{ $expense->ref_no }}">
+                                    <td>{{ $expense->date }}</td>
+                                    <td>{{ $expense->cat }}</td>
+                                    <td>
+                                        @if ($expense->for_emp)
+                                            Employee: {{ $expense->for_emp }}
+                                        @elseif($expense->for_cus)
+                                            Customer: {{ $expense->for_cus }}
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
+                                    <td>{{ $expense->note }}</td>
+                                    <td>{{ number_format($expense->amnt, 2) }}</td>
+                                    <td>
+                                        @if ($expense->docs)
+                                            {{-- <a href="{{ asset('storage/expenses/' . $expense->docs) }}" target="_blank">
                                             {{ $expense->docs }}
                                         </a> --}}
-                                        <br>
-                                        <a href="{{ route('expenses.download', $expense->id) }}"
-                                            class="btn-blue">
-                                            Export
-                                        </a>
-                                    @else
-                                        No File
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-    </form>
+                                            <br>
+                                            <a href="{{ route('expenses.download', $expense->id) }}"
+                                                class="btn-blue">
+                                                Export
+                                            </a>
+                                        @else
+                                            No File
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </form>
 
             </div>
         </div>
@@ -260,7 +262,7 @@
     </div>
 </body>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         let startDate = document.getElementById("startDate");
         let endDate = document.getElementById("endDate");
         let refNoFilter = document.getElementById("refNoFilter");
@@ -268,7 +270,7 @@
         let minAmount = document.getElementById("minAmount");
         let maxAmount = document.getElementById("maxAmount");
         let clearButton = document.getElementById("clearFilters");
-    
+
         function filterTable() {
             let startValue = startDate.value ? new Date(startDate.value) : null;
             let endValue = endDate.value ? new Date(endDate.value) : null;
@@ -276,21 +278,24 @@
             let expenseForValue = expenseForFilter.value.toLowerCase();
             let minAmountValue = minAmount.value ? parseFloat(minAmount.value) : null;
             let maxAmountValue = maxAmount.value ? parseFloat(maxAmount.value) : null;
-    
+
             let rows = document.querySelectorAll("#expensesTable tr");
-    
+
             rows.forEach(row => {
                 let dateText = row.cells[0].textContent;
                 let rowDate = dateText ? new Date(dateText) : null;
-                let refNo = row.getAttribute('data-ref') ? row.getAttribute('data-ref').toLowerCase() : '';
+                let refNo = row.getAttribute('data-ref') ? row.getAttribute('data-ref').toLowerCase() :
+                    '';
                 let expenseFor = row.cells[2].textContent.toLowerCase();
                 let amount = parseFloat(row.cells[4].textContent.replace(/[^0-9.]/g, ''));
-    
-                let dateMatch = (!startValue || rowDate >= startValue) && (!endValue || rowDate <= endValue);
+
+                let dateMatch = (!startValue || rowDate >= startValue) && (!endValue || rowDate <=
+                    endValue);
                 let refNoMatch = refNo.includes(refNoValue) || refNoValue === '';
                 let expenseForMatch = expenseFor.includes(expenseForValue) || expenseForValue === '';
-                let amountMatch = (!minAmountValue || amount >= minAmountValue) && (!maxAmountValue || amount <= maxAmountValue);
-    
+                let amountMatch = (!minAmountValue || amount >= minAmountValue) && (!maxAmountValue ||
+                    amount <= maxAmountValue);
+
                 if (dateMatch && refNoMatch && expenseForMatch && amountMatch) {
                     row.style.display = "";
                 } else {
@@ -298,7 +303,7 @@
                 }
             });
         }
-    
+
         // Event Listeners for Filters
         startDate.addEventListener("input", filterTable);
         endDate.addEventListener("input", filterTable);
@@ -306,9 +311,9 @@
         expenseForFilter.addEventListener("input", filterTable);
         minAmount.addEventListener("input", filterTable);
         maxAmount.addEventListener("input", filterTable);
-    
+
         // Clear Filters
-        clearButton.addEventListener("click", function () {
+        clearButton.addEventListener("click", function() {
             startDate.value = "";
             endDate.value = "";
             refNoFilter.value = "";
@@ -318,5 +323,6 @@
             filterTable();
         });
     });
-    </script>
+</script>
+
 </html>
