@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBS Car Rental Management System</title>
+    <title>Car Rental Management System</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <!-- Google Fonts for Oxanium -->
@@ -79,7 +79,6 @@
         .btn:hover {
             background-color: #2b3e63;
         }
-        
     </style>
 
 </head>
@@ -92,12 +91,12 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             @php
-    $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
-@endphp
+                $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
+            @endphp
 
-<div class="header-title">
-    {{ $bName ?? 'Business Name' }}
-</div>
+            <div class="header-title">
+                {{ $bName ?? 'Business Name' }}
+            </div>
             <div class="card1">
                 <div class="card1-content">
                     <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
@@ -162,89 +161,89 @@
                         </a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link active" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
-                                class="nav-icon"> Finance</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
-                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
-                                </div>
+                        <a class="nav-link active" href="#"><img src="{{ asset('images/8.png') }}"
+                                alt="Accounting" class="nav-icon"> Finance</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                            <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                            {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                        </div>
                     </div>
                 </nav>
             </div>
 
-        <div class="content">
-            <form action="{{ route('expenses.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
+            <div class="content">
+                <form action="{{ route('expenses.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
 
-                <div class="form-section">
-                    <div class="form-row">
-                        <select name="cat" id="expense_category" class="form-control">
-                            <option value="">Select Expense Category</option>
-                            <option value="Fuel">Fuel</option>
-                            <option value="Utility Bills">Utility Bills</option>
-                            <option value="Travel">Travel</option>
-                            <option value="Office Supplies">Office Supplies</option>
-                            <option value="Foods">Foods</option>
-                            <option value="Other">Other</option>
-                        </select>
+                    <div class="form-section">
+                        <div class="form-row">
+                            <select name="cat" id="expense_category" class="form-control">
+                                <option value="">Select Expense Category</option>
+                                <option value="Fuel">Fuel</option>
+                                <option value="Utility Bills">Utility Bills</option>
+                                <option value="Travel">Travel</option>
+                                <option value="Office Supplies">Office Supplies</option>
+                                <option value="Foods">Foods</option>
+                                <option value="Other">Other</option>
+                            </select>
 
-                        <input type="date" name="date" class="form-control" required>
-                    </div>
-
-                    <div class="form-row">
-                        <label for="for_emp">Select Employee Expense:</label>
-                        <select id="for_emp" name="for_emp" class="form-control">
-                            <option value="">Search Employee...</option>
-                        </select>
-                    </div>
-
-                    <div class="form-row">
-                        <label for="for_cus">Select Customer Expense:</label>
-                        <select id="for_cus" name="for_cus" class="form-control">
-                            <option value="">Search Customer...</option>
-                        </select>
-                    </div>
-
-                    <!-- Fuel For Dropdown (Initially Hidden) -->
-                    <div class="form-row" id="fuel_for_container" style="display: none;">
-                        <label for="fuel_for">Fuel For (Vehicle Number):</label>
-                        <input type="text" id="fuel_for" name="fuel_for" class="form-control"
-                            placeholder="Type to search vehicle...">
-                        <div id="vehicle_list" class="dropdown-car" style="display: none; position: absolute;">
+                            <input type="date" name="date" class="form-control" required>
                         </div>
+
+                        <div class="form-row">
+                            <label for="for_emp">Select Employee Expense:</label>
+                            <select id="for_emp" name="for_emp" class="form-control">
+                                <option value="">Search Employee...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="for_cus">Select Customer Expense:</label>
+                            <select id="for_cus" name="for_cus" class="form-control">
+                                <option value="">Search Customer...</option>
+                            </select>
+                        </div>
+
+                        <!-- Fuel For Dropdown (Initially Hidden) -->
+                        <div class="form-row" id="fuel_for_container" style="display: none;">
+                            <label for="fuel_for">Fuel For (Vehicle Number):</label>
+                            <input type="text" id="fuel_for" name="fuel_for" class="form-control"
+                                placeholder="Type to search vehicle...">
+                            <div id="vehicle_list" class="dropdown-car" style="display: none; position: absolute;">
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-row">
+                            <label>Attach Document:</label>
+                            <input type="file" name="docs" class="form-control">
+                        </div>
+
+                        <div class="form-row">
+                            <input type="text" name="amnt" class="form-control" placeholder="Amount">
+                        </div>
+
+                        <div class="form-row">
+                            <input type="text" name="note" class="form-control full-width" placeholder="NOTE">
+                        </div>
+
+
                     </div>
-
-
-
-                    <div class="form-row">
-                        <label>Attach Document:</label>
-                        <input type="file" name="docs" class="form-control">
+                    <div class="btn-container">
+                        <button type="reset" class="btn-submit">Clear</button>
+                        <button type="submit" class="btn-submit">Submit</button>
                     </div>
+                </form>
 
-                    <div class="form-row">
-                        <input type="text" name="amnt" class="form-control" placeholder="Amount">
-                    </div>
-
-                    <div class="form-row">
-                        <input type="text" name="note" class="form-control full-width" placeholder="NOTE">
-                    </div>
-
-                   
-                </div>
-                <div class="btn-container">
-                    <button type="reset" class="btn-submit">Clear</button>
-                    <button type="submit" class="btn-submit">Submit</button>
-                </div>
-            </form>
-
-        </div>
+            </div>
         </div>
         <!-- Footer -->
         <div class="footer">
             <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>
         </div>
-    
+
 </body>
 <script>
     $(document).ready(function() {

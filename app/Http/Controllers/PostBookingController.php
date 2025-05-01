@@ -19,33 +19,33 @@ class PostBookingController extends Controller
         $vehicleNumber = $request->input('vehicle_number');
         $fromDate = $request->input('from_date');
         $order = $request->input('order');
-    
+
         // Start building the query with business_id scoping
         $query = PostBooking::where('business_id', Auth::user()->business_id);
-    
+
         // Apply filters
         if ($vehicleNumber) {
             $query->where('vehicle_number', 'like', "%$vehicleNumber%");
         }
-    
+
         if ($fromDate) {
             $query->whereDate('from_date', '>=', $fromDate);
         }
-    
+
         // Determine pagination based on order
         if ($order) {
             [$start, $end] = explode('-', $order);
             $query->skip((int) $start - 1)->take((int) $end - (int) $start + 1);
         }
-    
+
         // Get the filtered results, ordered by latest first
         $postBookings = $query->latest()->get();
-    
+
         // Return the view with the filtered results
         return view('Manager.AllPostBookings', compact('postBookings'));
     }
-    
-    
+
+
     public function create()
     {
         return view('Manager.PostBooking');
@@ -53,7 +53,7 @@ class PostBookingController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    
+
 
     public function store(Request $request)
     {
@@ -90,33 +90,35 @@ class PostBookingController extends Controller
             'over' => 'nullable|string',
             'extra_km_chg' => 'nullable|string',
         ]);
-    
+
         // Inject current user's business_id
         $validated['business_id'] = Auth::user()->business_id;
-    
+
         $postBooking = PostBooking::create($validated);
-    
+
         $booking = Booking::find($request->id);
-    
+
         if ($booking) {
             $booking->update(['status' => 'Completed']);
             $booking->delete(); // Optional: keep if you want to remove from active bookings
         }
-    
+
         return redirect()->route('postbookings.show', $postBooking)
             ->with('success', 'Booking created successfully.');
     }
-    
-    
-    
-    
+
+
+
+
 
     /**
      * Display the specified resource.
      */
     public function show(PostBooking $postBooking)
     {
-        return view('Manager.DetailedPostBookings', compact('postBooking'));
+        $business = \App\Models\Business::find(Auth::user()->business_id);
+
+        return view('Manager.DetailedPostBookings', compact('postBooking', 'business'));
     }
 
     /**

@@ -8,20 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class Ownerpayment extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'ownerpayment';
-    
+
     protected $fillable = [
 
         'business_id',
         'full_name',
-        'owner_id', 
+        'owner_id',
         'vehicle',
-        'date', 
-        'paid_amnt', 
-        'bank_details', 
+        'date',
+        'paid_amnt',
+        'bank_details',
         'acc_no',
-        'receipt' 
+        'receipt'
 
     ];
     protected $casts = [

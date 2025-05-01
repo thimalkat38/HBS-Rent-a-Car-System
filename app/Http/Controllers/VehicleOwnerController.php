@@ -14,26 +14,26 @@ class VehicleOwnerController extends Controller
     public function index(Request $request)
     {
         $businessId = Auth::user()->business_id;
-    
+
         // Start the query scoped by business_id
         $query = VehicleOwner::where('business_id', $businessId);
-    
+
         // Filter by Full Name if provided
         if ($request->filled('full_name')) {
             $query->where('full_name', 'LIKE', '%' . $request->input('full_name') . '%');
         }
-    
+
         // Filter by Vehicle Number if provided
         if ($request->filled('vehicle_number')) {
             $query->where('vehicle_number', 'LIKE', '%' . $request->input('vehicle_number') . '%');
         }
-    
+
         // Get the filtered vehicle owners
         $vehicleOwners = $query->get();
-    
+
         return view('Manager.VehicleOwners', compact('vehicleOwners'));
-    }    
-    
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -62,16 +62,16 @@ class VehicleOwnerController extends Controller
             'acc_no' => 'nullable|string|max:255',
             'bank_detais' => 'nullable|string',
         ]);
-    
+
         // Attach business_id
         $validated['business_id'] = Auth::user()->business_id;
-    
+
         // Create the vehicle owner
         VehicleOwner::create($validated);
-    
+
         return redirect()->route('vehicle_owners.index')->with('success', 'Vehicle owner created successfully.');
     }
-        
+
 
     /**
      * Display the specified resource.

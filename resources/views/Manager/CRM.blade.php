@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBS Car Rental Management System</title>
+    <title>Car Rental Management System</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <!-- Google Fonts for Oxanium -->
@@ -39,7 +39,7 @@
             cursor: pointer;
         }
 
-        .btn-clear{
+        .btn-clear {
             padding: 16px 30px;
             font-size: 14px;
             background-color: #365C96;
@@ -142,24 +142,24 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             @php
-    $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
-@endphp
+                $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
+            @endphp
 
-<div class="header-title">
-    {{ $bName ?? 'Business Name' }}
-</div>
-            <div class="card1">
-            <div class="card1-content">  
-                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
-                    @csrf
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('LogOut') }}
-                    </x-responsive-nav-link>
-                </form>
+            <div class="header-title">
+                {{ $bName ?? 'Business Name' }}
             </div>
-        </div>
+            <div class="card1">
+                <div class="card1-content">
+                    <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
+                        @csrf
+                        <x-responsive-nav-link :href="route('logout')"
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                            {{ __('LogOut') }}
+                        </x-responsive-nav-link>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- Main Content -->
@@ -168,8 +168,8 @@
             <div class="sidebar">
                 <nav class="nav">
                     <div class="nav-item">
-                        <a class="nav-link" href="{{ url('manager/dashboard') }}"><img
-                                src="{{ asset('images/1.png') }}" alt="Dashboard" class="nav-icon"> DASHBOARD</a>
+                        <a class="nav-link" href="{{ url('manager/dashboard') }}"><img src="{{ asset('images/1.png') }}"
+                                alt="Dashboard" class="nav-icon"> DASHBOARD</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link"><img src="{{ asset('images/2.png') }}" alt="Vehicles" class="nav-icon">
@@ -214,11 +214,11 @@
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> Finance</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
-                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
-                                </div>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                            <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                            {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                        </div>
                     </div>
                 </nav>
             </div>
@@ -231,57 +231,44 @@
                     <a class="btn-submit" href="{{ url('crms/create') }}"> Add Reminder</a>
                 </div>
 
-    <!-- Filter Section -->
-    <form method="GET" action="{{ route('crms.upcoming') }}">
-        <div class="row">
-            <!-- Full Name Filter -->
-            <input 
-                type="text" 
-                name="full_name" 
-                value="{{ request('full_name') }}" 
-                placeholder="Customer Name" 
-                class="input"
-            >
-            <button type="submit" class="btn">Search</button>
-    
-            <!-- Date Filter -->
-            <input 
-                type="date" 
-                name="date" 
-                value="{{ request('date') }}" 
-                class="input"
-            >
-            <button type="submit" class="btn">Filter</button>
-    
-            <!-- Clear Button -->
-            <a href="{{ route('crms.upcoming') }}" class="btn-clear">Clear</a>
-        </div>
-    </form>
-    
+                <!-- Filter Section -->
+                <form method="GET" action="{{ route('crms.upcoming') }}">
+                    <div class="row">
+                        <!-- Full Name Filter -->
+                        <input type="text" name="full_name" value="{{ request('full_name') }}"
+                            placeholder="Customer Name" class="input">
+                        <button type="submit" class="btn">Search</button>
+
+                        <!-- Date Filter -->
+                        <input type="date" name="date" value="{{ request('date') }}" class="input">
+                        <button type="submit" class="btn">Filter</button>
+
+                        <!-- Clear Button -->
+                        <a href="{{ route('crms.upcoming') }}" class="btn-clear">Clear</a>
+                    </div>
+                </form>
+
                 <!-- Row 2 -->
-                
-                
+
+
                 <h3>UPCOMING SCHEDULE</h3>
                 <div class="row cards-row">
                     @forelse ($crms as $crm)
-                        <div 
-                            class="card {{ $loop->index % 4 == 0 ? 'card-green' : ($loop->index % 4 == 1 ? 'card-orange' : ($loop->index % 4 == 2 ? 'card-pink' : 'card-purple')) }}" 
-                            data-full_name="{{ $crm->full_name }}"
-                            data-phone="{{ $crm->phone }}"
+                        <div class="card {{ $loop->index % 4 == 0 ? 'card-green' : ($loop->index % 4 == 1 ? 'card-orange' : ($loop->index % 4 == 2 ? 'card-pink' : 'card-purple')) }}"
+                            data-full_name="{{ $crm->full_name }}" data-phone="{{ $crm->phone }}"
                             data-date="{{ \Carbon\Carbon::parse($crm->date)->format('F j, Y') }}"
-                            data-subject="{{ $crm->subject }}"
-                            data-note="{{ $crm->note }}"
-                            onclick="showDetails(this)"
-                        >
+                            data-subject="{{ $crm->subject }}" data-note="{{ $crm->note }}"
+                            onclick="showDetails(this)">
                             <h3>{{ $crm->subject }}</h3>
                             <p>{{ \Carbon\Carbon::parse($crm->date)->format('F j, Y') }}</p>
                             <div class="card-buttons">
                                 <a href="{{ route('crms.edit', $crm->id) }}" class="btn btn-edit">Edit</a>
-                                <form action="{{ route('crms.destroy', $crm->id) }}" method="POST" style="display: inline;">
+                                <form action="{{ route('crms.destroy', $crm->id) }}" method="POST"
+                                    style="display: inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-delete" 
-                                    onclick="return confirm('Are you sure you want to delete this leave?')">Delete</button>
+                                    <button type="submit" class="btn btn-delete"
+                                        onclick="return confirm('Are you sure you want to delete this leave?')">Delete</button>
                                 </form>
                             </div>
                         </div>
@@ -289,7 +276,7 @@
                         <p>No upcoming schedules available.</p>
                     @endforelse
                 </div>
-            
+
                 <div class="details">
                     <div id="details-content" style="display: none;">
                         <p><strong>Customer Name:</strong> <span id="details-full_name"></span></p>
@@ -309,31 +296,30 @@
         </div>
     </div>
     <script>
-function showDetails(card) {
-    // Extract data attributes from the clicked card
-    const fullName = card.getAttribute('data-full_name');
-    const phone = card.getAttribute('data-phone'); // Correct variable name
-    const date = card.getAttribute('data-date');
-    const subject = card.getAttribute('data-subject');
-    const note = card.getAttribute('data-note');
+        function showDetails(card) {
+            // Extract data attributes from the clicked card
+            const fullName = card.getAttribute('data-full_name');
+            const phone = card.getAttribute('data-phone'); // Correct variable name
+            const date = card.getAttribute('data-date');
+            const subject = card.getAttribute('data-subject');
+            const note = card.getAttribute('data-note');
 
-    // Update the details section
-    document.getElementById('details-full_name').innerText = fullName;
-    document.getElementById('phone').innerText = phone; // Update correct ID
-    document.getElementById('details-date').innerText = date;
-    document.getElementById('details-subject').innerText = subject;
-    document.getElementById('details-note').innerText = note;
+            // Update the details section
+            document.getElementById('details-full_name').innerText = fullName;
+            document.getElementById('phone').innerText = phone; // Update correct ID
+            document.getElementById('details-date').innerText = date;
+            document.getElementById('details-subject').innerText = subject;
+            document.getElementById('details-note').innerText = note;
 
-    // Show the details content
-    document.getElementById('details-content').style.display = 'block';
-}
-
+            // Show the details content
+            document.getElementById('details-content').style.display = 'block';
+        }
     </script>
     <script>
-    function disableOtherButton(buttonId) {
-        document.getElementById(buttonId).disabled = true;
-    }
-</script>
+        function disableOtherButton(buttonId) {
+            document.getElementById(buttonId).disabled = true;
+        }
+    </script>
 </body>
 
 </html>

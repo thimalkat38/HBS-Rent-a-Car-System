@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBS Car Rental Management System</title>
+    <title>Car Rental Management System</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <!-- Google Fonts for Oxanium -->
@@ -21,12 +21,12 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             @php
-    $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
-@endphp
+                $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
+            @endphp
 
-<div class="header-title">
-    {{ $bName ?? 'Business Name' }}
-</div>
+            <div class="header-title">
+                {{ $bName ?? 'Business Name' }}
+            </div>
             <div class="card1">
                 <div class="card1-content">
                     <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
@@ -94,11 +94,11 @@
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> Finance</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
-                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
-                                </div>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                            <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                            {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                        </div>
                     </div>
                 </nav>
             </div>
@@ -111,27 +111,36 @@
                         <form action="{{ url('postbookings') }}" method="GET">
                             <div class="form-row">
                                 <!-- Vehicle Number Field -->
-                                <input type="text" id="vehicle_number" name="vehicle_number" list="vehicle_numbers"
-                                    class="block w-full mt-1" placeholder="Filter by vehicle number" maxlength="8"
+                                <input type="text" id="vehicle_number" name="vehicle_number"
+                                    list="vehicle_numbers" class="block w-full mt-1"
+                                    placeholder="Filter by vehicle number" maxlength="8"
                                     oninput="formatVehicleNumber(this)" value="{{ request('vehicle_number') }}">
-                        
+
                                 <!-- From Date Field -->
                                 <input type="date" name="from_date" placeholder="Filter by From Date"
                                     value="{{ request('from_date') }}">
-                        
+
                                 <!-- Order Dropdown -->
                                 <select name="order">
                                     <option value="">Select Range</option>
-                                    <option value="1-20" {{ request('order') == '1-20' ? 'selected' : '' }}>1-20</option>
-                                    <option value="21-40" {{ request('order') == '21-40' ? 'selected' : '' }}>21-40</option>
-                                    <option value="41-60" {{ request('order') == '41-60' ? 'selected' : '' }}>41-60</option>
-                                    <option value="61-80" {{ request('order') == '61-80' ? 'selected' : '' }}>61-80</option>
-                                    <option value="81-100" {{ request('order') == '81-100' ? 'selected' : '' }}>81-100</option>
-                                    <option value="101-120" {{ request('order') == '101-120' ? 'selected' : '' }}>101-120</option>
-                                    <option value="121-140" {{ request('order') == '121-140' ? 'selected' : '' }}>121-140</option>
-                                    <option value="141-160" {{ request('order') == '141-160' ? 'selected' : '' }}>141-160</option>
+                                    <option value="1-20" {{ request('order') == '1-20' ? 'selected' : '' }}>1-20
+                                    </option>
+                                    <option value="21-40" {{ request('order') == '21-40' ? 'selected' : '' }}>21-40
+                                    </option>
+                                    <option value="41-60" {{ request('order') == '41-60' ? 'selected' : '' }}>41-60
+                                    </option>
+                                    <option value="61-80" {{ request('order') == '61-80' ? 'selected' : '' }}>61-80
+                                    </option>
+                                    <option value="81-100" {{ request('order') == '81-100' ? 'selected' : '' }}>81-100
+                                    </option>
+                                    <option value="101-120" {{ request('order') == '101-120' ? 'selected' : '' }}>
+                                        101-120</option>
+                                    <option value="121-140" {{ request('order') == '121-140' ? 'selected' : '' }}>
+                                        121-140</option>
+                                    <option value="141-160" {{ request('order') == '141-160' ? 'selected' : '' }}>
+                                        141-160</option>
                                 </select>
-                        
+
                                 <!-- Search Button -->
                                 <div class="card1">
                                     <div class="card1-content">
@@ -141,8 +150,8 @@
                                 </div>
                             </div>
                         </form>
-                        
-                        
+
+
 
 
                     </div>
@@ -168,7 +177,7 @@
                         </thead>
                         <tbody>
                             @foreach ($postBookings as $postBooking)
-                            <tr>
+                                <tr>
                                     <td>{{ $postBooking->full_name }}</td>
                                     <td>{{ $postBooking->vehicle }} <br> [{{ $postBooking->vehicle_number }}]</td>
                                     <td>{{ $postBooking->from_date }}</td>
@@ -181,12 +190,13 @@
                                     <td>{{ $postBooking->due_paid ? 'Yes' : 'No' }}</td>
                                     <td>{{ $postBooking->deposit_refunded ? 'Yes' : 'No' }}</td>
                                     <td>{{ $postBooking->vehicle_checked ? 'Yes' : 'No' }}</td>
-                                    <td><a href="{{ route('postbookings.show', $postBooking->id) }}" class="btn-edit">Details</a></td>
+                                    <td><a href="{{ route('postbookings.show', $postBooking->id) }}"
+                                            class="btn-edit">Details</a></td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-                                    </div>
+                </div>
             </div>
 
         </div>
@@ -197,4 +207,5 @@
         </div>
     </div>
 </body>
+
 </html>

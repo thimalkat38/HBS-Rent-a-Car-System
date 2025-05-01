@@ -50,10 +50,10 @@ class AttendanceController extends Controller
     public function create()
     {
         $businessId = \Illuminate\Support\Facades\Auth::user()?->business_id;
-    
+
         // Fetch employees belonging to the logged-in user's business
         $employees = Employee::where('business_id', $businessId)->get();
-    
+
         return view('Manager.AddAttendance', compact('employees'));
     }
 

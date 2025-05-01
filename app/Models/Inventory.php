@@ -16,12 +16,12 @@ class Inventory extends Model
 
         'business_id',
         'Itm_id',
-        'it_name', 
+        'it_name',
         'quantity',
         'date',
         'price_per_unit',
-        'total_price', 
-        'it_images' 
+        'total_price',
+        'it_images'
     ];
 
     // Cast JSON fields to arrays

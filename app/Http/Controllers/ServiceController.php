@@ -12,23 +12,23 @@ class ServiceController extends Controller
     {
         $businessId = Auth::user()->business_id;
         $vehicle_number = $request->query('vehicle_number'); // Get vehicle number from URL
-    
+
         // Fetch services belonging to the same business
         $services = Service::where('business_id', $businessId)
-                            ->where('vehicle_number', $vehicle_number)
-                            ->get();
-    
+            ->where('vehicle_number', $vehicle_number)
+            ->get();
+
         $latestService = Service::where('business_id', $businessId)
-                                ->where('vehicle_number', $vehicle_number)
-                                ->orderBy('created_at', 'desc')
-                                ->first();
-    
+            ->where('vehicle_number', $vehicle_number)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
         return view('Manager.Services', compact('services', 'vehicle_number', 'latestService'));
     }
-    
-    
-    
-    
+
+
+
+
 
     public function create()
     {
@@ -48,22 +48,22 @@ class ServiceController extends Controller
             'date' => 'nullable|date',
             'next_date' => 'nullable|date',
         ]);
-    
+
         $data = $request->all();
         $data['business_id'] = Auth::user()->business_id; // Attach business_id
-    
+
         $service = Service::create($data);
-    
+
         if ($request->ajax()) {
             return response()->json(['service' => $service], 201);
         }
-    
+
         return redirect()->route('services.index', ['vehicle_number' => $request->vehicle_number])
-                         ->with('success', 'Service added successfully!');
+            ->with('success', 'Service added successfully!');
     }
-    
-    
-    
+
+
+
 
     public function show(Service $service)
     {

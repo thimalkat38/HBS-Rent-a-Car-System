@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBS Car Rental Management System</title>
+    <title>Car Rental Management System</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <!-- Google Fonts for Oxanium -->
@@ -21,24 +21,24 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             @php
-    $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
-@endphp
+                $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
+            @endphp
 
-<div class="header-title">
-    {{ $bName ?? 'Business Name' }}
-</div>
-            <div class="card1">
-            <div class="card1-content">  
-                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
-                    @csrf
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('LogOut') }}
-                    </x-responsive-nav-link>
-                </form>
+            <div class="header-title">
+                {{ $bName ?? 'Business Name' }}
             </div>
-        </div>
+            <div class="card1">
+                <div class="card1-content">
+                    <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
+                        @csrf
+                        <x-responsive-nav-link :href="route('logout')"
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                            {{ __('LogOut') }}
+                        </x-responsive-nav-link>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- Main Content -->
@@ -81,8 +81,8 @@
                                 src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}" alt="CRM"
-                                class="nav-icon"> CRM</a>
+                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}"
+                                alt="CRM" class="nav-icon"> CRM</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link" href="{{ route('inventory.index') }}">
@@ -93,75 +93,80 @@
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> Finance</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
-                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
-                                </div>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                            <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                            {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                        </div>
                     </div>
                 </nav>
             </div>
 
-        <div class="content">
-            <div class="card1">
+            <div class="content">
+                <div class="card1">
                     <div class="card1-content">
-                    <a href="{{ route('hrmanagement') }}" class="btn-submit">Back</a>
+                        <a href="{{ route('hrmanagement') }}" class="btn-submit">Back</a>
                     </div>
                 </div>
 
-            <div class="table-content">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>EID</th>
-                            <th>Full NAME</th>
-                            <th>M/NUMBER</th>
-                            <th>Employee since</th>
-                            <th>EMAIL</th>
-                            <th>AGE</th>
-                            <th>NIC</th>
-                            <th>ADDRESS</th>
-                            <th style="width: 150px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($employees as $employee)
-                            <tr onclick="window.location='{{ route('Employee.show', $employee->id) }}'" style="cursor: pointer;">
-                                <td>
-                                    @if (!empty($employee->photo) && isset($employee->photo[0]))
-                                        <img src="{{ asset('storage/' . $employee->photo[0]) }}" alt="emp Image" style="width: 100px; height: auto;">
-                                    @else
-                                        No Image Available
-                                    @endif
-                                </td>
-                                <td>{{ $employee->emp_id }}</td>
-                                <td>{{ $employee->title }} {{ $employee->emp_name }}</td>
-                                <td>{{ $employee->mobile_number }}</td>
-                                <td>{{ $employee->join_date }}</td>
-                                <td>{{ $employee->email }}</td>
-                                <td>{{ $employee->age }}</td>
-                                <td>{{ $employee->nic }}</td>
-                                <td>{{ $employee->address }}</td>
-                                <td class="button-cell">
-                                    <a href="{{ route('employees.edit', $employee->id) }}" class="btn-edit">Edit</a>
-                                    <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this employee?')">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
+                <div class="table-content">
+                    <table class="table table-bordered">
+                        <thead>
                             <tr>
-                                <td colspan="10" class="text-center">No Employees Found</td>
+                                <th></th>
+                                <th>EID</th>
+                                <th>Full NAME</th>
+                                <th>M/NUMBER</th>
+                                <th>Employee since</th>
+                                <th>EMAIL</th>
+                                <th>AGE</th>
+                                <th>NIC</th>
+                                <th>ADDRESS</th>
+                                <th style="width: 150px;">Actions</th>
                             </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-                           </div>
+                        </thead>
+                        <tbody>
+                            @forelse ($employees as $employee)
+                                <tr onclick="window.location='{{ route('Employee.show', $employee->id) }}'"
+                                    style="cursor: pointer;">
+                                    <td>
+                                        @if (!empty($employee->photo) && isset($employee->photo[0]))
+                                            <img src="{{ asset('storage/' . $employee->photo[0]) }}" alt="emp Image"
+                                                style="width: 100px; height: auto;">
+                                        @else
+                                            No Image Available
+                                        @endif
+                                    </td>
+                                    <td>{{ $employee->emp_id }}</td>
+                                    <td>{{ $employee->title }} {{ $employee->emp_name }}</td>
+                                    <td>{{ $employee->mobile_number }}</td>
+                                    <td>{{ $employee->join_date }}</td>
+                                    <td>{{ $employee->email }}</td>
+                                    <td>{{ $employee->age }}</td>
+                                    <td>{{ $employee->nic }}</td>
+                                    <td>{{ $employee->address }}</td>
+                                    <td class="button-cell">
+                                        <a href="{{ route('employees.edit', $employee->id) }}"
+                                            class="btn-edit">Edit</a>
+                                        <form action="{{ route('employees.destroy', $employee->id) }}" method="POST"
+                                            style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-delete"
+                                                onclick="return confirm('Are you sure you want to delete this employee?')">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="10" class="text-center">No Employees Found</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-</div>
         <!-- Footer -->
         <div class="footer">
             <p>© 2024. All rights reserved. Designed by Ezone IT Solutions.</p>

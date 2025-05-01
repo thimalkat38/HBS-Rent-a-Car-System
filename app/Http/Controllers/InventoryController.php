@@ -13,29 +13,29 @@ class InventoryController extends Controller
     public function index(Request $request)
     {
         $businessId = Auth::user()->business_id;
-    
+
         $searchName = $request->input('search_name');
         $searchId = $request->input('search_id');
-    
+
         // Begin query scoped by business_id
         $query = Inventory::where('business_id', $businessId);
-    
+
         // Apply additional filters
         if ($searchName) {
             $query->where('it_name', 'LIKE', "%{$searchName}%");
         }
-    
+
         if ($searchId) {
             $query->where('Itm_id', 'LIKE', "%{$searchId}%");
         }
-    
+
         // Paginate results
         $inventories = $query->paginate(10);
-    
+
         return view('Manager.Inventory', compact('inventories', 'searchName', 'searchId'));
     }
-    
-    
+
+
 
     // Show the form for creating a new item
     public function create()
@@ -49,19 +49,19 @@ class InventoryController extends Controller
         $request->validate([
             'it_name' => 'required',
             'quantity' => 'required|integer',
-            'date'=> 'nullable|string',
-            'price_per_unit'=> 'nullable|string',
+            'date' => 'nullable|string',
+            'price_per_unit' => 'nullable|string',
             'total_price' => 'nullable|string',
             'it_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $businessId = Auth::user()->business_id;
-    
+
         // Generate the next Itm_id
         $lastInventory = Inventory::orderBy('Itm_id', 'desc')->first();
         $nextId = $lastInventory ? intval(substr($lastInventory->Itm_id, 3)) + 1 : 1;
         $nextItmId = 'Itm' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
-    
+
         // Handle file uploads (if any)
         $images = [];
         if ($request->hasFile('it_images')) {
@@ -70,7 +70,7 @@ class InventoryController extends Controller
                 $images[] = $path;
             }
         }
-    
+
         // Create a new inventory record with the processed data
         Inventory::create([
             'Itm_id' => $nextItmId,
@@ -82,10 +82,10 @@ class InventoryController extends Controller
             'it_images' => json_encode($images), // Store images as JSON
             'business_id' => $businessId,
         ]);
-    
+
         return redirect()->route('inventory.index')->with('success', 'Item added successfully!');
     }
-        
+
     // Show the form for editing an existing item
     public function edit($id)
     {
@@ -100,17 +100,17 @@ class InventoryController extends Controller
             'Itm_id' => 'required|unique:inventories,Itm_id,' . $id,
             'it_name' => 'required',
             'quantity' => 'required|integer',
-            'date'=> 'nullable|string',
-            'price_per_unit'=> 'nullable|string',
+            'date' => 'nullable|string',
+            'price_per_unit' => 'nullable|string',
             'total_price' => 'nullable|string',
             'it_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-    
+
         $inventory = Inventory::findOrFail($id);
-    
+
         // Decode the existing it_images JSON into an array
         $images = $inventory->it_images ? json_decode($inventory->it_images, true) : [];
-    
+
         // Handle new file uploads
         if ($request->hasFile('it_images')) {
             // Delete old images from storage
@@ -119,7 +119,7 @@ class InventoryController extends Controller
                     Storage::disk('public')->delete($image);
                 }
             }
-    
+
             // Upload new images
             $images = [];
             foreach ($request->file('it_images') as $file) {
@@ -127,7 +127,7 @@ class InventoryController extends Controller
                 $images[] = $path;
             }
         }
-    
+
         // Update inventory record
         $inventory->update([
             'Itm_id' => $request->input('Itm_id'),
@@ -138,10 +138,10 @@ class InventoryController extends Controller
             'total_price' => $request->input('total_price'),
             'it_images' => json_encode($images), // Save new image paths as JSON
         ]);
-    
+
         return redirect()->route('inventory.index')->with('success', 'Inventory updated successfully!');
     }
-           
+
     // Delete an item
     public function destroy($id)
     {

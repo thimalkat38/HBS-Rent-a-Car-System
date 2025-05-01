@@ -10,13 +10,13 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-    
+
         if ($search) {
             $businesses = Business::where('Business_number', 'LIKE', "%{$search}%")->get();
         } else {
             $businesses = Business::all();
         }
-    
+
         return view('SuperAdmin.Dashboard', compact('businesses', 'search'));
     }
     public function search(Request $request)
@@ -40,67 +40,84 @@ class HomeController extends Controller
         $businesses = $query->get();
 
         return view('SuperAdmin.Dashboard', compact('businesses'));
-    }    
+    }
 
-    public function adminDash(){
+    public function adminDash()
+    {
         return view('./Admin/AdminDashboard');
     }
 
-    public function adminaddvehi(){
+    public function adminaddvehi()
+    {
         return view('./Admin/AdminAddVehicle');
     }
-    public function adminvehi(){
+    public function adminvehi()
+    {
         return view('./Admin/AdminVehicles');
     }
-    public function adminaddbook(){
+    public function adminaddbook()
+    {
         return view('./Admin/AdminAddBooking');
     }
-    public function adminbook(){
+    public function adminbook()
+    {
         return view('./Admin/AdminBookings');
     }
-    public function adminaddcus(){
+    public function adminaddcus()
+    {
         return view('./Admin/AdminAddCustomer');
     }
-    public function admincus(){
+    public function admincus()
+    {
         return view('./Admin/AdminCustomers');
     }
-    public function adminaddemp(){
+    public function adminaddemp()
+    {
         return view('./Admin/AdminAddEmployee');
     }
-    public function adminemp(){
+    public function adminemp()
+    {
         return view('./Admin/AdminEmployees');
     }
 
 
 
-    
 
-    public function managerDash(){
+
+    public function managerDash()
+    {
         return view('./Manager/ManagerDashboard');
     }
 
-    public function manageraddvehi(){
+    public function manageraddvehi()
+    {
         return view('./Manager/ManagerAddVehicle');
     }
     // public function managervehi(){
     //     return view('./Manager/ManagerVehicles');
     // }
-    public function manageraddbook(){
+    public function manageraddbook()
+    {
         return view('./Manager/ManagerAddBooking');
     }
-    public function managerbook(){
+    public function managerbook()
+    {
         return view('./Manager/ManagerBookings');
     }
-    public function manageraddcus(){
+    public function manageraddcus()
+    {
         return view('./Manager/ManagerAddCustomer');
     }
-    public function managercus(){
+    public function managercus()
+    {
         return view('./Manager/ManagerCustomers');
     }
-    public function manageraddemp(){
+    public function manageraddemp()
+    {
         return view('./Manager/ManagerAddEmployee');
     }
-    public function manageremp(){
+    public function manageremp()
+    {
         return view('./Manager/ManagerEmployees');
-}
+    }
 }

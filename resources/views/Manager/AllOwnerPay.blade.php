@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBS Car Rental Management System</title>
+    <title>Car Rental Management System</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <!-- Google Fonts for Oxanium -->
@@ -54,24 +54,24 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             @php
-    $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
-@endphp
+                $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
+            @endphp
 
-<div class="header-title">
-    {{ $bName ?? 'Business Name' }}
-</div>
-            <div class="card1">
-            <div class="card1-content">  
-                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
-                    @csrf
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('LogOut') }}
-                    </x-responsive-nav-link>
-                </form>
+            <div class="header-title">
+                {{ $bName ?? 'Business Name' }}
             </div>
-        </div>
+            <div class="card1">
+                <div class="card1-content">
+                    <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
+                        @csrf
+                        <x-responsive-nav-link :href="route('logout')"
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                            {{ __('LogOut') }}
+                        </x-responsive-nav-link>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- Main Content -->
@@ -84,7 +84,8 @@
                                 alt="Dashboard" class="nav-icon"> DASHBOARD</a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link active"><img src="{{ asset('images/2.png') }}" alt="Vehicles" class="nav-icon">
+                        <a class="nav-link active"><img src="{{ asset('images/2.png') }}" alt="Vehicles"
+                                class="nav-icon">
                             VEHICLES</a>
                         <div class="dropdown-menu">
                             <a class="dropdown-link" href="{{ url('addvehicle') }}">Add Vehicle</a>
@@ -110,27 +111,27 @@
                         </div>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link" href="{{ url('hr-management') }}"><img
-                                src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
+                        <a class="nav-link" href="{{ url('hr-management') }}"><img src="{{ asset('images/5.png') }}"
+                                alt="HRM" class="nav-icon"> HRM</a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}" alt="CRM"
-                                class="nav-icon"> CRM</a>
+                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}"
+                                alt="CRM" class="nav-icon"> CRM</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link" href="{{ route('inventory.index') }}">
                             <img src="{{ asset('images/7.png') }}" alt="Inventory" class="nav-icon">
                             INVENTORY
                         </a>
-                    </div>  
+                    </div>
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> Finance</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
-                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
-                                </div>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                            <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                            {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                        </div>
                     </div>
                 </nav>
             </div>
@@ -142,12 +143,9 @@
                         <form action="{{ url('ownerpayments') }}" method="GET">
                             <div class="form-row">
                                 <!-- Full Name Search Field -->
-                                <input 
-                                    type="text" 
-                                    name="full_name" 
-                                    placeholder="Type Owners Name to Find Payments" 
-                                    value="{{ request('full_name') }}" 
-                                >
+                                <input type="text" name="full_name"
+                                    placeholder="Type Owners Name to Find Payments"
+                                    value="{{ request('full_name') }}">
                                 <div class="card1">
                                     <div class="card1-content">
                                         <button type="submit" class="btn-search">SEARCH</button> ||
@@ -156,8 +154,8 @@
                                 </div>
                             </div>
                         </form>
-                        
-                        
+
+
                         <div class="card1-content">
                             <div class="welcome-message">
                                 {{-- <h1>Hi! Welcome Back</h1> --}}
@@ -167,7 +165,7 @@
                                     class="card1-btn-submit">Add New Payment</a>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
                 <!-- Table Content -->
@@ -194,17 +192,20 @@
                                     <td>{{ $ownerpayment->bank_details }}</td>
                                     <td>{{ $ownerpayment->acc_no }}</td>
                                     <td class="button-cell">
-                                        <a href="{{ route('ownerpayments.edit', $ownerpayment->id) }}" class="btn-edit">Edit</a>
-                                        <form action="{{ route('ownerpayments.destroy', $ownerpayment->id) }}" method="POST" style="display:inline;">
+                                        <a href="{{ route('ownerpayments.edit', $ownerpayment->id) }}"
+                                            class="btn-edit">Edit</a>
+                                        <form action="{{ route('ownerpayments.destroy', $ownerpayment->id) }}"
+                                            method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this payment?')">Delete</button>
+                                            <button type="submit" class="btn-delete"
+                                                onclick="return confirm('Are you sure you want to delete this payment?')">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>                    
+                    </table>
                 </div>
             </div>
         </div>

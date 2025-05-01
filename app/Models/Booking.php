@@ -34,14 +34,14 @@ class Booking extends Model
         'method',
         'driving_photos',
         'nic_photos',
-        'deposit',        
-        'deposit_img',    
+        'deposit',
+        'deposit_img',
         'status',
         'guarantor',
         'extra_km_chg',
         'free_km',
         'free_kmd',
-        'start_km'         
+        'start_km'
     ];
 
     protected $casts = [

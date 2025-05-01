@@ -15,26 +15,26 @@ class OwnerpaymentController extends Controller
     public function index(Request $request)
     {
         $businessId = Auth::user()->business_id;
-    
+
         $query = Ownerpayment::where('business_id', $businessId);
-    
+
         // Filter by owner_id if provided
         if ($request->filled('owner_id')) {
             $query->where('owner_id', $request->input('owner_id'));
         }
-    
+
         // Filter by full_name if provided
         if ($request->filled('full_name')) {
             $query->where('full_name', 'LIKE', '%' . $request->input('full_name') . '%');
         }
-    
+
         $ownerpayments = $query->get();
-    
+
         return view('Manager.AllOwnerPay', compact('ownerpayments'));
     }
-    
-    
-    
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -42,14 +42,14 @@ class OwnerpaymentController extends Controller
     public function create()
     {
         $businessId = Auth::user()->business_id;
-    
+
         $vehicleOwners = VehicleOwner::where('business_id', $businessId)
             ->select('id', 'full_name', 'title', 'owner_id', 'vehicle_number', 'acc_no', 'bank_detais')
             ->get();
-    
+
         return view('Manager.AddOwnerPay', compact('vehicleOwners'));
     }
-    
+
 
     /**
      * Store a newly created resource in storage.
@@ -66,25 +66,25 @@ class OwnerpaymentController extends Controller
             'acc_no' => 'required|string|max:255',
             'receipt.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
-    
+
         $receiptPaths = [];
-    
+
         if ($request->hasFile('receipt')) {
             foreach ($request->file('receipt') as $receipt) {
                 $receiptPaths[] = $receipt->store('Ownerpay_receipts', 'public');
             }
         }
-    
+
         $vehicleOwner = VehicleOwner::where('owner_id', $request->owner_id)->first();
-    
+
         if (!$vehicleOwner) {
             return back()->withErrors(['error' => 'Vehicle owner not found!']);
         }
-    
+
         $fullNameWithTitle = $vehicleOwner->title . ' ' . $vehicleOwner->full_name;
-    
+
         $businessId = Auth::user()->business_id;
-    
+
         // Save owner payment with business_id
         Ownerpayment::create([
             'business_id' => $businessId,
@@ -97,17 +97,17 @@ class OwnerpaymentController extends Controller
             'acc_no' => $request->acc_no,
             'receipt' => $receiptPaths,
         ]);
-    
+
         // Update remaining rental amount
         $vehicleOwner->decrement('rem_rental', $request->paid_amnt);
-    
+
         return redirect()->route('vehicle_owners.index')->with('success', 'Owner payment created successfully.');
     }
-    
-    
-    
-    
-    
+
+
+
+
+
 
     /**
      * Display the specified resource.
@@ -142,7 +142,7 @@ class OwnerpaymentController extends Controller
         $ownerpayment->update($request->all());
 
         return redirect()->route('ownerpayments.index')
-                         ->with('success', 'Owner payment updated successfully.');
+            ->with('success', 'Owner payment updated successfully.');
     }
 
     /**
@@ -153,6 +153,6 @@ class OwnerpaymentController extends Controller
         $ownerpayment->delete();
 
         return redirect()->route('ownerpayments.index')
-                         ->with('success', 'Owner payment deleted successfully.');
+            ->with('success', 'Owner payment deleted successfully.');
     }
 }

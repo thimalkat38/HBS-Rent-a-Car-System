@@ -10,7 +10,7 @@ class Payroll extends Model
     use HasFactory;
 
     protected $fillable = [
-        
+
         'business_id',
         'emp_id',
         'emp_name',
@@ -18,7 +18,7 @@ class Payroll extends Model
         'note',
         'paid_date',
         'paid_amnt',
-        
+
     ];
 
     public function business()

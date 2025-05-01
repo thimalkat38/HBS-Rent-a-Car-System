@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>HBS Car Rental Management System</title>
-        <!-- Favicon -->
-        <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
-        <!-- Google Fonts for Oxanium -->
-        <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
-    </head>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Rental Management System</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+    <!-- Google Fonts for Oxanium -->
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ asset('css/Style.css') }}">
+</head>
 
 <body>
     <div class="container">
@@ -20,24 +21,24 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
             </div>
             @php
-    $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
-@endphp
+                $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
+            @endphp
 
-<div class="header-title">
-    {{ $bName ?? 'Business Name' }}
-</div>
-            <div class="card1">
-            <div class="card1-content">  
-                <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
-                    @csrf
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('LogOut') }}
-                    </x-responsive-nav-link>
-                </form>
+            <div class="header-title">
+                {{ $bName ?? 'Business Name' }}
             </div>
-        </div>
+            <div class="card1">
+                <div class="card1-content">
+                    <form method="POST" class="btn1-submit" action="{{ route('logout') }}">
+                        @csrf
+                        <x-responsive-nav-link :href="route('logout')"
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                            {{ __('LogOut') }}
+                        </x-responsive-nav-link>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- Main Content -->
@@ -80,8 +81,8 @@
                                 src="{{ asset('images/5.png') }}" alt="HRM" class="nav-icon"> HRM</a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}" alt="CRM"
-                                class="nav-icon"> CRM</a>
+                        <a class="nav-link" href="{{ url('crms') }}"><img src="{{ asset('images/6.png') }}"
+                                alt="CRM" class="nav-icon"> CRM</a>
                     </div>
                     <div class="nav-item">
                         <a class="nav-link" href="{{ route('inventory.index') }}">
@@ -92,11 +93,11 @@
                     <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
                                 class="nav-icon"> Finance</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
-                                    <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                                    {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
-                                </div>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                            <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                            {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                        </div>
                     </div>
                 </nav>
             </div>
@@ -118,7 +119,8 @@
                         @endif
 
                         <div class="form-row">
-                            <select name="title" class="selection-list @error('title') is-invalid @enderror" required>
+                            <select name="title" class="selection-list @error('title') is-invalid @enderror"
+                                required>
                                 <option value="" disabled selected>Select Title</option>
                                 <option value="Mr" {{ old('title') == 'Mr' ? 'selected' : '' }}>Mr</option>
                                 <option value="Mrs" {{ old('title') == 'Mrs' ? 'selected' : '' }}>Mrs</option>
@@ -129,51 +131,54 @@
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
 
-                            <input type="text" name="emp_name" placeholder="Full Name" value="{{ old('emp_name') }}" 
-                                   class="@error('emp_name') is-invalid @enderror" required>
+                            <input type="text" name="emp_name" placeholder="Full Name"
+                                value="{{ old('emp_name') }}" class="@error('emp_name') is-invalid @enderror"
+                                required>
                             @error('emp_name')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
 
-                            <input type="text" name="nic" placeholder="NIC" value="{{ old('nic') }}" 
-                                   class="@error('nic') is-invalid @enderror" required>
+                            <input type="text" name="nic" placeholder="NIC" value="{{ old('nic') }}"
+                                class="@error('nic') is-invalid @enderror" required>
                             @error('nic')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="form-row">
-                            <input type="text" name="mobile_number" placeholder="Mobile Number" value="{{ old('mobile_number') }}" 
-                                   class="@error('mobile_number') is-invalid @enderror" required>
+                            <input type="text" name="mobile_number" placeholder="Mobile Number"
+                                value="{{ old('mobile_number') }}"
+                                class="@error('mobile_number') is-invalid @enderror" required>
                             @error('mobile_number')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
-                            <input type="email" name="email" placeholder="E-mail Address" value="{{ old('email') }}" 
-                                   class="@error('email') is-invalid @enderror" required>
+                            <input type="email" name="email" placeholder="E-mail Address"
+                                value="{{ old('email') }}" class="@error('email') is-invalid @enderror" required>
                             @error('email')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
 
-                            <input type="text" name="address" placeholder="Address" value="{{ old('address') }}" 
-                                   class="@error('address') is-invalid @enderror" required>
+                            <input type="text" name="address" placeholder="Address" value="{{ old('address') }}"
+                                class="@error('address') is-invalid @enderror" required>
                             @error('address')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="form-row">
-                            <input type="text" name="bank" placeholder="Bank Name" value="{{ old('bank') }}" 
-                                   class="@error('bank') is-invalid @enderror" required>
+                            <input type="text" name="bank" placeholder="Bank Name"
+                                value="{{ old('bank') }}" class="@error('bank') is-invalid @enderror" required>
                             @error('bank')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
-                            <input type="text" name="acc_number" placeholder="Account Number" value="{{ old('acc_number') }}" 
-                                   class="@error('acc_number') is-invalid @enderror" required>
+                            <input type="text" name="acc_number" placeholder="Account Number"
+                                value="{{ old('acc_number') }}" class="@error('acc_number') is-invalid @enderror"
+                                required>
                             @error('acc_number')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
 
-                            <input type="text" name="salary" placeholder="Salary Per Month" value="{{ old('salary') }}" 
-                                   class="@error('salary') is-invalid @enderror" required>
+                            <input type="text" name="salary" placeholder="Salary Per Month"
+                                value="{{ old('salary') }}" class="@error('salary') is-invalid @enderror" required>
                             @error('salary')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
@@ -181,22 +186,22 @@
 
                         <div class="form-row">
                             <label for="join_date">Join Date:</label>
-                            <input type="date" name="join_date" value="{{ old('join_date') }}" 
-                                   class="@error('join_date') is-invalid @enderror" required>
+                            <input type="date" name="join_date" value="{{ old('join_date') }}"
+                                class="@error('join_date') is-invalid @enderror" required>
                             @error('join_date')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
 
                             <label for="birthday">Birthday:</label>
-                            <input type="date" name="birthday" id="birthday" max="2005-12-31" 
-                                   value="{{ old('birthday') }}" class="@error('birthday') is-invalid @enderror">
+                            <input type="date" name="birthday" id="birthday" max="2005-12-31"
+                                value="{{ old('birthday') }}" class="@error('birthday') is-invalid @enderror">
                             @error('birthday')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
 
-                            <input type="number" name="remaining_leaves" placeholder="Leaves Per Month" 
-                                   value="{{ old('remaining_leaves') }}" min="0" 
-                                   class="@error('remaining_leaves') is-invalid @enderror" required>
+                            <input type="number" name="remaining_leaves" placeholder="Leaves Per Month"
+                                value="{{ old('remaining_leaves') }}" min="0"
+                                class="@error('remaining_leaves') is-invalid @enderror" required>
                             @error('remaining_leaves')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBS Car Rental Management System</title>
+    <title>Car Rental Management System</title>
     <!-- Google Fonts for Oxanium -->
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
@@ -80,16 +80,23 @@
 
                             <h5 class="card-title text-primary mt-3 mb-2">Booking Information</h5>
                             <p><strong>Vehicle:</strong> <span id="vehicleModel">{{ $postBooking->vehicle }}</span></p>
-                            <p><strong>Register Number:</strong> <span id="vehicleNumber">{{ $postBooking->vehicle_number }}</span></p>
+                            <p><strong>Register Number:</strong> <span
+                                    id="vehicleNumber">{{ $postBooking->vehicle_number }}</span></p>
                             <p><strong>From Date:</strong> <span id="fromDate">{{ $postBooking->from_date }}</span></p>
-                            <p><strong>Arrived Date:</strong> <span id="toDate">{{ $postBooking->ar_date }}</span></p>
+                            <p><strong>Arrived Date:</strong> <span id="toDate">{{ $postBooking->ar_date }}</span>
+                            </p>
                             <p><strong>Extra Days:</strong> <span id="exDate">{{ $postBooking->ex_date }}</span></p>
-                            <p><strong>Price Per Day:</strong> <span id="ppd">{{ $postBooking->price_per_day }}</span></p>
-                            <p><strong>Started Mileage:</strong> <span id="strat">{{ $postBooking->start_km }} KM</span></p>
+                            <p><strong>Price Per Day:</strong> <span
+                                    id="ppd">{{ $postBooking->price_per_day }}</span></p>
+                            <p><strong>Started Mileage:</strong> <span id="strat">{{ $postBooking->start_km }}
+                                    KM</span></p>
                             <p><strong>Free KM:</strong> <span id="free">{{ $postBooking->free_km }} KM</span></p>
-                            <p><strong>Ended Mileage:</strong> <span id="end">{{ $postBooking->end_km }} KM</span></p>
-                            <p><strong>Over Drived KM:</strong> <span id="over">{{ $postBooking->over }} KM</span></p>
-                            <p><strong>Extra 1KM Charges:</strong> <span id="kmchg">{{ $postBooking->extra_km_chg }}</span></p>
+                            <p><strong>Ended Mileage:</strong> <span id="end">{{ $postBooking->end_km }}
+                                    KM</span></p>
+                            <p><strong>Over Drived KM:</strong> <span id="over">{{ $postBooking->over }} KM</span>
+                            </p>
+                            <p><strong>Extra 1KM Charges:</strong> <span
+                                    id="kmchg">{{ $postBooking->extra_km_chg }}</span></p>
 
                             <h5 class="card-title text-primary mt-3 mb-2">Payment Details</h5>
                             <p><strong>Base Price(LKR):</strong> <span
@@ -108,8 +115,8 @@
                                     id="paid">{{ $postBooking->paid }}</span></p>
                             <p><strong>Final Amount Due(paid)(LKR):</strong> <span
                                     id="due">{{ $postBooking->due }}</span></p>
-                                    <p><strong>Total(LKR):</strong> <span
-                                        id="totalIncome">{{ $postBooking->total_income }}</span></p>
+                            <p><strong>Total(LKR):</strong> <span
+                                    id="totalIncome">{{ $postBooking->total_income }}</span></p>
                             <p><strong>Reason for Additional Charges:</strong> <span
                                     id="reason">{{ $postBooking->reason }}</span></p>
 
@@ -147,9 +154,11 @@
     </div>
     <script>
         async function printPDF() {
-            const { jsPDF } = window.jspdf;
+            const {
+                jsPDF
+            } = window.jspdf;
             const doc = new jsPDF();
-    
+
             try {
                 await generatePDFContent(doc);
                 doc.autoPrint();
@@ -161,29 +170,30 @@
                 alert('An error occurred while printing the PDF.');
             }
         }
-    
+
         async function generatePDFContent(doc) {
             const logo = new Image();
             logo.src = '{{ asset('images/logo1.png') }}';
-    
+
             return new Promise((resolve, reject) => {
-                logo.onload = function () {
+                logo.onload = function() {
                     try {
                         // Header Background
                         doc.setFillColor(255, 170, 0); // Orange
                         doc.rect(0, 0, 210, 40, 'F');
-    
+
                         // Logo & Company Info
-                        doc.addImage(logo, 'PNG', 10, 8, 45, 22);
+                        // doc.addImage(logo, 'PNG', 10, 8, 45, 22);
                         doc.setFontSize(11);
                         doc.setTextColor(0, 0, 0);
-                        doc.text('Mirisgoniyawa Junction, Bulagala, Dambulla', 60, 15);
-                        doc.text('Phone: +94 77 743 5008 | +94  742 5008 | +94 76 887 8088', 60, 25);
-                        doc.text('Website: info@rentacarsrilankahbs.com', 60, 35);
-    
+                        doc.text(businessData.address || 'No Address', 60, 15);
+                        doc.text(`Phone: ${businessData.b_phone || 'N/A'}`, 60, 25);
+                        doc.text(`Email: ${businessData.email || 'N/A'}`, 60, 35);
+
+
                         let currentY = 50;
                         const lineSpacing = 8; // Increased spacing for readability
-    
+
                         function sectionTitle(title) {
                             doc.setFontSize(12);
                             doc.setFont('helvetica', 'bold');
@@ -191,18 +201,19 @@
                             currentY += lineSpacing;
                             doc.setFont('helvetica', 'normal');
                         }
-    
+
                         function addRow(label, elementId) {
-                            doc.text(`${label} ${document.getElementById(elementId)?.textContent || 'N/A'}`, 10, currentY);
+                            doc.text(`${label} ${document.getElementById(elementId)?.textContent || 'N/A'}`,
+                                10, currentY);
                             currentY += lineSpacing;
                         }
-    
+
                         // Customer Information
                         sectionTitle('Customer Information');
                         addRow('Full Name:', 'fullName');
                         addRow('Mobile Number:', 'mobileNumber');
                         addRow('NIC:', 'nic');
-    
+
                         // Booking Information
                         sectionTitle('Booking Information');
                         addRow('Vehicle:', 'vehicleModel');
@@ -216,51 +227,60 @@
                         addRow('Ended Mileage:', 'end');
                         addRow('Over Drived KM:', 'over');
                         addRow('Charge Per Extra KM:', 'kmchg');
-    
+
                         // Billing Information
                         sectionTitle('Billing Information');
-                        const labelX = 10, valueX = 193;
-    
+                        const labelX = 10,
+                            valueX = 193;
+
                         function addBillRow(label, elementId) {
                             doc.text(label, labelX, currentY);
-                            doc.text(document.getElementById(elementId)?.textContent || '0.00', valueX, currentY, { align: 'right' });
+                            doc.text(document.getElementById(elementId)?.textContent || '0.00', valueX,
+                                currentY, {
+                                    align: 'right'
+                                });
                             currentY += lineSpacing;
                         }
-    
+
                         addBillRow('Base Price:', 'basePrice');
                         addBillRow('Extra KM Charges:', 'extraKm');
                         addBillRow('Damage Fee:', 'damageFee');
                         addBillRow('Other Additional Charges:', 'afterAdditional');
                         addBillRow('Discount (-):', 'afterDiscount');
                         addBillRow('Total Price:', 'totalIncome');
-    
-                        doc.text('Reason For Addtional Chargers: ' + (document.getElementById('reason')?.textContent || 'N/A'), 10, currentY);
+
+                        doc.text('Reason For Addtional Chargers: ' + (document.getElementById('reason')
+                            ?.textContent || 'N/A'), 10, currentY);
                         currentY += 15; // Increased spacing before signatures
-    
+
                         // Signature Section - Moved lower for better layout
                         doc.setFontSize(11);
                         const signatureY = 250;
                         doc.text('HBS Rental Car:', 30, signatureY);
                         doc.line(30, signatureY + 10, 100, signatureY + 10);
-    
+
                         const customerX = 120;
-                        doc.text('Customer Signature:', customerX, signatureY);// need to show name in this line
+                        doc.text('Customer Signature:', customerX,
+                            signatureY); // need to show name in this line
                         doc.line(customerX, signatureY + 10, 190, signatureY + 10);
-    
+
                         resolve();
                     } catch (error) {
                         reject(error);
                     }
                 };
-    
-                logo.onerror = function () {
+
+                logo.onerror = function() {
                     reject('Logo image failed to load.');
                 };
             });
         }
     </script>
-    
-    
+    <script>
+        const businessData = @json($business);
+    </script>
+
+
 
 </body>
 
