@@ -163,9 +163,6 @@ class PostBookingController extends Controller
         return redirect()->route('postbookings.index')->with('success', 'Booking updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(PostBooking $postBooking)
     {
         $postBooking->delete();
