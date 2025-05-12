@@ -212,7 +212,7 @@ class BookingController extends Controller
         $business = \App\Models\Business::find(Auth::user()->business_id);
 
         // Pass all to the view
-        return view('Manager.DetailedBooking', compact('booking', 'customer', '$business'));
+        return view('Manager.DetailedBooking', compact('booking', 'customer', 'business'));
     }
 
 

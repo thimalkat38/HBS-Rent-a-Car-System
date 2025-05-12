@@ -252,8 +252,7 @@
 
                         <div class="form-row">
                             <input type="text" name="additional_chagers"
-                                placeholder="Before Additional Chagers (LKR)"
-                                value="{{ old('additional_chagers', '0.00') }}">
+                                placeholder="Before Additional Chagers (LKR)">
                             @error('additional_chagers')
                                 <span class="error-message">{{ $message }}</span>
                             @enderror
@@ -264,15 +263,13 @@
                                 <span class="error-message">{{ $message }}</span>
                             @enderror
 
-                            <input type="text" name="discount_price" placeholder="Discount Price (LKR)"
-                                value="{{ old('discount_price', '0.00') }}">
+                            <input type="text" name="discount_price" placeholder="Discount Price (LKR)">
                             @error('discount_price')
                                 <span class="error-message">{{ $message }}</span>
                             @enderror
 
 
-                            <input type="text" name="payed" placeholder="PAID"
-                                value="{{ old('payed', '0.00') }}">
+                            <input type="text" name="payed" placeholder="PAID">
                             @error('payed')
                                 <span class="error-message">{{ $message }}</span>
                             @enderror
