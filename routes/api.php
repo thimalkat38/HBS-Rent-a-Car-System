@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\DashboardApiController;
 use App\Http\Controllers\Api\ProfitLossApiController;
 use App\Http\Controllers\Api\VehicleOwnerApiController;
 use App\Http\Controllers\Api\OwnerpaymentApiController;
+use App\Http\Controllers\Api\CustomerApiController;
 
 
 
@@ -88,4 +89,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/ownerpayments', [OwnerpaymentApiController::class, 'store']);
     Route::put('/ownerpayments/{id}', [OwnerpaymentApiController::class, 'update']);
     Route::delete('/ownerpayments/{id}', [OwnerpaymentApiController::class, 'destroy']);
+});
+
+
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/customers', [CustomerApiController::class, 'index']);
+    Route::post('/customers', [CustomerApiController::class, 'store']);
+    Route::get('/customers/{id}', [CustomerApiController::class, 'show']);
+    Route::put('/customers/{id}', [CustomerApiController::class, 'update']);
+    Route::delete('/customers/{id}', [CustomerApiController::class, 'destroy']);
+    Route::get('/customers/search', [CustomerApiController::class, 'search']);
+    Route::get('/customers/{id}/details', [CustomerApiController::class, 'getCustomerDetails']);
 });
