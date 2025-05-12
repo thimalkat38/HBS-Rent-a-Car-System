@@ -103,4 +103,50 @@ class PostBookingApiController extends Controller
     {
         return response()->json($postBooking);
     }
+
+    public function update(Request $request, $id)
+    {
+        $postBooking = PostBooking::findOrFail($id);
+
+        $validated = $request->validate([
+            'full_name' => 'nullable|string',
+            'nic' => 'nullable|string',
+            'mobile_number' => 'nullable|string',
+            'vehicle_number' => 'nullable|string',
+            'vehicle' => 'nullable|string',
+            'from_date' => 'nullable|date',
+            'to_date' => 'nullable|date',
+            'base_price' => 'nullable|string',
+            'extra_km' => 'nullable|string',
+            'extra_hours' => 'nullable|string',
+            'damage_fee' => 'nullable|string',
+            'after_additional' => 'nullable|string',
+            'reason' => 'nullable|string',
+            'after_discount' => 'nullable|string',
+            'paid' => 'nullable|string',
+            'due' => 'nullable|string',
+            'total_income' => 'nullable|string',
+            'due_paid' => 'nullable|boolean',
+            'deposit_refunded' => 'nullable|boolean',
+            'vehicle_checked' => 'nullable|boolean',
+            'officer' => 'nullable|string',
+        ]);
+
+        $postBooking->update($validated);
+
+        return response()->json([
+            'message' => 'Post Booking updated successfully.',
+            'post_booking' => $postBooking
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $postBooking = PostBooking::findOrFail($id);
+        $postBooking->delete();
+
+        return response()->json([
+            'message' => 'Post Booking deleted successfully.'
+        ]);
+    }
 }

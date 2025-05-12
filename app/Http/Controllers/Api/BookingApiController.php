@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class BookingApiController extends Controller
 {
@@ -164,5 +165,91 @@ class BookingApiController extends Controller
             $uploadedFiles[] = basename($path);
         }
         return $uploadedFiles;
+    }
+
+
+
+
+    public function update(Request $request, $id)
+    {
+        $booking = Booking::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'full_name' => 'required|string|max:255',
+            'mobile_number' => 'required',
+            'nic' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
+            'deposit' => 'nullable|string',
+            'booking_time' => 'required',
+            'arrival_time' => 'required',
+            'vehicle_number' => 'nullable',
+            'fuel_type' => 'nullable',
+            'vehicle_name' => 'nullable',
+            'from_date' => 'required|date',
+            'to_date' => 'required|date',
+            'officer' => 'nullable|string',
+            'method' => 'nullable|string',
+            'guarantor' => 'nullable|string',
+            'payed' => 'nullable|numeric',
+            'price' => 'nullable|string',
+            'discount_price' => 'nullable|string',
+            'additional_chagers' => 'nullable|string',
+            'reason' => 'nullable|string',
+            'start_km' => 'nullable|string',
+            'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $validatedData['additional_chagers'] = $validatedData['additional_chagers'] ?? 0.00;
+        $validatedData['discount_price'] = $validatedData['discount_price'] ?? 0.00;
+
+        $booking->update($validatedData);
+
+        // Driving photos
+        if ($request->hasFile('driving_photos')) {
+            if ($booking->driving_photos) {
+                foreach ($booking->driving_photos as $old) {
+                    Storage::disk('public')->delete($old);
+                }
+            }
+
+            $photos = [];
+            foreach ($request->file('driving_photos') as $file) {
+                $photos[] = $file->store('driving_photos', 'public');
+            }
+            $booking->driving_photos = $photos;
+        }
+
+        // NIC photos
+        if ($request->hasFile('nic_photos')) {
+            if ($booking->nic_photos) {
+                foreach ($booking->nic_photos as $old) {
+                    Storage::disk('public')->delete($old);
+                }
+            }
+
+            $nicPhotos = [];
+            foreach ($request->file('nic_photos') as $file) {
+                $nicPhotos[] = $file->store('nic_photos', 'public');
+            }
+            $booking->nic_photos = $nicPhotos;
+        }
+
+        $booking->save();
+
+        return response()->json([
+            'message' => 'Booking updated successfully.',
+            'booking' => $booking
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $booking = Booking::findOrFail($id);
+        $booking->delete();
+
+        return response()->json([
+            'message' => 'Booking deleted successfully.'
+        ]);
     }
 }
