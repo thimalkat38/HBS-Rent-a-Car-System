@@ -73,6 +73,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
 //Profit Loss Routes
 Route::middleware('auth:sanctum')->get('/reports/pl', [ProfitLossApiController::class, 'plReport']);
+Route::middleware('auth:sanctum')->post('/custom-pl-report', [ProfitLossApiController::class, 'plReportByCustomDates']);
+Route::middleware('auth:sanctum')->get('/pl-report/{startDate}/{endDate}', [ProfitLossApiController::class, 'plReportmanual']);
+
+
 
 
 Route::middleware('auth:sanctum')->group(function () {

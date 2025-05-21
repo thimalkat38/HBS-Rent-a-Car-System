@@ -78,4 +78,100 @@ class ProfitLossApiController extends Controller
             'report' => $data
         ]);
     }
+
+    public function plReportByCustomDates(Request $request)
+    {
+        $businessId = Auth::user()->business_id;
+
+        // Validate required parameters
+        $request->validate([
+            'startDate' => 'required|date',
+            'endDate' => 'required|date|after_or_equal:startDate',
+        ]);
+
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
+
+        $data = [
+            'salary' => Salary::where('business_id', $businessId)->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'advanced_salary' => Payroll::where('business_id', $businessId)->whereBetween('paid_date', [$startDate, $endDate])->sum('paid_amnt'),
+            'vehicle_services' => Service::where('business_id', $businessId)->where('type', 'Oil Change')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'vehicle_repair' => Service::where('business_id', $businessId)->where('type', 'Repair')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'vehicle_maintenance' => Service::where('business_id', $businessId)->where('type', 'Maintenance')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'vehicle_owner_payment' => Ownerpayment::where('business_id', $businessId)->whereBetween('date', [$startDate, $endDate])->sum('paid_amnt'),
+            'fuel_chargers' => Expense::where('business_id', $businessId)->where('cat', 'Fuel')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'utility_bills' => Expense::where('business_id', $businessId)->where('cat', 'Utility Bills')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'stock_in' => Inventory::where('business_id', $businessId)->whereBetween('date', [$startDate, $endDate])->sum('total_price'),
+            'travel_fees' => Expense::where('business_id', $businessId)->where('cat', 'Travel')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'office_supplies' => Expense::where('business_id', $businessId)->where('cat', 'Office Supplies')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'other_income' => Expense::where('business_id', $businessId)->whereIn('cat', ['Foods', 'Other'])->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'total_income_by_rent' => PostBooking::where('business_id', $businessId)->whereBetween('to_date', [$startDate, $endDate])->sum('total_income'),
+        ];
+
+        $total_expenses = $data['salary'] + $data['vehicle_services'] + $data['vehicle_maintenance'] + $data['fuel_chargers']
+            + $data['stock_in'] + $data['office_supplies'] + $data['advanced_salary']
+            + $data['vehicle_repair'] + $data['vehicle_owner_payment'] + $data['utility_bills']
+            + $data['travel_fees'] + $data['other_income'];
+
+        $total_income = $data['total_income_by_rent'];
+
+        $data['gross_profit'] = $total_income - $total_expenses;
+        $data['net_profit'] = $data['gross_profit'];
+
+        return response()->json([
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'report' => $data
+        ]);
+    }
+
+    
+    public function plReportmanual($startDate, $endDate)
+    {
+        $businessId = Auth::user()->business_id;
+
+        // Validate date format and range
+        try {
+            $startDate = Carbon::parse($startDate)->toDateString();
+            $endDate = Carbon::parse($endDate)->toDateString();
+
+            if ($startDate > $endDate) {
+                return response()->json(['error' => 'Start date must be before or equal to end date.'], 422);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Invalid date format. Use YYYY-MM-DD.'], 400);
+        }
+
+        $data = [
+            'salary' => Salary::where('business_id', $businessId)->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'advanced_salary' => Payroll::where('business_id', $businessId)->whereBetween('paid_date', [$startDate, $endDate])->sum('paid_amnt'),
+            'vehicle_services' => Service::where('business_id', $businessId)->where('type', 'Oil Change')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'vehicle_repair' => Service::where('business_id', $businessId)->where('type', 'Repair')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'vehicle_maintenance' => Service::where('business_id', $businessId)->where('type', 'Maintenance')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'vehicle_owner_payment' => Ownerpayment::where('business_id', $businessId)->whereBetween('date', [$startDate, $endDate])->sum('paid_amnt'),
+            'fuel_chargers' => Expense::where('business_id', $businessId)->where('cat', 'Fuel')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'utility_bills' => Expense::where('business_id', $businessId)->where('cat', 'Utility Bills')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'stock_in' => Inventory::where('business_id', $businessId)->whereBetween('date', [$startDate, $endDate])->sum('total_price'),
+            'travel_fees' => Expense::where('business_id', $businessId)->where('cat', 'Travel')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'office_supplies' => Expense::where('business_id', $businessId)->where('cat', 'Office Supplies')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'other_income' => Expense::where('business_id', $businessId)->whereIn('cat', ['Foods', 'Other'])->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
+            'total_income_by_rent' => PostBooking::where('business_id', $businessId)->whereBetween('to_date', [$startDate, $endDate])->sum('total_income'),
+        ];
+
+        $total_expenses = $data['salary'] + $data['vehicle_services'] + $data['vehicle_maintenance'] + $data['fuel_chargers']
+            + $data['stock_in'] + $data['office_supplies'] + $data['advanced_salary']
+            + $data['vehicle_repair'] + $data['vehicle_owner_payment'] + $data['utility_bills']
+            + $data['travel_fees'] + $data['other_income'];
+
+        $total_income = $data['total_income_by_rent'];
+
+        $data['gross_profit'] = $total_income - $total_expenses;
+        $data['net_profit'] = $data['gross_profit'];
+
+        return response()->json([
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'report' => $data
+        ]);
+    }
 }

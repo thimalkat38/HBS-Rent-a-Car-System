@@ -46,7 +46,7 @@ class VehicleApiController extends Controller
             'price_per_day' => 'required|string|max:255',
             'free_km' => 'required|string|max:255',
             'extra_km_chg' => 'required|string|max:255',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:102400',
         ]);
 
         $businessId = Auth::user()->business_id;
@@ -87,6 +87,7 @@ class VehicleApiController extends Controller
             'display_image' => $images[0] ?? null,
             'business_id' => $businessId,
         ]);
+        $this->copyStorageToPublic();
 
         return response()->json([
             'message' => 'Vehicle added successfully',
@@ -112,7 +113,7 @@ class VehicleApiController extends Controller
             'price_per_day' => 'required|string|max:255',
             'free_km' => 'required|string|max:255',
             'extra_km_chg' => 'required|string|max:255',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
         if ($request->hasFile('images')) {
@@ -156,6 +157,7 @@ class VehicleApiController extends Controller
             'images' => $images,
             'display_image' => $request->input('display_image') ?? $vehicle->display_image,
         ]);
+        $this->copyStorageToPublic();
 
         return response()->json(['message' => 'Vehicle updated successfully!', 'vehicle' => $vehicle]);
     }
@@ -174,4 +176,41 @@ class VehicleApiController extends Controller
 
         return response()->json(['message' => 'Vehicle deleted and IDs reordered successfully!']);
     }
+
+    private function copyStorageToPublic()
+{
+    $source = storage_path('app/public');
+    $destination = public_path('storage');
+
+    if (!file_exists($destination)) {
+        mkdir($destination, 0777, true);
+    }
+
+    $this->recursiveCopy($source, $destination);
+}
+
+private function recursiveCopy($source, $destination)
+{
+    $directory = opendir($source);
+
+    if (!file_exists($destination)) {
+        mkdir($destination, 0777, true);
+    }
+
+    while (($file = readdir($directory)) !== false) {
+        if ($file !== '.' && $file !== '..') {
+            $srcFile = $source . DIRECTORY_SEPARATOR . $file;
+            $destFile = $destination . DIRECTORY_SEPARATOR . $file;
+
+            if (is_dir($srcFile)) {
+                $this->recursiveCopy($srcFile, $destFile);
+            } else {
+                copy($srcFile, $destFile);
+            }
+        }
+    }
+
+    closedir($directory);
+}
+
 }
