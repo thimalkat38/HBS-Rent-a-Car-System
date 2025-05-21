@@ -75,10 +75,10 @@ class BookingApiController extends Controller
             'free_km' => 'nullable|string',
             'free_kmd' => 'nullable|string',
             'start_km' => 'nullable|string',
-            'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
-            'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
-            'deposit_img.*' => 'nullable|file|mimes:jpg,jpeg,png',
-            'grnt_nic.*' => 'nullable|file|mimes:jpg,jpeg,png',
+            'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:20000',
+            'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:20000',
+            'deposit_img.*' => 'nullable|file|mimes:jpg,jpeg,png|max:20000',
+            'grnt_nic.*' => 'nullable|file|mimes:jpg,jpeg,png|max:20000',
             'status' => 'nullable',
         ]);
 
@@ -129,6 +129,7 @@ class BookingApiController extends Controller
                 'business_id' => $businessId,
             ]);
         }
+        $this->copyStorageToPublic();
 
         return response()->json([
             'message' => 'Booking created successfully.',
@@ -161,8 +162,11 @@ class BookingApiController extends Controller
     {
         $uploadedFiles = [];
         foreach ($files as $file) {
-            $path = $file->store('public/' . $folder);
-            $uploadedFiles[] = basename($path);
+            // Store in 'public' disk, which maps to storage/app/public
+            $path = $file->store($folder, 'public');
+
+            // Store the relative path (e.g., driving_photos/filename.jpg)
+            $uploadedFiles[] = $path;
         }
         return $uploadedFiles;
     }
@@ -236,6 +240,7 @@ class BookingApiController extends Controller
         }
 
         $booking->save();
+        $this->copyStorageToPublic();
 
         return response()->json([
             'message' => 'Booking updated successfully.',
@@ -251,5 +256,41 @@ class BookingApiController extends Controller
         return response()->json([
             'message' => 'Booking deleted successfully.'
         ]);
+    }
+
+    private function copyStorageToPublic()
+    {
+        $source = storage_path('app/public');
+        $destination = public_path('storage');
+
+        if (!file_exists($destination)) {
+            mkdir($destination, 0777, true);
+        }
+
+        $this->recursiveCopy($source, $destination);
+    }
+
+    private function recursiveCopy($source, $destination)
+    {
+        $directory = opendir($source);
+
+        if (!file_exists($destination)) {
+            mkdir($destination, 0777, true);
+        }
+
+        while (($file = readdir($directory)) !== false) {
+            if ($file !== '.' && $file !== '..') {
+                $srcFile = $source . DIRECTORY_SEPARATOR . $file;
+                $destFile = $destination . DIRECTORY_SEPARATOR . $file;
+
+                if (is_dir($srcFile)) {
+                    $this->recursiveCopy($srcFile, $destFile);
+                } else {
+                    copy($srcFile, $destFile);
+                }
+            }
+        }
+
+        closedir($directory);
     }
 }
