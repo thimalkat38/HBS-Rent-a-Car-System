@@ -74,6 +74,9 @@ class VehicleController extends Controller
             foreach ($request->file('images') as $file) {
                 $path = $file->store('vehicle_images', 'public');
                 $images[] = $path;
+
+                // ✅ Copy uploaded file to public/storage
+                $this->copyUploadedFileToPublic($path);
             }
         }
 
@@ -106,8 +109,20 @@ class VehicleController extends Controller
             'business_id' => $businessId,
         ]);
 
-        return redirect('manager/vehicles')->with('success', 'Vehicle Added successfully!'); // this line is not working
+        return redirect()->route('vehicles.search')->with('success', 'Vehicle added successfully!');
     }
+    private function copyUploadedFileToPublic($relativePath)
+    {
+        $source = storage_path('app/public/' . $relativePath);
+        $destination = public_path('storage/' . $relativePath);
+
+        if (!file_exists(dirname($destination))) {
+            mkdir(dirname($destination), 0777, true);
+        }
+
+        copy($source, $destination);
+    }
+
 
     /**
      * Show the form for editing a vehicle.

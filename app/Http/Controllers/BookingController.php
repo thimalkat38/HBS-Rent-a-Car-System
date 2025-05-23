@@ -103,41 +103,24 @@ class BookingController extends Controller
             'status' => 'nullable',
         ]);
 
-        $validatedData = $request->all();
-        $validatedData['additional_chagers'] = $validatedData['additional_chagers'] ?? 0.00;
-        $validatedData['discount_price'] = $validatedData['discount_price'] ?? 0.00;
+        $validated = $request->except(['driving_photos', 'nic_photos', 'deposit_img', 'grnt_nic']);
+        $validated['additional_chagers'] = $request->input('additional_chagers', 0.00);
+        $validated['discount_price'] = $request->input('discount_price', 0.00);
 
-        $fromDateTime = new \DateTime($request->input('from_date') . ' ' . $request->input('booking_time'));
-        $toDateTime = new \DateTime($request->input('to_date') . ' ' . $request->input('arrival_time'));
-        $interval = $fromDateTime->diff($toDateTime);
-        $days = ceil(($interval->days * 24 + $interval->h) / 24);
+        $from = new \DateTime($request->from_date . ' ' . $request->booking_time);
+        $to = new \DateTime($request->to_date . ' ' . $request->arrival_time);
+        $days = ceil(($from->diff($to)->days * 24 + $from->diff($to)->h) / 24);
 
-        $totalPrice = ($request->price_per_day * $days)
-            + ($request->additional_chagers ?? 0)
-            - ($request->discount_price ?? 0)
-            - ($request->payed ?? 0);
+        $validated['days'] = $days;
+        $validated['price'] = ($request->price_per_day * $days) + $validated['additional_chagers'] - $validated['discount_price'] - $request->input('payed', 0);
+        $validated['business_id'] = Auth::user()->business_id;
 
-        $businessId = Auth::user()->business_id;
+        $booking = Booking::create($validated);
 
-        $booking = new Booking($request->except(['driving_photos', 'nic_photos', 'deposit_img', 'grnt_nic']));
-        $booking->days = $days;
-        $booking->price = $totalPrice;
-        $booking->business_id = $businessId;
-
-        // Handle file uploads
-        $booking->driving_photos = $request->hasFile('driving_photos')
-            ? $this->uploadFiles($request->file('driving_photos'), 'driving_photos')
-            : [];
-        $booking->nic_photos = $request->hasFile('nic_photos')
-            ? $this->uploadFiles($request->file('nic_photos'), 'nic_photos')
-            : [];
-        $booking->deposit_img = $request->hasFile('deposit_img')
-            ? $this->uploadFiles($request->file('deposit_img'), 'deposit_img')
-            : [];
-        $booking->grnt_nic = $request->hasFile('grnt_nic')
-            ? $this->uploadFiles($request->file('grnt_nic'), 'grnt_nic')
-            : [];
-
+        $booking->driving_photos = $request->hasFile('driving_photos') ? $this->uploadAndCopy($request->file('driving_photos'), 'driving_photos') : [];
+        $booking->nic_photos     = $request->hasFile('nic_photos')     ? $this->uploadAndCopy($request->file('nic_photos'), 'nic_photos')         : [];
+        $booking->deposit_img    = $request->hasFile('deposit_img')    ? $this->uploadAndCopy($request->file('deposit_img'), 'deposit_img')       : [];
+        $booking->grnt_nic       = $request->hasFile('grnt_nic')       ? $this->uploadAndCopy($request->file('grnt_nic'), 'grnt_nic')             : [];
         $booking->save();
 
         if (!empty($request->nic) && !Customer::where('nic', $request->nic)->exists()) {
@@ -147,56 +130,35 @@ class BookingController extends Controller
                 'phone' => $request->mobile_number,
                 'nic' => $request->nic,
                 'address' => $request->address,
-                'business_id' => $businessId,
+                'business_id' => $validated['business_id'],
             ]);
         }
-
-        // Auto-linking storage to public
-        $source = storage_path('app/public');
-        $destination = public_path('storage');
-
-        if (!file_exists($destination)) {
-            mkdir($destination, 0777, true);
-        }
-
-        function copyDirectory($source, $destination)
-        {
-            $directory = opendir($source);
-            if (!file_exists($destination)) {
-                mkdir($destination, 0777, true);
-            }
-            while (($file = readdir($directory)) !== false) {
-                if ($file !== '.' && $file !== '..') {
-                    $srcFile = $source . DIRECTORY_SEPARATOR . $file;
-                    $destFile = $destination . DIRECTORY_SEPARATOR . $file;
-                    if (is_dir($srcFile)) {
-                        copyDirectory($srcFile, $destFile);
-                    } else {
-                        copy($srcFile, $destFile);
-                    }
-                }
-            }
-            closedir($directory);
-        }
-        copyDirectory($source, $destination);
 
         return redirect()->route('bookings.show', ['id' => $booking->id])
             ->with('success', 'Booking created successfully.');
     }
-
-
-    /**
-     * Helper function to handle file uploads.
-     */
-    private function uploadFiles($files, $directory)
+    private function uploadAndCopy($files, $directory)
     {
-        $filePaths = [];
+        $paths = [];
+
         foreach ($files as $file) {
-            $path = $file->store($directory, 'public');
-            $filePaths[] = $path;
+            $path = $file->store($directory, 'public'); // stored in storage/app/public
+            $paths[] = $path;
+
+            // Copy to public/storage manually
+            $source = storage_path('app/public/' . $path);
+            $destination = public_path('storage/' . $path);
+
+            if (!file_exists(dirname($destination))) {
+                mkdir(dirname($destination), 0777, true);
+            }
+
+            copy($source, $destination);
         }
-        return $filePaths;
+
+        return $paths;
     }
+
 
 
     // Show a specific booking
