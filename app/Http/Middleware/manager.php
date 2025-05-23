@@ -16,11 +16,14 @@ class manager
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()->userType != 'manager'){
+        if (!Auth::check()) {
+            return redirect('/please-login');
+        }
 
+        if (Auth::user()->userType != 'manager') {
             return redirect('/');
         }
-        
+
         return $next($request);
     }
 }

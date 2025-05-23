@@ -556,6 +556,7 @@
                 basePriceField.value = basePrice + additionalPrice;
             }
         }
+        updateCalculations();
     });
 </script>
 

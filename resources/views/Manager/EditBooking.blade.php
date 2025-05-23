@@ -69,6 +69,10 @@
                 </div>
 
                 <div class="form-row">
+                    <input type="hidden" id="daily_free_km"
+                        value="{{ $booking->free_kmd / max(\Carbon\Carbon::parse($booking->to_date)->diffInDays($booking->from_date), 1) }}">
+
+
                     <label for="from_date" class="form-label">From Date</label>
                     <input type="date" name="from_date" id="from_date" class="form-control"
                         value="{{ old('from_date', $booking->from_date) }}" required>
@@ -76,10 +80,17 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
 
+
                     <label for="booking_time" class="form-label">Booking Time</label>
                     <input type="time" name="booking_time" id="booking_time" class="form-control"
                         value="{{ old('booking_time', $booking->booking_time) }}" required>
                     @error('booking_time')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                    <label for="start_km" class="form-label">Starting Milage</label>
+                    <input type="text" name="start_km" id="start_km" class="form-control"
+                        value="{{ old('start_km', $booking->start_km) }}" required>
+                    @error('start_km')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
@@ -96,6 +107,12 @@
                     <input type="time" name="arrival_time" id="arrival_time" class="form-control"
                         value="{{ old('arrival_time', $booking->arrival_time) }}" required>
                     @error('arrival_time')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                    <label for="free_km" class="form-label">Free KM</label>
+                    <input type="text" name="free_km" id="free_km" class="form-control"
+                        value="{{ old('free_km', $booking->free_km) }}" required>
+                    @error('free_km')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
@@ -280,6 +297,34 @@
         }
     }
 </script>
+<script>
+    function updateFreeKM() {
+        const fromDateInput = document.getElementById('from_date').value;
+        const toDateInput = document.getElementById('to_date').value;
+        const dailyFreeKm = parseFloat(document.getElementById('daily_free_km').value);
+
+        if (!fromDateInput || !toDateInput || isNaN(dailyFreeKm)) return;
+
+        const fromDate = new Date(fromDateInput + 'T00:00:00');
+        const toDate = new Date(toDateInput + 'T00:00:00');
+
+        if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) return;
+
+        let daysDiff = Math.ceil((toDate - fromDate) / (1000 * 60 * 60 * 24));
+        if (daysDiff < 1) daysDiff = 1;
+
+        const updatedFreeKm = dailyFreeKm * daysDiff;
+        document.getElementById('free_km').value = updatedFreeKm.toFixed(2);
+    }
+
+    document.getElementById('from_date').addEventListener('change', updateFreeKM);
+    document.getElementById('to_date').addEventListener('change', updateFreeKM);
+</script>
+
+
+
+
+
 
 
 

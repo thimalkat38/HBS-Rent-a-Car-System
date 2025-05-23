@@ -330,10 +330,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="submit-container">
-                        <button type="reset" class="btn-submit">CANCEL</button>
-                        <button type="submit" class="btn-submit">BOOK</button>
-                    </div>
+                    <form id="bookingForm">
+                        <div class="submit-container">
+                            <button type="reset" class="btn-submit">CANCEL</button>
+                            <button type="submit" class="btn-submit" id="submitBtn">BOOK</button>
+                        </div>
+                    </form>
                 </form>
 
                 <style>
@@ -640,6 +642,13 @@
             document.getElementById("days").addEventListener("input", calculateFreeKM);
             document.querySelector("input[name='from_date']").addEventListener("change", calculateDays);
             document.querySelector("input[name='to_date']").addEventListener("change", calculateDays);
+        });
+    </script>
+    <script>
+        document.getElementById('bookingForm').addEventListener('submit', function(event) {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Booking...'; // Optional: show progress text
         });
     </script>
 
