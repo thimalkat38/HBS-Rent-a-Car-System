@@ -213,6 +213,7 @@ class BookingController extends Controller
             'deposit' => 'nullable|string',
             'reason' => 'nullable|string',
             'start_km' => 'nullable|string',
+            'free_km' => 'nullable|string',
             'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
             'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);

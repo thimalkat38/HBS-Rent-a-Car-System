@@ -16,11 +16,17 @@ class Admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()->userType != 'admin'){
+        // If user is not logged in
+        if (!Auth::check()) {
+            return redirect('/please-login');
+        }
 
+        // If user is logged in but not an admin
+        if (Auth::user()->userType !== 'admin') {
             return redirect('/');
         }
 
+        // Allow access
         return $next($request);
     }
 }

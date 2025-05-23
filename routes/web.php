@@ -26,7 +26,7 @@ use App\Http\Controllers\BusinessController;
 
 Route::get('/', function () {
     return view('auth.login');
-});
+})->name('login');
 
 Route::get('/dashboard', function () {
     return view('Dashboard');
@@ -200,7 +200,7 @@ Route::middleware(['manager'])->delete('ownerpayments/{ownerpayment}', [Ownerpay
 
 
 // Service Control Routes
-Route::middleware(['manager'])->get('/services', [ServiceController::class, 'index'])->name('services.index'); 
+Route::middleware(['manager'])->get('/services', [ServiceController::class, 'index'])->name('services.index');
 Route::middleware(['manager'])->get('/services/create', [ServiceController::class, 'create'])->name('services.create'); // Show form to create a new service
 Route::middleware(['manager'])->post('/services', [ServiceController::class, 'store'])->name('services.store'); // Store new service
 Route::middleware(['manager'])->get('/services/{service}', [ServiceController::class, 'show'])->name('services.show'); // Show specific service
@@ -247,13 +247,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
 //Home Routes and Other Routes
 Route::middleware(['manager'])->get('/manager/dashboard', [DashboardController::class, 'calendarView'])->name('manager.dashboard');
 Route::middleware(['manager'])->get('/manager/bookings', [DashboardController::class, 'getBookingsByDate']);
-Route::middleware(['manager'])->get('hr-management', function () {return view('Manager.HRManagment');})->name('hrmanagement');
 Route::middleware(['manager'])->get('/profit-loss-report', [ProfitLossController::class, 'index'])->name('profit.loss');
 Route::middleware(['manager'])->post('/salary/store', [SalaryController::class, 'store'])->name('salary.store');
 Route::middleware(['admin'])->get('superadmin', [HomeController::class, 'index'])->name('business.index');
 Route::middleware(['admin'])->get('/superadmin', [HomeController::class, 'search'])->name('bus.search');
 Route::middleware(['manager'])->get('manager/addbook', [HomeController::class, 'manageraddbook']);
-
+Route::get('/please-login', function () {
+    return view('please-login');
+});
+Route::middleware(['manager'])->get('hr-management', function () {
+    return view('Manager.HRManagment');
+})->name('hrmanagement');
 
 
 
