@@ -173,7 +173,8 @@
 
         async function generatePDFContent(doc) {
             const logo = new Image();
-            logo.src = '{{ asset('images/logo1.png') }}';
+            logo.src = businessData.logo ? "{{ asset('storage') }}/" + businessData.logo :
+                "{{ asset('images/logo1.png') }}";
 
             return new Promise((resolve, reject) => {
                 logo.onload = function() {
@@ -183,16 +184,15 @@
                         doc.rect(0, 0, 210, 40, 'F');
 
                         // Logo & Company Info
-                        // doc.addImage(logo, 'PNG', 10, 8, 45, 22);
+                        doc.addImage(logo, 'PNG', 10, 13, 45, 22);
                         doc.setFontSize(11);
                         doc.setTextColor(0, 0, 0);
                         doc.text(businessData.address || 'No Address', 60, 15);
                         doc.text(`Phone: ${businessData.b_phone || 'N/A'}`, 60, 25);
                         doc.text(`Email: ${businessData.email || 'N/A'}`, 60, 35);
 
-
                         let currentY = 50;
-                        const lineSpacing = 8; // Increased spacing for readability
+                        const lineSpacing = 8;
 
                         function sectionTitle(title) {
                             doc.setFontSize(12);
@@ -202,11 +202,12 @@
                             doc.setFont('helvetica', 'normal');
                         }
 
-                        function addRow(label, elementId) {
-                            doc.text(`${label} ${document.getElementById(elementId)?.textContent || 'N/A'}`,
-                                10, currentY);
+                        function addRow(label, elementId, suffix = '') {
+                            const value = document.getElementById(elementId)?.textContent || 'N/A';
+                            doc.text(`${label} ${value}${suffix}`, 10, currentY);
                             currentY += lineSpacing;
                         }
+
 
                         // Customer Information
                         sectionTitle('Customer Information');
@@ -222,11 +223,12 @@
                         addRow('Arrived Date:', 'toDate');
                         addRow('Extra Days:', 'exDate');
                         addRow('Price Per Day:', 'ppd');
-                        addRow('Started Mileage:', 'strat');
-                        addRow('Free KM:', 'free');
-                        addRow('Ended Mileage:', 'end');
-                        addRow('Over Drived KM:', 'over');
+                        addRow('Started Mileage:', 'strat', ' KM');
+                        addRow('Free KM:', 'free', ' KM');
+                        addRow('Ended Mileage:', 'end', ' KM');
+                        addRow('Over Drived KM:', 'over', ' KM');
                         addRow('Charge Per Extra KM:', 'kmchg');
+
 
                         // Billing Information
                         sectionTitle('Billing Information');
@@ -249,19 +251,18 @@
                         addBillRow('Discount (-):', 'afterDiscount');
                         addBillRow('Total Price:', 'totalIncome');
 
-                        doc.text('Reason For Addtional Chargers: ' + (document.getElementById('reason')
+                        doc.text('Reason For Additional Charges: ' + (document.getElementById('reason')
                             ?.textContent || 'N/A'), 10, currentY);
-                        currentY += 15; // Increased spacing before signatures
+                        currentY += 15;
 
-                        // Signature Section - Moved lower for better layout
+                        // Signature Section
                         doc.setFontSize(11);
                         const signatureY = 250;
                         doc.text('HBS Rental Car:', 30, signatureY);
                         doc.line(30, signatureY + 10, 100, signatureY + 10);
 
                         const customerX = 120;
-                        doc.text('Customer Signature:', customerX,
-                            signatureY); // need to show name in this line
+                        doc.text('Customer Signature:', customerX, signatureY);
                         doc.line(customerX, signatureY + 10, 190, signatureY + 10);
 
                         resolve();
@@ -275,8 +276,7 @@
                 };
             });
         }
-    </script>
-    <script>
+
         const businessData = @json($business);
     </script>
 

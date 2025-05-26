@@ -230,7 +230,8 @@
 
         async function generatePDFContent(doc) {
             const logo = new Image();
-            logo.src = '{{ asset('images/logo1.png') }}';
+            logo.src = businessData.logo ? "{{ asset('storage') }}/" + businessData.logo :
+                "{{ asset('images/logo1.png') }}";
 
             return new Promise((resolve, reject) => {
                 logo.onload = function() {
@@ -238,7 +239,7 @@
                         // Add header background and logo
                         doc.setFillColor(255, 170, 0); // Orange background
                         doc.rect(0, 0, 210, 40, 'F'); // Fill rectangle for header
-                        // doc.addImage(logo, 'PNG', 10, 10, 50, 20); 
+                        doc.addImage(logo, 'PNG', 10, 13, 45, 22);
 
                         // Add header text
                         doc.setFontSize(10);

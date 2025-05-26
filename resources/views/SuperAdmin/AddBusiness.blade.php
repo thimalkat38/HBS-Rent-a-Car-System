@@ -84,6 +84,11 @@
                         </div>
                         <div class="form-row">
                             <input type="date" name="reg_date" placeholder="Registered Date">
+
+                            <label for="logo" class="file-upload-label">Upload Logo</label>
+                            <input type="file" name="logo" id="logo" class="file-upload-input"
+                                accept="image/*">
+                            <span id="file-name" class="file-upload-name">No file chosen</span>
                         </div>
                     </div>
                     <div class="submit-container">
@@ -99,5 +104,34 @@
         </div>
     </div>
 </body>
+<style>
+    .file-upload-label {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #624E88;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .file-upload-label:hover {
+        background-color: #4e3a6f;
+    }
+
+    .file-upload-input {
+        display: none;
+    }
+
+    .file-upload-name {
+        margin-left: 10px;
+        font-style: italic;
+    }
+</style>
+<script>
+    document.getElementById('logo').addEventListener('change', function() {
+        const fileName = this.files[0]?.name || "No file chosen";
+        document.getElementById('file-name').textContent = fileName;
+    });
+</script>
 
 </html>
