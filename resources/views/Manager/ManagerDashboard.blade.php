@@ -14,15 +14,18 @@
 </head>
 
 <body>
+    @php
+        $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
+        $bLogo = \App\Models\Business::where('id', auth()->user()->business_id)->value('logo');
+    @endphp
     <div class="container">
         <!-- Header -->
         <div class="header">
             <div class="logo-section">
-                <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
+                <img src="{{ $bLogo ? asset('storage/' . $bLogo) : asset('images/logo.png') }}" class="logo-icon"
+                    alt="HBS Car Rental Logo">
+
             </div>
-            @php
-                $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
-            @endphp
 
             <div class="header-title">
                 {{ $bName ?? 'Business Name' }}
@@ -258,8 +261,8 @@
                                 <h3>OUT</h3>
                                 <ul>
                                     ${data.in_bookings.map(booking => `
-                                                <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.booking_time}]</li>
-                                            `).join('')}
+                                                    <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.booking_time}]</li>
+                                                `).join('')}
                                 </ul>`;
                                 } else {
                                     inBookingsHtml =
@@ -271,8 +274,8 @@
                                 <h3>IN</h3>
                                 <ul>
                                     ${data.out_bookings.map(booking => `
-                                                <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.arrival_time}]</li>
-                                            `).join('')}
+                                                    <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.arrival_time}]</li>
+                                                `).join('')}
                                 </ul>`;
                                 } else {
                                     outBookingsHtml =
@@ -284,8 +287,8 @@
                                 <h3>Available Vehicles</h3>
                                 <ul>
                                     ${data.available_vehicles.map(vehicle => `
-                                                <li>${vehicle.vehicle_number} - ${vehicle.vehicle_name}</li>
-                                            `).join('')}
+                                                    <li>${vehicle.vehicle_number} - ${vehicle.vehicle_name}</li>
+                                                `).join('')}
                                 </ul>`;
                                 } else {
                                     availableVehiclesHtml =

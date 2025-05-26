@@ -34,8 +34,7 @@ class BusinessController extends Controller
             // Redirect or handle the error if the Business is not found
             return redirect()->route('Business.index')->with('error', 'Business not found.');
         }
-
-        // Pass the customer data to the view
+        
         return view('SuperAdmin.DetailedBusiness', compact('Business'));
     }
 
@@ -44,33 +43,40 @@ class BusinessController extends Controller
         return view('SuperAdmin.AddBusiness');
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'b_name' => 'required|string|max:255',
-            'o_name' => 'required|string|max:255',
-            'email' => 'nullable|string|max:255',
-            'b_phone' => 'required|string|max:255',
-            'o_phone' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'reg_date' => 'required|date',
-        ]);
+public function store(Request $request)
+{
+    $request->validate([
+        'b_name' => 'required|string|max:255',
+        'o_name' => 'required|string|max:255',
+        'email' => 'nullable|string|max:255',
+        'b_phone' => 'required|string|max:255',
+        'o_phone' => 'required|string|max:255',
+        'address' => 'required|string|max:255',
+        'reg_date' => 'required|date',
+        'logo' => 'nullable|mimes:jpeg,png,jpg,gif,svg', // validate logo
+    ]);
 
+    $logoPath = null;
 
-        Business::create([
-            // 'b_id' => $generatedBId,
-            'b_name' => $request->b_name,
-            'o_name' => $request->o_name,
-            'email' => $request->email,
-            'b_phone' => $request->b_phone,
-            'o_phone' => $request->o_phone,
-            'address' => $request->address,
-            'status' => 'active', // Default status
-            'reg_date' => $request->reg_date,
-        ]);
-
-        return redirect('superadmin')->with('success', 'Business Added successfully!');
+    if ($request->hasFile('logo')) {
+        $logoPath = $request->file('logo')->store('logos', 'public'); // stored in storage/app/public/logos
     }
+
+    Business::create([
+        'b_name' => $request->b_name,
+        'o_name' => $request->o_name,
+        'email' => $request->email,
+        'b_phone' => $request->b_phone,
+        'o_phone' => $request->o_phone,
+        'address' => $request->address,
+        'status' => 'active',
+        'reg_date' => $request->reg_date,
+        'logo' => $logoPath, // store path in DB
+    ]);
+
+    return redirect('superadmin')->with('success', 'Business Added successfully!');
+}
+
 
 
     public function edit($id)
@@ -79,30 +85,45 @@ class BusinessController extends Controller
         return view('SuperAdmin.EditBusiness', compact('Business'));
     }
 
-    public function update(Request $request, $id)
-    {
-        $business = Business::findOrFail($id);
+public function update(Request $request, $id)
+{
+    $business = Business::findOrFail($id);
 
-        $request->validate([
-            'b_name' => 'required|string|max:255',
-            'o_name' => 'required|string|max:255',
-            'email' => 'nullable|string|max:255',
-            'b_phone' => 'required|string|max:255',
-            'o_phone' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-        ]);
+    $request->validate([
+        'b_name' => 'required|string|max:255',
+        'o_name' => 'required|string|max:255',
+        'email' => 'nullable|string|max:255',
+        'b_phone' => 'required|string|max:255',
+        'o_phone' => 'required|string|max:255',
+        'address' => 'required|string|max:255',
+        'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // logo validation
+    ]);
 
-        $business->update([
-            'b_name' => $request->b_name,
-            'o_name' => $request->o_name,
-            'email' => $request->email,
-            'b_phone' => $request->b_phone,
-            'o_phone' => $request->o_phone,
-            'address' => $request->address,
-        ]);
+    $data = [
+        'b_name' => $request->b_name,
+        'o_name' => $request->o_name,
+        'email' => $request->email,
+        'b_phone' => $request->b_phone,
+        'o_phone' => $request->o_phone,
+        'address' => $request->address,
+    ];
 
-        return redirect('superadmin')->with('success', 'Business updated successfully!');
+    if ($request->hasFile('logo')) {
+        // Optional: Delete old logo file if it exists
+        if ($business->logo && Storage::disk('public')->exists($business->logo)) {
+            Storage::disk('public')->delete($business->logo);
+        }
+
+        // Store new logo
+        $logoPath = $request->file('logo')->store('logos', 'public');
+        $data['logo'] = $logoPath;
     }
+
+    $business->update($data);
+
+    return redirect('superadmin')->with('success', 'Business updated successfully!');
+}
+
 
     public function destroy($id)
     {

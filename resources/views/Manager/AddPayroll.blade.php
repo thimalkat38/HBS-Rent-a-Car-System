@@ -14,13 +14,22 @@
 </head>
 
 <body>
+    @php
+        $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
+        $bLogo = \App\Models\Business::where('id', auth()->user()->business_id)->value('logo');
+    @endphp
     <div class="container">
         <!-- Header -->
         <div class="header">
             <div class="logo-section">
-                <img src="{{ asset('images/logo.png') }}" class="logo-icon" alt="HBS Car Rental Logo">
+                <img src="{{ $bLogo ? asset('storage/' . $bLogo) : asset('images/logo.png') }}" class="logo-icon"
+                    alt="HBS Car Rental Logo">
+
             </div>
-            <div class="header-title">HBS RENT A CAR</div>
+
+            <div class="header-title">
+                {{ $bName ?? 'Business Name' }}
+            </div>
             <div class="card1">
                 <div class="card1-content">
                     <form method="POST" class="btn1-submit" action="{{ route('logout') }}">

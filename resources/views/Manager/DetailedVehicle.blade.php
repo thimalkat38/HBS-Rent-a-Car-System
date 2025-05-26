@@ -92,8 +92,7 @@
                         @if (!empty($vehicle->images))
                             @foreach ($vehicle->images as $photo)
                                 <div class="col-6 col-md-4 col-lg-3 mb-3">
-                                    <img src="{{ asset('storage/' . $photo) }}" class="img-fluid img-thumbnail"
-                                        alt="NIC Photo">
+                                    <img src="{{ asset('storage/' . $photo) }}" class="img-fluid img-thumbnail">
                                 </div>
                             @endforeach
                         @else

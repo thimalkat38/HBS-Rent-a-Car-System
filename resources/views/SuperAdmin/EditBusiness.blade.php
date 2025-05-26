@@ -64,6 +64,10 @@
                     <label for="o_phone">Owner's Contact Number</label>
                     <input type="text" name="o_phone" value="{{ old('o_phone', $Business->o_phone) }}">
                 </div>
+                <div class="form-row">
+                    <label for="logo">Upload New Business logo</label>
+                    <input type="file" name="logo">
+                </div>
 
                 <div class="submit-container">
                     <button type="submit" class="btn-submit">Update Business</button>

@@ -19,6 +19,7 @@ class Business extends Model
         'address',
         'status',
         'reg_date',
+        'logo',
     ];
 
     // Define the relationship with users
