@@ -89,11 +89,11 @@
                             <p><strong>Price Per Day:</strong> <span
                                     id="ppd">{{ $postBooking->price_per_day }}</span></p>
                             <p><strong>Started Mileage:</strong> <span id="strat">{{ $postBooking->start_km }}
-                                    KM</span></p>
-                            <p><strong>Free KM:</strong> <span id="free">{{ $postBooking->free_km }} KM</span></p>
+                                    </span></p>
+                            <p><strong>Free KM:</strong> <span id="free">{{ $postBooking->free_km }}</span></p>
                             <p><strong>Ended Mileage:</strong> <span id="end">{{ $postBooking->end_km }}
-                                    KM</span></p>
-                            <p><strong>Over Drived KM:</strong> <span id="over">{{ $postBooking->over }} KM</span>
+                                    </span></p>
+                            <p><strong>Over Drived KM:</strong> <span id="over">{{ $postBooking->over }} </span>
                             </p>
                             <p><strong>Extra 1KM Charges:</strong> <span
                                     id="kmchg">{{ $postBooking->extra_km_chg }}</span></p>
@@ -223,10 +223,10 @@
                         addRow('Arrived Date:', 'toDate');
                         addRow('Extra Days:', 'exDate');
                         addRow('Price Per Day:', 'ppd');
-                        addRow('Started Mileage:', 'strat', ' KM');
-                        addRow('Free KM:', 'free', ' KM');
-                        addRow('Ended Mileage:', 'end', ' KM');
-                        addRow('Over Drived KM:', 'over', ' KM');
+                        addRow('Started Mileage(KM):', 'strat');
+                        addRow('Free KM(KM) :', 'free');
+                        addRow('Ended Mileage(KM) :', 'end');
+                        addRow('Over Drived KM(KM) :', 'over');
                         addRow('Charge Per Extra KM:', 'kmchg');
 
 

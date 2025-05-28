@@ -11,36 +11,29 @@ use App\Models\Vehicle;
 
 class DashboardApiController extends Controller
 {
-    public function apiCalendarSummary(Request $request)
-    {
-        $businessId = Auth::user()->business_id;
-        $currentMonth = $request->input('month', now()->month);
-        $currentYear = $request->input('year', now()->year);
+public function apiCalendarSummary(Request $request)
+{
+    $businessId = Auth::user()->business_id;
 
-        $startDate = Carbon::createFromDate($currentYear, $currentMonth, 1)->startOfMonth();
-        $endDate = $startDate->copy()->endOfMonth();
+    $bookingCounts = Booking::where('business_id', $businessId)
+        ->selectRaw('DATE(from_date) as date, COUNT(*) as count')
+        ->groupBy('date')
+        ->pluck('count', 'date');
 
-        $bookingCounts = Booking::where('business_id', $businessId)
-            ->whereBetween('from_date', [$startDate, $endDate])
-            ->selectRaw('DATE(from_date) as date, COUNT(*) as count')
-            ->groupBy('date')
-            ->pluck('count', 'date');
+    $tenDaysLater = now()->addDays(10);
 
-        $tenDaysLater = now()->addDays(10);
+    $expiringVehicles = Vehicle::where('business_id', $businessId)
+        ->where(function ($query) use ($tenDaysLater) {
+            $query->whereDate('license_exp_date', '<=', $tenDaysLater)
+                ->orWhereDate('insurance_exp_date', '<=', $tenDaysLater);
+        })->get();
 
-        $expiringVehicles = Vehicle::where('business_id', $businessId)
-            ->where(function ($query) use ($tenDaysLater) {
-                $query->whereDate('license_exp_date', '<=', $tenDaysLater)
-                    ->orWhereDate('insurance_exp_date', '<=', $tenDaysLater);
-            })->get();
+    return response()->json([
+        'booking_counts' => $bookingCounts,
+        'expiring_vehicles' => $expiringVehicles,
+    ]);
+}
 
-        return response()->json([
-            'booking_counts' => $bookingCounts,
-            'expiring_vehicles' => $expiringVehicles,
-            'month' => $currentMonth,
-            'year' => $currentYear,
-        ]);
-    }
 
     public function apiGetBookingsByDate(Request $request)
     {
