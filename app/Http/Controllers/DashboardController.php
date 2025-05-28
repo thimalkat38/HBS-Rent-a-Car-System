@@ -52,16 +52,20 @@ class DashboardController extends Controller
 
         // Get bookings for the 'from_date' (IN), filtering by business_id
         $inBookings = Booking::whereDate('from_date', $date)
-            ->where('business_id', $businessId)  // Filter by business_id
+            ->where('business_id', $businessId)
             ->pluck('vehicle_number');
 
         // Get bookings for the 'to_date' (OUT), filtering by business_id
         $outBookings = Booking::whereDate('to_date', $date)
-            ->where('business_id', $businessId)  // Filter by business_id
+            ->where('business_id', $businessId)
             ->pluck('vehicle_number');
 
-        // Get all booked vehicles for the selected date
-        $bookedVehicles = $inBookings->merge($outBookings)->unique();
+        // Get all booked vehicle_numbers for the selected date (INCLUDES dates between from_date and to_date)
+        $bookedVehicles = Booking::where('business_id', $businessId)
+            ->whereDate('from_date', '<=', $date)
+            ->whereDate('to_date', '>=', $date)
+            ->pluck('vehicle_number')
+            ->unique();
 
         // Get all vehicle numbers from vehicles table for the logged-in user's business_id
         $allVehicles = Vehicle::where('business_id', $businessId)
@@ -72,7 +76,7 @@ class DashboardController extends Controller
 
         // Fetch vehicle details for available vehicles, filtering by business_id
         $availableVehiclesData = Vehicle::whereIn('vehicle_number', $availableVehicles)
-            ->where('business_id', $businessId)  // Filter by business_id
+            ->where('business_id', $businessId)
             ->get();
 
         return response()->json([

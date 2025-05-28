@@ -190,9 +190,12 @@
                     @error('method')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
+                    <input type="hidden" id="price_per_day" value="{{ $booking->price_per_day }}">
                     <label for="price" class="form-label">Total Price</label>
                     <input type="text" name="price" class="form-control" id="price"
-                        value="{{ old('price', $booking->price) }}">
+                        value="{{ old('price', $booking->price) }}" data-original-price="{{ $booking->price }}"
+                        data-original-to-date="{{ $booking->to_date }}">
+
                     @error('price')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -298,34 +301,44 @@
     }
 </script>
 <script>
-    function updateFreeKM() {
-        const fromDateInput = document.getElementById('from_date').value;
+    function updateFreeKMandPrice() {
         const toDateInput = document.getElementById('to_date').value;
         const dailyFreeKm = parseFloat(document.getElementById('daily_free_km').value);
+        const freeKmField = document.getElementById('free_km');
 
-        if (!fromDateInput || !toDateInput || isNaN(dailyFreeKm)) return;
+        const priceField = document.getElementById('price');
+        const pricePerDay = parseFloat(document.getElementById('price_per_day').value);
+        const originalPrice = parseFloat(priceField.dataset.originalPrice);
+        const originalToDate = new Date(priceField.dataset.originalToDate + 'T00:00:00');
+        const newToDate = new Date(toDateInput + 'T00:00:00');
 
+        if (isNaN(originalToDate.getTime()) || isNaN(newToDate.getTime())) return;
+
+        // ✅ Day difference between NEW to_date and ORIGINAL to_date
+        let dayDifference = Math.ceil((newToDate - originalToDate) / (1000 * 60 * 60 * 24));
+
+        // ✅ Calculate and update price only if date is extended
+        if (dayDifference > 0 && !isNaN(pricePerDay)) {
+            const additionalPrice = dayDifference * pricePerDay;
+            priceField.value = (originalPrice + additionalPrice).toFixed(2);
+        } else {
+            // Reset to original price if date was shortened or unchanged
+            priceField.value = originalPrice.toFixed(2);
+        }
+
+        // ✅ Optional: still update Free KM from from_date to to_date
+        const fromDateInput = document.getElementById('from_date').value;
         const fromDate = new Date(fromDateInput + 'T00:00:00');
-        const toDate = new Date(toDateInput + 'T00:00:00');
 
-        if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) return;
-
-        let daysDiff = Math.ceil((toDate - fromDate) / (1000 * 60 * 60 * 24));
-        if (daysDiff < 1) daysDiff = 1;
-
-        const updatedFreeKm = dailyFreeKm * daysDiff;
-        document.getElementById('free_km').value = updatedFreeKm.toFixed(2);
+        if (!isNaN(fromDate.getTime()) && !isNaN(newToDate.getTime()) && !isNaN(dailyFreeKm)) {
+            let freeKmDays = Math.ceil((newToDate - fromDate) / (1000 * 60 * 60 * 24));
+            if (freeKmDays < 1) freeKmDays = 1;
+            freeKmField.value = (freeKmDays * dailyFreeKm).toFixed(2);
+        }
     }
 
-    document.getElementById('from_date').addEventListener('change', updateFreeKM);
-    document.getElementById('to_date').addEventListener('change', updateFreeKM);
+    document.getElementById('from_date').addEventListener('change', updateFreeKMandPrice);
+    document.getElementById('to_date').addEventListener('change', updateFreeKMandPrice);
 </script>
-
-
-
-
-
-
-
 
 </html>

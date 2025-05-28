@@ -247,7 +247,7 @@
                             @enderror
 
 
-                            <input type="text" name="start_km" placeholder="Starting KM">
+                            <input type="text" name="start_km" placeholder="Starting KM (Don't type KM)">
                             @error('start_km')
                                 <span class="error-message">{{ $message }}</span>
                             @enderror
