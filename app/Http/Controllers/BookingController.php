@@ -70,21 +70,23 @@ class BookingController extends Controller
     }
 
     // Store new booking data and redirect to DetailedBooking.blade.php
+    // Improved version of the store() method with bad practices corrected
 
     public function store(Request $request)
     {
+        // Add 'payed' to validation rules and ensure numeric types for monetary fields
         $request->validate([
             'title' => 'nullable',
             'full_name' => 'required|string|max:255',
             'mobile_number' => 'required',
             'nic' => 'nullable|string|max:20',
             'address' => 'nullable|string',
-            'deposit' => 'nullable',
+            'deposit' => 'nullable|numeric',
             'booking_time' => 'required',
             'arrival_time' => 'required',
             'price_per_day' => 'required|numeric',
             'vehicle_number' => 'required',
-            'fuel_type' => 'required',
+            'fuel_type' => 'nullable',
             'vehicle_name' => 'required',
             'from_date' => 'required|date',
             'to_date' => 'required|date',
@@ -92,51 +94,158 @@ class BookingController extends Controller
             'reason' => 'nullable|string',
             'method' => 'nullable|string',
             'guarantor' => 'nullable|string',
-            'extra_km_chg' => 'nullable|string',
-            'free_km' => 'nullable|string',
-            'free_kmd' => 'nullable|string',
-            'start_km' => 'nullable|string',
+            'extra_km_chg' => 'nullable|numeric',
+            'free_km' => 'nullable|numeric',
+            'free_kmd' => 'nullable|numeric',
+            'start_km' => 'nullable|numeric',
             'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'deposit_img.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'grnt_nic.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'status' => 'nullable',
+            'additional_chagers' => 'nullable|numeric',
+            'discount_price' => 'nullable|numeric',
+            'payed' => 'nullable|numeric',
         ]);
 
+        // Use only validated data
         $validated = $request->except(['driving_photos', 'nic_photos', 'deposit_img', 'grnt_nic']);
+
+        // Set default values for optional monetary fields
         $validated['additional_chagers'] = $request->input('additional_chagers', 0.00);
         $validated['discount_price'] = $request->input('discount_price', 0.00);
+        $validated['payed'] = $request->input('payed', 0.00);
 
+        // Calculate days (always round up if there is any time difference)
         $from = new \DateTime($request->from_date . ' ' . $request->booking_time);
         $to = new \DateTime($request->to_date . ' ' . $request->arrival_time);
-        $days = ceil(($from->diff($to)->days * 24 + $from->diff($to)->h) / 24);
+        $interval = $from->diff($to);
+        $days = $interval->days;
+        if ($interval->h > 0 || $interval->i > 0 || $interval->s > 0) {
+            $days++;
+        }
+        if ($days < 1) {
+            $days = 1;
+        }        $validated['days'] = $days;
 
-        $validated['days'] = $days;
-        $validated['price'] = ($request->price_per_day * $days) + $validated['additional_chagers'] - $validated['discount_price'] - $request->input('payed', 0);
-        $validated['business_id'] = Auth::user()->business_id;
+        // Calculate price and ensure it is not negative
+        $total = ($request->price_per_day * $days) + $validated['additional_chagers'];
+        $total -= ($validated['discount_price'] + $validated['payed']);
+        $validated['price'] = max(0, $total);
 
-        $booking = Booking::create($validated);
+        // Ensure user is authenticated
+        if (!\Illuminate\Support\Facades\Auth::check()) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return redirect()->back()->withErrors(['auth' => 'You must be logged in to create a booking.']);
+        }
+        $validated['business_id'] = \Illuminate\Support\Facades\Auth::user()->business_id;
 
-        $booking->driving_photos = $request->hasFile('driving_photos') ? $this->uploadAndCopy($request->file('driving_photos'), 'driving_photos') : [];
-        $booking->nic_photos     = $request->hasFile('nic_photos')     ? $this->uploadAndCopy($request->file('nic_photos'), 'nic_photos')         : [];
-        $booking->deposit_img    = $request->hasFile('deposit_img')    ? $this->uploadAndCopy($request->file('deposit_img'), 'deposit_img')       : [];
-        $booking->grnt_nic       = $request->hasFile('grnt_nic')       ? $this->uploadAndCopy($request->file('grnt_nic'), 'grnt_nic')             : [];
-        $booking->save();
+        // Use a transaction to ensure atomicity
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            $booking = Booking::create($validated);
 
-        if (!empty($request->nic) && !Customer::where('nic', $request->nic)->exists()) {
-            Customer::create([
-                'title' => $request->title,
-                'full_name' => $request->full_name,
-                'phone' => $request->mobile_number,
-                'nic' => $request->nic,
-                'address' => $request->address,
-                'business_id' => $validated['business_id'],
-            ]);
+            // Handle file uploads (assumes model casts to array/JSON)
+            $booking->driving_photos = $request->hasFile('driving_photos') ? $this->uploadAndCopy($request->file('driving_photos'), 'driving_photos') : [];
+            $booking->nic_photos     = $request->hasFile('nic_photos')     ? $this->uploadAndCopy($request->file('nic_photos'), 'nic_photos')         : [];
+            $booking->deposit_img    = $request->hasFile('deposit_img')    ? $this->uploadAndCopy($request->file('deposit_img'), 'deposit_img')       : [];
+            $booking->grnt_nic       = $request->hasFile('grnt_nic')       ? $this->uploadAndCopy($request->file('grnt_nic'), 'grnt_nic')             : [];
+            $booking->save();
+
+            // Use firstOrCreate to avoid race conditions and duplicates
+            if (!empty($request->nic)) {
+                Customer::firstOrCreate(
+                    ['nic' => $request->nic],
+                    [
+                        'title' => $request->title,
+                        'full_name' => $request->full_name,
+                        'phone' => $request->mobile_number,
+                        'address' => $request->address,
+                        'business_id' => $validated['business_id'],
+                    ]
+                );
+            }
+
+            \Illuminate\Support\Facades\DB::commit();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'Failed to create booking: ' . $e->getMessage()]);
         }
 
         return redirect()->route('bookings.show', ['id' => $booking->id])
             ->with('success', 'Booking created successfully.');
     }
+
+
+
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'title' => 'nullable',
+    //         'full_name' => 'required|string|max:255',
+    //         'mobile_number' => 'required',
+    //         'nic' => 'nullable|string|max:20',
+    //         'address' => 'nullable|string',
+    //         'deposit' => 'nullable',
+    //         'booking_time' => 'required',
+    //         'arrival_time' => 'required',
+    //         'price_per_day' => 'required|numeric',
+    //         'vehicle_number' => 'required',
+    //         'fuel_type' => 'nullable',
+    //         'vehicle_name' => 'required',
+    //         'from_date' => 'required|date',
+    //         'to_date' => 'required|date',
+    //         'officer' => 'nullable|string',
+    //         'reason' => 'nullable|string',
+    //         'method' => 'nullable|string',
+    //         'guarantor' => 'nullable|string',
+    //         'extra_km_chg' => 'nullable|string',
+    //         'free_km' => 'nullable|string',
+    //         'free_kmd' => 'nullable|string',
+    //         'start_km' => 'nullable|string',
+    //         'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
+    //         'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
+    //         'deposit_img.*' => 'nullable|file|mimes:jpg,jpeg,png',
+    //         'grnt_nic.*' => 'nullable|file|mimes:jpg,jpeg,png',
+    //         'status' => 'nullable',
+    //     ]);
+
+    //     $validated = $request->except(['driving_photos', 'nic_photos', 'deposit_img', 'grnt_nic']);
+    //     $validated['additional_chagers'] = $request->input('additional_chagers', 0.00);
+    //     $validated['discount_price'] = $request->input('discount_price', 0.00);
+
+    //     $from = new \DateTime($request->from_date . ' ' . $request->booking_time);
+    //     $to = new \DateTime($request->to_date . ' ' . $request->arrival_time);
+    //     $days = ceil(($from->diff($to)->days * 24 + $from->diff($to)->h) / 24);
+
+    //     $validated['days'] = $days;
+    //     $validated['price'] = ($request->price_per_day * $days) + $validated['additional_chagers'] - $validated['discount_price'] - $request->input('payed', 0);
+    //     $validated['business_id'] = Auth::user()->business_id;
+
+    //     $booking = Booking::create($validated);
+
+    //     $booking->driving_photos = $request->hasFile('driving_photos') ? $this->uploadAndCopy($request->file('driving_photos'), 'driving_photos') : [];
+    //     $booking->nic_photos     = $request->hasFile('nic_photos')     ? $this->uploadAndCopy($request->file('nic_photos'), 'nic_photos')         : [];
+    //     $booking->deposit_img    = $request->hasFile('deposit_img')    ? $this->uploadAndCopy($request->file('deposit_img'), 'deposit_img')       : [];
+    //     $booking->grnt_nic       = $request->hasFile('grnt_nic')       ? $this->uploadAndCopy($request->file('grnt_nic'), 'grnt_nic')             : [];
+    //     $booking->save();
+
+    //     if (!empty($request->nic) && !Customer::where('nic', $request->nic)->exists()) {
+    //         Customer::create([
+    //             'title' => $request->title,
+    //             'full_name' => $request->full_name,
+    //             'phone' => $request->mobile_number,
+    //             'nic' => $request->nic,
+    //             'address' => $request->address,
+    //             'business_id' => $validated['business_id'],
+    //         ]);
+    //     }
+
+    //     return redirect()->route('bookings.show', ['id' => $booking->id])
+    //         ->with('success', 'Booking created successfully.');
+    // }
+
+    
     private function uploadAndCopy($files, $directory)
     {
         $paths = [];
@@ -281,6 +390,6 @@ class BookingController extends Controller
         $booking = Booking::findOrFail($id);
 
         // Pass the relevant details to the view
-        return view('Manager.PostBooking', compact('booking'));
+        return view('Manager.NewPostBooking', compact('booking'));
     }
 }

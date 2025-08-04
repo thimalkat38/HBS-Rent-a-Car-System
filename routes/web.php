@@ -251,7 +251,7 @@ Route::middleware(['manager'])->get('/profit-loss-report', [ProfitLossController
 Route::middleware(['manager'])->post('/salary/store', [SalaryController::class, 'store'])->name('salary.store');
 Route::middleware(['admin'])->get('superadmin', [HomeController::class, 'index'])->name('business.index');
 Route::middleware(['admin'])->get('/superadmin', [HomeController::class, 'search'])->name('bus.search');
-Route::middleware(['manager'])->get('manager/addbook', [HomeController::class, 'manageraddbook']);
+Route::middleware(['manager'])->get('manager/addbook', [HomeController::class, 'manageraddbook'])->name('manager.addbook');
 Route::get('/please-login', function () {
     return view('please-login');
 });
@@ -324,3 +324,25 @@ Route::get('/link', function () {
 // Route::middleware(['manager'])->get('postbooking', function () {
 //     return view('Manager.PostBooking');
 // })->name('postbooking');
+
+
+
+
+
+
+
+Route::middleware(['manager'])->get('/addbooking', function () {
+    return view('Manager.NewAddBooking');
+});
+
+Route::middleware(['manager'])->get('/newpost', function () {
+    return view('Manager.NewPostBooking');
+});
+Route::middleware(['manager'])->get('/allvehicles', [VehicleController::class, 'index'])->name('vehicles.index');
+
+Route::middleware(['manager'])->get('/detailedvehicle', function () {
+    return view('Manager.NewDetailedVehicle');
+});
+
+Route::get('/profit-data', [PostBookingController::class, 'getProfitData']);
+Route::get('/vehicle-availability', [VehicleController::class, 'vehicleAvailability']);

@@ -38,4 +38,9 @@ class Vehicle extends Model
     {
         return $this->belongsTo(Business::class);
     }
+    public function bookings()
+{
+    return $this->hasMany(\App\Models\Booking::class, 'vehicle_number', 'vehicle_number');
+}
+
 }

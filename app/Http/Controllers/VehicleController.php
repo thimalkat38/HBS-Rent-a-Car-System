@@ -7,22 +7,53 @@ use App\Models\Vehicle;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Booking;
 
 class VehicleController extends Controller
 {
     /**
      * Display a listing of the vehicles.
      */
-    public function index()
+    public function index(Request $request)
     {
         $businessId = Auth::user()->business_id;
 
-        $vehicles = \App\Models\Vehicle::where('business_id', $businessId)->get();
+        $query = \App\Models\Vehicle::where('business_id', $businessId);
 
-        return view('Manager.ManagerVehicles', compact('vehicles'));
+        // Filter: Search by vehicle_number or vehicle_name
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('vehicle_number', 'like', "%$search%")
+                    ->orWhere('vehicle_name', 'like', "%$search%");
+            });
+        }
+
+        // Filter: Availability
+        if ($request->filled('availability')) {
+            $today = now()->toDateString();
+
+            $query->where(function ($q) use ($request, $today) {
+                if ($request->availability === 'available') {
+                    $q->whereDoesntHave('bookings', function ($subQuery) use ($today) {
+                        $subQuery->whereDate('from_date', '<=', $today)
+                            ->whereDate('to_date', '>=', $today);
+                    });
+                }
+
+                if ($request->availability === 'in_tour') {
+                    $q->whereHas('bookings', function ($subQuery) use ($today) {
+                        $subQuery->whereDate('from_date', '<=', $today)
+                            ->whereDate('to_date', '>=', $today);
+                    });
+                }
+            });
+        }
+
+        $vehicles = $query->paginate(9);
+
+        return view('Manager.AllVehicles', compact('vehicles'));
     }
-
-
 
     public function show($id)
     {
@@ -34,7 +65,7 @@ class VehicleController extends Controller
         }
 
         // Pass the customer data to the view
-        return view('Manager.DetailedVehicle', compact('vehicle'));
+        return view('Manager.NewDetailedVehicle', compact('vehicle'));
     }
 
     /**
@@ -202,7 +233,7 @@ class VehicleController extends Controller
         ]);
 
 
-        return redirect('manager/vehicles')->with('success', 'Vehicle updated successfully!');
+        return redirect('allvehicles')->with('success', 'Vehicle updated successfully!');
     }
 
 
@@ -367,5 +398,45 @@ class VehicleController extends Controller
         $vehicle->save();
 
         return redirect()->back()->with('success', 'Documents renewed successfully.');
+    }
+    public function vehicleAvailability(Request $request)
+    {
+        $businessId = $request->input('business_id');
+        $from = $request->input('from_date');
+        $to = $request->input('to_date');
+
+        // Get all vehicles for the business
+        $vehicles = Vehicle::where('business_id', $businessId)->get();
+
+        // Get all bookings that overlap with the selected dates
+        $bookedVehicleNumbers = Booking::where('business_id', $businessId)
+            ->where(function ($q) use ($from, $to) {
+                $q->where(function ($q2) use ($from, $to) {
+                    $q2->where('from_date', '<=', $to)
+                        ->where('to_date', '>=', $from);
+                });
+            })
+            ->pluck('vehicle_number')
+            ->toArray();
+
+        $available = [];
+        $unavailable = [];
+
+        foreach ($vehicles as $vehicle) {
+            $item = [
+                'number' => $vehicle->vehicle_number,
+                'model' => $vehicle->vehicle_name,
+            ];
+            if (in_array($vehicle->vehicle_number, $bookedVehicleNumbers)) {
+                $unavailable[] = $item;
+            } else {
+                $available[] = $item;
+            }
+        }
+
+        return response()->json([
+            'available' => $available,
+            'unavailable' => $unavailable,
+        ]);
     }
 }

@@ -18,7 +18,7 @@
         $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
         $bLogo = \App\Models\Business::where('id', auth()->user()->business_id)->value('logo');
     @endphp
-    <div class="container">
+    <div class="container">             
         <!-- Header -->
         <div class="header">
             <div class="logo-section">
@@ -58,7 +58,7 @@
                             VEHICLES</a>
                         <div class="dropdown-menu">
                             <a class="dropdown-link" href="{{ url('addvehicle') }}">Add Vehicle</a>
-                            <a class="dropdown-link" href="{{ url('manager/vehicles') }}">List Vehicle</a>
+                            <a class="dropdown-link" href="{{ url('allvehicles') }}">All Vehicles</a>
                             <a class="dropdown-link" href="{{ url('vehicle_owners') }}">Vehicle Owner Management</a>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                         <a class="nav-link"><img src="{{ asset('images/3.png') }}" alt="Bookings" class="nav-icon">
                             BOOKINGS</a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-link" href="{{ url('manager/addbook') }}">Book Vehicle</a>
+                            <a class="dropdown-link" href="{{ url('addbooking') }}">Book Vehicle</a>
                             <a class="dropdown-link" href="{{ url('bookings') }}">Booking History</a>
                             <a class="dropdown-link" href="{{ url('postbookings') }}">Completed Businesses</a>
                         </div>

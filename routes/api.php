@@ -13,10 +13,8 @@ use App\Http\Controllers\Api\OwnerpaymentApiController;
 use App\Http\Controllers\Api\CustomerApiController;
 
 
-
-Route::post('/login', [ApiAuthController::class, 'login']);
-
 //Auth Routes
+Route::post('/login', [ApiAuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [ApiAuthController::class, 'me']);
     Route::post('/logout', [ApiAuthController::class, 'logout']);
@@ -29,30 +27,30 @@ Route::get('/test', function () {
 
 //vehicle Routes
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/vehicles', [VehicleApiController::class, 'index']);
-    Route::get('/vehicles/{id}', [VehicleApiController::class, 'show']);
-    Route::post('/vehicles', [VehicleApiController::class, 'store']);
-    Route::put('/vehicles/{id}', [VehicleApiController::class, 'update']);
-    Route::delete('/vehicles/{id}', [VehicleApiController::class, 'delete']);
+    Route::get('/vehicles', [VehicleApiController::class, 'index']);// List all Vehicles
+    Route::get('/vehicles/{id}', [VehicleApiController::class, 'show']);//Get details of one vehicle
+    Route::post('/vehicles', [VehicleApiController::class, 'store']);//Add Vehicle
+    Route::put('/vehicles/{id}', [VehicleApiController::class, 'update']);//Edit Vehicle
+    Route::delete('/vehicles/{id}', [VehicleApiController::class, 'delete']);//Delete Vehicle
 });
 
 //Leave Routes
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/leaves', [LeaveApiController::class, 'index']);
-    Route::post('/leaves', [LeaveApiController::class, 'store']);
-    Route::post('/leaves/{id}/status', [LeaveApiController::class, 'updateStatus']);
-    Route::get('/leaves/approved', [LeaveApiController::class, 'showApproved']);
-    Route::get('/leaves/rejected', [LeaveApiController::class, 'showRejected']);
+    Route::get('/leaves', [LeaveApiController::class, 'index']);// List all Leaves
+    Route::post('/leaves', [LeaveApiController::class, 'store']);//Create Leaves
+    Route::post('/leaves/{id}/status', [LeaveApiController::class, 'updateStatus']);//Update leave status
+    Route::get('/leaves/approved', [LeaveApiController::class, 'showApproved']);//List all approved leaves
+    Route::get('/leaves/rejected', [LeaveApiController::class, 'showRejected']);//List all rejected leaves
 });
 
 //Booking Routes
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/bookings', [BookingApiController::class, 'index']);
-    Route::post('/bookings', [BookingApiController::class, 'store']);
-    Route::get('/bookings/{id}', [BookingApiController::class, 'show']);
-    Route::get('/bookings/{id}/post', [BookingApiController::class, 'postBooking']);
-    Route::put('/bookings/{id}', [BookingApiController::class, 'update']);
-    Route::delete('/bookings/{id}', [BookingApiController::class, 'destroy']);
+    Route::get('/bookings', [BookingApiController::class, 'index']);//// List all bookings
+    Route::post('/bookings', [BookingApiController::class, 'store']);//Create booking
+    Route::get('/bookings/{id}', [BookingApiController::class, 'show']);//Get details about one booking
+    Route::get('/bookings/{id}/post', [BookingApiController::class, 'postBooking']);//Direct to postbooking
+    Route::put('/bookings/{id}', [BookingApiController::class, 'update']);//Edit booking
+    Route::delete('/bookings/{id}', [BookingApiController::class, 'destroy']);//Delete booking
 });
 
 //PostBookings Routes
@@ -60,8 +58,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('postbookings', [PostBookingApiController::class, 'index']); // List all post bookings
     Route::post('postbookings', [PostBookingApiController::class, 'store']); // Create a new post booking
     Route::get('postbookings/{postBooking}', [PostBookingApiController::class, 'show']); // View a specific post booking
-    Route::put('/postbookings/{id}', [PostBookingApiController::class, 'update']);
-    Route::delete('/postbookings/{id}', [PostBookingApiController::class, 'destroy']);
+    Route::put('/postbookings/{id}', [PostBookingApiController::class, 'update']);//Edit Post booking
+    Route::delete('/postbookings/{id}', [PostBookingApiController::class, 'destroy']);//Delete postbooking
 });
 
 
@@ -80,30 +78,30 @@ Route::middleware('auth:sanctum')->get('/pl-report/{startDate}/{endDate}', [Prof
 
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/vehicleowners', [VehicleOwnerApiController::class, 'index']);
-    Route::post('/vehicleowners', [VehicleOwnerApiController::class, 'store']);
-    Route::put('/vehicleowners/{id}', [VehicleOwnerApiController::class, 'update']);
-    Route::delete('/vehicleowners/{id}', [VehicleOwnerApiController::class, 'destroy']);
+    Route::get('/vehicleowners', [VehicleOwnerApiController::class, 'index']);// List all vehicle owners
+    Route::post('/vehicleowners', [VehicleOwnerApiController::class, 'store']);//Add Vehicle owner
+    Route::put('/vehicleowners/{id}', [VehicleOwnerApiController::class, 'update']);//Edit vehicle owner
+    Route::delete('/vehicleowners/{id}', [VehicleOwnerApiController::class, 'destroy']);//Delete vehicle owner
 });
 
 
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/ownerpayments', [OwnerpaymentApiController::class, 'index']);
-    Route::post('/ownerpayments', [OwnerpaymentApiController::class, 'store']);
-    Route::put('/ownerpayments/{id}', [OwnerpaymentApiController::class, 'update']);
-    Route::delete('/ownerpayments/{id}', [OwnerpaymentApiController::class, 'destroy']);
+    Route::get('/ownerpayments', [OwnerpaymentApiController::class, 'index']);// List all vehicle owner
+    Route::post('/ownerpayments', [OwnerpaymentApiController::class, 'store']);//Add owner payment
+    Route::put('/ownerpayments/{id}', [OwnerpaymentApiController::class, 'update']);// Edit owner payment
+    Route::delete('/ownerpayments/{id}', [OwnerpaymentApiController::class, 'destroy']);//delete owner payment
 });
 
 
 
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/customers', [CustomerApiController::class, 'index']);
-    Route::post('/customers', [CustomerApiController::class, 'store']);
-    Route::get('/customers/{id}', [CustomerApiController::class, 'show']);
-    Route::put('/customers/{id}', [CustomerApiController::class, 'update']);
-    Route::delete('/customers/{id}', [CustomerApiController::class, 'destroy']);
-    Route::get('/customers/search', [CustomerApiController::class, 'search']);
-    Route::get('/customers/{id}/details', [CustomerApiController::class, 'getCustomerDetails']);
+    Route::get('/customers', [CustomerApiController::class, 'index']);// List all customers 
+    Route::post('/customers', [CustomerApiController::class, 'store']);//create customer
+    Route::get('/customers/{id}', [CustomerApiController::class, 'show']);//Details about one customer
+    Route::put('/customers/{id}', [CustomerApiController::class, 'update']);//Edit customers
+    Route::delete('/customers/{id}', [CustomerApiController::class, 'destroy']);//Delete customers
+    Route::get('/customers/search', [CustomerApiController::class, 'search']);//Search customers
+    Route::get('/customers/{id}/details', [CustomerApiController::class, 'getCustomerDetails']);//Get details about customer for booking page
 });
