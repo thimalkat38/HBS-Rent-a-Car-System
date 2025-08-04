@@ -169,4 +169,49 @@ class PostBookingController extends Controller
 
         return redirect()->route('postbookings.index')->with('success', 'Booking deleted successfully.');
     }
+
+    public function getProfitData(Request $request)
+    {
+        $request->validate([
+            'vehicle_number' => 'required|string',
+            'from_date' => 'nullable|date',
+            'to_date' => 'nullable|date',
+        ]);
+    
+        $vehicleNumber = $request->vehicle_number;
+        $fromDate = $request->from_date;
+        $toDate = $request->to_date;
+    
+        $query = Postbooking::where('vehicle_number', $vehicleNumber);
+    
+        if ($fromDate) {
+            $query->whereDate('to_date', '>=', $fromDate);
+        }
+    
+        if ($toDate) {
+            $query->whereDate('to_date', '<=', $toDate);
+        }
+    
+        // Grouping income per day for chart
+        $grouped = $query->selectRaw('DATE(to_date) as date, SUM(total_income) as total')
+                         ->groupBy('date')
+                         ->orderBy('date')
+                         ->get();
+    
+        $totalSum = $grouped->sum('total');
+    
+        // For calculating total booked days
+        $totalDays = $query->get()->sum(function ($booking) {
+            $start = \Carbon\Carbon::parse($booking->from_date);
+            $end = \Carbon\Carbon::parse($booking->to_date);
+            return $start->diffInDays($end) + 1; // inclusive of both dates
+        });
+    
+        return response()->json([
+            'total_income' => $totalSum,
+            'total_days' => $totalDays,
+            'data' => $grouped,
+        ]);
+    }
+    
 }
