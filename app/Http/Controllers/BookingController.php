@@ -81,7 +81,7 @@ class BookingController extends Controller
             'mobile_number' => 'required',
             'nic' => 'nullable|string|max:20',
             'address' => 'nullable|string',
-            'deposit' => 'nullable|numeric',
+            'deposit' => 'nullable',
             'booking_time' => 'required',
             'arrival_time' => 'required',
             'price_per_day' => 'required|numeric',
