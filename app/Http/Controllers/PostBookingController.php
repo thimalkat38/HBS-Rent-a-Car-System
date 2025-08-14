@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\PostBooking;
 use App\Models\Booking;
+use App\Models\Expense;
+use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -181,37 +183,92 @@ class PostBookingController extends Controller
         $vehicleNumber = $request->vehicle_number;
         $fromDate = $request->from_date;
         $toDate = $request->to_date;
+        $businessId = Auth::check() ? Auth::user()->business_id : null;
     
-        $query = Postbooking::where('vehicle_number', $vehicleNumber);
+        // Base booking query (Income)
+        $incomeQuery = Postbooking::selectRaw('DATE(from_date) as date, SUM(total_income) as total')
+            ->where('vehicle_number', $vehicleNumber)
+            ->groupBy('date')
+            ->orderBy('date');
     
+        if ($businessId) {
+            $incomeQuery->where('business_id', $businessId);
+        }
         if ($fromDate) {
-            $query->whereDate('to_date', '>=', $fromDate);
+            $incomeQuery->whereDate('from_date', '>=', $fromDate);
         }
-    
         if ($toDate) {
-            $query->whereDate('to_date', '<=', $toDate);
+            $incomeQuery->whereDate('from_date', '<=', $toDate);
         }
     
-        // Grouping income per day for chart
-        $grouped = $query->selectRaw('DATE(to_date) as date, SUM(total_income) as total')
-                         ->groupBy('date')
-                         ->orderBy('date')
-                         ->get();
+        $incomeData = $incomeQuery->get();
     
-        $totalSum = $grouped->sum('total');
+        // Expenses from expenses table
+        $fuelExpensesQuery = Expense::selectRaw('DATE(date) as date, SUM(amnt) as total')
+            ->where('fuel_for', $vehicleNumber)
+            ->groupBy('date')
+            ->orderBy('date');
     
-        // For calculating total booked days
-        $totalDays = $query->get()->sum(function ($booking) {
-            $start = \Carbon\Carbon::parse($booking->from_date);
-            $end = \Carbon\Carbon::parse($booking->to_date);
-            return $start->diffInDays($end) + 1; // inclusive of both dates
-        });
+        if ($businessId) {
+            $fuelExpensesQuery->where('business_id', $businessId);
+        }
+        if ($fromDate) {
+            $fuelExpensesQuery->whereDate('date', '>=', $fromDate);
+        }
+        if ($toDate) {
+            $fuelExpensesQuery->whereDate('date', '<=', $toDate);
+        }
+    
+        $fuelExpensesData = $fuelExpensesQuery->get();
+    
+        // Expenses from services table
+        $serviceExpensesQuery = Service::selectRaw('DATE(date) as date, SUM(amnt) as total')
+            ->where('vehicle_number', $vehicleNumber)
+            ->groupBy('date')
+            ->orderBy('date');
+    
+        if ($businessId) {
+            $serviceExpensesQuery->where('business_id', $businessId);
+        }
+        if ($fromDate) {
+            $serviceExpensesQuery->whereDate('date', '>=', $fromDate);
+        }
+        if ($toDate) {
+            $serviceExpensesQuery->whereDate('date', '<=', $toDate);
+        }
+    
+        $serviceExpensesData = $serviceExpensesQuery->get();
+    
+        // Merge expenses
+        $expensesMap = [];
+    
+        foreach ($fuelExpensesData as $row) {
+            $expensesMap[$row->date] = ($expensesMap[$row->date] ?? 0) + $row->total;
+        }
+        foreach ($serviceExpensesData as $row) {
+            $expensesMap[$row->date] = ($expensesMap[$row->date] ?? 0) + $row->total;
+        }
+    
+        // Prepare final combined data
+        $labels = [];
+        $incomeValues = [];
+        $expenseValues = [];
+    
+        foreach ($incomeData as $row) {
+            $labels[] = $row->date;
+            $incomeValues[] = (float) $row->total;
+            $expenseValues[] = (float) ($expensesMap[$row->date] ?? 0);
+        }
     
         return response()->json([
-            'total_income' => $totalSum,
-            'total_days' => $totalDays,
-            'data' => $grouped,
+            'labels' => $labels,
+            'income' => $incomeValues,
+            'expenses' => $expenseValues,
+            'total_income' => array_sum($incomeValues),
+            'total_expenses' => array_sum($expenseValues),
         ]);
     }
+    
+    
     
 }

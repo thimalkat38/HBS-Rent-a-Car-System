@@ -45,40 +45,40 @@
                 <div class="form-row">
                     <label for="vehicle_name">Vehicle Name</label>
                     <input type="text" name="vehicle_name" value="{{ old('vehicle_name', $vehicle->vehicle_name) }}"
-                        readonly>
+                        >
                     <label for="vehicle_type">Vehicle Type</label>
                     <input type="text" name="vehicle_type" value="{{ old('vehicle_type', $vehicle->vehicle_type) }}"
-                        readonly>
+                        >
                 </div>
 
                 <!-- Vehicle Number -->
                 <div class="form-row">
                     <label for="vehicle_number">Vehicle Number</label>
                     <input type="text" name="vehicle_number"
-                        value="{{ old('vehicle_number', $vehicle->vehicle_number) }}" readonly>
+                        value="{{ old('vehicle_number', $vehicle->vehicle_number) }}" >
                     <label for="vehicle_model">Vehicle Model</label>
                     <input type="text" name="vehicle_model"
-                        value="{{ old('vehicle_model', $vehicle->vehicle_model) }}" readonly>
+                        value="{{ old('vehicle_model', $vehicle->vehicle_model) }}" >
                 </div>
 
                 <!-- Engine Number -->
                 <div class="form-row">
                     <label for="engine_number">Engine Number</label>
                     <input type="text" name="engine_number"
-                        value="{{ old('engine_number', $vehicle->engine_number) }}" readonly>
+                        value="{{ old('engine_number', $vehicle->engine_number) }}" >
                     <label for="fuel_type">Fuel Type</label>
                     <input type="text" name="fuel_type" value="{{ old('fuel_type', $vehicle->fuel_type) }}"
-                        readonly>
+                        >
                 </div>
 
                 <!-- Chassis Number -->
                 <div class="form-row">
                     <label for="chassis_number">Chassis Number</label>
                     <input type="text" name="chassis_number"
-                        value="{{ old('chassis_number', $vehicle->chassis_number) }}" readonly>
+                        value="{{ old('chassis_number', $vehicle->chassis_number) }}" >
                     <label for="model_year">Model Year</label>
                     <input type="number" name="model_year" value="{{ old('model_year', $vehicle->model_year) }}"
-                        readonly>
+                        >
                 </div>
                 <div class="form-row">
                     <label for="license_exp_date">License Expire Date</label>

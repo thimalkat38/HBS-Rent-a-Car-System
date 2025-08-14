@@ -106,6 +106,7 @@ class BookingController extends Controller
             'additional_chagers' => 'nullable|numeric',
             'discount_price' => 'nullable|numeric',
             'payed' => 'nullable|numeric',
+            'commissioner' => 'nullable|string',
         ]);
 
         // Use only validated data
