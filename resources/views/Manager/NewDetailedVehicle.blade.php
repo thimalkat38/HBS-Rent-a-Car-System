@@ -593,9 +593,6 @@
                                         <span id="total-income" class="text-gray-900 text-2xl font-semibold font-poppins">
                                             LKR {{ isset($vehicleProfit['total_income']) ? number_format($vehicleProfit['total_income'], 2) : '0' }}
                                         </span>
-                                        {{-- <span class="px-2 py-1 bg-green-200 rounded text-emerald-600 text-xs font-medium font-poppins ml-2" id="profit-change">
-                                            {{ isset($vehicleProfit['profit_change']) ? $vehicleProfit['profit_change'] : '+0%' }}
-                                        </span> --}}
                                     </div>
                                     <div class="text-right">
                                         <span class="text-gray-700 text-base font-normal font-poppins">Total Booked days: </span>
@@ -612,21 +609,20 @@
 
                         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                         <script>
-                            document.addEventListener("DOMContentLoaded", function () {
-                                const fromDateInput = document.getElementById("from-date");
-                                const toDateInput = document.getElementById("to-date");
-                                // Use the actual vehicle number from the backend
-                                const vehicleNumber = "{{ $vehicle->vehicle_number ?? '' }}";
-                                const incomeDisplay = document.getElementById("total-income");
-                                const daysDisplay = document.getElementById("total-days");
-                                const changeDisplay = document.getElementById("profit-change");
-
-                                const ctx = document.getElementById("profitChart").getContext("2d");
-                                const chart = new Chart(ctx, {
-                                    type: 'line',
-                                    data: {
-                                        labels: {!! isset($vehicleProfit['labels']) ? json_encode($vehicleProfit['labels']) : '[]' !!},
-                                        datasets: [{
+                        document.addEventListener("DOMContentLoaded", function () {
+                            const fromDateInput = document.getElementById("from-date");
+                            const toDateInput = document.getElementById("to-date");
+                            const vehicleNumber = "{{ $vehicle->vehicle_number ?? '' }}";
+                            const incomeDisplay = document.getElementById("total-income");
+                            const daysDisplay = document.getElementById("total-days");
+                        
+                            const ctx = document.getElementById("profitChart").getContext("2d");
+                            const chart = new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: {!! isset($vehicleProfit['labels']) ? json_encode($vehicleProfit['labels']) : '[]' !!},
+                                    datasets: [
+                                        {
                                             label: 'Daily Income',
                                             data: {!! isset($vehicleProfit['values']) ? json_encode($vehicleProfit['values']) : '[]' !!},
                                             borderColor: 'rgb(34,197,94)',
@@ -635,67 +631,63 @@
                                             fill: true,
                                             pointRadius: 3,
                                             pointBackgroundColor: 'rgb(34,197,94)',
-                                        }]
-                                    },
-                                    options: {
-                                        responsive: true,
-                                        plugins: {
-                                            legend: { display: false }
                                         },
-                                        scales: {
-                                            x: { title: { display: true, text: 'Date' }},
-                                            y: {
-                                                beginAtZero: true,
-                                                title: { display: true, text: 'Income (LKR)' },
-                                                ticks: { callback: val => `LKR ${val}` }
-                                            }
+                                        {
+                                            label: 'Daily Expenses',
+                                            data: {!! isset($vehicleProfit['expenses']) ? json_encode($vehicleProfit['expenses']) : '[]' !!},
+                                            borderColor: 'rgb(239,68,68)',
+                                            backgroundColor: 'rgba(239,68,68,0.2)',
+                                            tension: 0.3,
+                                            fill: true,
+                                            pointRadius: 3,
+                                            pointBackgroundColor: 'rgb(239,68,68)',
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    responsive: true,
+                                    plugins: {
+                                        legend: { display: true }
+                                    },
+                                    scales: {
+                                        x: { title: { display: true, text: 'Date' }},
+                                        y: {
+                                            beginAtZero: true,
+                                            title: { display: true, text: 'Amount (LKR)' },
+                                            ticks: { callback: val => `LKR ${val}` }
                                         }
                                     }
-                                });
-
-                                function fetchProfitData() {
-                                    const fromDate = fromDateInput.value;
-                                    const toDate = toDateInput.value;
-
-                                    // If both dates are empty, do not fetch
-                                    if (!fromDate && !toDate) return;
-
-                                    fetch(`/profit-data?vehicle_number=${vehicleNumber}&from_date=${fromDate}&to_date=${toDate}`)
-                                        .then(res => res.json())
-                                        .then(data => {
-                                            // Update totals
-                                            incomeDisplay.innerText = `LKR ${Number(data.total_income).toLocaleString()}`;
-                                            daysDisplay.innerText = data.data.length;
-
-                                            // Update chart
-                                            const labels = data.data.map(entry => entry.date);
-                                            const values = data.data.map(entry => entry.total);
-                                            chart.data.labels = labels;
-                                            chart.data.datasets[0].data = values;
-                                            chart.update();
-
-                                            // Profit % calculation
-                                            let change = 0;
-                                            if (values.length >= 2 && values[0] != 0) {
-                                                change = ((values[values.length - 1] - values[0]) / Math.abs(values[0])) * 100;
-                                            }
-                                            const changeRounded = change.toFixed(1);
-                                            changeDisplay.innerText = `${change > 0 ? '+' : ''}${changeRounded}%`;
-                                            changeDisplay.classList.toggle("text-emerald-600", change >= 0);
-                                            changeDisplay.classList.toggle("text-red-600", change < 0);
-                                            changeDisplay.classList.toggle("bg-green-200", change >= 0);
-                                            changeDisplay.classList.toggle("bg-red-200", change < 0);
-                                        });
                                 }
-
-                                fromDateInput.addEventListener("change", fetchProfitData);
-                                toDateInput.addEventListener("change", fetchProfitData);
-
-                                // If there is initial data, do not auto-fetch
-                                @if(empty($vehicleProfit['labels']) || empty($vehicleProfit['values']))
-                                fetchProfitData();
-                                @endif
                             });
+                        
+                            function fetchProfitData() {
+                                const fromDate = fromDateInput.value;
+                                const toDate = toDateInput.value;
+                        
+                                if (!fromDate && !toDate) return;
+                        
+                                fetch(`/profit-data?vehicle_number=${vehicleNumber}&from_date=${fromDate}&to_date=${toDate}`)
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        // Update totals
+                                        incomeDisplay.innerText = `LKR ${Number(data.total_income).toLocaleString()}`;
+                                        daysDisplay.innerText = data.labels.length;
+                        
+                                        // Update chart data
+                                        chart.data.labels = data.labels;
+                                        chart.data.datasets[0].data = data.income;
+                                        chart.data.datasets[1].data = data.expenses;
+                                        chart.update();
+                                    });
+                            }
+                        
+                            fromDateInput.addEventListener("change", fetchProfitData);
+                            toDateInput.addEventListener("change", fetchProfitData);
+                        
+                            @if(empty($vehicleProfit['labels']) || empty($vehicleProfit['values']))
+                            fetchProfitData();
+                            @endif
+                        });
                         </script>
                     </div>
                 </div>

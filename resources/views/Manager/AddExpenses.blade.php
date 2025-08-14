@@ -211,9 +211,12 @@
                         <!-- Fuel For Dropdown (Initially Hidden) -->
                         <div class="form-row" id="fuel_for_container" style="display: none;">
                             <label for="fuel_for">Fuel For (Vehicle Number):</label>
-                            <input type="text" id="fuel_for" name="fuel_for" class="form-control"
-                                placeholder="Type to search vehicle...">
-                            <div id="vehicle_list" class="dropdown-car" style="display: none; position: absolute;">
+                            <div style="width: 100%; position: relative;">
+                                <input type="text" id="fuel_for" name="fuel_for" class="form-control"
+                                    placeholder="Type to search vehicle..." autocomplete="off" style="width: 100%;">
+                                <div id="vehicle_list" class="dropdown-car" style="display: none; position: absolute; left: 0; right: 0; top: 100%; z-index: 1000; background: #fff; border: 1px solid #d1d5db; border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); min-width: 220px; max-height: 220px; overflow-y: auto; padding: 0.25rem 0;">
+                                    <!-- Vehicle suggestions will appear here -->
+                                </div>
                             </div>
                         </div>
 

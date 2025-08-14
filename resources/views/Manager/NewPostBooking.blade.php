@@ -265,6 +265,7 @@
                 <section class="bg-white rounded-2xl shadow p-8">
                     <h2 class="text-xl font-semibold text-slate-900 mb-6">Customer Information</h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <input type="hidden" name="id" value="{{ $booking->id }}">
                         <div>
                             <label class="block text-sm font-medium text-slate-800 mb-1">Full Name</label>
                             <input type="text" name="full_name" id="full_name" value="{{ $booking->full_name }}" class="w-full h-12 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Enter full name" />

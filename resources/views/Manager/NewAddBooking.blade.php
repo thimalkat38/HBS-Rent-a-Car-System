@@ -380,8 +380,7 @@
                                 placeholder="Enter contact number" value="{{ old('mobile_number') }}"
                                 pattern="^(\+?\d{1,3}[- ]?)?\d{10}$"
                                 title="Please enter a valid 10-digit phone number. You may include country code."
-                                required
-                            />
+                                required />
                         </div>
                         <!-- Import the customer dropdown script from ManagerAddBooking -->
 
@@ -657,7 +656,8 @@
                                     return;
                                 }
                                 fetch(
-                                        `/vehicle-availability?business_id=${businessId}&from_date=${encodeURIComponent(fromDate)}&to_date=${encodeURIComponent(toDate)}`)
+                                        `/vehicle-availability?business_id=${businessId}&from_date=${encodeURIComponent(fromDate)}&to_date=${encodeURIComponent(toDate)}`
+                                    )
                                     .then(response => {
                                         if (!response.ok) {
                                             throw new Error('Failed to fetch vehicle availability. Please check your input and try again.');
@@ -833,7 +833,7 @@
                                 Officer</label>
                             <input id="officer" name="officer" type="text"
                                 class="w-full h-12 px-3 py-2 bg-gray-100 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                                placeholder="Enter officer name" autocomplete="off"  />
+                                placeholder="Enter officer name" autocomplete="off" />
                             <ul id="officer-list" class="list-group"
                                 style="position: absolute; z-index: 10; width: 100%; display: none; background: white; border: 1px solid #ccc; border-radius: 0 0 0.75rem 0.75rem; max-height: 180px; overflow-y: auto;">
                             </ul>
@@ -884,6 +884,67 @@
                                     if (!$(e.target).closest("#officer").length && !$(e.target).closest("#officer-list")
                                         .length) {
                                         $("#officer-list").hide();
+                                    }
+                                });
+                            });
+                        </script>
+                        <div style="position: relative;">
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="commission">Commission
+                                Officer</label>
+                            <input id="commission" name="commission" type="text"
+                                class="w-full h-12 px-3 py-2 bg-gray-100 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                placeholder="Enter commission name" autocomplete="off" />
+                            <ul id="commission-list" class="list-group"
+                                style="position: absolute; z-index: 10; width: 100%; display: none; background: white; border: 1px solid #ccc; border-radius: 0 0 0.75rem 0.75rem; max-height: 180px; overflow-y: auto;">
+                            </ul>
+                        </div>
+                        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+                        <link rel="stylesheet"
+                            href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+                        <script>
+                            $(document).ready(function() {
+                                $("#commission").on("input", function() {
+                                    const query = $(this).val();
+                                    if (query.length > 0) {
+                                        $.ajax({
+                                            url: "/autocomplete-employees",
+                                            type: "GET",
+                                            data: {
+                                                term: query
+                                            },
+                                            dataType: "json",
+                                            success: function(data) {
+                                                let list = $("#commission-list");
+                                                list.empty();
+                                                if (data.length > 0) {
+                                                    data.forEach(function(item) {
+                                                        list.append(
+                                                            '<li class="list-group-item" style="padding: 8px; cursor: pointer;">' +
+                                                            item + '</li>');
+                                                    });
+                                                    list.show();
+                                                } else {
+                                                    list.hide();
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        $("#commission-list").hide();
+                                    }
+                                });
+
+                                // Handle click on suggestion
+                                $(document).on("click", "#commission-list li", function() {
+                                    $("#commission").val($(this).text());
+                                    $("#commission-list").hide();
+                                });
+
+                                // Hide dropdown if clicking outside
+                                $(document).on("click", function(e) {
+                                    if (!$(e.target).closest("#commission").length && !$(e.target).closest(
+                                            "#commission-list")
+                                        .length) {
+                                        $("#commission-list").hide();
                                     }
                                 });
                             });

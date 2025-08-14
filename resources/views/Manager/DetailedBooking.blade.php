@@ -101,6 +101,8 @@
                                     id="grnter">{{ $booking->guarantor ?? 'No Guarantor..' }}</span></p>
                             <p><strong>Released Officer:</strong> <span id="ofiicer">{{ $booking->officer }}</span>
                             </p>
+                            <p><strong>Commission Officer:</strong> <span id="commissioner">{{ $booking->commission }}</span>
+                            </p>
                             <p><strong>Start KM:</strong> <span id="stratKm">{{ $booking->start_km }}</span>
                             </p>
                             <br>
