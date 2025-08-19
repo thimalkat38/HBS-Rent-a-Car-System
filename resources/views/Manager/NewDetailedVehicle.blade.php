@@ -298,9 +298,18 @@
                                 Renew License/Insurance
                             </a>
                             <a href="{{ route('services.index', ['vehicle_number' => $vehicle->vehicle_number]) }}" 
-                               class="mt-4 px-2 py-2 bg-red-500 rounded-3xl text-white text-xs font-semibold font-poppins hover:bg-red-600 transition text-center w-full self-end">
+                               class="mt-4 px-2 py-2 bg-orange-400 rounded-3xl text-white text-xs font-semibold font-poppins hover:bg-red-600 transition text-center w-full self-end">
                                 Log Service
                             </a>
+                            <form action="{{ route('vehicles.destroy', $vehicle->id) }}" method="POST" class="w-full self-end mt-4">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="px-2 py-2 bg-red-600 rounded-3xl text-white text-xs font-semibold font-poppins hover:bg-red-600 transition text-center w-full"
+                                    onclick="return confirm('Are you sure you want to delete this vehicle? This action cannot be undone.');">
+                                    Delete Vehicle
+                                </button>
+                            </form>
                         </section>
                         <section class="w-80 min-w-[220px]  bg-gray-100 rounded-2xl border border-gray-200 p-5 flex flex-col gap-4">
                             <div>

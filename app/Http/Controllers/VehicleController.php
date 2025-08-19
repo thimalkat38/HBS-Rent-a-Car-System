@@ -255,7 +255,7 @@ class VehicleController extends Controller
         // Reorder the IDs
         $this->reorderVehicleIds();
 
-        return redirect('manager/vehicles')->with('success', 'Vehicle deleted and IDs reordered successfully!');
+        return redirect('allvehicles')->with('success', 'Vehicle deleted and IDs reordered successfully!');
     }
 
     /**
