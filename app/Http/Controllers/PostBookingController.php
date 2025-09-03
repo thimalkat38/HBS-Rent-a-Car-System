@@ -20,6 +20,7 @@ class PostBookingController extends Controller
         // Get the query parameters
         $vehicleNumber = $request->input('vehicle_number');
         $fromDate = $request->input('from_date');
+        $agn = $request->input('agn');
         $order = $request->input('order');
 
         // Start building the query with business_id scoping
@@ -32,6 +33,10 @@ class PostBookingController extends Controller
 
         if ($fromDate) {
             $query->whereDate('from_date', '>=', $fromDate);
+        }
+
+        if ($agn) {
+            $query->where('agn', 'like', "%$agn%");
         }
 
         // Determine pagination based on order
@@ -88,6 +93,7 @@ class PostBookingController extends Controller
             'agn' => 'nullable|string',
             'start_km' => 'nullable|string',
             'end_km' => 'nullable|string',
+            'drived' => 'nullable|string',
             'free_km' => 'nullable|string',
             'over' => 'nullable|string',
             'extra_km_chg' => 'nullable|string',

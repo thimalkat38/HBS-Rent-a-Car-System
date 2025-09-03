@@ -439,4 +439,32 @@ class VehicleController extends Controller
             'unavailable' => $unavailable,
         ]);
     }
+public function deleteImage(Request $request, $id)
+{
+    $vehicle = Vehicle::findOrFail($id);
+
+    $imageToDelete = $request->input('image');
+
+    // Remove the image from the images array
+    $images = $vehicle->images ?? [];
+    if (($key = array_search($imageToDelete, $images)) !== false) {
+        unset($images[$key]);
+        $images = array_values($images); // reindex
+    }
+
+    // If the deleted image was the display image, set display_image to null or another image
+    if ($vehicle->display_image === $imageToDelete) {
+        $vehicle->display_image = count($images) > 0 ? $images[0] : null;
+    }
+
+    $vehicle->images = $images;
+    $vehicle->save();
+
+    // Delete the image file from storage
+    if (\Illuminate\Support\Facades\Storage::disk('public')->exists($imageToDelete)) {
+        \Illuminate\Support\Facades\Storage::disk('public')->delete($imageToDelete);
+    }
+
+    return redirect()->back()->with('success', 'Image deleted successfully.');
+}
 }

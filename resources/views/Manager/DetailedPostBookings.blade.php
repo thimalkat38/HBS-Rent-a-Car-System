@@ -93,6 +93,8 @@
                             <p><strong>Free KM:</strong> <span id="free">{{ $postBooking->free_km }}</span></p>
                             <p><strong>Ended Mileage:</strong> <span id="end">{{ $postBooking->end_km }}
                                     </span></p>
+                                    <p><strong>Drived KM:</strong> <span id="drived">{{ $postBooking->drived }}
+                                    </span></p> 
                             <p><strong>Over Drived KM:</strong> <span id="over">{{ $postBooking->over }} </span>
                             </p>
                             <p><strong>Extra 1KM Charges:</strong> <span
@@ -154,9 +156,12 @@
     </div>
     </div>
     <script>
+        /**
+         * Print a well-organized, balanced A4 PDF for booking details.
+         */
         async function printPDF() {
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
             try {
                 await generatePDFContent(doc);
@@ -170,6 +175,9 @@
             }
         }
 
+        /**
+         * Generate the PDF content, organized in two columns for compactness.
+         */
         async function generatePDFContent(doc) {
             const logo = new Image();
             logo.src = businessData.logo ? "{{ asset('storage') }}/" + businessData.logo : "{{ asset('images/logo1.png') }}";
@@ -177,149 +185,157 @@
             return new Promise((resolve, reject) => {
                 logo.onload = function() {
                     try {
-                        // Header Section
-                        doc.setFillColor(255, 170, 0); // Orange
-                        doc.rect(0, 0, 210, 40, 'F');
-                        doc.addImage(logo, 'PNG', 10, 10, 30, 20);
+                        // --- Layout Constants ---
+                        const pageWidth = 210, pageHeight = 297;
+                        const margin = 12;
+                        const colGap = 10;
+                        const colWidth = (pageWidth - margin * 2 - colGap) / 2;
+                        let y = margin + 30; // after header
+                        const rowH = 7;
+                        const sectionH = 9;
+                        const labelFont = { size: 10, style: 'normal' };
+                        const valueFont = { size: 10, style: 'bold' };
 
-                        doc.setFontSize(16);
+                        // --- Header ---
+                        doc.setFillColor(255, 170, 0);
+                        doc.rect(0, 0, pageWidth, 28, 'F');
+                        doc.addImage(logo, 'PNG', margin, 6, 22, 16);
+
                         doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(15);
                         doc.setTextColor(0, 0, 0);
-                        doc.text(businessData.b_name || 'Business Name', 45, 18);
+                        doc.text(businessData.b_name || 'Business Name', margin + 28, 13);
 
-                        doc.setFontSize(10);
                         doc.setFont('helvetica', 'normal');
-                        doc.text(businessData.address || 'No Address', 45, 25);
-                        doc.text(`Phone: ${businessData.b_phone || 'N/A'}`, 45, 30);
-                        doc.text(`Email: ${businessData.email || 'N/A'}`, 45, 35);
+                        doc.setFontSize(9);
+                        doc.text(businessData.address || 'No Address', margin + 28, 18);
+                        doc.text(`Phone: ${businessData.b_phone || 'N/A'}`, margin + 28, 22);
+                        doc.text(`Email: ${businessData.email || 'N/A'}`, margin + 28, 26);
 
-                        // Draw a line under header
                         doc.setDrawColor(180, 180, 180);
-                        doc.line(10, 42, 200, 42);
+                        doc.line(margin, 30, pageWidth - margin, 30);
 
-                        let currentY = 48;
-                        const sectionSpacing = 8;
-                        const rowSpacing = 7;
-                        const labelX = 15;
-                        const valueX = 70;
-
-                        // Section Title Helper
-                        function sectionTitle(title) {
-                            doc.setFontSize(12);
+                        // --- Section Helper ---
+                        function sectionTitle(title, yPos) {
                             doc.setFont('helvetica', 'bold');
+                            doc.setFontSize(11);
                             doc.setTextColor(34, 34, 34);
-                            doc.text(title, 10, currentY);
-                            currentY += sectionSpacing;
+                            doc.text(title, margin, yPos);
                             doc.setFont('helvetica', 'normal');
                             doc.setFontSize(10);
                             doc.setTextColor(0, 0, 0);
                         }
 
-                        // Row Helper
-                        function addRow(label, elementId, valueOverride = null) {
-                            const value = valueOverride !== null ? valueOverride : (document.getElementById(elementId)?.textContent || 'N/A');
-                            doc.text(label, labelX, currentY);
-                            doc.text(value, valueX, currentY);
-                            currentY += rowSpacing;
+                        // --- Two-Column Row Helper ---
+                        function addRow2Col(label1, id1, label2, id2, yPos) {
+                            doc.setFont('helvetica', labelFont.style);
+                            doc.setFontSize(labelFont.size);
+                            doc.text(label1, margin, yPos);
+                            doc.setFont('helvetica', valueFont.style);
+                            doc.text(document.getElementById(id1)?.textContent || 'N/A', margin + 38, yPos);
+
+                            doc.setFont('helvetica', labelFont.style);
+                            doc.text(label2, margin + colWidth + colGap, yPos);
+                            doc.setFont('helvetica', valueFont.style);
+                            doc.text(document.getElementById(id2)?.textContent || 'N/A', margin + colWidth + colGap + 38, yPos);
                         }
 
-                        // Table Helper for Billing
-                        function addBillTable(rows) {
-                            const tableStartY = currentY;
-                            const col1X = 15, col2X = 80, col3X = 150;
-                            const col1W = 60, col2W = 60, col3W = 40;
-                            doc.setFont('helvetica', 'bold');
-                            doc.setFillColor(240, 240, 240);
-                            doc.rect(col1X - 2, tableStartY - 5, col1W + col2W + col3W + 4, rowSpacing + 2, 'F');
-                            doc.text('Description', col1X, tableStartY);
-                            doc.text('Amount (LKR)', col2X, tableStartY);
-                            doc.text(' ', col3X, tableStartY);
-                            doc.setFont('helvetica', 'normal');
-                            let y = tableStartY + rowSpacing;
-                            rows.forEach(row => {
-                                doc.text(row.label, col1X, y);
-                                doc.text(row.value, col2X, y);
-                                y += rowSpacing;
-                            });
-                            currentY = y + 2;
+                        // --- Single-Column Row Helper ---
+                        function addRow(label, id, yPos) {
+                            doc.setFont('helvetica', labelFont.style);
+                            doc.setFontSize(labelFont.size);
+                            doc.text(label, margin, yPos);
+                            doc.setFont('helvetica', valueFont.style);
+                            doc.text(document.getElementById(id)?.textContent || 'N/A', margin + 38, yPos);
                         }
 
-                        // Customer Information
-                        sectionTitle('Customer Information');
-                        addRow('Full Name:', 'fullName');
-                        addRow('Mobile Number:', 'mobileNumber');
-                        addRow('NIC:', 'nic');
-                        addRow('Agreement Number:', 'agn');
-                        addRow('Received Officer:', 'officer');
-                        addRow('Released Officer:', 'rel_officer');
+                        // --- Customer & Booking Info (2 columns) ---
+                        sectionTitle('Customer & Booking Information', y);
+                        y += sectionH;
 
-                        currentY += 2;
-                        // Booking Information
-                        sectionTitle('Booking Information');
-                        addRow('Vehicle:', 'vehicleModel');
-                        addRow('Reg Number:', 'vehicleNumber');
-                        addRow('From:', 'fromDate');
-                        addRow('Arrived Date:', 'toDate');
-                        addRow('Extra Days:', 'exDate');
-                        addRow('Price Per Day:', 'ppd');
-                        addRow('Started Mileage (KM):', 'strat');
-                        addRow('Free KM (KM):', 'free');
-                        addRow('Ended Mileage (KM):', 'end');
-                        addRow('Over Drived KM (KM):', 'over');
-                        addRow('Charge Per Extra KM:', 'kmchg');
+                        addRow2Col('Full Name:', 'fullName', 'Mobile Number:', 'mobileNumber', y+1);
+                        y += rowH;
+                        addRow2Col('NIC:', 'nic', 'Agreement No:', 'agn', y+1);
+                        y += rowH;
+                        addRow2Col('Received Officer:', 'officer', 'Released Officer:', 'rel_officer', y+1);
+                        y += rowH;
+                        addRow2Col('Vehicle:', 'vehicleModel', 'Reg Number:', 'vehicleNumber', y+1);
+                        y += rowH;
+                        addRow2Col('From:', 'fromDate', 'Arrived Date:', 'toDate', y+1);
+                        y += rowH;
+                        addRow2Col('Extra Days:', 'exDate', 'Price Per Day:', 'ppd', y+1);
+                        y += rowH;
+                        addRow2Col('Started Mileage (KM):', 'strat', 'Free KM (KM):', 'free', y+1);
+                        y += rowH;
+                        addRow2Col('Ended Mileage (KM):', 'end', 'Drived KM (KM):', 'drived', y +1);
+                        y += rowH;
+                        addRow2Col('Over Drived KM (KM):', 'over', 'Charge Per Extra KM:', 'kmchg', y+1);
+                        y += rowH + 8 ;
 
-                        currentY += 2;
-                        // Billing Information Table
-                        sectionTitle('Billing Information');
+                        // --- Billing Table (single column, compact) ---
+                        sectionTitle('Billing Information', y+4);
+                        y += sectionH +4;
+
+                        // Table header
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFillColor(240, 240, 240);
+                        doc.rect(margin, y - 5, pageWidth - margin * 2, rowH + 2, 'F');
+                        doc.text('Description', margin + 2, y);
+                        doc.text('Amount (LKR)', margin + colWidth + 20, y);
+                        doc.setFont('helvetica', 'normal');
+                        y += rowH;
+
+                        // Table rows
                         const billRows = [
-                            { label: 'Base Price', value: document.getElementById('basePrice')?.textContent || '0.00' },
-                            { label: 'Extra KM Charges', value: document.getElementById('extraKm')?.textContent || '0.00' },
-                            { label: 'Extra Hours Charges', value: document.getElementById('extraHours')?.textContent || '0.00' },
-                            { label: 'Damage Fee', value: document.getElementById('damageFee')?.textContent || '0.00' },
-                            { label: 'Other Additional Charges', value: document.getElementById('afterAdditional')?.textContent || '0.00' },
-                            { label: 'Discount (-)', value: document.getElementById('afterDiscount')?.textContent || '0.00' },
-                            { label: 'Advanced Paid Amount', value: document.getElementById('paid')?.textContent || '0.00' },
-                            { label: 'Final Amount Due (paid)', value: document.getElementById('due')?.textContent || '0.00' },
-                            { label: 'Total Price', value: document.getElementById('totalIncome')?.textContent || '0.00' }
+                            { label: 'Base Price', id: 'basePrice' },
+                            { label: 'Extra KM Charges', id: 'extraKm' },
+                            { label: 'Extra Hours Charges', id: 'extraHours' },
+                            { label: 'Damage Fee', id: 'damageFee' },
+                            { label: 'Other Additional Charges', id: 'afterAdditional' },
+                            { label: 'Discount (-)', id: 'afterDiscount' },
+                            { label: 'Advanced Paid Amount', id: 'paid' },
+                            { label: 'Final Amount Due (paid)', id: 'due' },
+                            { label: 'Total Price', id: 'totalIncome' }
                         ];
-                        addBillTable(billRows);
+                        billRows.forEach(row => {
+                            doc.text(row.label, margin + 2, y+2);
+                            doc.text(document.getElementById(row.id)?.textContent || '0.00', margin + colWidth + 20, y+2);
+                            y += rowH;
+                        });
+                        y += 2;
 
-                        // Reason for Additional Charges
+                        // --- Reason for Additional Charges ---
                         doc.setFont('helvetica', 'italic');
                         doc.setFontSize(10);
-                        doc.text('Reason For Additional Charges:', 15, currentY);
+                        doc.text('Reason For Additional Charges:', margin, y +2);
                         doc.setFont('helvetica', 'normal');
-                        doc.text(document.getElementById('reason')?.textContent || 'N/A', 70, currentY);
-                        currentY += rowSpacing + 2;
+                        doc.text(document.getElementById('reason')?.textContent || 'N/A', margin + 60, y+2);
+                        y += rowH + 2;
 
-                        // Additional Information Section
-                        // sectionTitle('Additional Information');
-                        // addRow('Deposit Refunded:', 'depositRefunded');
-                        // addRow('Vehicle Checked:', 'vehicleChecked');
-                        // addRow('Due Paid:', 'vehicleChecked'); // If you have a separate id for due_paid, change here
+                        // // --- Additional Information (2 columns) ---
+                        // sectionTitle('Additional Information', y);
+                        // y += sectionH;
+                        // addRow2Col('Deposit Refunded:', 'depositRefunded', 'Vehicle Checked:', 'vehicleChecked', y);
+                        // y += rowH;
+                        // addRow('Due Paid:', 'vehicleChecked', y);
+                        // y += rowH;
 
-                        // Signature Section - Two signature lines in right bottom corner
-                        // We'll use the bottom margin of the page (A4: 297mm, but jsPDF default units are mm, page height is 297)
-                        // We'll place two signature lines at the bottom right, one above the other, with labels
-
-                        const pageHeight = doc.internal.pageSize.getHeight();
-                        const marginRight = 20;
-                        const lineLength = 60;
-                        const lineSpacing = 18;
-
-                        // First signature line (e.g., "Customer Signature")
-                        const sig1Y = pageHeight - 20;
-                        const sigX = doc.internal.pageSize.getWidth() - marginRight - lineLength;
+                        // --- Signature Section (bottom right) ---
+                        // Signatures in parallel (side by side)
+                        const sigY = pageHeight - 30;
+                        const sigX1 = margin + 10; // Left side for Customer
+                        const sigX2 = pageWidth / 2 + 10; // Right side for HBS Rental Car
 
                         doc.setFont('helvetica', 'normal');
                         doc.setFontSize(11);
-                        doc.text('Customer Signature:', sigX, sig1Y - 3);
-                        // doc.line(sigX, sig1Y, sigX + lineLength, sig1Y);
 
-                        // Second signature line (e.g., "HBS Rental Car")
-                        const sig2Y = sig1Y + lineSpacing;
-                        doc.text('HBS Rental Car:', sigX, sig2Y - 3);
-                        // doc.line(sigX, sig2Y, sigX + lineLength, sig2Y);
+                        // Customer Signature (left)
+                        doc.text('Customer Signature:', sigX1, sigY);
+                        doc.line(sigX1 + 50, sigY + 1, sigX1 + 90, sigY + 1);
+
+                        // HBS Rental Car Signature (right)
+                        doc.text('HBS Rental Car:', sigX2, sigY);
+                        doc.line(sigX2 + 40, sigY + 1, sigX2 + 80, sigY + 1);
 
                         resolve();
                     } catch (error) {

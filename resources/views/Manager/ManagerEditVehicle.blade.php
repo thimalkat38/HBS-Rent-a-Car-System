@@ -15,31 +15,32 @@
 
 <body>
     <div class="container">
+        <!-- Success Message -->
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <!-- Error Message -->
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <!-- Edit Vehicle Form -->
-        <form action="{{ route('vehicles.update', $vehicle->id) }}" method="POST" enctype="multipart/form-data">
+        <form id="updateVehicleForm" action="{{ route('vehicles.update', $vehicle->id) }}" method="POST"
+            enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
             <div class="form-section">
                 <h1 class="title">Edit Vehicle</h1>
-
-                <!-- Success Message -->
-                @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                <!-- Error Message -->
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
 
                 <!-- Vehicle Name -->
                 <div class="form-row">
@@ -76,6 +77,7 @@
                     <label for="model_year">Model Year</label>
                     <input type="number" name="model_year" value="{{ old('model_year', $vehicle->model_year) }}">
                 </div>
+
                 <div class="form-row">
                     <label for="license_exp_date">License Expire Date</label>
                     <input type="date" name="license_exp_date"
@@ -84,7 +86,6 @@
                     <input type="date" name="insurance_exp_date"
                         value="{{ old('insurance_exp_date', $vehicle->insurance_exp_date) }}">
                 </div>
-
 
                 <div class="form-row">
                     <label for="price_per_day">Price Per Day</label>
@@ -96,15 +97,8 @@
                     <input type="text" name="extra_km_chg" value="{{ old('extra_km_chg', $vehicle->extra_km_chg) }}"
                         required>
                 </div>
-                <!-- Current Images -->
-                <div class="form-row">
-                    <label>Current Vehicle Images</label><br>
-                    @foreach ($vehicle->images as $image)
-                        <div class="form-row_img">
-                            <img src="{{ asset('storage/' . $image) }}" alt="Vehicle Image" width="100">
-                        </div>
-                    @endforeach
-                </div>
+
+                <!-- Select Display Image -->
                 <div style="margin-bottom: 15px;">
                     <label for="display_image" style="display: block; font-weight: bold; margin-bottom: 5px;">
                         Select Display Image:
@@ -120,8 +114,6 @@
                     </select>
                 </div>
 
-
-
                 <!-- Upload New Images -->
                 <div class="form-row">
                     <label for="images">Upload New Images (optional)</label>
@@ -132,9 +124,31 @@
                     <button type="submit" class="btn-submit">Update Vehicle</button>
                     <a href="{{ url('manager/vehicles') }}" class="btn-submit">Cancel</a>
                 </div>
-
             </div>
         </form>
+
+        <!-- Current Images (separate from update form) -->
+        <div class="form-row" style="margin-top: 30px;">
+            <label>Current Vehicle Images</label><br>
+            @foreach ($vehicle->images as $image)
+                <div class="form-row_img" style="display: inline-block; margin-right: 10px; text-align: center;">
+                    <img src="{{ asset('storage/' . $image) }}" alt="Vehicle Image" width="100"
+                        style="display: block; margin-bottom: 5px;">
+
+                    <form action="{{ route('vehicles.deleteImage', ['id' => $vehicle->id]) }}" method="POST"
+                        style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <input type="hidden" name="image" value="{{ $image }}">
+                        <button type="submit"
+                            onclick="return confirm('Are you sure you want to delete this image?')"
+                            style="background: #e3342f; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            @endforeach
+        </div>
     </div>
 </body>
 

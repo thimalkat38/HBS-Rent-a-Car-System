@@ -169,7 +169,7 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
                             <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                            {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                            <a class="dropdown-link" href="{{ url('commission') }}">Commission</a>
                         </div>
                     </div>
                 </nav>
@@ -181,15 +181,45 @@
 
                     <div class="form-section">
                         <div class="form-row">
-                            <select name="cat" id="expense_category" class="form-control">
+                            <select name="cat" id="expense_category" class="form-control" onchange="toggleOtherCategoryInput()" required>
                                 <option value="">Select Expense Category</option>
-                                <option value="Fuel">Fuel</option>
-                                <option value="Utility Bills">Utility Bills</option>
-                                <option value="Travel">Travel</option>
-                                <option value="Office Supplies">Office Supplies</option>
-                                <option value="Foods">Foods</option>
-                                <option value="Other">Other</option>
+                                <option value="Fuel" {{ old('cat') == 'Fuel' ? 'selected' : '' }}>Fuel</option>
+                                <option value="Utility Bills" {{ old('cat') == 'Utility Bills' ? 'selected' : '' }}>Utility Bills</option>
+                                <option value="Travel" {{ old('cat') == 'Travel' ? 'selected' : '' }}>Travel</option>
+                                <option value="Office Supplies" {{ old('cat') == 'Office Supplies' ? 'selected' : '' }}>Office Supplies</option>
+                                <option value="Foods" {{ old('cat') == 'Foods' ? 'selected' : '' }}>Foods</option>
+                                <option value="Other" {{ old('cat') && !in_array(old('cat'), ['Fuel','Utility Bills','Travel','Office Supplies','Foods']) ? 'selected' : '' }}>Other</option>
                             </select>
+                            <input 
+                                type="text" 
+                                name="cat" 
+                                id="other_cat_input" 
+                                class="form-control mt-2" 
+                                placeholder="Please specify other category"
+                                style="display: none;"
+                                value="{{ old('cat') && !in_array(old('cat'), ['Fuel','Utility Bills','Travel','Office Supplies','Foods']) ? old('cat') : '' }}"
+                            >
+                            <script>
+                                function toggleOtherCategoryInput() {
+                                    var select = document.getElementById('expense_category');
+                                    var otherInput = document.getElementById('other_cat_input');
+                                    if (select.value === 'Other') {
+                                        otherInput.style.display = 'block';
+                                        otherInput.required = true;
+                                        otherInput.name = 'cat'; // ensure the input is named 'cat'
+                                        select.name = 'cat_select'; // change select name so only input is submitted as 'cat'
+                                    } else {
+                                        otherInput.style.display = 'none';
+                                        otherInput.required = false;
+                                        otherInput.value = '';
+                                        otherInput.name = 'cat_other'; // dummy name so not submitted
+                                        select.name = 'cat'; // ensure select is named 'cat'
+                                    }
+                                }
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    toggleOtherCategoryInput();
+                                });
+                            </script>
 
                             <input type="date" name="date" class="form-control" required>
                         </div>
@@ -209,8 +239,8 @@
                         </div>
 
                         <!-- Fuel For Dropdown (Initially Hidden) -->
-                        <div class="form-row" id="fuel_for_container" style="display: none;">
-                            <label for="fuel_for">Fuel For (Vehicle Number):</label>
+                        <div class="form-row" id="fuel_for_container">
+                            <label for="fuel_for">Fuel For Vehicle:</label>
                             <div style="width: 100%; position: relative;">
                                 <input type="text" id="fuel_for" name="fuel_for" class="form-control"
                                     placeholder="Type to search vehicle..." autocomplete="off" style="width: 100%;">
@@ -321,16 +351,8 @@
 </script>
 <script>
     $(document).ready(function() {
-        // Show Fuel For field only when "Fuel" is selected
-        $('#expense_category').change(function() {
-            if ($(this).val() === "Fuel") {
-                $('#fuel_for_container').show();
-            } else {
-                $('#fuel_for_container').hide();
-                $('#fuel_for').val(""); // Clear input when hidden
-                $('#vehicle_list').hide(); // Hide dropdown
-            }
-        });
+        // Always show the Fuel For field
+        $('#fuel_for_container').show();
 
         // Fetch vehicle suggestions when typing
         $('#fuel_for').on('keyup', function() {

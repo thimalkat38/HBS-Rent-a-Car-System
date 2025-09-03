@@ -346,3 +346,11 @@ Route::middleware(['manager'])->get('/detailedvehicle', function () {
 
 Route::get('/profit-data', [PostBookingController::class, 'getProfitData']);
 Route::get('/vehicle-availability', [VehicleController::class, 'vehicleAvailability']);
+
+Route::middleware(['manager'])->get('/commission', function () {
+    return view('Manager.Commission');
+});
+
+
+
+Route::middleware(['manager'])->delete('/vehicles/{id}/delete-image', [VehicleController::class, 'deleteImage'])->name('vehicles.deleteImage');

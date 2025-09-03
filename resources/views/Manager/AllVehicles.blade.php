@@ -143,6 +143,12 @@
                                     P/L Report
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ url('commission') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">bar_chart</span>
+                                    Commission
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -401,11 +407,38 @@
                                     value="{{ request('search') }}"
                                     placeholder="Search by reg no or name"
                                     class="bg-transparent outline-none border-none text-zinc-700 text-sm font-normal font-poppins flex-1"
+                                    id="vehicle-search-input"
+                                    autocomplete="off"
                                 />
-                                <button type="submit" class="ml-1">
+                                <button type="submit" class="ml-1" tabindex="-1">
                                     <span class="material-icons text-white">search</span>
                                 </button>
                             </div>
+                            <script>
+                                // Debounce function
+                                function debounce(func, wait) {
+                                    let timeout;
+                                    return function(...args) {
+                                        clearTimeout(timeout);
+                                        timeout = setTimeout(() => func.apply(this, args), wait);
+                                    };
+                                }
+
+                                // Attach debounced submit to the search input
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const input = document.getElementById('vehicle-search-input');
+                                    if (input) {
+                                        const form = input.form;
+                                        const debouncedSubmit = debounce(function() {
+                                            form.submit();
+                                        }, 600); // 1000ms delay
+
+                                        input.addEventListener('input', function(e) {
+                                            debouncedSubmit();
+                                        });
+                                    }
+                                });
+                            </script>
                             <div class="flex items-center px-4 py-1.5 rounded-lg border border-gray-500 bg-white min-w-[180px]">
                                 <select
                                     name="availability"
