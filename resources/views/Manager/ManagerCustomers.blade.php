@@ -164,11 +164,11 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>CUS ID</th>
+                                {{-- <th>CUS ID</th> --}}
                                 <th>Customer Name</th>
                                 <th>M/NUMBER</th>
                                 <th>NIC</th>
-                                <th>EMAIL</th>
+                                {{-- <th>EMAIL</th> --}}
                                 <th>Address</th>
                                 <th>Action</th>
                             </tr>
@@ -177,11 +177,11 @@
                             @foreach ($customers as $customer)
                                 <tr onclick="window.location='{{ route('Customer.show', $customer->id) }}'"
                                     style="cursor: pointer;">
-                                    <td>{{ $customer->id }}</td>
+                                    {{-- <td>{{ $customer->id }}</td> --}}
                                     <td>{{ $customer->full_name }}</td>
                                     <td>{{ $customer->phone }}</td>
                                     <td>{{ $customer->nic }}</td>
-                                    <td>{{ $customer->email ?? 'No email exists' }}</td>
+                                    {{-- <td>{{ $customer->email ?? 'No email exists' }}</td> --}}
                                     <td>{{ $customer->address }}</td>
                                     <td class="button-cell">
                                         <a href="{{ route('customers.edit', $customer->id) }}"
