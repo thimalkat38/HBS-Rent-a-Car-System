@@ -100,7 +100,7 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
                             <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                            {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                            <a class="dropdown-link" href="{{ url('commission') }}">Commission</a>
                         </div>
                     </div>
                 </nav>
@@ -118,6 +118,8 @@
                                     list="vehicle_numbers" class="block w-full mt-1"
                                     placeholder="Filter by vehicle number" maxlength="8"
                                     oninput="formatVehicleNumber(this)" value="{{ request('vehicle_number') }}">
+                                <input type="text" id="agn" name="agn" placeholder="Filter by Agreement Number"
+                                    value="{{ request('agn') }}">
 
                                 <!-- From Date Field -->
                                 <input type="date" name="from_date" placeholder="Filter by From Date"

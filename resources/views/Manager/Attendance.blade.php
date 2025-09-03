@@ -93,10 +93,15 @@
                             INVENTORY
                         </a>
                     </div>
-                    {{-- <div class="nav-item">
+                    <div class="nav-item">
                         <a class="nav-link" href="#"><img src="{{ asset('images/8.png') }}" alt="Accounting"
-                                class="nav-icon"> ACCOUNTING (under development...)</a>
-                    </div> --}}
+                                class="nav-icon"> Finance</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
+                            <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
+                            <a class="dropdown-link" href="{{ url('commission') }}">Commission</a>
+                        </div>
+                    </div>
                 </nav>
             </div>
 

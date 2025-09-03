@@ -146,6 +146,12 @@
                                 P/L Report
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ url('commission') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                <span class="material-icons mr-3">bar_chart</span>
+                                Commission
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>
@@ -380,6 +386,13 @@
                                 placeholder="Enter contact number" value="{{ old('mobile_number') }}"
                                 pattern="^(\+?\d{1,3}[- ]?)?\d{10}$"
                                 title="Please enter a valid 10-digit phone number. You may include country code."
+                                required />
+                        </div>
+                        <div class="flex flex-col gap-2 flex-1">
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="address">Address</label>
+                            <input id="address" name="address" type="text"
+                                class="w-full h-12 px-3 py-2 bg-gray-100 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                    placeholder="Enter address" value="{{ old('address') }}"
                                 required />
                         </div>
                         <!-- Import the customer dropdown script from ManagerAddBooking -->

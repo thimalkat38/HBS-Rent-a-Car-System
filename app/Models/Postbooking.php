@@ -41,6 +41,7 @@ class PostBooking extends Model
         'agn',
         'start_km',
         'end_km',
+        'drived',
         'free_km',
         'over',
         'extra_km_chg',

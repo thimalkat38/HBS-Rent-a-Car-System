@@ -102,7 +102,7 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-link" href="{{ url('expenses') }}">Expences</a>
                             <a class="dropdown-link" href="{{ url('profit-loss-report') }}">P/L Report</a>
-                            {{-- <a class="dropdown-link" href="{{ url('customers') }}">Cash Book</a> --}}
+                            <a class="dropdown-link" href="{{ url('commission') }}">Commission</a>
                         </div>
                     </div>
                 </nav>
