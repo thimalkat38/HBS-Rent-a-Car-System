@@ -174,38 +174,27 @@
                 </nav>
             </div>
             <div class="content">
-                <form>
-                    <!-- Expenses Table -->
+                <form> <!-- Expenses Table -->
                     <div class="form-section">
-                        <div class="form-row">
-                            <label for="startDate">Start Date:</label>
-                            <input type="date" id="startDate" class="form-control">
-                            <label for="endDate">End Date:</label>
-                            <input type="date" id="endDate" class="form-control">
+                        <div class="form-row"> <label for="catFilter">Category:</label> <input type="text"
+                                id="catFilter" class="form-control" placeholder="Filter by Category"> <label
+                                for="refNoFilter">Reference No:</label> <input type="text" id="refNoFilter"
+                                class="form-control" placeholder="Filter by Ref No(REF****)"><label
+                                for="expenseForFilter">Expenses For:</label> <input type="text"
+                                id="expenseForFilter" class="form-control" placeholder="Filter by Vehicle Number/Employee/Customer">
                         </div>
-                        <div class="form-row">
-                            <label for="refNoFilter">Reference No:</label>
-                            <input type="text" id="refNoFilter" class="form-control"
-                                placeholder="Filter by Ref No(REF****)">
-                            <label for="expenseForFilter">Expenses For:</label>
-                            <input type="text" id="expenseForFilter" class="form-control"
-                                placeholder="Filter by Employee/Customer">
-                        </div>
-                        <div class="form-row">
-                            <label for="minAmount">Min Amount:</label>
-                            <input type="number" id="minAmount" class="form-control" placeholder="Min RS">
-                            <label for="maxAmount">Max Amount:</label>
-                            <input type="number" id="maxAmount" class="form-control" placeholder="Max RS">
-                        </div>
-                        <div class="form-row">
-                            <button id="clearFilters" class="btn-submit">Clear Filters</button>
-                            <a href="{{ url('expenses/create') }}" class="btn-submit">Add Expences</a>
-                        </div>
-                    </div>
+                        <div class="form-row"> <label for="startDate">Start Date:</label> <input type="date"
+                                id="startDate" class="form-control"> <label for="endDate">End Date:</label> <input
+                                type="date" id="endDate" class="form-control"> </div>
 
-                    <!-- Clear Button -->
 
-                    <!-- Expenses Table -->
+                        <div class="form-row"> <label for="minAmount">Min Amount:</label> <input type="number"
+                                id="minAmount" class="form-control" placeholder="Min RS"> <label for="maxAmount">Max
+                                Amount:</label> <input type="number" id="maxAmount" class="form-control"
+                                placeholder="Max RS"> </div>
+                        <div class="form-row"> <button id="clearFilters" class="btn-submit">Clear Filters</button> <a
+                                href="{{ url('expenses/create') }}" class="btn-submit">Add Expences</a> </div>
+                    </div> <!-- Clear Button --> <!-- Expenses Table -->
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -217,8 +206,7 @@
                                 <th>Document</th>
                             </tr>
                         </thead>
-                        <tbody id="expensesTable">
-                            @foreach ($expenses as $expense)
+                        <tbody id="expensesTable"> @php $totalAmount = 0; @endphp @foreach ($expenses as $expense)
                                 <tr data-ref="{{ $expense->ref_no }}">
                                     <td>{{ $expense->date }}</td>
                                     <td>{{ $expense->cat }}</td>
@@ -227,34 +215,126 @@
                                             Employee: {{ $expense->for_emp }}
                                         @elseif($expense->for_cus)
                                             Customer: {{ $expense->for_cus }}
+                                        @elseif($expense->fuel_for)
+                                            Vehicle: {{ $expense->fuel_for }}
                                         @else
                                             N/A
                                         @endif
                                     </td>
                                     <td>{{ $expense->note }}</td>
-                                    <td>{{ number_format($expense->amnt, 2) }}</td>
+                                    <td class="amnt-cell">{{ number_format($expense->amnt, 2) }}</td>
                                     <td>
                                         @if ($expense->docs)
-                                            {{-- <a href="{{ asset('storage/expenses/' . $expense->docs) }}" target="_blank">
-                                            {{ $expense->docs }}
-                                        </a> --}}
-                                            <br>
-                                            <a href="{{ route('expenses.download', $expense->id) }}"
-                                                class="btn-blue">
-                                                Export
-                                            </a>
+                                            <br> <a href="{{ route('expenses.download', $expense->id) }}"
+                                                class="btn-blue"> Export </a>
                                         @else
                                             No File
                                         @endif
                                     </td>
-                                </tr>
+                                </tr> @php $totalAmount += $expense->amnt; @endphp
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="4" style="text-align:right">Total:</th>
+                                <th id="totalAmountCell">{{ number_format($totalAmount, 2) }}</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
                     </table>
+                    <script>
+                        // Update total in footer when filtering function updateTotalAmount() { let rows = document.querySelectorAll("#expensesTable tr"); let total = 0; rows.forEach(row => { if (row.style.display !== "none") { let amountCell = row.querySelector('.amnt-cell'); if (amountCell) { let val = parseFloat(amountCell.textContent.replace(/[^0-9.-]+/g,"")); if (!isNaN(val)) total += val; } } }); document.getElementById('totalAmountCell').textContent = total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}); } // Hook into your filterTable function if it exists if (typeof filterTable === "function") { const origFilterTable = filterTable; window.filterTable = function() { origFilterTable(); updateTotalAmount(); } } // Or fallback: update total on any filter input change document.addEventListener("DOMContentLoaded", function() { let filterInputs = [ "startDate", "endDate", "refNoFilter", "expenseForFilter", "minAmount", "maxAmount" ]; filterInputs.forEach(id => { let el = document.getElementById(id); if (el) { el.addEventListener('input', updateTotalAmount); el.addEventListener('change', updateTotalAmount); } }); updateTotalAmount(); }); 
+                    </script>
                 </form>
 
             </div>
         </div>
+        <script>
+        function filterTable() {
+    let startDate = document.getElementById("startDate").value;
+    let endDate = document.getElementById("endDate").value;
+    let refNo = document.getElementById("refNoFilter").value.toLowerCase();
+    let expenseFor = document.getElementById("expenseForFilter").value.toLowerCase();
+    let cat = document.getElementById("catFilter").value.toLowerCase();
+    let minAmount = parseFloat(document.getElementById("minAmount").value) || 0;
+    let maxAmount = parseFloat(document.getElementById("maxAmount").value) || Infinity;
+
+    let rows = document.querySelectorAll("#expensesTable tr");
+
+    rows.forEach(row => {
+        let dateText = row.cells[0].textContent.trim();
+        let category = row.cells[1].textContent.toLowerCase();
+        let ref = row.getAttribute("data-ref")?.toLowerCase() || "";
+        let forWho = row.cells[2].textContent.toLowerCase();
+        let amount = parseFloat(row.querySelector(".amnt-cell").textContent.replace(/[^0-9.-]+/g, "")) || 0;
+
+        let show = true;
+
+        // Date filter
+        if (startDate && new Date(dateText) < new Date(startDate)) show = false;
+        if (endDate && new Date(dateText) > new Date(endDate)) show = false;
+
+        // Ref No filter
+        if (refNo && !ref.includes(refNo)) show = false;
+
+        // Expenses For filter
+        if (expenseFor && !forWho.includes(expenseFor)) show = false;
+
+        // ✅ Category filter
+        if (cat && !category.includes(cat)) show = false;
+
+        // Amount filter
+        if (amount < minAmount || amount > maxAmount) show = false;
+
+        row.style.display = show ? "" : "none";
+    });
+
+    updateTotalAmount();
+}
+            function updateTotalAmount() {
+                let rows = document.querySelectorAll("#expensesTable tr");
+                let total = 0;
+
+                rows.forEach(row => {
+                    if (row.style.display !== "none") {
+                        let amountCell = row.querySelector('.amnt-cell');
+                        if (amountCell) {
+                            let val = parseFloat(amountCell.textContent.replace(/[^0-9.-]+/g, ""));
+                            if (!isNaN(val)) total += val;
+                        }
+                    }
+                });
+
+                document.getElementById('totalAmountCell').textContent =
+                    total.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+            }
+
+            document.addEventListener("DOMContentLoaded", function() {
+                let filterInputs = [
+                    "startDate", "endDate", "refNoFilter", "expenseForFilter", "minAmount", "maxAmount", "catFilter"
+                ];
+                filterInputs.forEach(id => {
+                    let el = document.getElementById(id);
+                    if (el) {
+                        el.addEventListener("input", filterTable);
+                        el.addEventListener("change", filterTable);
+                    }
+                });
+
+                // Clear filters
+                document.getElementById("clearFilters").addEventListener("click", function(e) {
+                    e.preventDefault();
+                    filterInputs.forEach(id => document.getElementById(id).value = "");
+                    filterTable();
+                });
+
+                // Initial calculation
+                updateTotalAmount();
+            });
+        </script>
 
 
 
@@ -264,68 +344,7 @@
         </div>
     </div>
 </body>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let startDate = document.getElementById("startDate");
-        let endDate = document.getElementById("endDate");
-        let refNoFilter = document.getElementById("refNoFilter");
-        let expenseForFilter = document.getElementById("expenseForFilter");
-        let minAmount = document.getElementById("minAmount");
-        let maxAmount = document.getElementById("maxAmount");
-        let clearButton = document.getElementById("clearFilters");
 
-        function filterTable() {
-            let startValue = startDate.value ? new Date(startDate.value) : null;
-            let endValue = endDate.value ? new Date(endDate.value) : null;
-            let refNoValue = refNoFilter.value.toLowerCase();
-            let expenseForValue = expenseForFilter.value.toLowerCase();
-            let minAmountValue = minAmount.value ? parseFloat(minAmount.value) : null;
-            let maxAmountValue = maxAmount.value ? parseFloat(maxAmount.value) : null;
 
-            let rows = document.querySelectorAll("#expensesTable tr");
-
-            rows.forEach(row => {
-                let dateText = row.cells[0].textContent;
-                let rowDate = dateText ? new Date(dateText) : null;
-                let refNo = row.getAttribute('data-ref') ? row.getAttribute('data-ref').toLowerCase() :
-                    '';
-                let expenseFor = row.cells[2].textContent.toLowerCase();
-                let amount = parseFloat(row.cells[4].textContent.replace(/[^0-9.]/g, ''));
-
-                let dateMatch = (!startValue || rowDate >= startValue) && (!endValue || rowDate <=
-                    endValue);
-                let refNoMatch = refNo.includes(refNoValue) || refNoValue === '';
-                let expenseForMatch = expenseFor.includes(expenseForValue) || expenseForValue === '';
-                let amountMatch = (!minAmountValue || amount >= minAmountValue) && (!maxAmountValue ||
-                    amount <= maxAmountValue);
-
-                if (dateMatch && refNoMatch && expenseForMatch && amountMatch) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
-                }
-            });
-        }
-
-        // Event Listeners for Filters
-        startDate.addEventListener("input", filterTable);
-        endDate.addEventListener("input", filterTable);
-        refNoFilter.addEventListener("input", filterTable);
-        expenseForFilter.addEventListener("input", filterTable);
-        minAmount.addEventListener("input", filterTable);
-        maxAmount.addEventListener("input", filterTable);
-
-        // Clear Filters
-        clearButton.addEventListener("click", function() {
-            startDate.value = "";
-            endDate.value = "";
-            refNoFilter.value = "";
-            expenseForFilter.value = "";
-            minAmount.value = "";
-            maxAmount.value = "";
-            filterTable();
-        });
-    });
-</script>
 
 </html>

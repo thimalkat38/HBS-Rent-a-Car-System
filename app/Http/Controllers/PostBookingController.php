@@ -191,81 +191,87 @@ class PostBookingController extends Controller
         $toDate = $request->to_date;
         $businessId = Auth::check() ? Auth::user()->business_id : null;
     
-        // Base booking query (Income)
-        $incomeQuery = Postbooking::selectRaw('DATE(from_date) as date, SUM(total_income) as total')
-            ->where('vehicle_number', $vehicleNumber)
-            ->groupBy('date')
-            ->orderBy('date');
+        // -------------------------
+        // 1. Income (distribute per day)
+        // -------------------------
+        $bookings = Postbooking::where('vehicle_number', $vehicleNumber)
+            ->when($businessId, fn($q) => $q->where('business_id', $businessId))
+            ->when($fromDate, fn($q) => $q->whereDate('to_date', '>=', $fromDate)) // overlap check
+            ->when($toDate, fn($q) => $q->whereDate('from_date', '<=', $toDate))   // overlap check
+            ->get();
     
-        if ($businessId) {
-            $incomeQuery->where('business_id', $businessId);
-        }
-        if ($fromDate) {
-            $incomeQuery->whereDate('from_date', '>=', $fromDate);
-        }
-        if ($toDate) {
-            $incomeQuery->whereDate('from_date', '<=', $toDate);
+        $incomeMap = [];
+
+        foreach ($bookings as $booking) {
+            $start = new \DateTime($booking->from_date);
+            $end = new \DateTime($booking->to_date);
+            $end->modify('+1 day'); // include to_date
+
+            $period = new \DatePeriod($start, new \DateInterval('P1D'), $end);
+            $days = iterator_count($period);
+    
+            $dailyIncome = $days > 0 ? $booking->total_income / $days : $booking->total_income;
+    
+            foreach ($period as $date) {
+                $d = $date->format('Y-m-d');
+                $incomeMap[$d] = ($incomeMap[$d] ?? 0) + $dailyIncome;
+            }
         }
     
-        $incomeData = $incomeQuery->get();
-    
-        // Expenses from expenses table
-        $fuelExpensesQuery = Expense::selectRaw('DATE(date) as date, SUM(amnt) as total')
+        // -------------------------
+        // 2. Expenses (Fuel + Services)
+        // -------------------------
+        $fuelExpenses = Expense::selectRaw('DATE(date) as date, SUM(amnt) as total')
             ->where('fuel_for', $vehicleNumber)
+            ->when($businessId, fn($q) => $q->where('business_id', $businessId))
+            ->when($fromDate, fn($q) => $q->whereDate('date', '>=', $fromDate))
+            ->when($toDate, fn($q) => $q->whereDate('date', '<=', $toDate))
             ->groupBy('date')
-            ->orderBy('date');
+            ->pluck('total', 'date');
     
-        if ($businessId) {
-            $fuelExpensesQuery->where('business_id', $businessId);
-        }
-        if ($fromDate) {
-            $fuelExpensesQuery->whereDate('date', '>=', $fromDate);
-        }
-        if ($toDate) {
-            $fuelExpensesQuery->whereDate('date', '<=', $toDate);
-        }
-    
-        $fuelExpensesData = $fuelExpensesQuery->get();
-    
-        // Expenses from services table
-        $serviceExpensesQuery = Service::selectRaw('DATE(date) as date, SUM(amnt) as total')
+        $serviceExpenses = Service::selectRaw('DATE(date) as date, SUM(amnt) as total')
             ->where('vehicle_number', $vehicleNumber)
+            ->when($businessId, fn($q) => $q->where('business_id', $businessId))
+            ->when($fromDate, fn($q) => $q->whereDate('date', '>=', $fromDate))
+            ->when($toDate, fn($q) => $q->whereDate('date', '<=', $toDate))
             ->groupBy('date')
-            ->orderBy('date');
+            ->pluck('total', 'date');
     
-        if ($businessId) {
-            $serviceExpensesQuery->where('business_id', $businessId);
+        $expensesMap = [];
+        foreach ($fuelExpenses as $date => $total) {
+            $expensesMap[$date] = ($expensesMap[$date] ?? 0) + $total;
         }
+        foreach ($serviceExpenses as $date => $total) {
+            $expensesMap[$date] = ($expensesMap[$date] ?? 0) + $total;
+        }
+    
+        // -------------------------
+        // 3. Merge income & expenses
+        // -------------------------
+        $allDates = collect(array_unique(array_merge(array_keys($incomeMap), array_keys($expensesMap))))
+            ->sort()
+            ->values();
+    
         if ($fromDate) {
-            $serviceExpensesQuery->whereDate('date', '>=', $fromDate);
+            $allDates = $allDates->filter(fn($d) => $d >= $fromDate);
         }
         if ($toDate) {
-            $serviceExpensesQuery->whereDate('date', '<=', $toDate);
+            $allDates = $allDates->filter(fn($d) => $d <= $toDate);
         }
     
-        $serviceExpensesData = $serviceExpensesQuery->get();
-    
-        // Merge expenses
-        $expensesMap = [];
-    
-        foreach ($fuelExpensesData as $row) {
-            $expensesMap[$row->date] = ($expensesMap[$row->date] ?? 0) + $row->total;
-        }
-        foreach ($serviceExpensesData as $row) {
-            $expensesMap[$row->date] = ($expensesMap[$row->date] ?? 0) + $row->total;
-        }
-    
-        // Prepare final combined data
         $labels = [];
         $incomeValues = [];
         $expenseValues = [];
     
-        foreach ($incomeData as $row) {
-            $labels[] = $row->date;
-            $incomeValues[] = (float) $row->total;
-            $expenseValues[] = (float) ($expensesMap[$row->date] ?? 0);
+        foreach ($allDates as $date) {
+            $labels[] = $date;
+            $incomeValues[] = round($incomeMap[$date] ?? 0, 2);
+            $expenseValues[] = round($expensesMap[$date] ?? 0, 2);
         }
     
+        // -------------------------
+        // 4. Return JSON response
+        // -------------------------
         return response()->json([
             'labels' => $labels,
             'income' => $incomeValues,
@@ -274,6 +280,7 @@ class PostBookingController extends Controller
             'total_expenses' => array_sum($expenseValues),
         ]);
     }
+    
     
     
     
