@@ -122,7 +122,7 @@
 
                 <div class="submit-container">
                     <button type="submit" class="btn-submit">Update Vehicle</button>
-                    <a href="{{ url('manager/vehicles') }}" class="btn-submit">Cancel</a>
+                    <a href="{{ url('allvehicles') }}" class="btn-submit">Cancel</a>
                 </div>
             </div>
         </form>

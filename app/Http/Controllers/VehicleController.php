@@ -140,7 +140,7 @@ class VehicleController extends Controller
             'business_id' => $businessId,
         ]);
 
-        return redirect()->route('vehicles.search')->with('success', 'Vehicle added successfully!');
+        return redirect()->route('vehicles.index')->with('success', 'Vehicle added successfully!');
     }
     private function copyUploadedFileToPublic($relativePath)
     {
@@ -189,19 +189,16 @@ class VehicleController extends Controller
         ]);
 
         // Delete old images if new ones are uploaded
-        if ($request->hasFile('images')) {
-            foreach ($vehicle->images as $image) {
-                Storage::disk('public')->delete($image);
-            }
+        $images = $vehicle->images ?? [];
 
-            $images = [];
+        if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
                 $path = $file->store('vehicle_images', 'public');
                 $images[] = $path;
+    
+                // ✅ Copy uploaded file to public/storage just like in store()
+                $this->copyUploadedFileToPublic($path);
             }
-        } else {
-            // Keep the old images if no new ones are uploaded
-            $images = $vehicle->images;
         }
 
         $features = [
