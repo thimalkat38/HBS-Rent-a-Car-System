@@ -354,3 +354,15 @@ Route::middleware(['manager'])->get('/commission', function () {
 
 
 Route::middleware(['manager'])->delete('/vehicles/{id}/delete-image', [VehicleController::class, 'deleteImage'])->name('vehicles.deleteImage');
+
+
+
+
+// Route::middleware(['manager'])->get('/newpayroll', function () {
+//     return view('Manager.NewPayroll');
+// });
+
+Route::middleware(['manager'])->get('/newpayroll', [PayrollController::class, 'create'])->name('payrolls.create');
+Route::middleware(['manager'])->get('/get-leaves-count', [App\Http\Controllers\PayrollController::class, 'getLeavesCount'])->name('getLeavesCount');
+Route::middleware(['manager'])->get('/get-employee-salary', [App\Http\Controllers\PayrollController::class, 'getEmployeeSalary'])->name('getEmployeeSalary');
+

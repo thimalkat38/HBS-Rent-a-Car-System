@@ -256,10 +256,10 @@
 
                     <div class="grid-container">
                         <div class="section">
-                            <div class="expense-item">Salary <span>RS {{ number_format($data['salary'], 2) }}</span>
+                            <div class="expense-item">Salary <span>RS {{ number_format($data['advanced_salary'], 2) }}</span>
                             </div>
                             <div class="expense-item">Advanced Salary <span>RS
-                                    {{ number_format($data['advanced_salary'], 2) }}</span></div>
+                                    {{ number_format($data['salary'], 2) }}</span></div>
                             <div class="expense-item">Vehicle Services <span>RS
                                     {{ number_format($data['vehicle_services'], 2) }}</span></div>
                             <div class="expense-item">Vehicle Repair <span>RS
