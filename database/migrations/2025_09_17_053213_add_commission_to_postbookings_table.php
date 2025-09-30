@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('payrolls', function (Blueprint $table) {
-            $table->string('emp_name')->after('emp_id')->nullable();
+        Schema::table('postbookings', function (Blueprint $table) {
+            $table->string('commission')->nullable()->after('rel_officer');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('payrolls', function (Blueprint $table) {
-            $table->dropColumn('emp_name');
+        Schema::table('postbookings', function (Blueprint $table) {
+            $table->dropColumn('commission');
         });
     }
 };

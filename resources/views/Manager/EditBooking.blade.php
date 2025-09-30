@@ -93,6 +93,12 @@
                     @error('start_km')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
+                    <label for="commissioner" class="form-label">Commision Agent</label>
+                    <input type="text" name="commissioner" id="commissioner" class="form-control"
+                        value="{{ old('commissioner', $booking->commission) }}" required>
+                    @error('commissioner')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-row">

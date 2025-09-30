@@ -89,12 +89,12 @@
                             <p><strong>Price Per Day:</strong> <span
                                     id="ppd">{{ $postBooking->price_per_day }}</span></p>
                             <p><strong>Started Mileage:</strong> <span id="strat">{{ $postBooking->start_km }}
-                                    </span></p>
+                                </span></p>
                             <p><strong>Free KM:</strong> <span id="free">{{ $postBooking->free_km }}</span></p>
                             <p><strong>Ended Mileage:</strong> <span id="end">{{ $postBooking->end_km }}
-                                    </span></p>
-                                    <p><strong>Drived KM:</strong> <span id="drived">{{ $postBooking->drived }}
-                                    </span></p> 
+                                </span></p>
+                            <p><strong>Drived KM:</strong> <span id="drived">{{ $postBooking->drived }}
+                                </span></p>
                             <p><strong>Over Drived KM:</strong> <span id="over">{{ $postBooking->over }} </span>
                             </p>
                             <p><strong>Extra 1KM Charges:</strong> <span
@@ -133,8 +133,9 @@
                                     id="officer">{{ $postBooking->officer }}</span></p>
                             <p><strong>Released Officer:</strong> <span
                                     id="rel_officer">{{ $postBooking->rel_officer }}</span></p>
-                            <p><strong>Agreement Number:</strong> <span
-                                        id="agn">{{ $postBooking->agn }}</span></p>
+                            <p><strong>Agent</strong> <span id="commission">{{ $postBooking->commission }}</span></p>
+                            <p><strong>Agreement Number:</strong> <span id="agn">{{ $postBooking->agn }}</span>
+                            </p>
                         </div>
                     </div>
                 @else
@@ -160,8 +161,14 @@
          * Print a well-organized, balanced A4 PDF for booking details.
          */
         async function printPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+            const {
+                jsPDF
+            } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: "portrait",
+                unit: "mm",
+                format: "a4"
+            });
 
             try {
                 await generatePDFContent(doc);
@@ -180,21 +187,29 @@
          */
         async function generatePDFContent(doc) {
             const logo = new Image();
-            logo.src = businessData.logo ? "{{ asset('storage') }}/" + businessData.logo : "{{ asset('images/logo1.png') }}";
+            logo.src = businessData.logo ? "{{ asset('storage') }}/" + businessData.logo :
+                "{{ asset('images/logo1.png') }}";
 
             return new Promise((resolve, reject) => {
                 logo.onload = function() {
                     try {
                         // --- Layout Constants ---
-                        const pageWidth = 210, pageHeight = 297;
+                        const pageWidth = 210,
+                            pageHeight = 297;
                         const margin = 12;
                         const colGap = 10;
                         const colWidth = (pageWidth - margin * 2 - colGap) / 2;
                         let y = margin + 30; // after header
                         const rowH = 7;
                         const sectionH = 9;
-                        const labelFont = { size: 10, style: 'normal' };
-                        const valueFont = { size: 10, style: 'bold' };
+                        const labelFont = {
+                            size: 10,
+                            style: 'normal'
+                        };
+                        const valueFont = {
+                            size: 10,
+                            style: 'bold'
+                        };
 
                         // --- Header ---
                         doc.setFillColor(255, 170, 0);
@@ -237,7 +252,8 @@
                             doc.setFont('helvetica', labelFont.style);
                             doc.text(label2, margin + colWidth + colGap, yPos);
                             doc.setFont('helvetica', valueFont.style);
-                            doc.text(document.getElementById(id2)?.textContent || 'N/A', margin + colWidth + colGap + 38, yPos);
+                            doc.text(document.getElementById(id2)?.textContent || 'N/A', margin + colWidth +
+                                colGap + 38, yPos);
                         }
 
                         // --- Single-Column Row Helper ---
@@ -253,28 +269,29 @@
                         sectionTitle('Customer & Booking Information', y);
                         y += sectionH;
 
-                        addRow2Col('Full Name:', 'fullName', 'Mobile Number:', 'mobileNumber', y+1);
+                        addRow2Col('Full Name:', 'fullName', 'Mobile Number:', 'mobileNumber', y + 1);
                         y += rowH;
-                        addRow2Col('NIC:', 'nic', 'Agreement No:', 'agn', y+1);
+                        addRow2Col('NIC:', 'nic', 'Agreement No:', 'agn', y + 1);
                         y += rowH;
-                        addRow2Col('Received Officer:', 'officer', 'Released Officer:', 'rel_officer', y+1);
+                        addRow2Col('Received Officer:', 'officer', 'Released Officer:', 'rel_officer', y +
+                            1);
                         y += rowH;
-                        addRow2Col('Vehicle:', 'vehicleModel', 'Reg Number:', 'vehicleNumber', y+1);
+                        addRow2Col('Vehicle:', 'vehicleModel', 'Reg Number:', 'vehicleNumber', y + 1);
                         y += rowH;
-                        addRow2Col('From:', 'fromDate', 'Arrived Date:', 'toDate', y+1);
+                        addRow2Col('From:', 'fromDate', 'Arrived Date:', 'toDate', y + 1);
                         y += rowH;
-                        addRow2Col('Extra Days:', 'exDate', 'Price Per Day:', 'ppd', y+1);
+                        addRow2Col('Extra Days:', 'exDate', 'Price Per Day:', 'ppd', y + 1);
                         y += rowH;
-                        addRow2Col('Started Mileage (KM):', 'strat', 'Free KM (KM):', 'free', y+1);
+                        addRow2Col('Started Mileage (KM):', 'strat', 'Free KM (KM):', 'free', y + 1);
                         y += rowH;
-                        addRow2Col('Ended Mileage (KM):', 'end', 'Drived KM (KM):', 'drived', y +1);
+                        addRow2Col('Ended Mileage (KM):', 'end', 'Drived KM (KM):', 'drived', y + 1);
                         y += rowH;
-                        addRow2Col('Over Drived KM (KM):', 'over', 'Charge Per Extra KM:', 'kmchg', y+1);
-                        y += rowH + 8 ;
+                        addRow2Col('Over Drived KM (KM):', 'over', 'Charge Per Extra KM:', 'kmchg', y + 1);
+                        y += rowH + 8;
 
                         // --- Billing Table (single column, compact) ---
-                        sectionTitle('Billing Information', y+4);
-                        y += sectionH +4;
+                        sectionTitle('Billing Information', y + 4);
+                        y += sectionH + 4;
 
                         // Table header
                         doc.setFont('helvetica', 'bold');
@@ -286,20 +303,47 @@
                         y += rowH;
 
                         // Table rows
-                        const billRows = [
-                            { label: 'Base Price', id: 'basePrice' },
-                            { label: 'Extra KM Charges', id: 'extraKm' },
-                            { label: 'Extra Hours Charges', id: 'extraHours' },
-                            { label: 'Damage Fee', id: 'damageFee' },
-                            { label: 'Other Additional Charges', id: 'afterAdditional' },
-                            { label: 'Discount (-)', id: 'afterDiscount' },
-                            { label: 'Advanced Paid Amount', id: 'paid' },
-                            { label: 'Final Amount Due (paid)', id: 'due' },
-                            { label: 'Total Price', id: 'totalIncome' }
+                        const billRows = [{
+                                label: 'Base Price',
+                                id: 'basePrice'
+                            },
+                            {
+                                label: 'Extra KM Charges',
+                                id: 'extraKm'
+                            },
+                            {
+                                label: 'Extra Hours Charges',
+                                id: 'extraHours'
+                            },
+                            {
+                                label: 'Damage Fee',
+                                id: 'damageFee'
+                            },
+                            {
+                                label: 'Other Additional Charges',
+                                id: 'afterAdditional'
+                            },
+                            {
+                                label: 'Discount (-)',
+                                id: 'afterDiscount'
+                            },
+                            {
+                                label: 'Advanced Paid Amount',
+                                id: 'paid'
+                            },
+                            {
+                                label: 'Final Amount Due (paid)',
+                                id: 'due'
+                            },
+                            {
+                                label: 'Total Price',
+                                id: 'totalIncome'
+                            }
                         ];
                         billRows.forEach(row => {
-                            doc.text(row.label, margin + 2, y+2);
-                            doc.text(document.getElementById(row.id)?.textContent || '0.00', margin + colWidth + 20, y+2);
+                            doc.text(row.label, margin + 2, y + 2);
+                            doc.text(document.getElementById(row.id)?.textContent || '0.00',
+                                margin + colWidth + 20, y + 2);
                             y += rowH;
                         });
                         y += 2;
@@ -307,9 +351,15 @@
                         // --- Reason for Additional Charges ---
                         doc.setFont('helvetica', 'italic');
                         doc.setFontSize(10);
-                        doc.text('Reason For Additional Charges:', margin, y +2);
+                        doc.text('Reason For Additional Charges:', margin, y + 2);
                         doc.setFont('helvetica', 'normal');
-                        doc.text(document.getElementById('reason')?.textContent || 'N/A', margin + 60, y+2);
+                        doc.text(document.getElementById('reason')?.textContent || 'N/A', margin + 60, y + 2);
+                        y += rowH;
+                        doc.setFont('helvetica', 'italic');
+                        doc.setFontSize(10);
+                        doc.text('Agent:', margin, y + 2);
+                        doc.setFont('helvetica', 'normal');
+                        doc.text(document.getElementById('commission')?.textContent || 'N/A', margin + 60, y + 2);
                         y += rowH + 2;
 
                         // // --- Additional Information (2 columns) ---
@@ -334,7 +384,7 @@
                         doc.line(sigX1 + 50, sigY + 1, sigX1 + 90, sigY + 1);
 
                         // HBS Rental Car Signature (right)
-                        doc.text('HBS Rental Car:', sigX2, sigY);
+                        doc.text((businessData.b_name || 'Business Name') + ':', sigX2, sigY);
                         doc.line(sigX2 + 40, sigY + 1, sigX2 + 80, sigY + 1);
 
                         resolve();

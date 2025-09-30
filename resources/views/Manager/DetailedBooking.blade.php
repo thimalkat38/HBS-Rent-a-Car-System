@@ -315,6 +315,10 @@
                             10,
                             currentY);
                         currentY += lineSpacing;
+                        doc.text('Agent: ' + (document.getElementById('commissioner')?.textContent || 'N/A'),
+                            10,
+                            currentY);
+                        currentY += lineSpacing;
                         doc.text('Deposit: ' + (document.getElementById('deposit')?.textContent || 'N/A'),
                             10, currentY);
                         currentY += lineSpacing + 5;
@@ -379,7 +383,7 @@
                         // HBS Rental Car Signature (Left)
                         const hbsX = 20; // Starting X for HBS
                         doc.setFontSize(12);
-                        doc.text('HBS Rental Car:', hbsX, currentY);
+                        doc.text((businessData.b_name || 'Business Name'), hbsX, currentY);
                         doc.setLineWidth(lineHeight);
                         doc.line(hbsX, currentY + 15, hbsX + lineWidth, currentY + 15); // Draw a line
 

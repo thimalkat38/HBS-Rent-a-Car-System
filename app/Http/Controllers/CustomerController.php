@@ -30,7 +30,7 @@ class CustomerController extends Controller
         // Get the filtered customers
         $customers = $query->get();
 
-        return view('Manager.ManagerCustomers', compact('customers'));
+        return view('Manager.Customers', compact('customers'));
     }
 
 
