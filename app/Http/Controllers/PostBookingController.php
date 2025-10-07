@@ -49,7 +49,7 @@ class PostBookingController extends Controller
         $postBookings = $query->latest()->get();
 
         // Return the view with the filtered results
-        return view('Manager.AllPostBookings', compact('postBookings'));
+        return view('Manager.CompletedBus', compact('postBookings'));
     }
 
 
@@ -90,6 +90,7 @@ class PostBookingController extends Controller
             'vehicle_checked' => 'nullable|boolean',
             'officer' => 'nullable|string',
             'rel_officer' => 'nullable|string',
+            'commission' => 'nullable|string',
             'agn' => 'nullable|string',
             'start_km' => 'nullable|string',
             'end_km' => 'nullable|string',

@@ -59,7 +59,7 @@ class ProfitLossController extends Controller
                 ->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
 
             'advanced_salary' => Payroll::where('business_id', $businessId)
-                ->whereBetween('paid_date', [$startDate, $endDate])->sum('paid_amnt'),
+                ->whereBetween('paid_date', [$startDate, $endDate])->sum('gross'),
 
             'vehicle_services' => Service::where('business_id', $businessId)
                 ->where('type', 'Oil Change')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),

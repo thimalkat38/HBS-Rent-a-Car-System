@@ -2,6 +2,13 @@
 
 return [
 
+
+//     'providers' => [
+//     // ...
+//     Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+// ],   
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Name

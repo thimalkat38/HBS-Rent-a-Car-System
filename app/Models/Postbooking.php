@@ -38,6 +38,7 @@ class PostBooking extends Model
         'vehicle_checked',
         'officer',
         'rel_officer',
+        'commission',
         'agn',
         'start_km',
         'end_km',

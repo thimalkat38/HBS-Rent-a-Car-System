@@ -520,6 +520,10 @@
                             <label class="block text-sm font-medium text-slate-800 mb-1">Agreement Number</label>
                             <input type="text" name="agn" class="w-full h-12 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Enter agreement number" required />
                         </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-800 mb-1">Commison Agent</label>
+                            <input type="text" name="commission" value="{{ $booking->commission }}" class="w-full h-12 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Enter Commison Agent Name" required />
+                        </div>
                     </div>
                 </section>
                 <!-- Action Buttons -->

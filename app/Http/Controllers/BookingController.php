@@ -54,7 +54,7 @@ class BookingController extends Controller
         $fullNames = Booking::where('business_id', $businessId)->select('full_name')->distinct()->pluck('full_name');
         $statuses = Booking::where('business_id', $businessId)->select('status')->distinct()->pluck('status');
 
-        return view('Manager.ManagerBookings', compact('bookings', 'vehicleNumbers', 'fullNames', 'statuses'));
+        return view('Manager.BookingHistory', compact('bookings', 'vehicleNumbers', 'fullNames', 'statuses'));
     }
 
 
@@ -116,6 +116,12 @@ class BookingController extends Controller
         $validated['additional_chagers'] = $request->input('additional_chagers', 0.00);
         $validated['discount_price'] = $request->input('discount_price', 0.00);
         $validated['payed'] = $request->input('payed', 0.00);
+
+        // Map commissioner field to commission for the model
+        if (isset($validated['commissioner'])) {
+            $validated['commission'] = $validated['commissioner'];
+            unset($validated['commissioner']);
+        }
 
         // Calculate days (always round up if there is any time difference)
         $from = new \DateTime($request->from_date . ' ' . $request->booking_time);
@@ -324,12 +330,19 @@ class BookingController extends Controller
             'reason' => 'nullable|string',
             'start_km' => 'nullable|string',
             'free_km' => 'nullable|string',
+            'commissioner' => 'nullable|string',
             'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
             'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $validatedData['additional_chagers'] = $validatedData['additional_chagers'] ?? 0.00;
         $validatedData['discount_price'] = $validatedData['discount_price'] ?? 0.00;
+
+        // Map commissioner field to commission for the model
+        if (isset($validatedData['commissioner'])) {
+            $validatedData['commission'] = $validatedData['commissioner'];
+            unset($validatedData['commissioner']);
+        }
 
         // Update basic details
         $booking->update($validatedData);
