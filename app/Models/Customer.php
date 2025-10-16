@@ -14,6 +14,8 @@ class Customer extends Model
         'business_id',
         'title',
         'full_name',
+        'status',
+        'reason',
         'phone',
         'whatsapp',
         'email',

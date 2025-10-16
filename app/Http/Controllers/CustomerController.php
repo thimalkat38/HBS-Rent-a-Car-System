@@ -15,20 +15,31 @@ class CustomerController extends Controller
         $businessId = Auth::user()->business_id;
         $query = Customer::where('business_id', $businessId);
 
-        // $query = Customer::query();
+        // Unified search across NIC, Full Name, and Phone
+        $search = $request->input('search');
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nic', 'LIKE', "%{$search}%")
+                    ->orWhere('full_name', 'LIKE', "%{$search}%")
+                    ->orWhere('phone', 'LIKE', "%{$search}%");
+            });
+        }
 
-        // Filter by NIC if provided
+        // Backward-compatible individual filters if provided
         if ($request->filled('nic')) {
             $query->where('nic', 'LIKE', '%' . $request->input('nic') . '%');
         }
 
-        // Filter by Full Name if provided
         if ($request->filled('full_name')) {
             $query->where('full_name', 'LIKE', '%' . $request->input('full_name') . '%');
         }
 
-        // Get the filtered customers
-        $customers = $query->get();
+        if ($request->filled('phone')) {
+            $query->where('phone', 'LIKE', '%' . $request->input('phone') . '%');
+        }
+
+        // Paginate to enable links() and consistent numbering in the view
+        $customers = $query->orderByDesc('id')->paginate(15)->appends($request->query());
 
         return view('Manager.Customers', compact('customers'));
     }
@@ -38,7 +49,7 @@ class CustomerController extends Controller
     // Show the form for creating a new customer
     public function create()
     {
-        return view('Manager.ManagerAddCustomer');
+        return view('Manager.NewAddCustomer');
     }
 
     // Store a newly created customer in storage
@@ -76,6 +87,7 @@ class CustomerController extends Controller
         $validated['nic_photos'] = $nicPhotos;
         $validated['dl_photos'] = $dlPhotos;
         $validated['business_id'] = $businessId;
+        $validated['status'] = 'active'; // Set default status as active
 
         Customer::create($validated);
 
@@ -85,25 +97,49 @@ class CustomerController extends Controller
     // Show the form for editing the specified customer
     public function edit(Customer $customer)
     {
-        return view('Manager.ManagerEditCustomer', compact('customer'));
+        return view('Manager.NewEditCustomer', compact('customer'));
     }
 
     // Update the specified customer in storage
     public function update(Request $request, Customer $customer)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:10',
-            'full_name' => 'required|string|max:255',
-            'phone' => 'required|numeric|digits_between:10,15',
-            'whatsapp' => 'nullable|max:20',
-            'email' => 'nullable|email|max:255', // Make email optional
-            'nic' => 'required|string|max:12|unique:customers,nic,' . $customer->id,
-            'address' => 'required|string|max:255',
-        ]);
+        try {
+            $validated = $request->validate([
+                'full_name' => 'required|string|max:255',
+                'phone' => 'required|string|min:10|max:15',
+                'whatsapp' => 'nullable|max:20',
+                'email' => 'nullable|email|max:255', // Make email optional
+                'nic' => 'required|string|max:12|unique:customers,nic,' . $customer->id,
+                'address' => 'required|string|max:255',
+                'deactivate' => 'nullable',
+                'deactivate_reason' => 'nullable|string|max:255',
+            ]);
 
-        $customer->update($validated);
+            // Handle status based on deactivate checkbox
+            // Checkbox sends 'on' when checked, nothing when unchecked
+            if ($request->filled('deactivate')) {
+                $validated['status'] = 'deactivate';
+                $validated['reason'] = $validated['deactivate_reason'] ?? null;
+            } else {
+                $validated['status'] = 'active';
+                $validated['reason'] = null;
+            }
 
-        return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
+            // Remove the checkbox fields from validated data as they're not in the database
+            unset($validated['deactivate'], $validated['deactivate_reason']);
+
+            $customer->update($validated);
+
+            return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'An error occurred while updating the customer: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     // Remove the specified customer from storage
@@ -152,7 +188,7 @@ class CustomerController extends Controller
             return redirect()->route('customers.index')->with('error', 'Customer not found.');
         }
 
-        return view('Manager.DetailedCustomer', compact('customer'));
+        return view('Manager.NewDetailedCustomer', compact('customer'));
     }
 
     public function getCustomerDetails($id)

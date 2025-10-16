@@ -416,11 +416,17 @@
                                                 $('#customer-list').empty().show(); // Show the list
                                                 if (data.length > 0) {
                                                     $.each(data, function(index, customer) {
+                                                        // Determine dot color based on status
+                                                        var dotColor = (customer.status && customer.status.toLowerCase() === 'active')
+                                                            ? 'bg-green-500'
+                                                            : 'bg-red-500';
+                                                        var dotHtml = '<span class="inline-block w-3 h-3 rounded-full mr-2 align-middle ' + dotColor + '"></span>';
                                                         $('#customer-list').append(
-                                                            '<li class="list-group-item customer-item px-4 py-2 cursor-pointer hover:bg-teal-100" data-id="' +
-                                                            customer.id + '" data-name="' + customer
-                                                            .full_name + '">' +
-                                                            customer.full_name + '</li>'
+                                                            '<li class="list-group-item customer-item px-4 py-2 cursor-pointer hover:bg-teal-100 flex items-center" data-id="' +
+                                                            customer.id + '" data-name="' + customer.full_name + '">' +
+                                                            dotHtml +
+                                                            '<span>' + customer.full_name + '</span>' +
+                                                            '</li>'
                                                         );
                                                     });
                                                 } else {
