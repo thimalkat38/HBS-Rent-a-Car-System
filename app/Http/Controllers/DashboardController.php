@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Booking;
 use App\Models\Vehicle;
+use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
@@ -38,12 +39,70 @@ class DashboardController extends Controller
             })
             ->get();
 
-        return view('Manager.ManagerDashboard', compact('bookingCounts', 'currentMonth', 'currentYear', 'expiringVehicles'));
+        // Fetch vehicles that need service within 500km
+        $serviceAlertVehicles = $this->getServiceAlertVehicles($businessId);
+
+        return view('Manager.ManagerDashboard', compact('bookingCounts', 'currentMonth', 'currentYear', 'expiringVehicles', 'serviceAlertVehicles'));
     }
 
 
 
 
+
+    private function getServiceAlertVehicles($businessId, int $thresholdKm = 500)
+    {
+        // Pull vehicles with a current mileage
+        $vehicles = Vehicle::where('business_id', $businessId)
+            ->whereNotNull('current_mileage')
+            ->get();
+    
+        $serviceAlertVehicles = collect();
+    
+        foreach ($vehicles as $vehicle) {
+            // current_mileage may be nullable/string; sanitize to int
+            $current = (int) preg_replace('/\D/', '', (string) $vehicle->current_mileage);
+    
+            // Build a base query for this vehicle's services
+            $base = Service::where('business_id', $businessId)
+                ->where('vehicle_number', $vehicle->vehicle_number);
+    
+            // Prefer the nearest *upcoming* next_mileage >= current
+            $upcoming = (clone $base)
+                ->where('next_mileage', '>=', $current)
+                ->orderBy('next_mileage', 'asc')
+                ->first();
+    
+            // If none upcoming, fall back to the *latest past* next_mileage
+            $candidate = $upcoming ?: (clone $base)->orderBy('next_mileage', 'desc')->first();
+    
+            if (!$candidate || is_null($candidate->next_mileage)) {
+                continue;
+            }
+    
+            $next = (int) preg_replace('/\D/', '', (string) $candidate->next_mileage);
+            $diff = $next - $current; // positive => km left; negative/zero => overdue
+    
+            // Include if overdue OR within the threshold
+            if ($diff <= $thresholdKm) {
+                $serviceAlertVehicles->push([
+                    'vehicle'       => $vehicle,
+                    'service'       => $candidate,
+                    'mileage_left'  => $diff,                     // can be <= 0 when overdue
+                    'abs_overdue'   => $diff < 0 ? abs($diff) : 0,
+                    'status'        => $diff <= 0 ? 'overdue' : 'due_soon',
+                ]);
+            }
+        }
+    
+        // Sort: overdue first (most overdue first), then due soon (closest first)
+        return $serviceAlertVehicles
+            ->sortBy([
+                [fn ($r) => $r['status'] === 'overdue' ? 0 : 1, 'asc'],
+                ['mileage_left', 'asc'], // negative values (more overdue) come first
+            ])
+            ->values();
+    }
+    
 
     public function getBookingsByDate(Request $request)
     {

@@ -24,6 +24,7 @@ class Vehicle extends Model
         'price_per_day',
         'free_km',
         'extra_km_chg',
+        'current_mileage',
         'features',
         'images',
         'display_image'
@@ -42,5 +43,10 @@ class Vehicle extends Model
 {
     return $this->hasMany(\App\Models\Booking::class, 'vehicle_number', 'vehicle_number');
 }
+
+    public function postBookings()
+    {
+        return $this->hasMany(\App\Models\PostBooking::class, 'vehicle_number', 'vehicle_number');
+    }
 
 }

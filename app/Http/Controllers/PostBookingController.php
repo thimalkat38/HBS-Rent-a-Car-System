@@ -6,8 +6,10 @@ use App\Models\PostBooking;
 use App\Models\Booking;
 use App\Models\Expense;
 use App\Models\Service;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PostBookingController extends Controller
 {
@@ -112,6 +114,11 @@ class PostBookingController extends Controller
             $booking->delete(); // Optional: keep if you want to remove from active bookings
         }
 
+        // Update vehicle's current mileage if end_km is provided
+        if ($request->filled('end_km') && $request->filled('vehicle_number')) {
+            $this->updateVehicleCurrentMileage($request->vehicle_number, $request->end_km);
+        }
+
         return redirect()->route('postbookings.show', $postBooking)
             ->with('success', 'Booking created successfully.');
     }
@@ -179,62 +186,71 @@ class PostBookingController extends Controller
         return redirect()->route('postbookings.index')->with('success', 'Booking deleted successfully.');
     }
 
+    /**
+     * Update vehicle's current mileage based on the latest post-booking end_km
+     */
+    private function updateVehicleCurrentMileage($vehicleNumber, $endKm)
+    {
+        try {
+            $vehicle = Vehicle::where('vehicle_number', $vehicleNumber)
+                ->where('business_id', Auth::user()->business_id)
+                ->first();
+
+            if ($vehicle && $endKm) {
+                $vehicle->update(['current_mileage' => $endKm]);
+            }
+        } catch (\Exception $e) {
+            // Log the error but don't break the main flow
+            Log::error('Failed to update vehicle current mileage: ' . $e->getMessage());
+        }
+    }
+
     public function getProfitData(Request $request)
     {
         $request->validate([
             'vehicle_number' => 'required|string',
-            'from_date' => 'nullable|date',
-            'to_date' => 'nullable|date',
+            'from_date'      => 'nullable|date',
+            'to_date'        => 'nullable|date',
         ]);
     
         $vehicleNumber = $request->vehicle_number;
-        $fromDate = $request->from_date;
-        $toDate = $request->to_date;
-        $businessId = Auth::check() ? Auth::user()->business_id : null;
+        $fromDate      = $request->from_date;
+        $toDate        = $request->to_date;
+        $businessId    = Auth::check() ? Auth::user()->business_id : null;
     
         // -------------------------
-        // 1. Income (distribute per day)
+        // 1) INCOME (recognize on to_date ONLY)
+        //    Instead of distributing over the range, we group by DATE(to_date).
         // -------------------------
-        $bookings = Postbooking::where('vehicle_number', $vehicleNumber)
-            ->when($businessId, fn($q) => $q->where('business_id', $businessId))
-            ->when($fromDate, fn($q) => $q->whereDate('to_date', '>=', $fromDate)) // overlap check
-            ->when($toDate, fn($q) => $q->whereDate('from_date', '<=', $toDate))   // overlap check
-            ->get();
-    
-        $incomeMap = [];
-
-        foreach ($bookings as $booking) {
-            $start = new \DateTime($booking->from_date);
-            $end = new \DateTime($booking->to_date);
-            $end->modify('+1 day'); // include to_date
-
-            $period = new \DatePeriod($start, new \DateInterval('P1D'), $end);
-            $days = iterator_count($period);
-    
-            $dailyIncome = $days > 0 ? $booking->total_income / $days : $booking->total_income;
-    
-            foreach ($period as $date) {
-                $d = $date->format('Y-m-d');
-                $incomeMap[$d] = ($incomeMap[$d] ?? 0) + $dailyIncome;
-            }
-        }
+        $incomeMap = PostBooking::query()
+            ->where('vehicle_number', $vehicleNumber)
+            ->when($businessId, fn ($q) => $q->where('business_id', $businessId))
+            // Only bookings whose END falls inside the selected range
+            ->when($fromDate, fn ($q) => $q->whereDate('to_date', '>=', $fromDate))
+            ->when($toDate,   fn ($q) => $q->whereDate('to_date', '<=', $toDate))
+            // If you only want completed bookings, add:
+            // ->where('status', 'completed')
+            ->selectRaw('DATE(to_date) as date, SUM(total_income) as total')
+            ->groupBy('date')
+            ->pluck('total', 'date')     // ['YYYY-MM-DD' => 12345.67, ...]
+            ->toArray();
     
         // -------------------------
-        // 2. Expenses (Fuel + Services)
+        // 2) EXPENSES (Fuel + Services) — unchanged
         // -------------------------
         $fuelExpenses = Expense::selectRaw('DATE(date) as date, SUM(amnt) as total')
             ->where('fuel_for', $vehicleNumber)
-            ->when($businessId, fn($q) => $q->where('business_id', $businessId))
-            ->when($fromDate, fn($q) => $q->whereDate('date', '>=', $fromDate))
-            ->when($toDate, fn($q) => $q->whereDate('date', '<=', $toDate))
+            ->when($businessId, fn ($q) => $q->where('business_id', $businessId))
+            ->when($fromDate, fn ($q) => $q->whereDate('date', '>=', $fromDate))
+            ->when($toDate, fn ($q) => $q->whereDate('date', '<=', $toDate))
             ->groupBy('date')
             ->pluck('total', 'date');
     
         $serviceExpenses = Service::selectRaw('DATE(date) as date, SUM(amnt) as total')
             ->where('vehicle_number', $vehicleNumber)
-            ->when($businessId, fn($q) => $q->where('business_id', $businessId))
-            ->when($fromDate, fn($q) => $q->whereDate('date', '>=', $fromDate))
-            ->when($toDate, fn($q) => $q->whereDate('date', '<=', $toDate))
+            ->when($businessId, fn ($q) => $q->where('business_id', $businessId))
+            ->when($fromDate, fn ($q) => $q->whereDate('date', '>=', $fromDate))
+            ->when($toDate, fn ($q) => $q->whereDate('date', '<=', $toDate))
             ->groupBy('date')
             ->pluck('total', 'date');
     
@@ -247,40 +263,34 @@ class PostBookingController extends Controller
         }
     
         // -------------------------
-        // 3. Merge income & expenses
+        // 3) Merge income & expenses (keep your current response shape)
         // -------------------------
         $allDates = collect(array_unique(array_merge(array_keys($incomeMap), array_keys($expensesMap))))
             ->sort()
             ->values();
     
-        if ($fromDate) {
-            $allDates = $allDates->filter(fn($d) => $d >= $fromDate);
-        }
-        if ($toDate) {
-            $allDates = $allDates->filter(fn($d) => $d <= $toDate);
-        }
+        if ($fromDate) $allDates = $allDates->filter(fn ($d) => $d >= $fromDate);
+        if ($toDate)   $allDates = $allDates->filter(fn ($d) => $d <= $toDate);
     
-        $labels = [];
-        $incomeValues = [];
+        $labels        = [];
+        $incomeValues  = [];
         $expenseValues = [];
     
         foreach ($allDates as $date) {
-            $labels[] = $date;
-            $incomeValues[] = round($incomeMap[$date] ?? 0, 2);
+            $labels[]        = $date;
+            $incomeValues[]  = round($incomeMap[$date]   ?? 0, 2);
             $expenseValues[] = round($expensesMap[$date] ?? 0, 2);
         }
     
-        // -------------------------
-        // 4. Return JSON response
-        // -------------------------
         return response()->json([
-            'labels' => $labels,
-            'income' => $incomeValues,
-            'expenses' => $expenseValues,
-            'total_income' => array_sum($incomeValues),
+            'labels'         => $labels,
+            'income'         => $incomeValues,
+            'expenses'       => $expenseValues,
+            'total_income'   => array_sum($incomeValues),
             'total_expenses' => array_sum($expenseValues),
         ]);
     }
+    
     
     
     

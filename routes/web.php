@@ -242,6 +242,7 @@ Route::middleware(['manager'])->group(function () {
     Route::get('/services/{service}/edit', [ServiceController::class, 'edit'])->name('services.edit');
     Route::put('/services/{service}', [ServiceController::class, 'update'])->name('services.update');
     Route::delete('/services/{service}', [ServiceController::class, 'destroy'])->name('services.destroy');
+    Route::get('/services/{service}/download-excel', [ServiceController::class, 'downloadExcel'])->name('services.download-excel');
 });
 
 // Expenses Control Routes
@@ -337,3 +338,6 @@ Route::get('/link', function () {
 
     return 'Files and directories copied to public/storage successfully.';
 });
+
+Route::delete('/vehicles/{id}/image', [VehicleController::class, 'deleteImage'])
+    ->name('vehicles.deleteImage');

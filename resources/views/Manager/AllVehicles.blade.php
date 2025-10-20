@@ -514,7 +514,7 @@
                                         $insuranceExpiring = false;
                                         $serviceDueSoon = false;
 
-                                        // Check insurance expiry
+                                        // Check insurance expiry by date window
                                         if (!empty($vehicle->insurance_exp_date)) {
                                             $insuranceDate = \Carbon\Carbon::parse($vehicle->insurance_exp_date);
                                             $insuranceExpiring = $insuranceDate->isBetween(
@@ -523,13 +523,16 @@
                                             );
                                         }
 
-                                        // Check upcoming service
-                                        $serviceDueSoon = \App\Models\Service::where(
-                                            'vehicle_number',
-                                            $vehicle->vehicle_number,
-                                        )
-                                            ->whereDate('next_date', '<=', $today->copy()->addDays(30))
-                                            ->exists();
+                                        // Check upcoming service by mileage proximity (within 500 km)
+                                        $latestService = \App\Models\Service::where('vehicle_number', $vehicle->vehicle_number)
+                                            ->orderByDesc('date')
+                                            ->orderByDesc('created_at')
+                                            ->first();
+
+                                        if ($latestService && !is_null($latestService->next_mileage) && !is_null($vehicle->current_mileage)) {
+                                            $diffToNextService = (int) $latestService->next_mileage - (int) $vehicle->current_mileage;
+                                            $serviceDueSoon = $diffToNextService >= 0 && $diffToNextService <= 500;
+                                        }
                                     @endphp
 
                                     {{-- Show alert badges --}}

@@ -785,6 +785,10 @@
                                                 document.getElementById('price_per_day').value = data.price_per_day;
                                                 document.getElementById('extra_km_chg').value = data.extra_km_chg;
                                                 freeKmdInput.value = data.free_km;
+                                                // Populate starting mileage with current mileage
+                                                if (data.current_mileage) {
+                                                    document.getElementById('start_km').value = data.current_mileage;
+                                                }
                                                 vehicleInput.readOnly = true;
                                                 clearBtn.style.display = '';
                                                 updateFreeKm(); // recalculate free_km on vehicle select
@@ -793,6 +797,7 @@
                                                 document.getElementById('vehicle_name').value = '';
                                                 document.getElementById('price_per_day').value = '';
                                                 document.getElementById('extra_km_chg').value = '';
+                                                document.getElementById('start_km').value = '';
                                                 freeKmdInput.value = '';
                                                 if (freeKmInput) freeKmInput.value = '';
                                             }
@@ -801,6 +806,7 @@
                                             document.getElementById('vehicle_name').value = '';
                                             document.getElementById('price_per_day').value = '';
                                             document.getElementById('extra_km_chg').value = '';
+                                            document.getElementById('start_km').value = '';
                                             freeKmdInput.value = '';
                                             if (freeKmInput) freeKmInput.value = '';
                                         });
@@ -822,6 +828,7 @@
                                 document.getElementById('vehicle_name').value = '';
                                 document.getElementById('price_per_day').value = '';
                                 document.getElementById('extra_km_chg').value = '';
+                                document.getElementById('start_km').value = '';
                                 freeKmdInput.value = '';
                                 if (freeKmInput) freeKmInput.value = '';
                                 this.style.display = 'none';
