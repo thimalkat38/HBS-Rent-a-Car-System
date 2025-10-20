@@ -284,7 +284,8 @@ class VehicleController extends Controller
                 'vehicle_model' => $vehicle->vehicle_model,
                 'price_per_day' => $vehicle->price_per_day,
                 'extra_km_chg' => $vehicle->extra_km_chg,
-                'free_km' => $vehicle->free_km
+                'free_km' => $vehicle->free_km,
+                'current_mileage' => $vehicle->current_mileage
             ]);
         }
 
@@ -463,5 +464,59 @@ public function deleteImage(Request $request, $id)
     }
 
     return redirect()->back()->with('success', 'Image deleted successfully.');
+}
+
+/**
+ * Update current mileage for all vehicles based on their latest post-booking end_km
+ */
+public function updateAllVehicleMileage()
+{
+    try {
+        $businessId = Auth::user()->business_id;
+        $vehicles = Vehicle::where('business_id', $businessId)->get();
+        $updatedCount = 0;
+
+        foreach ($vehicles as $vehicle) {
+            $latestPostBooking = \App\Models\PostBooking::where('vehicle_number', $vehicle->vehicle_number)
+                ->where('business_id', $businessId)
+                ->latest()
+                ->first();
+
+            if ($latestPostBooking && $latestPostBooking->end_km) {
+                $vehicle->update(['current_mileage' => $latestPostBooking->end_km]);
+                $updatedCount++;
+            }
+        }
+
+        return redirect()->back()->with('success', "Updated current mileage for {$updatedCount} vehicles.");
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Failed to update vehicle mileage: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Update current mileage for a specific vehicle
+ */
+public function updateVehicleMileage($id)
+{
+    try {
+        $vehicle = Vehicle::where('id', $id)
+            ->where('business_id', Auth::user()->business_id)
+            ->firstOrFail();
+
+        $latestPostBooking = \App\Models\PostBooking::where('vehicle_number', $vehicle->vehicle_number)
+            ->where('business_id', Auth::user()->business_id)
+            ->latest()
+            ->first();
+
+        if ($latestPostBooking && $latestPostBooking->end_km) {
+            $vehicle->update(['current_mileage' => $latestPostBooking->end_km]);
+            return redirect()->back()->with('success', 'Vehicle mileage updated successfully.');
+        } else {
+            return redirect()->back()->with('warning', 'No post-booking found with end_km for this vehicle.');
+        }
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Failed to update vehicle mileage: ' . $e->getMessage());
+    }
 }
 }

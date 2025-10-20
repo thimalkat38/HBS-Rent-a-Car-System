@@ -162,7 +162,35 @@
                     </div>
                 @endif
 
+                @if ($serviceAlertVehicles->isNotEmpty())
+                    <div class="alert-box service-alert">
+                        <h3>🔧 Service Alert 🔧</h3>
+                        <ul>
+                            @foreach ($serviceAlertVehicles as $row)
+                                @php
+                                    $vehicle = $row['vehicle'];
+                                    $service = $row['service'];
+                                    $left = (int) $row['mileage_left']; // can be negative
+                                    $isOver = $left <= 0;
+                                @endphp
 
+                                <li class="{{ $isOver ? 'overdue' : 'due-soon' }}">
+                                    🚗 {{ $vehicle->vehicle_number }}
+                                    @if ($isOver)
+                                        — <span class="badge badge-overdue">OVERDUE</span>
+                                        Service overdue by <strong>{{ abs($left) }} km</strong>
+                                        (Current: {{ (int) $vehicle->current_mileage }} km,
+                                        Next Service: {{ (int) $service->next_mileage }} km)
+                                    @else
+                                        — Next service in <strong>{{ $left }} km</strong>
+                                        (Current: {{ (int) $vehicle->current_mileage }} km,
+                                        Next Service: {{ (int) $service->next_mileage }} km)
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 <!-- Calendar Section -->
                 <div class="calendar">
@@ -261,8 +289,8 @@
                                 <h3>OUT</h3>
                                 <ul>
                                     ${data.in_bookings.map(booking => `
-                                                    <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.booking_time}]</li>
-                                                `).join('')}
+                                                        <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.booking_time}]</li>
+                                                    `).join('')}
                                 </ul>`;
                                 } else {
                                     inBookingsHtml =
@@ -274,8 +302,8 @@
                                 <h3>IN</h3>
                                 <ul>
                                     ${data.out_bookings.map(booking => `
-                                                    <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.arrival_time}]</li>
-                                                `).join('')}
+                                                        <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.arrival_time}]</li>
+                                                    `).join('')}
                                 </ul>`;
                                 } else {
                                     outBookingsHtml =
@@ -287,8 +315,8 @@
                                 <h3>Available Vehicles</h3>
                                 <ul>
                                     ${data.available_vehicles.map(vehicle => `
-                                                    <li>${vehicle.vehicle_number} - ${vehicle.vehicle_name}</li>
-                                                `).join('')}
+                                                        <li>${vehicle.vehicle_number} - ${vehicle.vehicle_name}</li>
+                                                    `).join('')}
                                 </ul>`;
                                 } else {
                                     availableVehiclesHtml =
@@ -315,6 +343,45 @@
 
 
     <style>
+        /* Existing .service-alert is amber; keep it for "due soon" */
+        .service-alert {
+            background-color: #ff9500;
+            color: #fff;
+        }
+
+        /* Highlight individual overdue rows in red */
+        .service-alert li.overdue {
+            background: #d90429;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 4px;
+        }
+
+        /* Optional: style due soon rows subtly */
+        .service-alert li.due-soon {
+            background: rgba(0, 0, 0, 0.08);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 4px;
+        }
+
+        /* Badge for quick scanning */
+        .badge {
+            font-size: 0.85em;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 999px;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+
+        .badge-overdue {
+            background: #8b0000;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+
         .hidden {
             display: none;
         }
@@ -377,6 +444,11 @@
         .alert-box li {
             margin: 5px 0;
             font-weight: bold;
+        }
+
+        .service-alert {
+            background-color: #ff9500;
+            color: white;
         }
     </style>
 

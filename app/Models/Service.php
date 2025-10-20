@@ -19,7 +19,12 @@ class Service extends Model
         'amnt',
         'station',
         'date',
-        'next_date'
+        'next_date',
+        'features'
+    ];
+
+    protected $casts = [
+        'features' => 'array',
     ];
 
     public function business()

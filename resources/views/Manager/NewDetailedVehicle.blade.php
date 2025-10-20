@@ -403,22 +403,32 @@
                             </div>
                             <div class="flex flex-col gap-2">
                                 <div>
-                                    <div class="text-slate-950 text-xs font-normal font-poppins">Next Service Date:
+                                    <div class="text-slate-950 text-xs font-normal font-poppins">Current mileage:
+                                    </div>
+                                    <div class="text-slate-950 text-xl font-semibold font-poppins">
+                                        @if (!empty($vehicle->current_mileage))
+                                            {{ number_format($vehicle->current_mileage) }} km
+                                        @else
+                                            <span class="text-slate-500 text-base font-poppins">No current mileage data.</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-slate-950 text-xs font-normal font-poppins">Next Service mileage:
                                     </div>
                                     <div class="text-slate-950 text-xl font-semibold font-poppins">
                                         @php
-                                            // Find the next service for this vehicle_number
+                                            // Find the next service for this vehicle_number, prioritize services with a future next_mileage if possible
                                             $nextService = \DB::table('services')
                                                 ->where('vehicle_number', $vehicle->vehicle_number)
-                                                ->orderBy('next_date', 'asc')
-                                                ->whereDate('next_date', '>=', now())
+                                                ->whereNotNull('next_mileage')
+                                                ->orderBy('next_mileage', 'asc')
                                                 ->first();
                                         @endphp
-                                        @if ($nextService && $nextService->next_date)
-                                            {{ \Carbon\Carbon::parse($nextService->next_date)->format('jS M Y') }}
+                                        @if ($nextService && $nextService->next_mileage)
+                                            {{ number_format($nextService->next_mileage) }} km
                                         @else
-                                            <span class="text-slate-500 text-base font-poppins">No upcoming service
-                                                date.</span>
+                                            <span class="text-slate-500 text-base font-poppins">No upcoming service mileage.</span>
                                         @endif
                                     </div>
                                 </div>
