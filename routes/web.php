@@ -98,7 +98,7 @@ Route::middleware(['manager'])->group(function () {
     Route::post('/inventory/create-item', [InventoryController::class, 'createItem'])->name('inventory.create-item');
     Route::post('/inventory/add-to-existing', [InventoryController::class, 'addToExisting'])->name('inventory.add-to-existing');
     Route::post('/inventory/check-duplicate', [InventoryController::class, 'checkDuplicate'])->name('inventory.checkDuplicate');
-    
+
     // Main Inventory CRUD
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
     Route::get('/inventory/create', [InventoryController::class, 'create'])->name('inventory.create');
@@ -108,22 +108,22 @@ Route::middleware(['manager'])->group(function () {
     Route::delete('/inventory/{id}', [InventoryController::class, 'destroy'])->name('inventory.destroy');
 
     Route::get('/inventory/filter', [InventoryController::class, 'filter_table'])->name('inventory.filter');
-    
+
     // GRN (Goods Received Note) Management
     Route::get('/inventory/grn', [InventoryController::class, 'grn'])->name('inventory.grn');
     Route::get('inventory/{id}/batches', [InventoryController::class, 'batches'])->name('inventory.batches');
-    
+
     Route::get('inventory/{id}/grn/{grn_id}', [InventoryController::class, 'editGrn'])->name('inventory.edit-grn');
     Route::put('inventory/{id}/grn/{grn_id}', [InventoryController::class, 'updateGrn'])->name('inventory.update-grn');
     Route::post('inventory/grn/{grn_id}/payment', [InventoryController::class, 'updateGrnPayment'])->name('inventory.update-grn-payment');
     Route::get('inventory/grn/{grn_id}/payment-history', [InventoryController::class, 'getGrnPaymentHistory'])->name('inventory.grn-payment-history');
- 
+
     // Item Issuing Management
     Route::get('/inventory/issue', [InventoryController::class, 'issue'])->name('inventory.issue');
     Route::get('/inventory/issued-items', [InventoryController::class, 'issuedItems'])->name('inventory.issued-items');
     Route::post('/inventory/store-issued-items', [InventoryController::class, 'storeIssuedItems'])->name('inventory.store-issued-items');
     Route::post('/inventory/return-items', [InventoryController::class, 'returnItems'])->name('inventory.returnItems');
-    
+
     // Vehicle and Employee Related
     Route::get('/inventory/available-vehicles', [InventoryController::class, 'availableVehicles'])->name('inventory.available-vehicles');
     Route::get('/inventory/available-employees', [InventoryController::class, 'availableEmployees'])->name('inventory.available-employees');
@@ -131,7 +131,7 @@ Route::middleware(['manager'])->group(function () {
     Route::post('/inventory/verify-employee', [InventoryController::class, 'verifyEmployee'])->name('inventory.verifyEmployee');
     Route::get('/inventory/vehicle-issued-items/{vehicleId}', [InventoryController::class, 'vehicleIssuedItems'])->name('inventory.vehicleIssuedItems');
     Route::get('/inventory/employee-issued-items/{employeeId}', [InventoryController::class, 'employeeIssuedItems'])->name('inventory.employeeIssuedItems');
-    
+
     // Statistics and Reporting
     Route::get('/inventory/stats', [InventoryController::class, 'getStats'])->name('inventory.getStats');
     Route::get('/inventory/low-stock', [InventoryController::class, 'getLowStockItems'])->name('inventory.getLowStockItems');
@@ -341,3 +341,7 @@ Route::get('/link', function () {
 
 Route::delete('/vehicles/{id}/image', [VehicleController::class, 'deleteImage'])
     ->name('vehicles.deleteImage');
+
+Route::patch('/vehicles/{vehicle}/service-status', [VehicleController::class, 'updateServiceStatus'])
+    ->name('vehicles.serviceStatus')
+    ->middleware(['manager']);

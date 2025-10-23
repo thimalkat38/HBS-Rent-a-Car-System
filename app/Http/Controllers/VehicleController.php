@@ -195,7 +195,7 @@ class VehicleController extends Controller
             foreach ($request->file('images') as $file) {
                 $path = $file->store('vehicle_images', 'public');
                 $images[] = $path;
-    
+
                 // ✅ Copy uploaded file to public/storage just like in store()
                 $this->copyUploadedFileToPublic($path);
             }
@@ -401,10 +401,10 @@ class VehicleController extends Controller
     {
         $businessId = $request->input('business_id');
         $from = $request->input('from_date');
-        $to = $request->input('to_date');
+        $to   = $request->input('to_date');
 
-        // Get all vehicles for the business
-        $vehicles = Vehicle::where('business_id', $businessId)->get();
+        // Get all vehicles for the business (include status)
+        $vehicles = Vehicle::where('business_id', $businessId)->get(['vehicle_number', 'vehicle_name', 'status']);
 
         // Get all bookings that overlap with the selected dates
         $bookedVehicleNumbers = Booking::where('business_id', $businessId)
@@ -417,15 +417,26 @@ class VehicleController extends Controller
             ->pluck('vehicle_number')
             ->toArray();
 
-        $available = [];
+        $bookedSet = array_fill_keys($bookedVehicleNumbers, true);
+
+        $available   = [];
         $unavailable = [];
 
         foreach ($vehicles as $vehicle) {
+            $isInService = ((int)($vehicle->status ?? 0) === 1);
+            $isBooked    = isset($bookedSet[$vehicle->vehicle_number]);
+
             $item = [
                 'number' => $vehicle->vehicle_number,
-                'model' => $vehicle->vehicle_name,
+                'model'  => $vehicle->vehicle_name,
             ];
-            if (in_array($vehicle->vehicle_number, $bookedVehicleNumbers)) {
+
+            if ($isInService) {
+                // In service overrides booking reason
+                $item['reason'] = 'in_service';
+                $unavailable[] = $item;
+            } elseif ($isBooked) {
+                $item['reason'] = 'booked';
                 $unavailable[] = $item;
             } else {
                 $available[] = $item;
@@ -433,90 +444,113 @@ class VehicleController extends Controller
         }
 
         return response()->json([
-            'available' => $available,
+            'available'   => $available,
             'unavailable' => $unavailable,
         ]);
     }
-public function deleteImage(Request $request, $id)
-{
-    $vehicle = Vehicle::findOrFail($id);
 
-    $imageToDelete = $request->input('image');
+    public function deleteImage(Request $request, $id)
+    {
+        $vehicle = Vehicle::findOrFail($id);
 
-    // Remove the image from the images array
-    $images = $vehicle->images ?? [];
-    if (($key = array_search($imageToDelete, $images)) !== false) {
-        unset($images[$key]);
-        $images = array_values($images); // reindex
+        $imageToDelete = $request->input('image');
+
+        // Remove the image from the images array
+        $images = $vehicle->images ?? [];
+        if (($key = array_search($imageToDelete, $images)) !== false) {
+            unset($images[$key]);
+            $images = array_values($images); // reindex
+        }
+
+        // If the deleted image was the display image, set display_image to null or another image
+        if ($vehicle->display_image === $imageToDelete) {
+            $vehicle->display_image = count($images) > 0 ? $images[0] : null;
+        }
+
+        $vehicle->images = $images;
+        $vehicle->save();
+
+        // Delete the image file from storage
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($imageToDelete)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($imageToDelete);
+        }
+
+        return redirect()->back()->with('success', 'Image deleted successfully.');
     }
 
-    // If the deleted image was the display image, set display_image to null or another image
-    if ($vehicle->display_image === $imageToDelete) {
-        $vehicle->display_image = count($images) > 0 ? $images[0] : null;
+    /**
+     * Update current mileage for all vehicles based on their latest post-booking end_km
+     */
+    public function updateAllVehicleMileage()
+    {
+        try {
+            $businessId = Auth::user()->business_id;
+            $vehicles = Vehicle::where('business_id', $businessId)->get();
+            $updatedCount = 0;
+
+            foreach ($vehicles as $vehicle) {
+                $latestPostBooking = \App\Models\PostBooking::where('vehicle_number', $vehicle->vehicle_number)
+                    ->where('business_id', $businessId)
+                    ->latest()
+                    ->first();
+
+                if ($latestPostBooking && $latestPostBooking->end_km) {
+                    $vehicle->update(['current_mileage' => $latestPostBooking->end_km]);
+                    $updatedCount++;
+                }
+            }
+
+            return redirect()->back()->with('success', "Updated current mileage for {$updatedCount} vehicles.");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to update vehicle mileage: ' . $e->getMessage());
+        }
     }
 
-    $vehicle->images = $images;
-    $vehicle->save();
+    /**
+     * Update current mileage for a specific vehicle
+     */
+    public function updateVehicleMileage($id)
+    {
+        try {
+            $vehicle = Vehicle::where('id', $id)
+                ->where('business_id', Auth::user()->business_id)
+                ->firstOrFail();
 
-    // Delete the image file from storage
-    if (\Illuminate\Support\Facades\Storage::disk('public')->exists($imageToDelete)) {
-        \Illuminate\Support\Facades\Storage::disk('public')->delete($imageToDelete);
-    }
-
-    return redirect()->back()->with('success', 'Image deleted successfully.');
-}
-
-/**
- * Update current mileage for all vehicles based on their latest post-booking end_km
- */
-public function updateAllVehicleMileage()
-{
-    try {
-        $businessId = Auth::user()->business_id;
-        $vehicles = Vehicle::where('business_id', $businessId)->get();
-        $updatedCount = 0;
-
-        foreach ($vehicles as $vehicle) {
             $latestPostBooking = \App\Models\PostBooking::where('vehicle_number', $vehicle->vehicle_number)
-                ->where('business_id', $businessId)
+                ->where('business_id', Auth::user()->business_id)
                 ->latest()
                 ->first();
 
             if ($latestPostBooking && $latestPostBooking->end_km) {
                 $vehicle->update(['current_mileage' => $latestPostBooking->end_km]);
-                $updatedCount++;
+                return redirect()->back()->with('success', 'Vehicle mileage updated successfully.');
+            } else {
+                return redirect()->back()->with('warning', 'No post-booking found with end_km for this vehicle.');
             }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to update vehicle mileage: ' . $e->getMessage());
+        }
+    }
+
+    public function updateServiceStatus(Request $request, Vehicle $vehicle)
+    {
+        // Ensure user can touch only their business's vehicles
+        if ($vehicle->business_id !== Auth::user()->business_id) {
+            abort(403);
         }
 
-        return redirect()->back()->with('success', "Updated current mileage for {$updatedCount} vehicles.");
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Failed to update vehicle mileage: ' . $e->getMessage());
+        $validated = $request->validate([
+            'status' => 'required|in:0,1',
+        ]);
+
+        $vehicle->status = (int) $validated['status'];
+        $vehicle->save();
+
+        return back()->with(
+            'success',
+            $vehicle->status === 1
+                ? 'Vehicle sent to service/repair.'
+                : 'Vehicle marked as active.'
+        );
     }
-}
-
-/**
- * Update current mileage for a specific vehicle
- */
-public function updateVehicleMileage($id)
-{
-    try {
-        $vehicle = Vehicle::where('id', $id)
-            ->where('business_id', Auth::user()->business_id)
-            ->firstOrFail();
-
-        $latestPostBooking = \App\Models\PostBooking::where('vehicle_number', $vehicle->vehicle_number)
-            ->where('business_id', Auth::user()->business_id)
-            ->latest()
-            ->first();
-
-        if ($latestPostBooking && $latestPostBooking->end_km) {
-            $vehicle->update(['current_mileage' => $latestPostBooking->end_km]);
-            return redirect()->back()->with('success', 'Vehicle mileage updated successfully.');
-        } else {
-            return redirect()->back()->with('warning', 'No post-booking found with end_km for this vehicle.');
-        }
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Failed to update vehicle mileage: ' . $e->getMessage());
-    }
-}
 }

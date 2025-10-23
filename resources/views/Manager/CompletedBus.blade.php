@@ -404,52 +404,59 @@
                     <div class="flex flex-col gap-6">
                         <div class="bg-white rounded-lg shadow p-6 mb-6">
                             {{-- Search --}}
-                            <form action="{{ url('postbookings') }}" method="GET" class="flex flex-wrap gap-4 items-end">
+                            <form action="{{ url('postbookings') }}" method="GET"
+                                class="flex flex-wrap gap-4 items-end">
                                 <!-- Vehicle Number Field -->
                                 <div class="flex flex-col">
-                                    <label for="vehicle_number" class="text-sm font-medium text-gray-700 mb-1">Vehicle Number</label>
+                                    <label for="vehicle_number" class="text-sm font-medium text-gray-700 mb-1">Vehicle
+                                        Number</label>
                                     <input type="text" id="vehicle_number" name="vehicle_number"
                                         list="vehicle_numbers"
                                         class="block w-44 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm"
                                         placeholder="Filter by vehicle number" maxlength="8"
                                         oninput="formatVehicleNumber(this)" value="{{ request('vehicle_number') }}">
                                 </div>
+
+                                <!-- Agreement Number -->
                                 <div class="flex flex-col">
-                                    <label for="agn" class="text-sm font-medium text-gray-700 mb-1">Agreement No.</label>
+                                    <label for="agn" class="text-sm font-medium text-gray-700 mb-1">Agreement
+                                        No.</label>
                                     <input type="text" id="agn" name="agn"
                                         class="block w-44 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm"
-                                        placeholder="Filter by Agreement Number"
-                                        value="{{ request('agn') }}">
+                                        placeholder="Filter by Agreement Number" value="{{ request('agn') }}">
                                 </div>
+
+                                <!-- From Date -->
                                 <div class="flex flex-col">
-                                    <label for="from_date" class="text-sm font-medium text-gray-700 mb-1">From Date</label>
+                                    <label for="from_date" class="text-sm font-medium text-gray-700 mb-1">From
+                                        Date</label>
                                     <input type="date" name="from_date" id="from_date"
                                         class="block w-44 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm"
-                                        placeholder="Filter by From Date"
-                                        value="{{ request('from_date') }}">
+                                        placeholder="Filter by From Date" value="{{ request('from_date') }}">
                                 </div>
+
+                                <!-- To Date -->
                                 <div class="flex flex-col">
-                                    <label for="order" class="text-sm font-medium text-gray-700 mb-1">Range</label>
-                                    <select name="order" id="order"
-                                        class="block w-44 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm">
-                                        <option value="">Select Range</option>
-                                        <option value="1-20" {{ request('order') == '1-20' ? 'selected' : '' }}>1-20</option>
-                                        <option value="21-40" {{ request('order') == '21-40' ? 'selected' : '' }}>21-40</option>
-                                        <option value="41-60" {{ request('order') == '41-60' ? 'selected' : '' }}>41-60</option>
-                                        <option value="61-80" {{ request('order') == '61-80' ? 'selected' : '' }}>61-80</option>
-                                        <option value="81-100" {{ request('order') == '81-100' ? 'selected' : '' }}>81-100</option>
-                                        <option value="101-120" {{ request('order') == '101-120' ? 'selected' : '' }}>101-120</option>
-                                        <option value="121-140" {{ request('order') == '121-140' ? 'selected' : '' }}>121-140</option>
-                                        <option value="141-160" {{ request('order') == '141-160' ? 'selected' : '' }}>141-160</option>
-                                    </select>
+                                    <label for="to_date" class="text-sm font-medium text-gray-700 mb-1">To
+                                        Date</label>
+                                    <input type="date" name="to_date" id="to_date"
+                                        class="block w-44 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm"
+                                        placeholder="Filter by To Date" value="{{ request('to_date') }}">
                                 </div>
+
+                                <!-- Buttons -->
                                 <div class="flex gap-2 mt-4">
                                     <button type="submit"
-                                        class="inline-block px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition font-semibold text-sm shadow">SEARCH</button>
+                                        class="inline-block px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition font-semibold text-sm shadow">
+                                        SEARCH
+                                    </button>
                                     <a href="{{ url('/postbookings') }}"
-                                        class="inline-block px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition font-semibold text-sm shadow">Clear</a>
+                                        class="inline-block px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition font-semibold text-sm shadow">
+                                        Clear
+                                    </a>
                                 </div>
                             </form>
+
                         </div>
                         <div class="overflow-x-auto">
                             <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow">
@@ -474,7 +481,9 @@
                                     @foreach ($postBookings as $postBooking)
                                         <tr class="border-b border-gray-100 hover:bg-gray-50 text-sm">
                                             <td class="px-4 py-2">{{ $postBooking->full_name }}</td>
-                                            <td class="px-4 py-2">{{ $postBooking->vehicle }} <br> <span class="text-xs text-gray-500">[{{ $postBooking->vehicle_number }}]</span></td>
+                                            <td class="px-4 py-2">{{ $postBooking->vehicle }} <br> <span
+                                                    class="text-xs text-gray-500">[{{ $postBooking->vehicle_number }}]</span>
+                                            </td>
                                             <td class="px-4 py-2">{{ $postBooking->from_date }}</td>
                                             <td class="px-4 py-2">{{ $postBooking->to_date }}</td>
                                             <td class="px-4 py-2">{{ $postBooking->base_price }}</td>
@@ -483,17 +492,20 @@
                                             <td class="px-4 py-2">{{ $postBooking->after_discount }}</td>
                                             <td class="px-4 py-2">{{ $postBooking->total_income }}</td>
                                             <td class="px-4 py-2">
-                                                <span class="inline-block px-2 py-1 rounded text-xs font-medium {{ $postBooking->due_paid ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                                <span
+                                                    class="inline-block px-2 py-1 rounded text-xs font-medium {{ $postBooking->due_paid ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
                                                     {{ $postBooking->due_paid ? 'Yes' : 'No' }}
                                                 </span>
                                             </td>
                                             <td class="px-4 py-2">
-                                                <span class="inline-block px-2 py-1 rounded text-xs font-medium {{ $postBooking->deposit_refunded ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                                <span
+                                                    class="inline-block px-2 py-1 rounded text-xs font-medium {{ $postBooking->deposit_refunded ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
                                                     {{ $postBooking->deposit_refunded ? 'Yes' : 'No' }}
                                                 </span>
                                             </td>
                                             <td class="px-4 py-2">
-                                                <span class="inline-block px-2 py-1 rounded text-xs font-medium {{ $postBooking->vehicle_checked ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                                <span
+                                                    class="inline-block px-2 py-1 rounded text-xs font-medium {{ $postBooking->vehicle_checked ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
                                                     {{ $postBooking->vehicle_checked ? 'Yes' : 'No' }}
                                                 </span>
                                             </td>
@@ -512,4 +524,5 @@
         </div>
     </div>
 </body>
+
 </html>
