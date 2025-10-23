@@ -285,7 +285,7 @@ class VehicleController extends Controller
                 'price_per_day' => $vehicle->price_per_day,
                 'extra_km_chg' => $vehicle->extra_km_chg,
                 'free_km' => $vehicle->free_km,
-                'current_mileage' => $vehicle->current_mileage
+                // 'current_mileage' => $vehicle->current_mileage     Load Current mileage in add booking
             ]);
         }
 
