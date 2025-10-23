@@ -174,7 +174,6 @@
                             // Full translation dictionary for all visible UI text
                             const translations = {
                                 en: {
-                                    // Sidebar & Navigation
                                     'Dashboard': 'Dashboard',
                                     'Vehicles': 'Vehicles',
                                     'Add Vehicle': 'Add Vehicle',
@@ -196,16 +195,13 @@
                                     'Service': 'Service',
                                     'Insurance': 'Insurance',
                                     'LogOut': 'LogOut',
-                                    // Header
                                     'Vehicles Details': 'Vehicles Details',
-                                    // Search/Filter Bar
                                     'Search by reg no or name': 'Search by reg no or name',
                                     'All': 'All',
                                     'Available': 'Available',
                                     'In Tour': 'In Tour',
                                     'Filter': 'Filter',
                                     'Reset': 'Reset',
-                                    // Table Headers
                                     'Vehicle Model': 'Vehicle Model',
                                     'Vehicle Number': 'Vehicle Number',
                                     'Owner': 'Owner',
@@ -213,15 +209,12 @@
                                     'Price Per Day (LKR)': 'Price Per Day (LKR)',
                                     'Status': 'Status',
                                     'Actions': 'Actions',
-                                    // Table Actions
                                     'View': 'View',
                                     'Edit': 'Edit',
                                     'Delete': 'Delete',
-                                    // Vehicle Details Modal
                                     'Vehicle Details': 'Vehicle Details',
                                     'Close': 'Close',
                                     'Save': 'Save',
-                                    // Booking Modal
                                     'Booking Information': 'Booking Information',
                                     'Customer Information': 'Customer Information',
                                     'Full Name': 'Full Name',
@@ -251,7 +244,6 @@
                                     'Browse': 'Browse',
                                     'Remove': 'Remove',
                                     'Submit': 'Submit',
-                                    // Misc
                                     'No vehicles found.': 'No vehicles found.',
                                     'Are you sure you want to delete this vehicle?': 'Are you sure you want to delete this vehicle?',
                                     'Yes, Delete': 'Yes, Delete',
@@ -259,10 +251,8 @@
                                     'Language': 'Language',
                                     'English': 'English',
                                     'Sinhala': 'Sinhala',
-                                    // Add more keys as needed for the full UI
                                 },
                                 si: {
-                                    // Sidebar & Navigation
                                     'Dashboard': 'උපකරණ පුවරුව',
                                     'Vehicles': 'වාහන',
                                     'Add Vehicle': 'වාහනයක් එක් කරන්න',
@@ -284,16 +274,13 @@
                                     'Service': 'සේවාව',
                                     'Insurance': 'රක්ෂණය',
                                     'LogOut': 'පිටවීම',
-                                    // Header
                                     'Vehicles Details': 'වාහන විස්තර',
-                                    // Search/Filter Bar
                                     'Search by reg no or name': 'අංකය හෝ නමක් සොයන්න',
                                     'All': 'සියලු',
                                     'Available': 'පවතින',
                                     'In Tour': 'සංචාරයේ',
                                     'Filter': 'පෙරහන් කරන්න',
                                     'Reset': 'යළි සකසන්න',
-                                    // Table Headers
                                     'Vehicle Model': 'වාහන ආකෘතිය',
                                     'Vehicle Number': 'වාහන අංකය',
                                     'Owner': 'හිමිකරු',
@@ -301,15 +288,12 @@
                                     'Price Per Day (LKR)': 'දිනකට මිල (රු.)',
                                     'Status': 'තත්ත්වය',
                                     'Actions': 'ක්‍රියාමාර්ග',
-                                    // Table Actions
                                     'View': 'බලන්න',
                                     'Edit': 'සංස්කරණය',
                                     'Delete': 'මකන්න',
-                                    // Vehicle Details Modal
                                     'Vehicle Details': 'වාහන විස්තර',
                                     'Close': 'වසන්න',
                                     'Save': 'සුරකින්න',
-                                    // Booking Modal
                                     'Booking Information': 'වෙන්කිරීම් තොරතුරු',
                                     'Customer Information': 'පාරිභෝගික තොරතුරු',
                                     'Full Name': 'සම්පූර්ණ නම',
@@ -339,7 +323,6 @@
                                     'Browse': 'බ්‍රවුස් කරන්න',
                                     'Remove': 'ඉවත් කරන්න',
                                     'Submit': 'ඉදිරිපත් කරන්න',
-                                    // Misc
                                     'No vehicles found.': 'වාහන හමු නොවීය.',
                                     'Are you sure you want to delete this vehicle?': 'ඔබට මෙම වාහනය මකන්න අවශ්‍යද?',
                                     'Yes, Delete': 'ඔව්, මකන්න',
@@ -347,15 +330,14 @@
                                     'Language': 'භාෂාව',
                                     'English': 'ඉංග්‍රීසි',
                                     'Sinhala': 'සිංහල',
-                                    // Add more keys as needed for the full UI
                                 }
                             };
-        
+
                             function translatePage(lang) {
                                 Object.keys(translations.en).forEach(function(key) {
                                     const enText = translations.en[key];
                                     const siText = translations.si[key];
-        
+
                                     document.querySelectorAll('body *:not(script):not(style)').forEach(function(el) {
                                         if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
                                             let current = el.textContent.trim();
@@ -366,7 +348,7 @@
                                     });
                                 });
                             }
-        
+
                             function setLanguage(lang) {
                                 document.getElementById('lang-en').classList.toggle('underline', lang === 'en');
                                 document.getElementById('lang-en').classList.toggle('opacity-50', lang !== 'en');
@@ -375,7 +357,7 @@
                                 translatePage(lang);
                                 localStorage.setItem('lang', lang);
                             }
-        
+
                             document.addEventListener('DOMContentLoaded', function() {
                                 const lang = localStorage.getItem('lang') || 'en';
                                 setLanguage(lang);
@@ -431,7 +413,7 @@
                                         const form = input.form;
                                         const debouncedSubmit = debounce(function() {
                                             form.submit();
-                                        }, 600); // 1000ms delay
+                                        }, 600);
 
                                         input.addEventListener('input', function(e) {
                                             debouncedSubmit();
@@ -449,7 +431,6 @@
                                     <option value="available" {{ request('availability') == 'available' ? 'selected' : '' }}>Available</option>
                                     <option value="in_tour" {{ request('availability') == 'in_tour' ? 'selected' : '' }}>In Tour</option>
                                 </select>
-                                {{-- <span class="material-icons text-gray-400">expand_more</span> --}}
                             </div>
                         </div>
                     </div>
@@ -459,7 +440,17 @@
             <main class="flex-1 w-full px-8 py-6">
                 <div class="flex flex-wrap gap-6 justify-center">
                     @foreach ($vehicles as $vehicle)
-                        <div class="relative w-96 h-72 mb-4 flex-shrink-0 cursor-pointer" onclick="window.location='{{ route('vehicles.show', $vehicle->id) }}'">
+                        @php
+                            $todayStr = now()->toDateString();
+                            $isInTourToday = \App\Models\Booking::where('vehicle_number', $vehicle->vehicle_number)
+                                ->whereDate('from_date', '<=', $todayStr)
+                                ->whereDate('to_date', '>=', $todayStr)
+                                ->exists();
+                            $isInService = (int)($vehicle->status ?? 0) === 1;
+                        @endphp
+
+                        <div class="relative w-96 h-72 mb-4 flex-shrink-0 cursor-pointer"
+                             onclick="window.location='{{ route('vehicles.show', $vehicle->id) }}'">
                             @if ($vehicle->display_image)
                                 <img class="absolute w-96 h-72 rounded-2xl object-cover"
                                     src="{{ asset('storage/' . $vehicle->display_image) }}"
@@ -469,52 +460,69 @@
                                     src="https://placehold.co/380x280"
                                     alt="{{ $vehicle->vehicle_model }}" style="width: 100%; height: 100%; object-fit: cover;" />
                             @endif
+
                             <div class="absolute left-0 bottom-0 w-full h-24">
                                 <div class="absolute w-full h-full bg-black/40 rounded-b-2xl backdrop-blur"></div>
+
+                                <!-- Top row: model/name + availability + status badge -->
                                 <div class="absolute left-4 top-3 right-4 flex justify-between items-center">
                                     <div class="flex flex-col">
                                         <span class="text-white text-base font-medium font-poppins">
                                             {{ $vehicle->vehicle_model }} {{ $vehicle->vehicle_name }}
                                         </span>
                                     </div>
-                                    @php
-                                        $today = now()->toDateString();
-                                        $isInTourToday = \App\Models\Booking::where(
-                                            'vehicle_number',
-                                            $vehicle->vehicle_number,
-                                        )
-                                            ->whereDate('from_date', '<=', $today)
-                                            ->whereDate('to_date', '>=', $today)
-                                            ->exists();
-                                    @endphp
 
-                                    @if (!$isInTourToday)
-                                        <span
-                                            class="h-5 px-2 py-0.5 bg-green-100 rounded-full border border-green-400 flex items-center gap-1">
-                                            <span class="w-2 h-2 flex items-center justify-center">
-                                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full block"></span>
+                                    <div class="flex items-center gap-2">
+                                        {{-- Availability badge (as before) --}}
+                                        @if (!$isInTourToday)
+                                            <span
+                                                class="h-5 px-2 py-0.5 bg-green-100 rounded-full border border-green-400 flex items-center gap-1">
+                                                <span class="w-2 h-2 flex items-center justify-center">
+                                                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full block"></span>
+                                                </span>
+                                                <span class="text-green-700 text-xs font-medium font-sans">Available</span>
                                             </span>
-                                            <span class="text-green-700 text-xs font-medium font-sans">Available</span>
-                                        </span>
-                                    @else
-                                        <span
-                                            class="h-5 px-2 py-0.5 bg-yellow-100 rounded-full border border-yellow-400 flex items-center gap-1">
-                                            <span class="w-2 h-2 flex items-center justify-center">
-                                                <span class="w-1.5 h-1.5 bg-yellow-500 rounded-full block"></span>
+                                        @else
+                                            <span
+                                                class="h-5 px-2 py-0.5 bg-yellow-100 rounded-full border border-yellow-400 flex items-center gap-1">
+                                                <span class="w-2 h-2 flex items-center justify-center">
+                                                    <span class="w-1.5 h-1.5 bg-yellow-500 rounded-full block"></span>
+                                                </span>
+                                                <span class="text-yellow-700 text-xs font-medium font-sans">In Tour</span>
                                             </span>
-                                            <span class="text-yellow-700 text-xs font-medium font-sans">In Tour</span>
-                                        </span>
-                                    @endif
+                                        @endif
+
+                                        {{-- NEW: Vehicle status badge (Active / In Service) --}}
+                                        @if ($isInService)
+                                            <span
+                                                class="h-5 px-2 py-0.5 bg-amber-100 rounded-full border border-amber-400 flex items-center gap-1">
+                                                <span class="w-2 h-2 flex items-center justify-center">
+                                                    <span class="w-1.5 h-1.5 bg-amber-500 rounded-full block"></span>
+                                                </span>
+                                                <span class="text-amber-700 text-xs font-medium font-sans">In Service</span>
+                                            </span>
+                                        @else
+                                            <span
+                                                class="h-5 px-2 py-0.5 bg-blue-100 rounded-full border border-blue-400 flex items-center gap-1">
+                                                <span class="w-2 h-2 flex items-center justify-center">
+                                                    <span class="w-1.5 h-1.5 bg-blue-500 rounded-full block"></span>
+                                                </span>
+                                                <span class="text-blue-700 text-xs font-medium font-sans">Active</span>
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
+
+                                <!-- Second row: number + alerts -->
                                 <div class="absolute left-4 top-[43px] right-4 flex justify-between items-center">
                                     <span
                                         class="text-white text-2xl font-medium font-poppins">{{ $vehicle->vehicle_number }}</span>
+
                                     @php
                                         $today = now();
                                         $insuranceExpiring = false;
                                         $serviceDueSoon = false;
 
-                                        // Check insurance expiry by date window
                                         if (!empty($vehicle->insurance_exp_date)) {
                                             $insuranceDate = \Carbon\Carbon::parse($vehicle->insurance_exp_date);
                                             $insuranceExpiring = $insuranceDate->isBetween(
@@ -523,7 +531,6 @@
                                             );
                                         }
 
-                                        // Check upcoming service by mileage proximity (within 500 km)
                                         $latestService = \App\Models\Service::where('vehicle_number', $vehicle->vehicle_number)
                                             ->orderByDesc('date')
                                             ->orderByDesc('created_at')
@@ -535,26 +542,28 @@
                                         }
                                     @endphp
 
-                                    {{-- Show alert badges --}}
-                                    @if ($serviceDueSoon)
-                                        <span
-                                            class="h-5 px-2 py-0.5 rounded-full border border-red-400 flex items-center gap-1">
-                                            <span class="w-2 h-2 flex items-center justify-center">
-                                                <span class="w-1.5 h-1.5 bg-red-500 rounded-full block"></span>
+                                    {{-- Alert badges (unchanged) --}}
+                                    <div class="flex items-center gap-2">
+                                        @if ($serviceDueSoon)
+                                            <span
+                                                class="h-5 px-2 py-0.5 rounded-full border border-red-400 flex items-center gap-1">
+                                                <span class="w-2 h-2 flex items-center justify-center">
+                                                    <span class="w-1.5 h-1.5 bg-red-500 rounded-full block"></span>
+                                                </span>
+                                                <span class="text-red-700 text-xs font-medium font-sans">Service</span>
                                             </span>
-                                            <span class="text-red-700 text-xs font-medium font-sans">Service</span>
-                                        </span>
-                                    @endif
+                                        @endif
 
-                                    @if ($insuranceExpiring)
-                                        <span
-                                            class="h-5 px-2 py-0.5 rounded-full border border-red-400 flex items-center gap-1">
-                                            <span class="w-2 h-2 flex items-center justify-center">
-                                                <span class="w-1.5 h-1.5 bg-red-500 rounded-full block"></span>
+                                        @if ($insuranceExpiring)
+                                            <span
+                                                class="h-5 px-2 py-0.5 rounded-full border border-red-400 flex items-center gap-1">
+                                                <span class="w-2 h-2 flex items-center justify-center">
+                                                    <span class="w-1.5 h-1.5 bg-red-500 rounded-full block"></span>
+                                                </span>
+                                                <span class="text-red-700 text-xs font-medium font-sans">Insurance</span>
                                             </span>
-                                            <span class="text-red-700 text-xs font-medium font-sans">Insurance</span>
-                                        </span>
-                                    @endif
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -147,7 +147,8 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url('commission') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                            <a href="{{ url('commission') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                 <span class="material-icons mr-3">bar_chart</span>
                                 Commission
                             </a>
@@ -392,8 +393,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1" for="address">Address</label>
                             <input id="address" name="address" type="text"
                                 class="w-full h-12 px-3 py-2 bg-gray-100 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                                    placeholder="Enter address" value="{{ old('address') }}"
-                                required />
+                                placeholder="Enter address" value="{{ old('address') }}" required />
                         </div>
                         <!-- Import the customer dropdown script from ManagerAddBooking -->
 
@@ -417,13 +417,17 @@
                                                 if (data.length > 0) {
                                                     $.each(data, function(index, customer) {
                                                         // Determine dot color based on status
-                                                        var dotColor = (customer.status && customer.status.toLowerCase() === 'active')
-                                                            ? 'bg-green-500'
-                                                            : 'bg-red-500';
-                                                        var dotHtml = '<span class="inline-block w-3 h-3 rounded-full mr-2 align-middle ' + dotColor + '"></span>';
+                                                        var dotColor = (customer.status && customer.status
+                                                                .toLowerCase() === 'active') ?
+                                                            'bg-green-500' :
+                                                            'bg-red-500';
+                                                        var dotHtml =
+                                                            '<span class="inline-block w-3 h-3 rounded-full mr-2 align-middle ' +
+                                                            dotColor + '"></span>';
                                                         $('#customer-list').append(
                                                             '<li class="list-group-item customer-item px-4 py-2 cursor-pointer hover:bg-teal-100 flex items-center" data-id="' +
-                                                            customer.id + '" data-name="' + customer.full_name + '">' +
+                                                            customer.id + '" data-name="' + customer
+                                                            .full_name + '">' +
                                                             dotHtml +
                                                             '<span>' + customer.full_name + '</span>' +
                                                             '</li>'
@@ -667,16 +671,18 @@
                                 const availableGroup = document.getElementById('available-vehicles-group');
                                 const unavailableGroup = document.getElementById('unavailable-vehicles-group');
                                 const select = document.getElementById('vehicle_number');
+
                                 // Clear previous options
                                 availableGroup.innerHTML = '';
                                 unavailableGroup.innerHTML = '';
+
                                 if (!fromDate || !toDate) {
                                     select.value = '';
                                     return;
                                 }
+
                                 fetch(
-                                        `/vehicle-availability?business_id=${businessId}&from_date=${encodeURIComponent(fromDate)}&to_date=${encodeURIComponent(toDate)}`
-                                    )
+                                        `/vehicle-availability?business_id=${businessId}&from_date=${encodeURIComponent(fromDate)}&to_date=${encodeURIComponent(toDate)}`)
                                     .then(response => {
                                         if (!response.ok) {
                                             throw new Error('Failed to fetch vehicle availability. Please check your input and try again.');
@@ -684,8 +690,8 @@
                                         return response.json();
                                     })
                                     .then(data => {
-                                        // data = { available: [ {number, model}, ...], unavailable: [ {number, model}, ...] }
-                                        if (data.available && data.available.length > 0) {
+                                        // Available
+                                        if (Array.isArray(data.available) && data.available.length > 0) {
                                             data.available.forEach(v => {
                                                 const option = document.createElement('option');
                                                 option.value = v.number;
@@ -693,24 +699,36 @@
                                                 availableGroup.appendChild(option);
                                             });
                                         }
-                                        if (data.unavailable && data.unavailable.length > 0) {
+
+                                        // Unavailable (Booked or In Service)
+                                        if (Array.isArray(data.unavailable) && data.unavailable.length > 0) {
                                             data.unavailable.forEach(v => {
                                                 const option = document.createElement('option');
                                                 option.value = v.number;
-                                                option.textContent = v.number + (v.model ? ' (' + v.model + ')' : '');
-                                                // option.disabled = true;
+
+                                                let label = v.number + (v.model ? ' (' + v.model + ')' : '');
+                                                if (v.reason === 'in_service') {
+                                                    label += ' (In Service)';
+                                                } else {
+                                                    // default to booked if reason not provided
+                                                    label += ' (Booked)';
+                                                }
+
+                                                option.textContent = label;
+                                                // option.disabled = true; // enable if you want to prevent selecting unavailable
                                                 unavailableGroup.appendChild(option);
                                             });
                                         }
                                     })
                                     .catch(error => {
-                                        // Show a user-friendly error message
                                         alert(error.message || 'An error occurred while loading vehicle availability.');
                                     });
                             }
+
                             document.getElementById('from_date').addEventListener('change', updateVehicleDropdown);
                             document.getElementById('to_date').addEventListener('change', updateVehicleDropdown);
                         </script>
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1" for="vehicle_name">Vehicle
                                 Model</label>

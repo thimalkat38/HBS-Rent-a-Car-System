@@ -27,26 +27,46 @@ class Vehicle extends Model
         'current_mileage',
         'features',
         'images',
-        'display_image'
+        'display_image',
+        'status',
     ];
 
     protected $casts = [
         'features' => 'array',
-        'images' => 'array',
+        'images'   => 'array',
+        'status'   => 'integer', // ✅ cast to int
     ];
 
+    // Relationships
     public function business()
     {
         return $this->belongsTo(Business::class);
     }
+
     public function bookings()
-{
-    return $this->hasMany(\App\Models\Booking::class, 'vehicle_number', 'vehicle_number');
-}
+    {
+        return $this->hasMany(\App\Models\Booking::class, 'vehicle_number', 'vehicle_number');
+    }
 
     public function postBookings()
     {
         return $this->hasMany(\App\Models\PostBooking::class, 'vehicle_number', 'vehicle_number');
     }
 
+    // ✅ Helpful query scopes
+    public function scopeActive($query)
+    {
+        return $query->where('status', 0);
+    }
+
+    public function scopeInService($query)
+    {
+        return $query->where('status', 1);
+    }
+
+    // (Optional) quick label accessor
+    public function getStatusLabelAttribute(): string
+    {
+        return $this->status === 1 ? 'In Service/Repair' : 'Active';
+    }
 }

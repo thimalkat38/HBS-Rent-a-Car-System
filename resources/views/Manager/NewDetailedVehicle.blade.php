@@ -409,7 +409,8 @@
                                         @if (!empty($vehicle->current_mileage))
                                             {{ number_format($vehicle->current_mileage) }} km
                                         @else
-                                            <span class="text-slate-500 text-base font-poppins">No current mileage data.</span>
+                                            <span class="text-slate-500 text-base font-poppins">No current mileage
+                                                data.</span>
                                         @endif
                                     </div>
                                 </div>
@@ -428,9 +429,56 @@
                                         @if ($nextService && $nextService->next_mileage)
                                             {{ number_format($nextService->next_mileage) }} km
                                         @else
-                                            <span class="text-slate-500 text-base font-poppins">No upcoming service mileage.</span>
+                                            <span class="text-slate-500 text-base font-poppins">No upcoming service
+                                                mileage.</span>
                                         @endif
                                     </div>
+                                    {{-- Current service status badge --}}
+                                    <div class="mt-3">
+                                        @if ($vehicle->status === 1)
+                                            <span
+                                                class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 border border-yellow-300">
+                                                <span class="material-icons text-sm">build</span> In Service/Repair
+                                            </span>
+                                        @else
+                                            <span
+                                                class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-300">
+                                                <span class="material-icons text-sm">check_circle</span> Active
+                                            </span>
+                                        @endif
+                                    </div>
+
+                                    {{-- Actions --}}
+                                    <div class="mt-4 flex flex-col gap-2">
+                                        @if ($vehicle->status === 0)
+                                            {{-- Send to Service/Repair --}}
+                                            <form action="{{ route('vehicles.serviceStatus', $vehicle->id) }}"
+                                                method="POST"
+                                                onsubmit="return confirm('Send this vehicle to service/repair? Bookings should be blocked until you mark it active again.');">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="status" value="1">
+                                                <button type="submit"
+                                                    class="w-full px-2 py-2 bg-amber-500 hover:bg-amber-600 rounded-3xl text-white text-xs font-semibold font-poppins transition">
+                                                    Send to Service/Repair
+                                                </button>
+                                            </form>
+                                        @else
+                                            {{-- Mark back to Active --}}
+                                            <form action="{{ route('vehicles.serviceStatus', $vehicle->id) }}"
+                                                method="POST"
+                                                onsubmit="return confirm('Mark this vehicle back to Active?');">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="status" value="0">
+                                                <button type="submit"
+                                                    class="w-full px-2 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-3xl text-white text-xs font-semibold font-poppins transition">
+                                                    Mark Active
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </div>
+
                                 </div>
                                 {{-- <a href="{{ route('services.index', ['vehicle_number' => $vehicle->vehicle_number]) }}" class="mt-4 px-2 py-2 bg-teal-500 rounded-3xl text-white text-xs font-semibold font-poppins hover:bg-teal-600 transition text-center">Service Page</a> --}}
                             </div>
@@ -793,9 +841,12 @@
                                                 `;
                                                 }
                                                 // Update sum row
-                                                sumIncome.innerText = `LKR ${totalIncome.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-                                                sumExpenses.innerText = `LKR ${totalExpenses.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-                                                sumProfit.innerText = `LKR ${totalProfit.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+                                                sumIncome.innerText =
+                                                    `LKR ${totalIncome.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+                                                sumExpenses.innerText =
+                                                    `LKR ${totalExpenses.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+                                                sumProfit.innerText =
+                                                    `LKR ${totalProfit.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
                                             } else {
                                                 html = `<tr>
                                                 <td colspan="4" class="px-3 py-2 text-center text-gray-400">No data available</td>
