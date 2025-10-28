@@ -283,6 +283,7 @@
                                 let inBookingsHtml = '';
                                 let outBookingsHtml = '';
                                 let availableVehiclesHtml = '';
+                                let inServiceVehiclesHtml = '';
 
                                 if (data.in_bookings.length > 0) {
                                     inBookingsHtml = `
@@ -323,8 +324,18 @@
                                         '<h3>Available Vehicles</h3><p>No vehicles available on this day.</p>';
                                 }
 
+                                if (data.in_service_vehicles && data.in_service_vehicles.length > 0) {
+                                    inServiceVehiclesHtml = `
+                                <h3>Unavailable <span style="font-weight:normal">(in service)</span></h3>
+                                <ul>
+                                    ${data.in_service_vehicles.map(vehicle => `
+                                                        <li>${vehicle.vehicle_number} - ${vehicle.vehicle_name} (in service)</li>
+                                                    `).join('')}
+                                </ul>`;
+                                }
+
                                 modalContent.innerHTML = inBookingsHtml + outBookingsHtml +
-                                    availableVehiclesHtml;
+                                    availableVehiclesHtml + inServiceVehiclesHtml;
                                 modal.classList.remove('hidden');
                             })
                             .catch(error => {

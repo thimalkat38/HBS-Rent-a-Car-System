@@ -345,3 +345,7 @@ Route::delete('/vehicles/{id}/image', [VehicleController::class, 'deleteImage'])
 Route::patch('/vehicles/{vehicle}/service-status', [VehicleController::class, 'updateServiceStatus'])
     ->name('vehicles.serviceStatus')
     ->middleware(['manager']);
+
+    Route::get('/commission', function () {
+        return view('Manager.Commission');
+    });

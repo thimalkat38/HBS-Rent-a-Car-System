@@ -432,6 +432,17 @@
                                     <option value="in_tour" {{ request('availability') == 'in_tour' ? 'selected' : '' }}>In Tour</option>
                                 </select>
                             </div>
+                            <div class="flex items-center px-4 py-1.5 rounded-lg border border-gray-500 bg-white min-w-[200px]">
+                                <select
+                                    name="service_status"
+                                    class="bg-transparent outline-none border-none text-base font-normal font-poppins text-gray-700 flex-1"
+                                    onchange="this.form.submit()"
+                                >
+                                    <option value="">All</option>
+                                    <option value="active" {{ request('service_status') == 'active' ? 'selected' : '' }}>Active</option>
+                                    <option value="in_service" {{ request('service_status') == 'in_service' ? 'selected' : '' }}>In Service</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </form>

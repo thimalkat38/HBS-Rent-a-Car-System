@@ -50,6 +50,17 @@ class VehicleController extends Controller
             });
         }
 
+        // Filter: Service status (treat null or 0 as Active, 1 as In Service)
+        if ($request->filled('service_status')) {
+            if ($request->service_status === 'active') {
+                $query->where(function ($q) {
+                    $q->whereNull('status')->orWhere('status', 0);
+                });
+            } elseif ($request->service_status === 'in_service') {
+                $query->where('status', 1);
+            }
+        }
+
         $vehicles = $query->paginate(9);
 
         return view('Manager.AllVehicles', compact('vehicles'));
@@ -285,7 +296,7 @@ class VehicleController extends Controller
                 'price_per_day' => $vehicle->price_per_day,
                 'extra_km_chg' => $vehicle->extra_km_chg,
                 'free_km' => $vehicle->free_km,
-                'current_mileage' => $vehicle->current_mileage
+                // 'current_mileage' => $vehicle->current_mileage     Load Current mileage in add booking
             ]);
         }
 

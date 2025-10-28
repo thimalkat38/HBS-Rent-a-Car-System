@@ -245,8 +245,8 @@
                                 placeholder="Vehicle Number">
                             <input type="text" name="invoice_number" placeholder="Invoice Number"
                                 class="flex-1 px-4 py-2 border rounded text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            <input type="text" name="amnt" placeholder="Amount"
-                                class="flex-1 px-4 py-2 border rounded text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            {{-- <input type="text" name="amnt" placeholder="Amount"
+                                class="flex-1 px-4 py-2 border rounded text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500"> --}}
                         </div>
 
                         <div class="flex flex-col md:flex-row gap-4">
@@ -343,18 +343,30 @@
                                         </label>
                                         <div class="p-2 border-b border-gray-200">
                                             <div class="flex items-center justify-between mb-2">
-                                                <span class="text-gray-700 font-medium">Front Brake (%)</span>
-                                                <input type="number" name="front_brake_percentage" min="0" max="100" step="1" 
-                                                    class="w-20 px-2 py-1 border rounded text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                                                    placeholder="0">
+                                              <span class="text-gray-700 font-medium">Front Brake (KM)</span>
+                                              <input
+                                                type="number"
+                                                name="front_brake_km"
+                                                min="0"
+                                                step="1"
+                                                class="w-28 px-2 py-1 border rounded text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                                placeholder="0"
+                                              >
                                             </div>
+                                          
                                             <div class="flex items-center justify-between">
-                                                <span class="text-gray-700 font-medium">Rear Brake (%)</span>
-                                                <input type="number" name="rear_brake_percentage" min="0" max="100" step="1" 
-                                                    class="w-20 px-2 py-1 border rounded text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                                                    placeholder="0">
+                                              <span class="text-gray-700 font-medium">Rear Brake (KM)</span>
+                                              <input
+                                                type="number"
+                                                name="rear_brake_km"
+                                                min="0"
+                                                step="1"
+                                                class="w-28 px-2 py-1 border rounded text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                                placeholder="0"
+                                              >
                                             </div>
-                                        </div>
+                                          </div>
+                                          
                                     </div>
                                 </div>
                             </div>
@@ -412,7 +424,7 @@
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Date</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">TYPE</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Invoice No</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Price</th>
+                                        {{-- <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Price</th> --}}
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Service Station</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Features</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Action</th>
@@ -424,7 +436,7 @@
                                             <td class="px-4 py-2">{{ $service->date }}</td>
                                             <td class="px-4 py-2">{{ $service->type }}</td>
                                             <td class="px-4 py-2">{{ $service->invoice_number }}</td>
-                                            <td class="px-4 py-2">RS {{ $service->amnt }}</td>
+                                            {{-- <td class="px-4 py-2">RS {{ $service->amnt }}</td> --}}
                                             <td class="px-4 py-2">{{ $service->station }}</td>
                                             <td class="px-4 py-2">
                                                 @if($service->features && is_array($service->features))
@@ -456,121 +468,143 @@
     </div>
 </body>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let startDate = document.getElementById("startDate");
-        let endDate = document.getElementById("endDate");
-        let typeFilter = document.getElementById("typeFilter");
-        let invoiceFilter = document.getElementById("invoiceFilter");
-        let clearButton = document.getElementById("clearFilters");
-
-        // Features dropdown functionality
-        let featuresDropdownBtn = document.getElementById("featuresDropdownBtn");
-        let featuresDropdown = document.getElementById("featuresDropdown");
-        let featuresSelectedText = document.getElementById("featuresSelectedText");
-        let featureCheckboxes = document.querySelectorAll('input[name="features[]"]');
-
-        // Toggle dropdown
-        featuresDropdownBtn.addEventListener("click", function() {
-            featuresDropdown.classList.toggle("hidden");
+    document.addEventListener("DOMContentLoaded", function () {
+      // ====== Basic filters (ensure your HTML has these IDs) ======
+      const startDate = document.getElementById("startDate");
+      const endDate = document.getElementById("endDate");
+      const typeFilter = document.getElementById("typeFilter");
+      const invoiceFilter = document.getElementById("invoiceFilter");
+      const clearButton = document.getElementById("clearFilters");
+  
+      // ====== Features dropdown (ensure your HTML has these IDs) ======
+      const featuresDropdownBtn = document.getElementById("featuresDropdownBtn");
+      const featuresDropdown = document.getElementById("featuresDropdown");
+      const featuresSelectedText = document.getElementById("featuresSelectedText");
+      const featureCheckboxes = document.querySelectorAll('input[name="features[]"]');
+  
+      // ====== Brake KM inputs (replace old % inputs in your HTML) ======
+      const frontBrakeKmInput = document.querySelector('input[name="front_brake_km"]');
+      const rearBrakeKmInput  = document.querySelector('input[name="rear_brake_km"]');
+  
+      // ---------- Dropdown toggle ----------
+      if (featuresDropdownBtn && featuresDropdown) {
+        featuresDropdownBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          featuresDropdown.classList.toggle("hidden");
         });
-
+  
         // Close dropdown when clicking outside
-        document.addEventListener("click", function(event) {
-            if (!featuresDropdownBtn.contains(event.target) && !featuresDropdown.contains(event.target)) {
-                featuresDropdown.classList.add("hidden");
-            }
+        document.addEventListener("click", function (event) {
+          const clickInsideBtn = featuresDropdownBtn.contains(event.target);
+          const clickInsideMenu = featuresDropdown.contains(event.target);
+          if (!clickInsideBtn && !clickInsideMenu) {
+            featuresDropdown.classList.add("hidden");
+          }
         });
-
-        // Update selected text when checkboxes change
-        featureCheckboxes.forEach(function(checkbox) {
-            checkbox.addEventListener("change", function() {
-                updateSelectedFeaturesText();
-            });
+  
+        // Close on ESC
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") {
+            featuresDropdown.classList.add("hidden");
+          }
         });
-
-        // Update selected text when brake percentages change
-        let frontBrakeInput = document.querySelector('input[name="front_brake_percentage"]');
-        let rearBrakeInput = document.querySelector('input[name="rear_brake_percentage"]');
-        
-        if (frontBrakeInput) {
-            frontBrakeInput.addEventListener("input", function() {
-                updateSelectedFeaturesText();
-            });
+      }
+  
+      // ---------- Update selected-features pill text ----------
+      function updateSelectedFeaturesText() {
+        if (!featuresSelectedText) return;
+  
+        const selectedFeatures = Array.from(featureCheckboxes || [])
+          .filter(checkbox => checkbox.checked)
+          .map(checkbox => {
+            // Assumes the label text is the next sibling of the checkbox
+            return checkbox.nextElementSibling ? checkbox.nextElementSibling.textContent.trim() : "";
+          })
+          .filter(Boolean);
+  
+        // Add Brake KM if provided
+        const frontKm = (document.querySelector('input[name="front_brake_km"]') || {}).value;
+        const rearKm  = (document.querySelector('input[name="rear_brake_km"]')  || {}).value;
+  
+        if (frontKm && Number(frontKm) > 0) selectedFeatures.push(`Front Brake: ${frontKm} km`);
+        if (rearKm  && Number(rearKm)  > 0) selectedFeatures.push(`Rear Brake: ${rearKm} km`);
+  
+        if (selectedFeatures.length === 0) {
+          featuresSelectedText.textContent = "Select Features";
+        } else if (selectedFeatures.length === 1) {
+          featuresSelectedText.textContent = selectedFeatures[0];
+        } else {
+          featuresSelectedText.textContent = `${selectedFeatures.length} features selected`;
         }
-        
-        if (rearBrakeInput) {
-            rearBrakeInput.addEventListener("input", function() {
-                updateSelectedFeaturesText();
-            });
-        }
-
-        function updateSelectedFeaturesText() {
-            let selectedFeatures = Array.from(featureCheckboxes)
-                .filter(checkbox => checkbox.checked)
-                .map(checkbox => checkbox.nextElementSibling.textContent);
-
-            // Add brake percentages if they have values
-            let frontBrakePercentage = document.querySelector('input[name="front_brake_percentage"]').value;
-            let rearBrakePercentage = document.querySelector('input[name="rear_brake_percentage"]').value;
-            
-            if (frontBrakePercentage && frontBrakePercentage > 0) {
-                selectedFeatures.push('Front Brake: ' + frontBrakePercentage + '%');
-            }
-            
-            if (rearBrakePercentage && rearBrakePercentage > 0) {
-                selectedFeatures.push('Rear Brake: ' + rearBrakePercentage + '%');
-            }
-
-            if (selectedFeatures.length === 0) {
-                featuresSelectedText.textContent = "Select Features";
-            } else if (selectedFeatures.length === 1) {
-                featuresSelectedText.textContent = selectedFeatures[0];
-            } else {
-                featuresSelectedText.textContent = selectedFeatures.length + " features selected";
-            }
-        }
-
-        function filterTable() {
-            let startValue = startDate.value ? new Date(startDate.value) : null;
-            let endValue = endDate.value ? new Date(endDate.value) : null;
-            let typeValue = typeFilter.value.toLowerCase();
-            let invoiceValue = invoiceFilter.value.toLowerCase();
-
-            let rows = document.querySelectorAll("#serviceTable tr");
-
-            rows.forEach(row => {
-                let dateText = row.cells[0].textContent;
-                let rowDate = dateText ? new Date(dateText) : null;
-                let type = row.cells[1].textContent.toLowerCase();
-                let invoice = row.cells[2].textContent.toLowerCase();
-
-                let dateMatch = (!startValue || rowDate >= startValue) && (!endValue || rowDate <=
-                    endValue);
-                let typeMatch = type.includes(typeValue) || typeValue === '';
-                let invoiceMatch = invoice.includes(invoiceValue) || invoiceValue === '';
-
-                if (dateMatch && typeMatch && invoiceMatch) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
-                }
-            });
-        }
-
-        // Event Listeners for Filters
-        startDate.addEventListener("input", filterTable);
-        endDate.addEventListener("input", filterTable);
-        typeFilter.addEventListener("input", filterTable);
-        invoiceFilter.addEventListener("input", filterTable);
-
-        // Clear Filters
-        clearButton.addEventListener("click", function() {
-            startDate.value = "";
-            endDate.value = "";
-            typeFilter.value = "";
-            invoiceFilter.value = "";
-            filterTable();
+      }
+  
+      // Bind changes on feature checkboxes
+      (featureCheckboxes || []).forEach(function (cb) {
+        cb.addEventListener("change", updateSelectedFeaturesText);
+      });
+  
+      // Bind changes on Brake KM inputs
+      if (frontBrakeKmInput) frontBrakeKmInput.addEventListener("input", updateSelectedFeaturesText);
+      if (rearBrakeKmInput)  rearBrakeKmInput.addEventListener("input",  updateSelectedFeaturesText);
+  
+      // Initialize selected text once on load
+      updateSelectedFeaturesText();
+  
+      // ---------- Table filtering (by date, type, invoice) ----------
+      function safeParseDate(yyyy_mm_dd_or_text) {
+        // Try native Date first (works for YYYY-MM-DD)
+        const d = new Date(yyyy_mm_dd_or_text);
+        return isNaN(d.getTime()) ? null : d;
+      }
+  
+      function filterTable() {
+        const startValue = startDate && startDate.value ? safeParseDate(startDate.value) : null;
+        const endValue   = endDate   && endDate.value   ? safeParseDate(endDate.value)   : null;
+        const typeValue = (typeFilter && typeFilter.value ? typeFilter.value : "").toLowerCase();
+        const invoiceValue = (invoiceFilter && invoiceFilter.value ? invoiceFilter.value : "").toLowerCase();
+  
+        const rows = document.querySelectorAll("#serviceTable tr");
+        rows.forEach(row => {
+          // Assumes columns: [0]=Date, [1]=Type, [2]=Invoice
+          const dateText = row.cells && row.cells[0] ? row.cells[0].textContent.trim() : "";
+          const rowDate = dateText ? safeParseDate(dateText) : null;
+          const type = row.cells && row.cells[1] ? row.cells[1].textContent.toLowerCase() : "";
+          const invoice = row.cells && row.cells[2] ? row.cells[2].textContent.toLowerCase() : "";
+  
+          // Date range match
+          let dateMatch = true;
+          if (startValue && rowDate) dateMatch = dateMatch && (rowDate >= startValue);
+          if (endValue   && rowDate) dateMatch = dateMatch && (rowDate <= endValue);
+          // If row has no date but filters are set, hide it
+          if ((startValue || endValue) && !rowDate) dateMatch = false;
+  
+          const typeMatch = !typeValue || type.includes(typeValue);
+          const invoiceMatch = !invoiceValue || invoice.includes(invoiceValue);
+  
+          row.style.display = (dateMatch && typeMatch && invoiceMatch) ? "" : "none";
         });
+      }
+  
+      // Event listeners for filters
+      if (startDate)     startDate.addEventListener("input", filterTable);
+      if (endDate)       endDate.addEventListener("input", filterTable);
+      if (typeFilter)    typeFilter.addEventListener("input", filterTable);
+      if (invoiceFilter) invoiceFilter.addEventListener("input", filterTable);
+  
+      // Clear Filters
+      if (clearButton) {
+        clearButton.addEventListener("click", function () {
+          if (startDate) startDate.value = "";
+          if (endDate) endDate.value = "";
+          if (typeFilter) typeFilter.value = "";
+          if (invoiceFilter) invoiceFilter.value = "";
+          filterTable();
+        });
+      }
+  
+      // Initial table filter pass (optional)
+      filterTable();
     });
-</script>
+  </script>
+  
 </html>

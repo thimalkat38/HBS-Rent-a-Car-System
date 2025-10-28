@@ -130,11 +130,23 @@ class DashboardController extends Controller
         $allVehicles = Vehicle::where('business_id', $businessId)
             ->pluck('vehicle_number');
 
-        // Get available vehicles (not in bookedVehicles)
-        $availableVehicles = $allVehicles->diff($bookedVehicles);
+        // Vehicles currently marked as in-service/repair
+        $inServiceVehicles = Vehicle::where('business_id', $businessId)
+            ->where('status', 1) // 1 => In Service/Repair
+            ->pluck('vehicle_number');
+
+        // Get available vehicles (exclude booked and in-service vehicles)
+        $availableVehicles = $allVehicles
+            ->diff($bookedVehicles)
+            ->diff($inServiceVehicles);
 
         // Fetch vehicle details for available vehicles, filtering by business_id
         $availableVehiclesData = Vehicle::whereIn('vehicle_number', $availableVehicles)
+            ->where('business_id', $businessId)
+            ->get();
+
+        // Fetch vehicle details for in-service vehicles
+        $inServiceVehiclesData = Vehicle::whereIn('vehicle_number', $inServiceVehicles)
             ->where('business_id', $businessId)
             ->get();
 
@@ -145,7 +157,8 @@ class DashboardController extends Controller
             'out_bookings' => Booking::whereDate('to_date', $date)
                 ->where('business_id', $businessId)
                 ->get(),
-            'available_vehicles' => $availableVehiclesData
+            'available_vehicles' => $availableVehiclesData,
+            'in_service_vehicles' => $inServiceVehiclesData,
         ]);
     }
 }
