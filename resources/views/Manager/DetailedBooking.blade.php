@@ -101,7 +101,26 @@
                                     id="grnter">{{ $booking->guarantor ?? 'No Guarantor..' }}</span></p>
                             <p><strong>Released Officer:</strong> <span id="ofiicer">{{ $booking->officer }}</span>
                             </p>
-                            <p><strong>Commission Officer:</strong> <span id="commissioner">{{ $booking->commission }}</span>
+                            <p><strong>1st Commission Officer:</strong> <span
+                                    id="commissioner">{{ $booking->commission }}</span>
+                            </p>
+                            <p><strong>2nd Commission Officer:</strong> <span
+                                    id="commissioner2">{{ $booking->commission2 }}</span>
+                            </p>
+                            <p><strong>Driver Name:</strong> <span id="driverName">{{ $booking->driver_name }}</span>
+                            </p>
+                            <p><strong>Location:</strong> <span id="location">{{ $booking->location }}</span>
+                            </p>
+                            <p><strong>Hand over booking:</strong>
+                                <span id="handOverBooking">
+                                    @if ($booking->hand_over_booking == 1)
+                                        Yes
+                                    @elseif ($booking->hand_over_booking == 0)
+                                        No
+                                    @else
+                                        {{ $booking->hand_over_booking }}
+                                    @endif
+                                </span>
                             </p>
                             <p><strong>Start KM:</strong> <span id="stratKm">{{ $booking->start_km }}</span>
                             </p>
@@ -315,7 +334,8 @@
                             10,
                             currentY);
                         currentY += lineSpacing;
-                        doc.text('Agent: ' + (document.getElementById('commissioner')?.textContent || 'N/A'),
+                        doc.text('Agent: ' + (document.getElementById('commissioner')?.textContent ||
+                            'N/A'),
                             10,
                             currentY);
                         currentY += lineSpacing;

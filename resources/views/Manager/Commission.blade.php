@@ -14,7 +14,8 @@
         <nav class="flex-1 mt-6">
             <ul class="space-y-1">
                 <li>
-                    <a href="{{ url('manager/dashboard') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                    <a href="{{ url('manager/dashboard') }}"
+                        class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                         <span class="material-icons mr-3">dashboard</span>
                         Dashboard
                     </a>
@@ -26,13 +27,15 @@
                     </div>
                     <ul class="ml-8 space-y-1">
                         <li>
-                            <a href="{{ url('addvehicle') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                            <a href="{{ url('addvehicle') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                 <span class="material-icons mr-3">add_circle_outline</span>
                                 Add Vehicle
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url('allvehicles') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                            <a href="{{ url('allvehicles') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                 <span class="material-icons mr-3">list_alt</span>
                                 All Vehicles
                             </a>
@@ -46,19 +49,22 @@
                     </div>
                     <ul class="ml-8 space-y-1">
                         <li>
-                            <a href="{{ url('addbooking') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                            <a href="{{ url('addbooking') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                 <span class="material-icons mr-3">add_circle_outline</span>
                                 Book Hire
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url('bookings') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                            <a href="{{ url('bookings') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                 <span class="material-icons mr-3">history</span>
                                 Booking History
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url('postbookings') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                            <a href="{{ url('postbookings') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                 <span class="material-icons mr-3">check_circle_outline</span>
                                 Completed Businesses
                             </a>
@@ -72,13 +78,15 @@
                     </div>
                     <ul class="ml-8 space-y-1">
                         <li>
-                            <a href="{{ route('customers.create') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                            <a href="{{ route('customers.create') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                 <span class="material-icons mr-3">person_add</span>
                                 Add Customer
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('customers.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                            <a href="{{ route('customers.index') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                 <span class="material-icons mr-3">list</span>
                                 All Customers
                             </a>
@@ -86,19 +94,22 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="{{ url('hr-management') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                    <a href="{{ url('hr-management') }}"
+                        class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                         <span class="material-icons mr-3">badge</span>
                         HRM
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url('crms') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                    <a href="{{ url('crms') }}"
+                        class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                         <span class="material-icons mr-3">support_agent</span>
                         CRM
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('inventory.index') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                    <a href="{{ route('inventory.index') }}"
+                        class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                         <span class="material-icons mr-3">inventory_2</span>
                         Inventory
                     </a>
@@ -110,19 +121,22 @@
                     </div>
                     <ul class="ml-8 space-y-1">
                         <li>
-                            <a href="{{ url('expenses') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                            <a href="{{ url('expenses') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                 <span class="material-icons mr-3">receipt_long</span>
                                 Expenses
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url('profit-loss-report') }}" class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                            <a href="{{ url('profit-loss-report') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                 <span class="material-icons mr-3">bar_chart</span>
                                 P/L Report
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url('commission') }}" class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
+                            <a href="{{ url('commission') }}"
+                                class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
                                 <span class="material-icons mr-3">bar_chart</span>
                                 Commission
                             </a>
@@ -133,18 +147,19 @@
         </nav>
     </aside>
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col">
+    <div class="flex-1 flex flex-col min-h-screen">
         <!-- Top Nav -->
         <header class="bg-white shadow h-20 flex items-center px-10 justify-between">
             <div class="flex items-center space-x-4">
                 <span class="text-xl font-semibold text-slate-900">Finance</span>
-                <span class="text-xl text-gray-400">/</span>
-                <span class="text-xl text-gray-500">Commission</span>
+                <span class="text-xl text-gray-500">Commissions</span>
             </div>
             <div class="flex items-center space-x-6">
                 <div class="flex items-center space-x-2">
-                    <button id="lang-en" class="text-lg font-poppins underline text-gray-700 focus:outline-none" onclick="setLanguage('en')">EN</button>
-                    <button id="lang-si" class="text-lg font-poppins text-gray-400 focus:outline-none" onclick="setLanguage('si')">SIN</button>
+                    <button id="lang-en" class="text-lg font-poppins underline text-gray-700 focus:outline-none"
+                        onclick="setLanguage('en')">EN</button>
+                    <button id="lang-si" class="text-lg font-poppins text-gray-400 focus:outline-none"
+                        onclick="setLanguage('si')">SIN</button>
                 </div>
                 <script>
                     // Full translation dictionary for all visible UI text
@@ -260,73 +275,266 @@
                 </div>
             </div>
         </header>
-        <!-- Page Content -->
-        <main class="flex-1 p-10">
-        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
-            <h2 class="text-2xl font-bold mb-6 text-slate-800">Officer Booking Counts</h2>
-            @php
-                use Illuminate\Support\Carbon;
+        <!-- Page Content: Table in Full Page -->
+        <main class="flex-1 p-10 flex flex-col">
+            <div class="flex flex-col flex-1">
+                @php
+                    use Illuminate\Support\Carbon;
 
-                // Get date range from request or default to current month
-                $startDate = request('start_date') ? Carbon::parse(request('start_date')) : Carbon::now()->startOfMonth();
-                $endDate = request('end_date') ? Carbon::parse(request('end_date')) : Carbon::now()->endOfMonth();
-            @endphp
+                    // Get date range from request or default to current month
+                    $startDate = request('start_date')
+                        ? Carbon::parse(request('start_date'))
+                        : Carbon::now()->startOfMonth();
+                    $endDate = request('end_date') ? Carbon::parse(request('end_date')) : Carbon::now()->endOfMonth();
+                @endphp
 
-            <form method="GET" class="mb-6 flex flex-wrap items-end gap-4">
-                <div>
-                    <label for="start_date" class="block text-xs font-medium text-gray-700 mb-1">Start Date</label>
-                    <input type="date" id="start_date" name="start_date" value="{{ $startDate->format('Y-m-d') }}"
-                        class="border border-gray-300 rounded px-2 py-1 text-sm focus:ring focus:ring-teal-200">
+                <form method="GET" class="mb-6 flex flex-wrap items-end gap-4">
+                    <div>
+                        <label for="start_date" class="block text-xs font-medium text-gray-700 mb-1">Start Date</label>
+                        <input type="date" id="start_date" name="start_date"
+                            value="{{ $startDate->format('Y-m-d') }}"
+                            class="border border-gray-300 rounded px-2 py-1 text-sm focus:ring focus:ring-teal-200">
+                    </div>
+                    <div>
+                        <label for="end_date" class="block text-xs font-medium text-gray-700 mb-1">End Date</label>
+                        <input type="date" id="end_date" name="end_date"
+                            value="{{ $endDate->format('Y-m-d') }}"
+                            class="border border-gray-300 rounded px-2 py-1 text-sm focus:ring focus:ring-teal-200">
+                    </div>
+                    <div>
+                        <label for="commission_type" class="block text-xs font-medium text-gray-700 mb-1">Commission
+                            Type</label>
+                        <select id="commission_type" name="commission_type"
+                            class="border border-gray-300 rounded px-2 py-1 text-sm focus:ring focus:ring-teal-200">
+                            <option value="all"
+                                {{ request('commission_type', 'all') === 'all' ? 'selected' : '' }}>All Commissions
+                            </option>
+                            {{-- <option value="normal" {{ request('commission_type') === 'normal' ? 'selected' : '' }}>Normal (Hand Over = 0)</option> --}}
+                            <option value="driving" {{ request('commission_type') === 'driving' ? 'selected' : '' }}>
+                                Driving Commission</option>
+                        </select>
+                    </div>
+                    <button type="submit"
+                        class="bg-slate-900 text-white px-4 py-2 rounded hover:bg-slate-700 text-sm font-semibold">
+                        Filter
+                    </button>
+                </form>
+
+                <div class="mb-4 text-sm text-gray-600">
+                    Showing booking counts from <span class="font-semibold">{{ $startDate->format('Y-m-d') }}</span>
+                    to <span class="font-semibold">{{ $endDate->format('Y-m-d') }}</span>
                 </div>
-                <div>
-                    <label for="end_date" class="block text-xs font-medium text-gray-700 mb-1">End Date</label>
-                    <input type="date" id="end_date" name="end_date" value="{{ $endDate->format('Y-m-d') }}"
-                        class="border border-gray-300 rounded px-2 py-1 text-sm focus:ring focus:ring-teal-200">
-                </div>
-                <button type="submit" class="bg-slate-900 text-white px-4 py-2 rounded hover:bg-slate-700 text-sm font-semibold">
-                    Filter
-                </button>
-            </form>
 
-            <div class="mb-4 text-sm text-gray-600">
-                Showing booking counts from <span class="font-semibold">{{ $startDate->format('Y-m-d') }}</span> to <span class="font-semibold">{{ $endDate->format('Y-m-d') }}</span>
+                <div class="flex-1 overflow-auto">
+                    <table class="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
+                        <thead>
+                            <tr>
+                                <th
+                                    class="px-6 py-3 bg-slate-900 text-left text-xs font-medium text-white uppercase tracking-wider">
+                                    Officer Name</th>
+                                <th
+                                    class="px-6 py-3 bg-slate-900 text-left text-xs font-medium text-white uppercase tracking-wider">
+                                    Booking Count</th>
+                                <th
+                                    class="px-6 py-3 bg-slate-900 text-left text-xs font-medium text-white uppercase tracking-wider">
+                                    Total Commission Amount</th>
+                                <th
+                                    class="px-6 py-3 bg-slate-900 text-left text-xs font-medium text-white uppercase tracking-wider">
+                                    Report</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                use Illuminate\Support\Facades\Auth;
+
+                                $officers = \App\Models\Employee::all();
+                                $startAt = $startDate->copy()->startOfDay();
+                                $endAt = $endDate->copy()->endOfDay();
+                                $type = request('commission_type', 'all');
+
+                                $bizId = Auth::check() ? Auth::user()->business_id : null;
+                            @endphp
+
+                            @forelse($officers as $officer)
+                                @php
+                                    $empName = trim(strtolower($officer->emp_name));
+
+                                    // small helpers to DRY the business scope & name matches
+                                    $byBiz = function ($q) use ($bizId) {
+                                        if ($bizId) {
+                                            $q->where('business_id', $bizId);
+                                        }
+                                    };
+                                    $nameMatchAll = function ($q) use ($empName) {
+                                        $q->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
+                                            ->orWhereRaw('LOWER(TRIM(commission2)) = ?', [$empName])
+                                            ->orWhereRaw('LOWER(TRIM(driver_name)) = ?', [$empName]);
+                                    };
+                                    $nameMatchComm = function ($q) use ($empName) {
+                                        $q->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])->orWhereRaw(
+                                            'LOWER(TRIM(commission2)) = ?',
+                                            [$empName],
+                                        );
+                                    };
+                                    $nameMatchDriver = function ($q) use ($empName) {
+                                        $q->whereRaw('LOWER(TRIM(driver_name)) = ?', [$empName]);
+                                    };
+
+                                    if ($type === 'normal') {
+                                        // ===== BOOKINGS
+                                        $bookingCountB = \App\Models\Booking::where('hand_over_booking', 0)
+                                            ->where($byBiz)
+                                            ->where($nameMatchComm)
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->count();
+
+                                        $sumFirstB = \App\Models\Booking::where('hand_over_booking', 0)
+                                            ->where($byBiz)
+                                            ->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->sum('commission_amt');
+
+                                        $sumSecondB = \App\Models\Booking::where('hand_over_booking', 0)
+                                            ->where($byBiz)
+                                            ->whereRaw('LOWER(TRIM(commission2)) = ?', [$empName])
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->sum('commission_amt2');
+
+                                        // ===== POSTBOOKINGS
+                                        $bookingCountP = \App\Models\PostBooking::where('hand_over_booking', 0)
+                                            ->where($byBiz)
+                                            ->where($nameMatchComm)
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->count();
+
+                                        $sumFirstP = \App\Models\PostBooking::where('hand_over_booking', 0)
+                                            ->where($byBiz)
+                                            ->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->sum('commission_amt');
+
+                                        $sumSecondP = \App\Models\PostBooking::where('hand_over_booking', 0)
+                                            ->where($byBiz)
+                                            ->whereRaw('LOWER(TRIM(commission2)) = ?', [$empName])
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->sum('commission_amt2');
+
+                                        $bookingCount = $bookingCountB + $bookingCountP;
+                                        $totalCommissionAmount = $sumFirstB + $sumSecondB + ($sumFirstP + $sumSecondP);
+                                    } elseif ($type === 'driving') {
+                                        // ===== BOOKINGS
+                                        $bookingCountB = \App\Models\Booking::where('hand_over_booking', 1)
+                                            ->where($byBiz)
+                                            ->where($nameMatchDriver)
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->count();
+
+                                        $sumDriverB = \App\Models\Booking::where('hand_over_booking', 1)
+                                            ->where($byBiz)
+                                            ->where($nameMatchDriver)
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->sum('driver_commission_amt');
+
+                                        // ===== POSTBOOKINGS
+                                        $bookingCountP = \App\Models\PostBooking::where('hand_over_booking', 1)
+                                            ->where($byBiz)
+                                            ->where($nameMatchDriver)
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->count();
+
+                                        $sumDriverP = \App\Models\PostBooking::where('hand_over_booking', 1)
+                                            ->where($byBiz)
+                                            ->where($nameMatchDriver)
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->sum('driver_commission_amt');
+
+                                        $bookingCount = $bookingCountB + $bookingCountP;
+                                        $totalCommissionAmount = $sumDriverB + $sumDriverP;
+                                    } else {
+                                        // ===== BOOKINGS (all)
+                                        $bookingCountB = \App\Models\Booking::where($byBiz)
+                                            ->where($nameMatchAll)
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->count();
+
+                                        $sumFirstB = \App\Models\Booking::where($byBiz)
+                                            ->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->sum('commission_amt');
+
+                                        $sumSecondB = \App\Models\Booking::where($byBiz)
+                                            ->whereRaw('LOWER(TRIM(commission2)) = ?', [$empName])
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->sum('commission_amt2');
+
+                                        $sumDriverB = \App\Models\Booking::where($byBiz)
+                                            ->where($nameMatchDriver)
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->sum('driver_commission_amt');
+
+                                        // ===== POSTBOOKINGS (all)
+                                        $bookingCountP = \App\Models\PostBooking::where($byBiz)
+                                            ->where($nameMatchAll)
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->count();
+
+                                        $sumFirstP = \App\Models\PostBooking::where($byBiz)
+                                            ->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->sum('commission_amt');
+
+                                        $sumSecondP = \App\Models\PostBooking::where($byBiz)
+                                            ->whereRaw('LOWER(TRIM(commission2)) = ?', [$empName])
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->sum('commission_amt2');
+
+                                        $sumDriverP = \App\Models\PostBooking::where($byBiz)
+                                            ->where($nameMatchDriver)
+                                            ->whereBetween('created_at', [$startAt, $endAt])
+                                            ->sum('driver_commission_amt');
+
+                                        $bookingCount = $bookingCountB + $bookingCountP;
+                                        $totalCommissionAmount =
+                                            $sumFirstB +
+                                            $sumSecondB +
+                                            $sumDriverB +
+                                            ($sumFirstP + $sumSecondP + $sumDriverP);
+                                    }
+                                @endphp
+
+                                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ $officer->emp_name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $bookingCount }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ number_format($totalCommissionAmount, 2) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <a href="{{ route('commission.export_csv', [
+                                            'officer' => $officer->emp_name,
+                                            'start_date' => $startDate->format('Y-m-d'),
+                                            'end_date' => $endDate->format('Y-m-d'),
+                                            'commission_type' => request('commission_type', 'all'),
+                                        ]) }}"
+                                            class="inline-flex items-center px-3 py-1 rounded bg-teal-600 text-white hover:bg-teal-700 mr-2">
+                                            Download
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">No data available.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+
+                    </table>
+                </div>
             </div>
-
-            <table class="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
-                <thead>
-                    <tr>
-                        <th class="px-6 py-3 bg-slate-900 text-left text-xs font-medium text-white uppercase tracking-wider">Officer Name</th>
-                        <th class="px-6 py-3 bg-slate-900 text-left text-xs font-medium text-white uppercase tracking-wider">Booking Count</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php
-                        $officers = \App\Models\Employee::all();
-                    @endphp
-                    @forelse($officers as $officer)
-                        @php
-                            // Count bookings for this officer in the selected date range
-                            $bookingCount = \App\Models\Booking::where('commission', $officer->emp_name)
-                                ->whereDate('created_at', '>=', $startDate->format('Y-m-d'))
-                                ->whereDate('created_at', '<=', $endDate->format('Y-m-d'))
-                                ->count();
-                        @endphp
-                        <tr class="border-b border-gray-100 hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $officer->emp_name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $bookingCount }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="2" class="px-6 py-4 text-center text-gray-500">No data available.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
         </main>
     </div>
-</div>
-
 </div>
 <!-- Material Icons CDN for sidebar icons -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">

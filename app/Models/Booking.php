@@ -21,6 +21,13 @@ class Booking extends Model
         'price_per_day',
         'officer',
         'commission',
+        'commission_amt',
+        'commission2',
+        'commission_amt2',
+        'driver_name',
+        'location',
+        'driver_commission_amt',
+        'hand_over_booking',
         'days',
         'vehicle_number',
         'fuel_type',
@@ -50,6 +57,7 @@ class Booking extends Model
         'nic_photos' => 'array',
         'deposit_img' => 'array',
         'grnt_nic' => 'array',
+        'hand_over_booking' => 'boolean',
     ];
 
     public function business()

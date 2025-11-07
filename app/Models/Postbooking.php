@@ -39,6 +39,12 @@ class PostBooking extends Model
         'officer',
         'rel_officer',
         'commission',
+        'commission_amt',
+        'commission2',
+        'commission_amt2',
+        'driver_name',
+        'driver_commission_amt',
+        'location',
         'agn',
         'start_km',
         'end_km',
@@ -46,12 +52,14 @@ class PostBooking extends Model
         'free_km',
         'over',
         'extra_km_chg',
+        'hand_over_booking',
     ];
 
     protected $casts = [
         'due_paid' => 'boolean',
         'deposit_refunded' => 'boolean',
         'vehicle_checked' => 'boolean',
+        'hand_over_booking' => 'boolean',
     ];
 
     public function business()

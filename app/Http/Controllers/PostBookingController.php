@@ -96,6 +96,12 @@ class PostBookingController extends Controller
             'officer' => 'nullable|string',
             'rel_officer' => 'nullable|string',
             'commission' => 'nullable|string',
+            'commission_amt' => 'nullable|numeric',
+            'commission2' => 'nullable|string',
+            'commission_amt2' => 'nullable|numeric',
+            'driver_name' => 'nullable|string',
+            'driver_commission_amt' => 'nullable|numeric',
+            'location' => 'nullable|string',
             'agn' => 'nullable|string',
             'start_km' => 'nullable|string',
             'end_km' => 'nullable|string',
@@ -103,10 +109,16 @@ class PostBookingController extends Controller
             'free_km' => 'nullable|string',
             'over' => 'nullable|string',
             'extra_km_chg' => 'nullable|string',
+            'hand_over_booking' => 'nullable'
         ]);
 
         // Inject current user's business_id
         $validated['business_id'] = Auth::user()->business_id;
+
+        // Handle checkbox fields - convert to boolean
+        $validated['due_paid'] = $request->has('due_paid') ? (bool) $request->due_paid : false;
+        $validated['deposit_refunded'] = $request->has('deposit_refunded') ? (bool) $request->deposit_refunded : false;
+        $validated['vehicle_checked'] = $request->has('vehicle_checked') ? (bool) $request->vehicle_checked : false;
 
         $postBooking = PostBooking::create($validated);
 
@@ -175,7 +187,27 @@ class PostBookingController extends Controller
             'deposit_refunded' => 'nullable|boolean',
             'vehicle_checked' => 'nullable|boolean',
             'officer' => 'nullable|string',
+            'rel_officer' => 'nullable|string',
+            'commission' => 'nullable|string',
+            'commission_amt' => 'nullable|numeric',
+            'commission2' => 'nullable|string',
+            'commission_amt2' => 'nullable|numeric',
+            'driver_name' => 'nullable|string',
+            'driver_commission_amt' => 'nullable|numeric',
+            'location' => 'nullable|string',
+            'agn' => 'nullable|string',
+            'start_km' => 'nullable|string',
+            'end_km' => 'nullable|string',
+            'drived' => 'nullable|string',
+            'free_km' => 'nullable|string',
+            'over' => 'nullable|string',
+            'extra_km_chg' => 'nullable|string',
         ]);
+
+        // Handle checkbox fields - convert to boolean
+        $validated['due_paid'] = $request->has('due_paid') ? (bool) $request->due_paid : false;
+        $validated['deposit_refunded'] = $request->has('deposit_refunded') ? (bool) $request->deposit_refunded : false;
+        $validated['vehicle_checked'] = $request->has('vehicle_checked') ? (bool) $request->vehicle_checked : false;
 
         $postBooking->update($validated);
 
