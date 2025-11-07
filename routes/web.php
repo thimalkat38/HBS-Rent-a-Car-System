@@ -87,6 +87,7 @@ Route::middleware(['manager'])->group(function () {
     Route::get('/addbooking', function () {
         return view('Manager.NewAddBooking');
     });
+    Route::get('/commission/export-csv', [BookingController::class, 'exportCommissionCsv'])->name('commission.export_csv');
 });
 
 // Inventory Control CRUD Routes

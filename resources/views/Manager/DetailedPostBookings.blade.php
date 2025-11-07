@@ -133,7 +133,27 @@
                                     id="officer">{{ $postBooking->officer }}</span></p>
                             <p><strong>Released Officer:</strong> <span
                                     id="rel_officer">{{ $postBooking->rel_officer }}</span></p>
-                            <p><strong>Agent</strong> <span id="commission">{{ $postBooking->commission }}</span></p>
+                            <p><strong>1st Commission Officer:</strong> <span
+                                    id="commission">{{ $postBooking->commission ?: 'No 1st Commission Officer Assign' }}</span>
+                            </p>
+                            <p><strong>2nd Commission Officer:</strong> <span
+                                    id="commission2">{{ $postBooking->commission2 ?: 'No 1st Commission Officer Assign' }}</span>
+                            </p>
+                            <p><strong>Hand Over Booking:</strong>
+                                <span id="hod">
+                                    @if (is_bool($postBooking->hand_over_booking))
+                                        {{ $postBooking->hand_over_booking ? 'Yes' : 'No' }}
+                                    @elseif(in_array($postBooking->hand_over_booking, [1, '1', 'true', true]))
+                                        Yes
+                                    @else
+                                        No
+                                    @endif
+                                </span>
+                            </p>
+                            <p><strong>Driver's Name:</strong> <span
+                                    id="driver">{{ $postBooking->driver_name ?: 'No Driver Assign' }}</span></p>
+                            <p><strong>Location:</strong> <span
+                                    id="location">{{ $postBooking->location ?: 'Location Not Assign' }}</span></p>
                             <p><strong>Agreement Number:</strong> <span id="agn">{{ $postBooking->agn }}</span>
                             </p>
                         </div>
@@ -287,6 +307,8 @@
                         addRow2Col('Ended Mileage (KM):', 'end', 'Drived KM (KM):', 'drived', y + 1);
                         y += rowH;
                         addRow2Col('Over Drived KM (KM):', 'over', 'Charge Per Extra KM:', 'kmchg', y + 1);
+                        y += rowH;
+                        addRow2Col('Driver Name:', 'driver', 'Location:', 'location', y + 1);
                         y += rowH + 8;
 
                         // --- Billing Table (single column, compact) ---
@@ -353,13 +375,15 @@
                         doc.setFontSize(10);
                         doc.text('Reason For Additional Charges:', margin, y + 2);
                         doc.setFont('helvetica', 'normal');
-                        doc.text(document.getElementById('reason')?.textContent || 'N/A', margin + 60, y + 2);
+                        doc.text(document.getElementById('reason')?.textContent || 'N/A', margin + 60, y +
+                            2);
                         y += rowH;
                         doc.setFont('helvetica', 'italic');
                         doc.setFontSize(10);
                         doc.text('Agent:', margin, y + 2);
                         doc.setFont('helvetica', 'normal');
-                        doc.text(document.getElementById('commission')?.textContent || 'N/A', margin + 60, y + 2);
+                        doc.text(document.getElementById('commission')?.textContent || 'N/A', margin + 60,
+                            y + 2);
                         y += rowH + 2;
 
                         // // --- Additional Information (2 columns) ---

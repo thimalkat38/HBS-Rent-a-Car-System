@@ -360,7 +360,7 @@
                 @endif
                 <!-- Customer Information -->
                 <section class="bg-white rounded-2xl shadow p-6 space-y-4 border border-gray-200">
-                    <h2 class="text-xl font-medium text-gray-900 mb-2">Customer Information</h2>
+                    <h2 class="text-xl font-medium text-gray-900 mb-2">Customer Informations</h2>
                     <div class="flex flex-col md:flex-row md:items-end md:gap-8 gap-4">
                         <div class="flex-1 relative">
                             <label class="block text-sm font-medium text-gray-700 mb-1" for="full_name">Full
@@ -644,7 +644,7 @@
 
                 <!-- Vehicle Information -->
                 <section class="bg-white rounded-2xl shadow p-6 space-y-4 border border-gray-200">
-                    <h2 class="text-xl font-medium text-gray-900 mb-2">Vehicle Information</h2>
+                    <h2 class="text-xl font-medium text-gray-900 mb-2">Vehicle Informations</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1" for="vehicle_number">Vehicle
@@ -682,7 +682,8 @@
                                 }
 
                                 fetch(
-                                        `/vehicle-availability?business_id=${businessId}&from_date=${encodeURIComponent(fromDate)}&to_date=${encodeURIComponent(toDate)}`)
+                                        `/vehicle-availability?business_id=${businessId}&from_date=${encodeURIComponent(fromDate)}&to_date=${encodeURIComponent(toDate)}`
+                                    )
                                     .then(response => {
                                         if (!response.ok) {
                                             throw new Error('Failed to fetch vehicle availability. Please check your input and try again.');
@@ -855,9 +856,8 @@
                         });
                     </script>
                 </section>
-
-                <!-- Guarantor & Officer -->
                 <section class="bg-white rounded-2xl shadow p-6 space-y-4 border border-gray-200">
+                    <h2 class="text-xl font-medium text-gray-900 mb-2">Guarantor & Deposit</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1" for="guarantor">Guarantor
@@ -872,6 +872,12 @@
                                 class="w-full h-12 px-3 py-2 bg-gray-100 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
                                 placeholder="0" />
                         </div>
+                    </div>
+                </section>
+
+                <section class="bg-white rounded-2xl shadow p-6 space-y-4 border border-gray-200">
+                    <h2 class="text-xl font-medium text-gray-900 mb-2">Officer's Informations</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div style="position: relative;">
                             <label class="block text-sm font-medium text-gray-700 mb-1" for="officer">Released
                                 Officer</label>
@@ -933,7 +939,8 @@
                             });
                         </script>
                         <div style="position: relative;">
-                            <label class="block text-sm font-medium text-gray-700 mb-1" for="commission">Commission
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="commission">1st
+                                Commission
                                 Officer</label>
                             <input id="commission" name="commission" type="text"
                                 class="w-full h-12 px-3 py-2 bg-gray-100 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -942,6 +949,95 @@
                                 style="position: absolute; z-index: 10; width: 100%; display: none; background: white; border: 1px solid #ccc; border-radius: 0 0 0.75rem 0.75rem; max-height: 180px; overflow-y: auto;">
                             </ul>
                         </div>
+                        <div style="position: relative;">
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="commission_amt">1st
+                                Commission
+                                Officer's Amount</label>
+                            <input id="commission_amt" name="commission_amt" type="number" min="0"
+                                class="w-full h-12 px-3 py-2 bg-gray-100 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                placeholder="Enter commission amount" />
+                            <span id="commission_amt_error" style="display:none;color:red;font-size:0.9em;">Amount
+                                required!</span>
+                        </div>
+                        <div style="position: relative;">
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="commission2">2nd
+                                Commission
+                                Officer</label>
+                            <input id="commission2" name="commission2" type="text"
+                                class="w-full h-12 px-3 py-2 bg-gray-100 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                placeholder="Enter commission name" autocomplete="off" />
+                            <ul id="commission2-list" class="list-group"
+                                style="position: absolute; z-index: 10; width: 100%; display: none; background: white; border: 1px solid #ccc; border-radius: 0 0 0.75rem 0.75rem; max-height: 180px; overflow-y: auto;">
+                            </ul>
+                        </div>
+                        <div style="position: relative;">
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="commission_amt2">2nd
+                                Commission
+                                Officer's Amount</label>
+                            <input id="commission_amt2" name="commission_amt2" type="number" min="0"
+                                class="w-full h-12 px-3 py-2 bg-gray-100 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                placeholder="Enter commission amount" />
+                            <span id="commission_amt2_error" style="display:none;color:red;font-size:0.9em;">Amount
+                                required!</span>
+                        </div>
+
+                        <script>
+                            // Dynamic required validation for commission amount fields
+                            $(function() {
+                                function toggleRequiredCommissionAmt() {
+                                    // 1st
+                                    if ($('#commission').val().trim() !== '') {
+                                        $('#commission_amt').attr('required', 'required');
+                                    } else {
+                                        $('#commission_amt').removeAttr('required');
+                                        $('#commission_amt_error').hide();
+                                    }
+                                    // 2nd
+                                    if ($('#commission2').val().trim() !== '') {
+                                        $('#commission_amt2').attr('required', 'required');
+                                    } else {
+                                        $('#commission_amt2').removeAttr('required');
+                                        $('#commission_amt2_error').hide();
+                                    }
+                                }
+
+                                $('#commission, #commission2').on('input', function() {
+                                    toggleRequiredCommissionAmt();
+                                });
+
+                                // On form submit, show error message if needed
+                                $('form').on('submit', function(e) {
+                                    let error = false;
+                                    // 1st commission logic
+                                    if ($('#commission').val().trim() !== '') {
+                                        if ($('#commission_amt').val().trim() === '') {
+                                            $('#commission_amt_error').show();
+                                            $('#commission_amt').focus();
+                                            error = true;
+                                        } else {
+                                            $('#commission_amt_error').hide();
+                                        }
+                                    } else {
+                                        $('#commission_amt_error').hide();
+                                    }
+                                    // 2nd commission logic
+                                    if ($('#commission2').val().trim() !== '') {
+                                        if ($('#commission_amt2').val().trim() === '') {
+                                            $('#commission_amt2_error').show();
+                                            if (!error) $('#commission_amt2').focus();
+                                            error = true;
+                                        } else {
+                                            $('#commission_amt2_error').hide();
+                                        }
+                                    } else {
+                                        $('#commission_amt2_error').hide();
+                                    }
+                                    if (error) {
+                                        e.preventDefault();
+                                    }
+                                });
+                            });
+                        </script>
                         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
                         <link rel="stylesheet"
                             href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
@@ -994,6 +1090,182 @@
                             });
                         </script>
                     </div>
+                    <div class="flex items-center gap-2 mt-4">
+                        <input type="hidden" name="hand_over_booking" value="0">
+                        <input type="checkbox" id="hand_over_booking" name="hand_over_booking" value="1"
+                            class="h-5 w-5 text-teal-600 border-gray-300 rounded focus:ring-teal-500">
+                        <label for="hand_over_booking" class="text-sm font-medium text-gray-700">Hand Over
+                            Booking</label>
+                    </div>
+                    <div id="driver_fields" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4"
+                        style="display: none;">
+                        <div style="position: relative;">
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="driver_name">Driver
+                                Name</label>
+                            <input id="driver_name" name="driver_name" type="text"
+                                class="w-full h-12 px-3 py-2 bg-gray-100 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                placeholder="Enter driver name" />
+                            <ul id="driver-name-list" class="list-group"
+                                style="position: absolute; z-index: 10; width: 100%; display: none; background: white; border: 1px solid #ccc; border-radius: 0 0 0.75rem 0.75rem; max-height: 180px; overflow-y: auto; top: 100%; left: 0; margin-top: 4px;">
+                            </ul>
+                        </div>
+                        <div style="position: relative;">
+                            <label class="block text-sm font-medium text-gray-700 mb-1"
+                                for="driver_commission_amt">Driver's Commission Amount (LKR)</label>
+                            <input id="driver_commission_amt" name="driver_commission_amt" type="number"
+                                min="0" step="any"
+                                class="w-full h-12 px-3 py-2 bg-gray-100 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                placeholder="Enter commission amount" autocomplete="off" />
+                        </div>
+                        <div style="position: relative;">
+                            <label class="block text-sm font-medium text-gray-700 mb-1"
+                                for="location">Location</label>
+                            <input id="location" name="location" type="text"
+                                class="w-full h-12 px-3 py-2 bg-gray-100 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                placeholder="Enter location" />
+                        </div>
+                    </div>
+                    <script>
+                        $(document).ready(function() {
+                            $('#hand_over_booking').change(function() {
+                                if (this.checked) {
+                                    $('#driver_fields').slideDown();
+                                    $('#driver_name').prop('required', true);
+                                    $('#driver_commission_amt').prop('required', true);
+                                    $('#location').prop('required', true);
+                                } else {
+                                    $('#driver_fields').slideUp();
+                                    $('#driver_name').prop('required', false);
+                                    $('#driver_commission_amt').prop('required', false);
+                                    $('#location').prop('required', false);
+                                }
+                            });
+                            // On page load, ensure field "required" matches checkbox (in case of form repopulation)
+                            if ($('#hand_over_booking').is(':checked')) {
+                                $('#driver_fields').show();
+                                $('#driver_name').prop('required', true);
+                                $('#driver_commission_amt').prop('required', true);
+                                $('#location').prop('required', true);
+                            } else {
+                                $('#driver_fields').hide();
+                                $('#driver_name').prop('required', false);
+                                $('#driver_commission_amt').prop('required', false);
+                                $('#location').prop('required', false);
+                            }
+                        });
+                    </script>
+
+                    <script>
+                        $(document).ready(function() {
+                            $('#hand_over_booking').change(function() {
+                                if (this.checked) {
+                                    $('#driver_fields').slideDown();
+                                    $('#driver_name').prop('required', true);
+                                    $('#driver_commission_amt').prop('required', true);
+                                } else {
+                                    $('#driver_fields').slideUp();
+                                    $('#driver_name').prop('required', false);
+                                    $('#driver_commission_amt').prop('required', false);
+                                }
+                            });
+                        });
+                    </script>
+                    <script>
+                        // Autocomplete for 2nd Commission Officer (commission2)
+                        $(document).ready(function() {
+                            $("#commission2").on("input", function() {
+                                const query = $(this).val();
+                                if (query.length > 0) {
+                                    $.ajax({
+                                        url: "/autocomplete-employees",
+                                        type: "GET",
+                                        data: {
+                                            term: query
+                                        },
+                                        dataType: "json",
+                                        success: function(data) {
+                                            let list = $("#commission2-list");
+                                            list.empty();
+                                            if (data.length > 0) {
+                                                data.forEach(function(item) {
+                                                    list.append(
+                                                        '<li class="list-group-item" style="padding: 8px; cursor: pointer;">' +
+                                                        item + '</li>');
+                                                });
+                                                list.show();
+                                            } else {
+                                                list.hide();
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    $("#commission2-list").hide();
+                                }
+                            });
+
+                            // Handle click on suggestion for commission2
+                            $(document).on("click", "#commission2-list li", function() {
+                                $("#commission2").val($(this).text());
+                                $("#commission2-list").hide();
+                            });
+
+                            // Hide dropdown if clicking outside commission2
+                            $(document).on("click", function(e) {
+                                if (!$(e.target).closest("#commission2").length && !$(e.target).closest("#commission2-list")
+                                    .length) {
+                                    $("#commission2-list").hide();
+                                }
+                            });
+                        });
+                    </script>
+                    <script>
+                        // Autocomplete for Driver Name
+                        $(document).ready(function() {
+                            $("#driver_name").on("input", function() {
+                                const query = $(this).val();
+                                if (query.length > 0) {
+                                    $.ajax({
+                                        url: "/autocomplete-employees",
+                                        type: "GET",
+                                        data: {
+                                            term: query
+                                        },
+                                        dataType: "json",
+                                        success: function(data) {
+                                            let list = $("#driver-name-list");
+                                            list.empty();
+                                            if (data.length > 0) {
+                                                data.forEach(function(item) {
+                                                    list.append(
+                                                        '<li class="list-group-item" style="padding: 8px; cursor: pointer;">' +
+                                                        item + '</li>');
+                                                });
+                                                list.show();
+                                            } else {
+                                                list.hide();
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    $("#driver-name-list").hide();
+                                }
+                            });
+
+                            // Handle click on suggestion for driver name
+                            $(document).on("click", "#driver-name-list li", function() {
+                                $("#driver_name").val($(this).text());
+                                $("#driver-name-list").hide();
+                            });
+
+                            // Hide dropdown if clicking outside driver name
+                            $(document).on("click", function(e) {
+                                if (!$(e.target).closest("#driver_name").length && !$(e.target).closest("#driver-name-list")
+                                    .length) {
+                                    $("#driver-name-list").hide();
+                                }
+                            });
+                        });
+                    </script>
                 </section>
 
                 <!-- Pricing Details -->

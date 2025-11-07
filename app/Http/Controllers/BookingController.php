@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\Customer;
-use App\Models\Vehicle;
+use App\Models\PostBooking;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
@@ -91,6 +92,14 @@ class BookingController extends Controller
             'from_date' => 'required|date',
             'to_date' => 'required|date',
             'officer' => 'nullable|string',
+            'commission' => 'nullable|string',
+            'commission_amt' => 'nullable|numeric',
+            'commission2' => 'nullable|string',
+            'commission_amt2' => 'nullable|numeric',
+            'driver_name' => 'nullable|string',
+            'location' => 'nullable|string',
+            'driver_commission_amt' => 'nullable|numeric',
+            'hand_over_booking' => 'sometimes|in:0,1',
             'reason' => 'nullable|string',
             'method' => 'nullable|string',
             'guarantor' => 'nullable|string',
@@ -123,6 +132,9 @@ class BookingController extends Controller
             unset($validated['commissioner']);
         }
 
+        // Normalize checkbox to boolean
+        $validated['hand_over_booking'] = $request->boolean('hand_over_booking');
+
         // Calculate days (always round up if there is any time difference)
         $from = new \DateTime($request->from_date . ' ' . $request->booking_time);
         $to = new \DateTime($request->to_date . ' ' . $request->arrival_time);
@@ -133,7 +145,8 @@ class BookingController extends Controller
         }
         if ($days < 1) {
             $days = 1;
-        }        $validated['days'] = $days;
+        }
+        $validated['days'] = $days;
 
         // Calculate price and ensure it is not negative
         $total = ($request->price_per_day * $days) + $validated['additional_chagers'];
@@ -183,76 +196,6 @@ class BookingController extends Controller
             ->with('success', 'Booking created successfully.');
     }
 
-
-
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'title' => 'nullable',
-    //         'full_name' => 'required|string|max:255',
-    //         'mobile_number' => 'required',
-    //         'nic' => 'nullable|string|max:20',
-    //         'address' => 'nullable|string',
-    //         'deposit' => 'nullable',
-    //         'booking_time' => 'required',
-    //         'arrival_time' => 'required',
-    //         'price_per_day' => 'required|numeric',
-    //         'vehicle_number' => 'required',
-    //         'fuel_type' => 'nullable',
-    //         'vehicle_name' => 'required',
-    //         'from_date' => 'required|date',
-    //         'to_date' => 'required|date',
-    //         'officer' => 'nullable|string',
-    //         'reason' => 'nullable|string',
-    //         'method' => 'nullable|string',
-    //         'guarantor' => 'nullable|string',
-    //         'extra_km_chg' => 'nullable|string',
-    //         'free_km' => 'nullable|string',
-    //         'free_kmd' => 'nullable|string',
-    //         'start_km' => 'nullable|string',
-    //         'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
-    //         'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
-    //         'deposit_img.*' => 'nullable|file|mimes:jpg,jpeg,png',
-    //         'grnt_nic.*' => 'nullable|file|mimes:jpg,jpeg,png',
-    //         'status' => 'nullable',
-    //     ]);
-
-    //     $validated = $request->except(['driving_photos', 'nic_photos', 'deposit_img', 'grnt_nic']);
-    //     $validated['additional_chagers'] = $request->input('additional_chagers', 0.00);
-    //     $validated['discount_price'] = $request->input('discount_price', 0.00);
-
-    //     $from = new \DateTime($request->from_date . ' ' . $request->booking_time);
-    //     $to = new \DateTime($request->to_date . ' ' . $request->arrival_time);
-    //     $days = ceil(($from->diff($to)->days * 24 + $from->diff($to)->h) / 24);
-
-    //     $validated['days'] = $days;
-    //     $validated['price'] = ($request->price_per_day * $days) + $validated['additional_chagers'] - $validated['discount_price'] - $request->input('payed', 0);
-    //     $validated['business_id'] = Auth::user()->business_id;
-
-    //     $booking = Booking::create($validated);
-
-    //     $booking->driving_photos = $request->hasFile('driving_photos') ? $this->uploadAndCopy($request->file('driving_photos'), 'driving_photos') : [];
-    //     $booking->nic_photos     = $request->hasFile('nic_photos')     ? $this->uploadAndCopy($request->file('nic_photos'), 'nic_photos')         : [];
-    //     $booking->deposit_img    = $request->hasFile('deposit_img')    ? $this->uploadAndCopy($request->file('deposit_img'), 'deposit_img')       : [];
-    //     $booking->grnt_nic       = $request->hasFile('grnt_nic')       ? $this->uploadAndCopy($request->file('grnt_nic'), 'grnt_nic')             : [];
-    //     $booking->save();
-
-    //     if (!empty($request->nic) && !Customer::where('nic', $request->nic)->exists()) {
-    //         Customer::create([
-    //             'title' => $request->title,
-    //             'full_name' => $request->full_name,
-    //             'phone' => $request->mobile_number,
-    //             'nic' => $request->nic,
-    //             'address' => $request->address,
-    //             'business_id' => $validated['business_id'],
-    //         ]);
-    //     }
-
-    //     return redirect()->route('bookings.show', ['id' => $booking->id])
-    //         ->with('success', 'Booking created successfully.');
-    // }
-
-    
     private function uploadAndCopy($files, $directory)
     {
         $paths = [];
@@ -319,6 +262,14 @@ class BookingController extends Controller
             'from_date' => 'required|date',
             'to_date' => 'required|date',
             'officer' => 'nullable|string',
+            'commission' => 'nullable|string',
+            'commission_amt' => 'nullable|numeric',
+            'commission2' => 'nullable|string',
+            'commission_amt2' => 'nullable|numeric',
+            'driver_name' => 'nullable|string',
+            'location' => 'nullable|string',
+            'driver_commission_amt' => 'nullable|numeric',
+            'hand_over_booking' => 'sometimes|in:0,1',
             'method' => 'nullable|string',
             'guarantor' => 'nullable|string',
             'payed' => 'nullable|numeric',
@@ -343,6 +294,9 @@ class BookingController extends Controller
             $validatedData['commission'] = $validatedData['commissioner'];
             unset($validatedData['commissioner']);
         }
+
+        // Normalize checkbox to boolean
+        $validatedData['hand_over_booking'] = $request->boolean('hand_over_booking');
 
         // Update basic details
         $booking->update($validatedData);
@@ -405,5 +359,158 @@ class BookingController extends Controller
 
         // Pass the relevant details to the view
         return view('Manager.NewPostBooking', compact('booking'));
+    }
+
+    public function exportCommissionCsv(Request $request)
+    {
+        $request->validate([
+            'officer' => 'required|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'commission_type' => 'nullable|in:all,normal,driving',
+        ]);
+    
+        $officer = $request->input('officer');
+        $empName = strtolower(trim($officer));
+        $start   = Carbon::parse($request->input('start_date'))->startOfDay();
+        $end     = Carbon::parse($request->input('end_date'))->endOfDay();
+        $type    = $request->input('commission_type', 'all');
+        $bizId   = Auth::check() ? Auth::user()->business_id : null;
+    
+        // Build base queries
+        $qb = Booking::query()->whereBetween('created_at', [$start, $end]);
+        $qp = PostBooking::query()->whereBetween('created_at', [$start, $end]);
+    
+        if ($bizId) {
+            $qb->where('business_id', $bizId);
+            $qp->where('business_id', $bizId);
+        }
+    
+        // Apply officer / type filters to BOTH queries
+        if ($type === 'driving') {
+            $qb->where('hand_over_booking', 1)
+               ->whereRaw('LOWER(TRIM(driver_name)) = ?', [$empName]);
+    
+            $qp->where('hand_over_booking', 1)
+               ->whereRaw('LOWER(TRIM(driver_name)) = ?', [$empName]);
+    
+        } elseif ($type === 'normal') {
+            $qb->where('hand_over_booking', 0)
+               ->where(function ($q) use ($empName) {
+                   $q->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
+                     ->orWhereRaw('LOWER(TRIM(commission2)) = ?', [$empName]);
+               });
+    
+            $qp->where('hand_over_booking', 0)
+               ->where(function ($q) use ($empName) {
+                   $q->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
+                     ->orWhereRaw('LOWER(TRIM(commission2)) = ?', [$empName]);
+               });
+    
+        } else { // all
+            $qb->where(function ($q) use ($empName) {
+                $q->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
+                  ->orWhereRaw('LOWER(TRIM(commission2)) = ?', [$empName])
+                  ->orWhereRaw('LOWER(TRIM(driver_name)) = ?', [$empName]);
+            });
+    
+            $qp->where(function ($q) use ($empName) {
+                $q->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
+                  ->orWhereRaw('LOWER(TRIM(commission2)) = ?', [$empName])
+                  ->orWhereRaw('LOWER(TRIM(driver_name)) = ?', [$empName]);
+            });
+        }
+    
+        // Select unified fields + created_at and a source tag
+        $selectCols = [
+            'id',
+            'full_name',
+            'hand_over_booking',
+            'vehicle_number',
+            'from_date',
+            'to_date',
+            'commission',
+            'commission_amt',
+            'commission2',
+            'commission_amt2',
+            'driver_name',
+            'driver_commission_amt',
+            'created_at',
+        ];
+    
+
+        // Make sure to import DB at the top with: use Illuminate\Support\Facades\DB;
+        $rowsB = $qb->select(array_merge($selectCols, [DB::raw("'booking' as source")]))->get();
+        $rowsP = $qp->select(array_merge($selectCols, [DB::raw("'postbooking' as source")]))->get();
+        // Merge and sort by created_at desc
+        $rows = $rowsB->merge($rowsP)->sortByDesc('created_at')->values();
+    
+        $fileName = 'commission_report_' . preg_replace('/\s+/', '_', strtolower($officer)) . '_' . $start->format('Ymd') . '_' . $end->format('Ymd') . '.csv';
+    
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ];
+    
+        $callback = function () use ($rows, $empName, $type) {
+            $out = fopen('php://output', 'w');
+    
+            // CSV headings (includes Source)
+            fputcsv($out, [
+                'Source',
+                'ID',
+                'Full Name',
+                'Hand Over Booking',
+                'Vehicle Number',
+                'From Date',
+                'To Date',
+                'Amount',
+                'Created At',
+            ]);
+    
+            foreach ($rows as $b) {
+                // compute amount based on which role matched
+                $amount = 0.0;
+                $nameCommission  = strtolower(trim((string) $b->commission));
+                $nameCommission2 = strtolower(trim((string) $b->commission2));
+                $nameDriver      = strtolower(trim((string) $b->driver_name));
+    
+                if ($type === 'driving') {
+                    if ($nameDriver === $empName) {
+                        $amount = (float) ($b->driver_commission_amt ?? 0);
+                    }
+                } elseif ($type === 'normal') {
+                    if ($nameCommission === $empName) {
+                        $amount = (float) ($b->commission_amt ?? 0);
+                    } elseif ($nameCommission2 === $empName) {
+                        $amount = (float) ($b->commission_amt2 ?? 0);
+                    }
+                } else { // all
+                    if ($nameCommission === $empName) {
+                        $amount = (float) ($b->commission_amt ?? 0);
+                    } elseif ($nameCommission2 === $empName) {
+                        $amount = (float) ($b->commission_amt2 ?? 0);
+                    } elseif ($nameDriver === $empName) {
+                        $amount = (float) ($b->driver_commission_amt ?? 0);
+                    }
+                }
+    
+                fputcsv($out, [
+                    $b->source,
+                    $b->id,
+                    $b->full_name,
+                    $b->hand_over_booking ? 1 : 0,
+                    $b->vehicle_number,
+                    $b->from_date,
+                    $b->to_date,
+                    $amount,
+                    optional($b->created_at)->toDateTimeString(),
+                ]);
+            }
+    
+            fclose($out);
+        };
+    
+        return response()->stream($callback, 200, $headers);
     }
 }

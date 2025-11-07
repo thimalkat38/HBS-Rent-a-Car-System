@@ -192,6 +192,63 @@
                     </div>
                 @endif
 
+                @php
+                    $today = \Carbon\Carbon::today();
+                    $limit = \Carbon\Carbon::today()->addDays(3);
+                    $handoverBookings = \App\Models\Booking::where('business_id', auth()->user()->business_id)
+                        ->where('hand_over_booking', 1)
+                        ->whereBetween('to_date', [$today->toDateString(), $limit->toDateString()])
+                        ->orderBy('to_date')
+                        ->get();
+                @endphp
+                @if ($handoverBookings->isNotEmpty())
+                    <div class="alert-box" style="background-color:#2563eb;">
+                        <h3>🚘 Vehicle Pickup Reminders (next 3 days) 🚘</h3>
+                        <ul>
+                            @foreach ($handoverBookings as $hb)
+                                <li>
+                                    {{ $hb->driver_name }} have to pickup {{ $hb->vehicle_number }}
+                                    ({{ $hb->vehicle_name }})
+                                    from
+                                    {{ $hb->location ?? 'the specified location' }} at
+                                    {{ \Carbon\Carbon::parse($hb->to_date)->format('Y-m-d') }} by
+                                    {{ $hb->arrival_time }} (phone - {{ $hb->mobile_number }})(Id -
+                                    {{ $hb->id }})
+                                    <a href="{{ route('bookings.show', ['id' => $hb->id]) }}"
+                                        class="btn btn-primary btn-sm view-booking-link">
+                                        View
+                                    </a>
+                                    <style>
+                                        .view-booking-link {
+                                            margin-left: 12px;
+                                            background: linear-gradient(90deg, #14642c 60%, #316b42 100%);
+                                            border: none;
+                                            color: #fff;
+                                            font-weight: 500;
+                                            border-radius: 4px;
+                                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+                                            transition: background 0.2s, box-shadow 0.2s, transform 0.13s;
+                                            padding: 3px 16px 5px 12px;
+                                            font-size: 15px;
+                                            vertical-align: middle;
+                                            letter-spacing: 0.01em;
+                                        }
+
+                                        .view-booking-link:hover,
+                                        .view-booking-link:focus {
+                                            background: linear-gradient(90deg, #1eaf3d 60%, #8ba88a 100%);
+                                            color: #e0e7ff;
+                                            text-decoration: none;
+                                            transform: translateY(-1px) scale(1.045);
+                                            box-shadow: 0 6px 14px rgba(37, 99, 235, 0.15);
+                                        }
+                                    </style>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <!-- Calendar Section -->
                 <div class="calendar">
                     <div class="calendar-header">
@@ -290,8 +347,8 @@
                                 <h3>OUT</h3>
                                 <ul>
                                     ${data.in_bookings.map(booking => `
-                                                        <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.booking_time}]</li>
-                                                    `).join('')}
+                                                                        <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.booking_time}]</li>
+                                                                    `).join('')}
                                 </ul>`;
                                 } else {
                                     inBookingsHtml =
@@ -303,8 +360,8 @@
                                 <h3>IN</h3>
                                 <ul>
                                     ${data.out_bookings.map(booking => `
-                                                        <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.arrival_time}]</li>
-                                                    `).join('')}
+                                                                        <li>${booking.vehicle_number} - ${booking.vehicle_name} [${booking.arrival_time}]</li>
+                                                                    `).join('')}
                                 </ul>`;
                                 } else {
                                     outBookingsHtml =
@@ -316,21 +373,22 @@
                                 <h3>Available Vehicles</h3>
                                 <ul>
                                     ${data.available_vehicles.map(vehicle => `
-                                                        <li>${vehicle.vehicle_number} - ${vehicle.vehicle_name}</li>
-                                                    `).join('')}
+                                                                        <li>${vehicle.vehicle_number} - ${vehicle.vehicle_name}</li>
+                                                                    `).join('')}
                                 </ul>`;
                                 } else {
                                     availableVehiclesHtml =
                                         '<h3>Available Vehicles</h3><p>No vehicles available on this day.</p>';
                                 }
 
-                                if (data.in_service_vehicles && data.in_service_vehicles.length > 0) {
+                                if (data.in_service_vehicles && data.in_service_vehicles
+                                    .length > 0) {
                                     inServiceVehiclesHtml = `
                                 <h3>Unavailable <span style="font-weight:normal">(in service)</span></h3>
                                 <ul>
                                     ${data.in_service_vehicles.map(vehicle => `
-                                                        <li>${vehicle.vehicle_number} - ${vehicle.vehicle_name} (in service)</li>
-                                                    `).join('')}
+                                                                        <li>${vehicle.vehicle_number} - ${vehicle.vehicle_name} (in service)</li>
+                                                                    `).join('')}
                                 </ul>`;
                                 }
 
