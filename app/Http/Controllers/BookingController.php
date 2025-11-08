@@ -369,59 +369,39 @@ class BookingController extends Controller
             'end_date' => 'required|date',
             'commission_type' => 'nullable|in:all,normal,driving',
         ]);
-    
+
         $officer = $request->input('officer');
         $empName = strtolower(trim($officer));
         $start   = Carbon::parse($request->input('start_date'))->startOfDay();
         $end     = Carbon::parse($request->input('end_date'))->endOfDay();
         $type    = $request->input('commission_type', 'all');
         $bizId   = Auth::check() ? Auth::user()->business_id : null;
-    
-        // Build base queries
-        $qb = Booking::query()->whereBetween('created_at', [$start, $end]);
-        $qp = PostBooking::query()->whereBetween('created_at', [$start, $end]);
-    
+
+        // Only query PostBooking
+        $query = PostBooking::query()->whereBetween('created_at', [$start, $end]);
+
         if ($bizId) {
-            $qb->where('business_id', $bizId);
-            $qp->where('business_id', $bizId);
+            $query->where('business_id', $bizId);
         }
-    
-        // Apply officer / type filters to BOTH queries
+
+        // Apply officer/type filter only to postbooking
         if ($type === 'driving') {
-            $qb->where('hand_over_booking', 1)
-               ->whereRaw('LOWER(TRIM(driver_name)) = ?', [$empName]);
-    
-            $qp->where('hand_over_booking', 1)
-               ->whereRaw('LOWER(TRIM(driver_name)) = ?', [$empName]);
-    
+            $query->where('hand_over_booking', 1)
+                  ->whereRaw('LOWER(TRIM(driver_name)) = ?', [$empName]);
         } elseif ($type === 'normal') {
-            $qb->where('hand_over_booking', 0)
-               ->where(function ($q) use ($empName) {
-                   $q->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
-                     ->orWhereRaw('LOWER(TRIM(commission2)) = ?', [$empName]);
-               });
-    
-            $qp->where('hand_over_booking', 0)
-               ->where(function ($q) use ($empName) {
-                   $q->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
-                     ->orWhereRaw('LOWER(TRIM(commission2)) = ?', [$empName]);
-               });
-    
-        } else { // all
-            $qb->where(function ($q) use ($empName) {
-                $q->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
-                  ->orWhereRaw('LOWER(TRIM(commission2)) = ?', [$empName])
-                  ->orWhereRaw('LOWER(TRIM(driver_name)) = ?', [$empName]);
-            });
-    
-            $qp->where(function ($q) use ($empName) {
+            $query->where('hand_over_booking', 0)
+                  ->where(function ($q) use ($empName) {
+                      $q->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
+                        ->orWhereRaw('LOWER(TRIM(commission2)) = ?', [$empName]);
+                  });
+        } else { // all types
+            $query->where(function ($q) use ($empName) {
                 $q->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
                   ->orWhereRaw('LOWER(TRIM(commission2)) = ?', [$empName])
                   ->orWhereRaw('LOWER(TRIM(driver_name)) = ?', [$empName]);
             });
         }
-    
-        // Select unified fields + created_at and a source tag
+
         $selectCols = [
             'id',
             'full_name',
@@ -437,24 +417,21 @@ class BookingController extends Controller
             'driver_commission_amt',
             'created_at',
         ];
-    
 
-        // Make sure to import DB at the top with: use Illuminate\Support\Facades\DB;
-        $rowsB = $qb->select(array_merge($selectCols, [DB::raw("'booking' as source")]))->get();
-        $rowsP = $qp->select(array_merge($selectCols, [DB::raw("'postbooking' as source")]))->get();
-        // Merge and sort by created_at desc
-        $rows = $rowsB->merge($rowsP)->sortByDesc('created_at')->values();
-    
+        $rows = $query->select(array_merge($selectCols, [DB::raw("'Completed business' as source")]))
+                      ->orderByDesc('created_at')
+                      ->get();
+
         $fileName = 'commission_report_' . preg_replace('/\s+/', '_', strtolower($officer)) . '_' . $start->format('Ymd') . '_' . $end->format('Ymd') . '.csv';
-    
+
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
         ];
-    
+
         $callback = function () use ($rows, $empName, $type) {
             $out = fopen('php://output', 'w');
-    
+
             // CSV headings (includes Source)
             fputcsv($out, [
                 'Source',
@@ -465,16 +442,15 @@ class BookingController extends Controller
                 'From Date',
                 'To Date',
                 'Amount',
-                'Created At',
+                // 'Created At',
             ]);
-    
             foreach ($rows as $b) {
                 // compute amount based on which role matched
                 $amount = 0.0;
                 $nameCommission  = strtolower(trim((string) $b->commission));
                 $nameCommission2 = strtolower(trim((string) $b->commission2));
                 $nameDriver      = strtolower(trim((string) $b->driver_name));
-    
+
                 if ($type === 'driving') {
                     if ($nameDriver === $empName) {
                         $amount = (float) ($b->driver_commission_amt ?? 0);
@@ -494,7 +470,7 @@ class BookingController extends Controller
                         $amount = (float) ($b->driver_commission_amt ?? 0);
                     }
                 }
-    
+
                 fputcsv($out, [
                     $b->source,
                     $b->id,
@@ -504,13 +480,13 @@ class BookingController extends Controller
                     $b->from_date,
                     $b->to_date,
                     $amount,
-                    optional($b->created_at)->toDateTimeString(),
+                    // optional($b->created_at)->toDateTimeString(),
                 ]);
             }
-    
+
             fclose($out);
         };
-    
+
         return response()->stream($callback, 200, $headers);
     }
 }
