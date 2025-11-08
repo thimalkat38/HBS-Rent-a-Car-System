@@ -382,26 +382,6 @@
                                     };
 
                                     if ($type === 'normal') {
-                                        // ===== BOOKINGS
-                                        $bookingCountB = \App\Models\Booking::where('hand_over_booking', 0)
-                                            ->where($byBiz)
-                                            ->where($nameMatchComm)
-                                            ->whereBetween('created_at', [$startAt, $endAt])
-                                            ->count();
-
-                                        $sumFirstB = \App\Models\Booking::where('hand_over_booking', 0)
-                                            ->where($byBiz)
-                                            ->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
-                                            ->whereBetween('created_at', [$startAt, $endAt])
-                                            ->sum('commission_amt');
-
-                                        $sumSecondB = \App\Models\Booking::where('hand_over_booking', 0)
-                                            ->where($byBiz)
-                                            ->whereRaw('LOWER(TRIM(commission2)) = ?', [$empName])
-                                            ->whereBetween('created_at', [$startAt, $endAt])
-                                            ->sum('commission_amt2');
-
-                                        // ===== POSTBOOKINGS
                                         $bookingCountP = \App\Models\PostBooking::where('hand_over_booking', 0)
                                             ->where($byBiz)
                                             ->where($nameMatchComm)
@@ -420,23 +400,9 @@
                                             ->whereBetween('created_at', [$startAt, $endAt])
                                             ->sum('commission_amt2');
 
-                                        $bookingCount = $bookingCountB + $bookingCountP;
-                                        $totalCommissionAmount = $sumFirstB + $sumSecondB + ($sumFirstP + $sumSecondP);
+                                        $bookingCount = $bookingCountP;
+                                        $totalCommissionAmount = $sumFirstP + $sumSecondP;
                                     } elseif ($type === 'driving') {
-                                        // ===== BOOKINGS
-                                        $bookingCountB = \App\Models\Booking::where('hand_over_booking', 1)
-                                            ->where($byBiz)
-                                            ->where($nameMatchDriver)
-                                            ->whereBetween('created_at', [$startAt, $endAt])
-                                            ->count();
-
-                                        $sumDriverB = \App\Models\Booking::where('hand_over_booking', 1)
-                                            ->where($byBiz)
-                                            ->where($nameMatchDriver)
-                                            ->whereBetween('created_at', [$startAt, $endAt])
-                                            ->sum('driver_commission_amt');
-
-                                        // ===== POSTBOOKINGS
                                         $bookingCountP = \App\Models\PostBooking::where('hand_over_booking', 1)
                                             ->where($byBiz)
                                             ->where($nameMatchDriver)
@@ -449,31 +415,9 @@
                                             ->whereBetween('created_at', [$startAt, $endAt])
                                             ->sum('driver_commission_amt');
 
-                                        $bookingCount = $bookingCountB + $bookingCountP;
-                                        $totalCommissionAmount = $sumDriverB + $sumDriverP;
+                                        $bookingCount = $bookingCountP;
+                                        $totalCommissionAmount = $sumDriverP;
                                     } else {
-                                        // ===== BOOKINGS (all)
-                                        $bookingCountB = \App\Models\Booking::where($byBiz)
-                                            ->where($nameMatchAll)
-                                            ->whereBetween('created_at', [$startAt, $endAt])
-                                            ->count();
-
-                                        $sumFirstB = \App\Models\Booking::where($byBiz)
-                                            ->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
-                                            ->whereBetween('created_at', [$startAt, $endAt])
-                                            ->sum('commission_amt');
-
-                                        $sumSecondB = \App\Models\Booking::where($byBiz)
-                                            ->whereRaw('LOWER(TRIM(commission2)) = ?', [$empName])
-                                            ->whereBetween('created_at', [$startAt, $endAt])
-                                            ->sum('commission_amt2');
-
-                                        $sumDriverB = \App\Models\Booking::where($byBiz)
-                                            ->where($nameMatchDriver)
-                                            ->whereBetween('created_at', [$startAt, $endAt])
-                                            ->sum('driver_commission_amt');
-
-                                        // ===== POSTBOOKINGS (all)
                                         $bookingCountP = \App\Models\PostBooking::where($byBiz)
                                             ->where($nameMatchAll)
                                             ->whereBetween('created_at', [$startAt, $endAt])
@@ -494,12 +438,11 @@
                                             ->whereBetween('created_at', [$startAt, $endAt])
                                             ->sum('driver_commission_amt');
 
-                                        $bookingCount = $bookingCountB + $bookingCountP;
+                                        $bookingCount = $bookingCountP;
                                         $totalCommissionAmount =
-                                            $sumFirstB +
-                                            $sumSecondB +
-                                            $sumDriverB +
-                                            ($sumFirstP + $sumSecondP + $sumDriverP);
+                                            $sumFirstP +
+                                            $sumSecondP +
+                                            $sumDriverP;
                                     }
                                 @endphp
 
