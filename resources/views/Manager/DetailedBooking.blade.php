@@ -227,6 +227,15 @@
         </div>
     </div>
     <script>
+        (function() {
+            const redirectUrl = "{{ route('manager.dashboard') }}";
+            window.history.pushState({}, '', window.location.href);
+            window.addEventListener('popstate', function() {
+                window.location.replace(redirectUrl);
+            });
+        })();
+    </script>
+    <script>
         async function printPDF() {
             const {
                 jsPDF

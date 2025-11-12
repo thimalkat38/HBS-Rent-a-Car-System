@@ -1038,13 +1038,85 @@
                                 });
                             });
                         </script>
+                        <script>
+                            (function($) {
+                                function applyLockStyles($input) {
+                                    if (!$input.length) {
+                                        return;
+                                    }
+                                    $input.css({
+                                        'background-color': '#f8f8f8',
+                                        'cursor': 'not-allowed'
+                                    });
+                                }
+
+                                function clearLockStyles($input) {
+                                    if (!$input.length) {
+                                        return;
+                                    }
+                                    $input.css({
+                                        'background-color': '',
+                                        'cursor': ''
+                                    });
+                                }
+
+                                function lockInput($input) {
+                                    if (!$input.length) {
+                                        return;
+                                    }
+                                    $input.prop('readonly', true);
+                                    applyLockStyles($input);
+                                }
+
+                                function unlockInput($input) {
+                                    if (!$input.length) {
+                                        return;
+                                    }
+                                    $input.prop('readonly', false);
+                                    clearLockStyles($input);
+                                }
+
+                                function attachBlurLock(selector) {
+                                    const $input = $(selector);
+                                    if (!$input.length) {
+                                        return;
+                                    }
+
+                                    $input.on('blur.lockable', function() {
+                                        if ($input.val().trim().length > 0) {
+                                            lockInput($input);
+                                        } else {
+                                            unlockInput($input);
+                                        }
+                                    });
+
+                                    if ($input.val().trim().length > 0 || $input.prop('readonly')) {
+                                        lockInput($input);
+                                    } else {
+                                        unlockInput($input);
+                                    }
+                                }
+
+                                window.lockEmployeeField = lockInput;
+                                window.unlockEmployeeField = unlockInput;
+
+                                $(function() {
+                                    ['#commission', '#commission2', '#driver_name'].forEach(attachBlurLock);
+                                });
+                            })(jQuery);
+                        </script>
                         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
                         <link rel="stylesheet"
                             href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
                         <script>
                             $(document).ready(function() {
                                 $("#commission").on("input", function() {
-                                    const query = $(this).val();
+                                    const $this = $(this);
+                                    if ($this.prop('readonly')) {
+                                        $("#commission-list").hide();
+                                        return;
+                                    }
+                                    const query = $this.val();
                                     if (query.length > 0) {
                                         $.ajax({
                                             url: "/autocomplete-employees",
@@ -1174,7 +1246,12 @@
                         // Autocomplete for 2nd Commission Officer (commission2)
                         $(document).ready(function() {
                             $("#commission2").on("input", function() {
-                                const query = $(this).val();
+                                const $this = $(this);
+                                if ($this.prop('readonly')) {
+                                    $("#commission2-list").hide();
+                                    return;
+                                }
+                                const query = $this.val();
                                 if (query.length > 0) {
                                     $.ajax({
                                         url: "/autocomplete-employees",
@@ -1222,7 +1299,12 @@
                         // Autocomplete for Driver Name
                         $(document).ready(function() {
                             $("#driver_name").on("input", function() {
-                                const query = $(this).val();
+                                const $this = $(this);
+                                if ($this.prop('readonly')) {
+                                    $("#driver-name-list").hide();
+                                    return;
+                                }
+                                const query = $this.val();
                                 if (query.length > 0) {
                                     $.ajax({
                                         url: "/autocomplete-employees",

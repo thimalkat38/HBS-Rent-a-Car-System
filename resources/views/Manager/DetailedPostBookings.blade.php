@@ -177,6 +177,15 @@
     </div>
     </div>
     <script>
+        (function() {
+            const redirectUrl = "{{ route('manager.dashboard') }}";
+            window.history.pushState({}, '', window.location.href);
+            window.addEventListener('popstate', function() {
+                window.location.replace(redirectUrl);
+            });
+        })();
+    </script>
+    <script>
         /**
          * Print a well-organized, balanced A4 PDF for booking details.
          */

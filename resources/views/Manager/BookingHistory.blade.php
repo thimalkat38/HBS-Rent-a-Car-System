@@ -409,14 +409,12 @@
                                     <!-- Mobile Number Input (Auto-Search on Typing) -->
                                     <input type="text" name="mobile_number" placeholder="Search by Mobile Number"
                                         value="{{ request('mobile_number') }}"
-                                        oninput="autoSubmitForm()"
                                         class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-48"
                                     >
 
                                     <!-- Full Name Input (Auto-Search on Typing) -->
                                     <input type="text" name="full_name" placeholder="Search by Full Name"
                                         value="{{ request('full_name') }}"
-                                        oninput="autoSubmitForm()"
                                         class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-48"
                                     >
 
@@ -425,31 +423,30 @@
                                         list="vehicle_numbers"
                                         placeholder="Search by vehicle number" maxlength="8"
                                         value="{{ request('vehicle_number') }}"
-                                        oninput="autoSubmitForm()"
                                         class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-48"
                                     >
 
                                     <!-- ID Input (Auto-Search on Typing) -->
                                     <input type="text" name="id" placeholder="Search by ID"
                                         value="{{ request('id') }}"
-                                        oninput="autoSubmitForm()"
                                         class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-32"
                                     >
 
                                     <!-- Date Range Fields (Auto-Search on Change) -->
                                     <input type="date" name="from_date" value="{{ request('from_date') }}"
-                                        onchange="document.getElementById('searchForm').submit();"
                                         placeholder="From Date"
                                         class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-40"
                                     >
 
                                     <input type="date" name="to_date" value="{{ request('to_date') }}"
-                                        onchange="document.getElementById('searchForm').submit();"
                                         placeholder="To Date"
                                         class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-40"
                                     >
 
-                                    <!-- Remove Search Button (Auto-Submit Works) -->
+                                    <button type="submit"
+                                        class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition font-semibold"
+                                    >Search</button>
+
                                     <a href="{{ url('/bookings') }}"
                                         class="ml-2 px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition font-semibold"
                                     >Clear</a>
@@ -532,17 +529,6 @@
         if (match) {
             input.value = (match[1] || '') + (match[3] ? '-' + match[3] : '');
         }
-    }
-</script>
-<script>
-    let typingTimer;
-
-    // Auto-submit form when typing (with delay)
-    function autoSubmitForm() {
-        clearTimeout(typingTimer);
-        typingTimer = setTimeout(() => {
-            document.getElementById('searchForm').submit();
-        }, 500); // 0.5-second delay
     }
 </script>
 </html>
