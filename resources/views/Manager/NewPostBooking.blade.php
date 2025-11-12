@@ -2,6 +2,7 @@
 <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <div class="min-h-screen bg-gray-50 flex">
     <!-- Sidebar -->
@@ -624,12 +625,17 @@
                                     class="w-full h-12 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
                                     placeholder="Enter agreement number" required />
                             </div>
-                            <div>
+                            <div style="position: relative;">
                                 <label class="block text-sm font-medium text-slate-800 mb-1">1st Commission
                                     Officer</label>
-                                <input type="text" name="commission" value="{{ $booking->commission }}"
+                                <input id="commission" type="text" name="commission" value="{{ $booking->commission }}"
                                     class="w-full h-12 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                                    placeholder="Enter Commison Agent Name" />
+                                    placeholder="Enter Commison Agent Name" autocomplete="off"
+                                    @if (!empty($booking->commission)) readonly style="background-color: #f8f8f8; cursor: not-allowed;" @endif
+                                />
+                                <ul id="commission-list" class="list-group"
+                                    style="position: absolute; z-index: 10; width: 100%; display: none; background: white; border: 1px solid #ccc; border-radius: 0 0 0.75rem 0.75rem; max-height: 180px; overflow-y: auto;">
+                                </ul>
                             </div>
                             <div style="position: relative;">
                                 <label class="block text-sm font-medium text-gray-700 mb-1" for="commission_amt">1st
@@ -649,7 +655,9 @@
                                 <input id="commission2" name="commission2" value="{{ $booking->commission2 }}"
                                     type="text"
                                     class="w-full h-12 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                                    placeholder="Enter commission name" autocomplete="off" />
+                                    placeholder="Enter commission name" autocomplete="off"
+                                    @if (!empty($booking->commission2)) readonly style="background-color: #f8f8f8; cursor: not-allowed;" @endif
+                                />
                                 <ul id="commission2-list" class="list-group"
                                     style="position: absolute; z-index: 10; width: 100%; display: none; background: white; border: 1px solid #ccc; border-radius: 0 0 0.75rem 0.75rem; max-height: 180px; overflow-y: auto;">
                                 </ul>
@@ -696,7 +704,10 @@
                                 <input id="driver_name" name="driver_name" value="{{ $booking->driver_name }}"
                                     type="text"
                                     class="w-full h-12 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                                    placeholder="Enter driver name" autocomplete="off" />
+                                    placeholder="Enter driver name" autocomplete="off" @if (!empty($booking->driver_name)) readonly style="background-color: #f8f8f8; cursor: not-allowed;" @endif />
+                                <ul id="driver-name-list" class="list-group"
+                                    style="position: absolute; z-index: 10; width: 100%; display: none; background: white; border: 1px solid #ccc; border-radius: 0 0 0.75rem 0.75rem; max-height: 180px; overflow-y: auto;">
+                                </ul>
                             </div>
                             <div style="position: relative;">
                                 <label class="block text-sm font-medium text-gray-700 mb-1"
@@ -902,6 +913,115 @@
                 }
             }
             updateCalculations();
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function setupEmployeeAutocomplete(inputId, listId) {
+                const input = document.getElementById(inputId);
+                const list = document.getElementById(listId);
+
+                if (!input || !list) {
+                    return;
+                }
+
+                const $input = $(input);
+                const $list = $(list);
+
+                function applyLockedStyles() {
+                    input.style.backgroundColor = '#f8f8f8';
+                    input.style.cursor = 'not-allowed';
+                }
+
+                function clearLockedStyles() {
+                    input.style.backgroundColor = '';
+                    input.style.cursor = '';
+                }
+
+                function lockInput() {
+                    input.readOnly = true;
+                    applyLockedStyles();
+                }
+
+                function unlockInput() {
+                    input.readOnly = false;
+                    clearLockedStyles();
+                }
+
+                function hideList() {
+                    $list.hide();
+                }
+
+                if (input.readOnly) {
+                    applyLockedStyles();
+                } else {
+                    clearLockedStyles();
+                }
+
+                $input.on('input', function() {
+                    if (input.readOnly) {
+                        hideList();
+                        return;
+                    }
+
+                    const query = $input.val().trim();
+
+                    if (!query.length) {
+                        hideList();
+                        return;
+                    }
+
+                    $.ajax({
+                        url: '/autocomplete-employees',
+                        type: 'GET',
+                        data: {
+                            term: query
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            $list.empty();
+
+                            if (Array.isArray(data) && data.length > 0) {
+                                data.forEach(function(item) {
+                                    const $item = $('<li class="list-group-item px-4 py-2 cursor-pointer hover:bg-teal-100"></li>').text(item);
+                                    $item.on('click', function() {
+                                        $input.val(item);
+                                        hideList();
+                                        $input.trigger('input');
+                                        $input.trigger('change');
+                                        lockInput();
+                                    });
+                                    $list.append($item);
+                                });
+                                $list.show();
+                            } else {
+                                hideList();
+                            }
+                        },
+                        error: hideList
+                    });
+                });
+
+                $(document).on('click', function(event) {
+                    if (!$(event.target).closest($input).length && !$(event.target).closest($list).length) {
+                        hideList();
+                    }
+                });
+
+                if (!input.readOnly) {
+                    $input.on('blur', function() {
+                        if ($input.val().trim().length > 0) {
+                            lockInput();
+                        } else {
+                            unlockInput();
+                        }
+                    });
+                }
+            }
+
+            setupEmployeeAutocomplete('commission', 'commission-list');
+            setupEmployeeAutocomplete('commission2', 'commission2-list');
+            setupEmployeeAutocomplete('driver_name', 'driver-name-list');
         });
     </script>
 
