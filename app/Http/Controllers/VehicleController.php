@@ -379,8 +379,11 @@ class VehicleController extends Controller
             return response()->json(['error' => 'Query parameter is missing'], 400);
         }
 
+        $businessId = Auth::user()->business_id;
+
         // Fetch matching vehicle numbers
-        $vehicles = Vehicle::where('vehicle_number', 'LIKE', "%{$query}%")
+        $vehicles = Vehicle::where('business_id', $businessId)
+            ->where('vehicle_number', 'LIKE', "%{$query}%")
             ->limit(10)
             ->pluck('vehicle_number');
 

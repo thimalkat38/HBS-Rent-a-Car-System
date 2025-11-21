@@ -171,6 +171,7 @@
         {{-- <button onclick="generatePDF();" class="btn btn-info">Download PDF</button> --}}
         <button onclick="printPDF();" class="btn btn-secondary">Print PDF</button>
         <a href="{{ route('bookings.index') }}" class="btn btn-secondary">Back</a>
+        <a href="{{ route('manager.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
 
     </div>
 

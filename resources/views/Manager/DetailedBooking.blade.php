@@ -210,6 +210,7 @@
                                         onclick="return confirm('Are you sure you want to delete this booking?')">Delete
                                         Booking</button>
                                 </form>
+                            <a href="{{ route('manager.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
                             </div>
                         </div>
                     </div>
@@ -226,15 +227,6 @@
 
         </div>
     </div>
-    <script>
-        (function() {
-            const redirectUrl = "{{ route('manager.dashboard') }}";
-            window.history.pushState({}, '', window.location.href);
-            window.addEventListener('popstate', function() {
-                window.location.replace(redirectUrl);
-            });
-        })();
-    </script>
     <script>
         async function printPDF() {
             const {

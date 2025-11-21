@@ -512,6 +512,14 @@
                                             <td class="px-4 py-2">
                                                 <a href="{{ route('postbookings.show', $postBooking->id) }}"
                                                     class="inline-block px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-xs font-semibold shadow">Details</a>
+                                            {{-- <form action="{{ route('postbookings.destroy', $postBooking->id) }}" method="POST" style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="inline-block px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-xs font-semibold shadow ml-1"
+                                                    onclick="return confirm('Are you sure you want to delete this completed booking?')"
+                                                >Delete</button>
+                                            </form> --}}
                                             </td>
                                         </tr>
                                     @endforeach
