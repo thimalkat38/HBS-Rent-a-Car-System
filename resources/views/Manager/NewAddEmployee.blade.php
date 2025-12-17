@@ -95,7 +95,7 @@
                             </li>
                             <li>
                                 <a href="{{ route('customers.index') }}"
-                                    class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">list</span>
                                     All Customers
                                 </a>
@@ -110,7 +110,7 @@
                         <ul class="ml-8 space-y-1">
                             <li>
                                 <a href="{{ url('employees') }}"
-                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
                                     <span class="material-icons mr-3">people</span>
                                     Staff Management
                                 </a>
@@ -191,9 +191,10 @@
             <header class="w-full h-20 bg-white border-b border-gray-200 flex items-center px-8">
                 <div class="w-full flex justify-between items-center">
                     <div class="flex items-center gap-2">
-                        <span class="material-icons text-gray-400">people</span>
-                        <span class="text-xl font-semibold font-poppins text-gray-900">Customers</span>
-                        <span class="text-xl font-normal text-gray-700">{{ $customer->full_name }}</span>
+                        <span class="material-icons text-gray-400">badge</span>
+                        <span class="text-xl font-semibold font-poppins text-gray-900">HRM</span>
+                        <span class="material-icons text-gray-400">chevron_right</span>
+                        <span class="text-xl font-normal text-gray-700">Add Employee</span>
                     </div>
                     <div class="flex items-center space-x-6">
                         <div class="flex items-center space-x-2">
@@ -260,83 +261,184 @@
                 </div>
             </header>
             <main class="flex-1 w-full px-0 py-0 flex flex-col h-[calc(100vh-5rem)]">
-            
-            @if ($errors->any())
-                <div class="max-w-5xl mx-auto mt-4">
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-            @endif
-            
-            @if (session('error'))
-                <div class="max-w-5xl mx-auto mt-4">
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        {{ session('error') }}
-                    </div>
-                </div>
-            @endif
-            
-            <form class="max-w-5xl mx-auto mt-8 space-y-6" method="POST" action="{{ route('customers.update', $customer->id) }}" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="full_name">Full Name</label>
-                        <input type="text" id="full_name" name="full_name" value="{{ old('full_name', $customer->full_name) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Full Name" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="email">Email</label>
-                        <input type="email" id="email" name="email" value="{{ old('email', $customer->email) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Email" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="phone">Contact Number</label>
-                        <input type="text" id="phone" name="phone" value="{{ old('phone', $customer->phone) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Phone Number" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="whatsapp">Whatsapp Number</label>
-                        <input type="text" id="whatsapp" name="whatsapp" value="{{ old('whatsapp', $customer->whatsapp) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Whatsapp Number" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="address">Address</label>
-                        <input type="text" id="address" name="address" value="{{ old('address', $customer->address) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Address" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="nic">NIC</label>
-                        <input type="text" id="nic" name="nic" value="{{ old('nic', $customer->nic) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="NIC Number" readonly>
-                    </div>
-                    <!-- Department is not a field in Customer, so we remove it -->
-                </div>
-                <div class="flex space-x-6 mt-4">
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1">NIC Photo</label>
-                        <div class="w-48 h-32 border border-gray-300 rounded flex items-center justify-center bg-gray-50 overflow-hidden">
-                            @if(!empty($customer->nic_photos) && is_array($customer->nic_photos) && count($customer->nic_photos) > 0)
-                                <img src="{{ asset('storage/' . $customer->nic_photos[0]) }}" alt="NIC" class="object-cover w-full h-full">
-                            @else
-                                {{-- <img src="{{ asset('images/sample-nic.jpg') }}" alt="NIC" class="object-cover w-full h-full"> --}}
-                            @endif
+                <form action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data" class="mx-auto mt-10 w-full max-w-2xl bg-white shadow-lg rounded-lg p-8 space-y-6">
+                    @csrf
+
+                    <!-- General Errors -->
+                    @if ($errors->any())
+                        <div class="mb-4 rounded-md bg-red-50 border border-red-300 p-4">
+                            <ul class="list-disc list-inside text-sm text-red-600">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
                         </div>
-                        {{-- <input type="file" name="nic_photos[]" class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100" multiple> --}}
+                    @endif
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1" for="title">Title</label>
+                            <select name="title" id="title"
+                                class="w-full rounded border-gray-300 focus:ring-teal-500 focus:border-teal-500 @error('title') border-red-500 @enderror"
+                                required>
+                                <option value="" disabled selected>Select Title</option>
+                                <option value="Mr" {{ old('title') == 'Mr' ? 'selected' : '' }}>Mr</option>
+                                <option value="Mrs" {{ old('title') == 'Mrs' ? 'selected' : '' }}>Mrs</option>
+                                <option value="Miss" {{ old('title') == 'Miss' ? 'selected' : '' }}>Miss</option>
+                                <option value="Ms" {{ old('title') == 'Ms' ? 'selected' : '' }}>Ms</option>
+                            </select>
+                            @error('title')
+                                <div class="mt-1 text-xs text-red-600">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1" for="emp_name">Full Name</label>
+                            <input type="text" name="emp_name" id="emp_name" placeholder="Full Name"
+                                value="{{ old('emp_name') }}"
+                                class="w-full rounded border-gray-300 focus:ring-teal-500 focus:border-teal-500 @error('emp_name') border-red-500 @enderror"
+                                required>
+                            @error('emp_name')
+                                <div class="mt-1 text-xs text-red-600">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1" for="nic">NIC</label>
+                            <input type="text" name="nic" id="nic" placeholder="NIC" value="{{ old('nic') }}"
+                                class="w-full rounded border-gray-300 focus:ring-teal-500 focus:border-teal-500 @error('nic') border-red-500 @enderror"
+                                required>
+                            @error('nic')
+                                <div class="mt-1 text-xs text-red-600">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
-                </div>
-                <div class="mt-6 flex items-center space-x-4">
-                    <input type="checkbox" id="deactivate" name="deactivate" class="h-5 w-5 text-teal-600 border-gray-300 rounded focus:ring-teal-500" {{ old('deactivate', $customer->status === 'deactivate') ? 'checked' : '' }} disabled readonly>
-                    <label for="deactivate" class="text-gray-700 text-sm">Deactivate Customer</label>
-                </div>
-                <div id="deactivate_reason_container" class="mt-4" style="display: {{ old('deactivate', $customer->status === 'deactivate') ? 'block' : 'none' }};">
-                    <label for="deactivate_reason" class="block text-gray-700 text-sm mb-1">Reason for Deactivation</label>
-                    <input type="text" id="deactivate_reason" name="deactivate_reason" value="{{ old('deactivate_reason', $customer->reason ?? '') }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Please provide a reason for deactivation" readonly>
-                </div>
-                {{-- <div class="flex justify-end mt-8 space-x-4">
-                    <button type="submit" class="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 transition">Update Customer</button>
-                    <a href="{{ route('customers.index') }}" class="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400 transition">Cancel</a>
-                </div> --}}
-            </form>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1" for="mobile_number">Mobile Number</label>
+                            <input type="text" name="mobile_number" id="mobile_number" placeholder="Mobile Number"
+                                value="{{ old('mobile_number') }}"
+                                class="w-full rounded border-gray-300 focus:ring-teal-500 focus:border-teal-500 @error('mobile_number') border-red-500 @enderror"
+                                required>
+                            @error('mobile_number')
+                                <div class="mt-1 text-xs text-red-600">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1" for="email">E-mail Address</label>
+                            <input type="email" name="email" id="email" placeholder="E-mail Address"
+                                value="{{ old('email') }}"
+                                class="w-full rounded border-gray-300 focus:ring-teal-500 focus:border-teal-500 @error('email') border-red-500 @enderror"
+                                required>
+                            @error('email')
+                                <div class="mt-1 text-xs text-red-600">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1" for="address">Address</label>
+                            <input type="text" name="address" id="address" placeholder="Address" value="{{ old('address') }}"
+                                class="w-full rounded border-gray-300 focus:ring-teal-500 focus:border-teal-500 @error('address') border-red-500 @enderror"
+                                required>
+                            @error('address')
+                                <div class="mt-1 text-xs text-red-600">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1" for="bank">Bank Name</label>
+                            <input type="text" name="bank" id="bank" placeholder="Bank Name"
+                                value="{{ old('bank') }}"
+                                class="w-full rounded border-gray-300 focus:ring-teal-500 focus:border-teal-500 @error('bank') border-red-500 @enderror"
+                                required>
+                            @error('bank')
+                                <div class="mt-1 text-xs text-red-600">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1" for="acc_number">Account Number</label>
+                            <input type="text" name="acc_number" id="acc_number" placeholder="Account Number"
+                                value="{{ old('acc_number') }}"
+                                class="w-full rounded border-gray-300 focus:ring-teal-500 focus:border-teal-500 @error('acc_number') border-red-500 @enderror"
+                                required>
+                            @error('acc_number')
+                                <div class="mt-1 text-xs text-red-600">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1" for="salary">Salary Per Month</label>
+                            <input type="text" name="salary" id="salary" placeholder="Salary Per Month"
+                                value="{{ old('salary') }}"
+                                class="w-full rounded border-gray-300 focus:ring-teal-500 focus:border-teal-500 @error('salary') border-red-500 @enderror"
+                                required>
+                            @error('salary')
+                                <div class="mt-1 text-xs text-red-600">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1" for="join_date">Join Date</label>
+                            <input type="date" name="join_date" id="join_date"
+                                value="{{ old('join_date') }}"
+                                class="w-full rounded border-gray-300 focus:ring-teal-500 focus:border-teal-500 @error('join_date') border-red-500 @enderror"
+                                required>
+                            @error('join_date')
+                                <div class="mt-1 text-xs text-red-600">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1" for="birthday">Birthday</label>
+                            <input type="date" name="birthday" id="birthday" max="2005-12-31"
+                                value="{{ old('birthday') }}"
+                                class="w-full rounded border-gray-300 focus:ring-teal-500 focus:border-teal-500 @error('birthday') border-red-500 @enderror">
+                            @error('birthday')
+                                <div class="mt-1 text-xs text-red-600">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1" for="remaining_leaves">Leaves Per Month</label>
+                            <input type="number" name="remaining_leaves" id="remaining_leaves" placeholder="Leaves Per Month"
+                                value="{{ old('remaining_leaves') }}" min="0"
+                                class="w-full rounded border-gray-300 focus:ring-teal-500 focus:border-teal-500 @error('remaining_leaves') border-red-500 @enderror"
+                                required>
+                            @error('remaining_leaves')
+                                <div class="mt-1 text-xs text-red-600">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Add Photo of Employee</label>
+                            <input type="file" name="photo[]" accept="image/*" multiple
+                                class="block w-full text-gray-700 file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100" />
+                            @error('photo')
+                                <div class="mt-2 text-xs text-red-600">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Add Documents About Employee</label>
+                            <input type="file" name="doc_photos[]" accept="image/*" multiple
+                                class="block w-full text-gray-700 file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100" />
+                            @error('doc_photos')
+                                <div class="mt-2 text-xs text-red-600">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-8">
+                        <button type="button" onclick="history.back();"
+                            class="px-6 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition font-semibold shadow">
+                            BACK
+                        </button>
+                        <button type="submit"
+                            class="px-8 py-2 rounded bg-teal-600 text-white hover:bg-teal-700 font-semibold transition shadow">
+                            SUBMIT
+                        </button>
+                    </div>
+                </form>
             </main>
         </div>
     </div>

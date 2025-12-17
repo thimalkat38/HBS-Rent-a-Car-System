@@ -103,11 +103,41 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="{{ url('hr-management') }}"
-                            class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                        <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
                             <span class="material-icons mr-3">badge</span>
                             HRM
-                        </a>
+                        </div>
+                        <ul class="ml-8 space-y-1">
+                            <li>
+                                <a href="{{ url('employees') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">people</span>
+                                    Staff Management
+                                </a>
+                            </li>
+                            {{-- <li>
+                                <a href="{{ url('employees') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">people</span>
+                                    Leave Management
+                                </a>
+                            </li> --}}
+                            <li>
+                                <a href="{{ url('payrolls') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">people</span>
+                                    Payroll Management
+                                </a>
+                            </li>
+                            {{-- <li>
+                                <a href="{{ url('employees') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">people</span>
+                                    Staff Attendance
+                                </a>
+                            </li> --}}
+
+                        </ul>
                     </li>
                     <li>
                         <a href="{{ url('crms') }}"
@@ -425,6 +455,13 @@
                                         class="block w-44 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm"
                                         placeholder="Filter by Agreement Number" value="{{ request('agn') }}">
                                 </div>
+                                <div class="flex flex-col">
+                                    <label for="booking_id" class="text-sm font-medium text-gray-700 mb-1">Booking
+                                        ID</label>
+                                    <input type="text" id="booking_id" name="booking_id"
+                                        class="block w-44 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm"
+                                        placeholder="Filter by Booking ID" value="{{ request('booking_id') }}">
+                                </div>
 
                                 <!-- From Date -->
                                 <div class="flex flex-col">
@@ -459,72 +496,105 @@
 
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow">
-                                <thead>
-                                    <tr class="bg-slate-900 text-white text-sm">
-                                        <th class="px-4 py-2 font-semibold">Customer Name</th>
-                                        <th class="px-4 py-2 font-semibold" style="width: 150px;">Vehicle</th>
-                                        <th class="px-4 py-2 font-semibold">From Date</th>
-                                        <th class="px-4 py-2 font-semibold">To Date</th>
-                                        <th class="px-4 py-2 font-semibold">Released Price</th>
-                                        <th class="px-4 py-2 font-semibold">Additional Charges(after)</th>
-                                        <th class="px-4 py-2 font-semibold">Reason for Add chg</th>
-                                        <th class="px-4 py-2 font-semibold">Discount Price(after)</th>
-                                        <th class="px-4 py-2 font-semibold">Total Income</th>
-                                        <th class="px-4 py-2 font-semibold">Due Paid</th>
-                                        <th class="px-4 py-2 font-semibold">Deposit Refunded</th>
-                                        <th class="px-4 py-2 font-semibold">Vehicle Checked</th>
-                                        <th class="px-4 py-2 font-semibold">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($postBookings as $postBooking)
-                                        <tr class="border-b border-gray-100 hover:bg-gray-50 text-sm">
-                                            <td class="px-4 py-2">{{ $postBooking->full_name }}</td>
-                                            <td class="px-4 py-2">{{ $postBooking->vehicle }} <br> <span
-                                                    class="text-xs text-gray-500">[{{ $postBooking->vehicle_number }}]</span>
-                                            </td>
-                                            <td class="px-4 py-2">{{ $postBooking->from_date }}</td>
-                                            <td class="px-4 py-2">{{ $postBooking->to_date }}</td>
-                                            <td class="px-4 py-2">{{ $postBooking->base_price }}</td>
-                                            <td class="px-4 py-2">{{ $postBooking->after_additional }}</td>
-                                            <td class="px-4 py-2">{{ $postBooking->reason }}</td>
-                                            <td class="px-4 py-2">{{ $postBooking->after_discount }}</td>
-                                            <td class="px-4 py-2">{{ $postBooking->total_income }}</td>
-                                            <td class="px-4 py-2">
-                                                <span
-                                                    class="inline-block px-2 py-1 rounded text-xs font-medium {{ $postBooking->due_paid ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
-                                                    {{ $postBooking->due_paid ? 'Yes' : 'No' }}
-                                                </span>
-                                            </td>
-                                            <td class="px-4 py-2">
-                                                <span
-                                                    class="inline-block px-2 py-1 rounded text-xs font-medium {{ $postBooking->deposit_refunded ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
-                                                    {{ $postBooking->deposit_refunded ? 'Yes' : 'No' }}
-                                                </span>
-                                            </td>
-                                            <td class="px-4 py-2">
-                                                <span
-                                                    class="inline-block px-2 py-1 rounded text-xs font-medium {{ $postBooking->vehicle_checked ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
-                                                    {{ $postBooking->vehicle_checked ? 'Yes' : 'No' }}
-                                                </span>
-                                            </td>
-                                            <td class="px-4 py-2">
-                                                <a href="{{ route('postbookings.show', $postBooking->id) }}"
-                                                    class="inline-block px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-xs font-semibold shadow">Details</a>
-                                            {{-- <form action="{{ route('postbookings.destroy', $postBooking->id) }}" method="POST" style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                    class="inline-block px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-xs font-semibold shadow ml-1"
-                                                    onclick="return confirm('Are you sure you want to delete this completed booking?')"
-                                                >Delete</button>
-                                            </form> --}}
-                                            </td>
+                            <div class="w-full overflow-x-auto">
+                                <table
+                                    class="min-w-full bg-white border border-gray-200 rounded-lg shadow table-fixed">
+                                    <colgroup>
+                                        <col style="width: 110px;">
+                                        <col style="width: 150px;">
+                                        <col style="width: 160px;">
+                                        <col style="width: 110px;">
+                                        <col style="width: 110px;">
+                                        <col style="width: 120px;">
+                                        <col style="width: 170px;">
+                                        <col style="width: 160px;">
+                                        <col style="width: 160px;">
+                                        <col style="width: 120px;">
+                                        <col style="width: 82px;">
+                                        <col style="width: 120px;">
+                                        <col style="width: 116px;">
+                                        <col style="width: 128px;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr class="bg-slate-900 text-white text-sm">
+                                            <th class="px-4 py-2 font-semibold text-left">Booking ID</th>
+                                            <th class="px-4 py-2 font-semibold text-left">Customer Name</th>
+                                            <th class="px-4 py-2 font-semibold text-left">Vehicle</th>
+                                            <th class="px-4 py-2 font-semibold text-left">From Date</th>
+                                            <th class="px-4 py-2 font-semibold text-left">To Date</th>
+                                            <th class="px-4 py-2 font-semibold text-left">Released Price</th>
+                                            <th class="px-4 py-2 font-semibold text-left">Additional Charges(after)
+                                            </th>
+                                            <th class="px-4 py-2 font-semibold text-left">Reason for Add chg</th>
+                                            <th class="px-4 py-2 font-semibold text-left">Discount Price(after)</th>
+                                            <th class="px-4 py-2 font-semibold text-left">Total Income</th>
+                                            {{-- <th class="px-4 py-2 font-semibold text-left">Due Paid</th>
+                                            <th class="px-4 py-2 font-semibold text-left">Deposit Refunded</th>
+                                            <th class="px-4 py-2 font-semibold text-left">Vehicle Checked</th> --}}
+                                            <th class="px-4 py-2 font-semibold text-left">Actions</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($postBookings as $postBooking)
+                                            <tr class="border-b border-gray-100 hover:bg-gray-50 text-sm align-top">
+                                                <td class="px-4 py-2 whitespace-nowrap">{{ $postBooking->booking_id }}
+                                                </td>
+                                                <td class="px-4 py-2 whitespace-nowrap">{{ $postBooking->full_name }}
+                                                </td>
+                                                <td class="px-4 py-2 whitespace-nowrap">
+                                                    {{ $postBooking->vehicle }} <br>
+                                                    <span
+                                                        class="text-xs text-gray-500">[{{ $postBooking->vehicle_number }}]</span>
+                                                </td>
+                                                <td class="px-4 py-2 whitespace-nowrap">{{ $postBooking->from_date }}
+                                                </td>
+                                                <td class="px-4 py-2 whitespace-nowrap">{{ $postBooking->to_date }}
+                                                </td>
+                                                <td class="px-4 py-2 whitespace-nowrap">{{ $postBooking->base_price }}
+                                                </td>
+                                                <td class="px-4 py-2 whitespace-nowrap">
+                                                    {{ $postBooking->after_additional }}</td>
+                                                <td class="px-4 py-2 whitespace-nowrap">{{ $postBooking->reason }}
+                                                </td>
+                                                <td class="px-4 py-2 whitespace-nowrap">
+                                                    {{ $postBooking->after_discount }}</td>
+                                                <td class="px-4 py-2 whitespace-nowrap">
+                                                    {{ $postBooking->total_income }}</td>
+                                                {{-- <td class="px-4 py-2 whitespace-nowrap">
+                                                    <span
+                                                        class="inline-block px-2 py-1 rounded text-xs font-medium {{ $postBooking->due_paid ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                                        {{ $postBooking->due_paid ? 'Yes' : 'No' }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-2 whitespace-nowrap">
+                                                    <span
+                                                        class="inline-block px-2 py-1 rounded text-xs font-medium {{ $postBooking->deposit_refunded ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                                        {{ $postBooking->deposit_refunded ? 'Yes' : 'No' }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-2 whitespace-nowrap">
+                                                    <span
+                                                        class="inline-block px-2 py-1 rounded text-xs font-medium {{ $postBooking->vehicle_checked ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                                        {{ $postBooking->vehicle_checked ? 'Yes' : 'No' }}
+                                                    </span>
+                                                </td> --}}
+                                                <td class="px-4 py-2 whitespace-nowrap">
+                                                    <a href="{{ route('postbookings.show', $postBooking->id) }}"
+                                                        class="inline-block px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-xs font-semibold shadow">Details</a>
+                                                    {{-- <form action="{{ route('postbookings.destroy', $postBooking->id) }}" method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="inline-block px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-xs font-semibold shadow ml-1"
+                                                        onclick="return confirm('Are you sure you want to delete this completed booking?')"
+                                                    >Delete</button>
+                                                </form> --}}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

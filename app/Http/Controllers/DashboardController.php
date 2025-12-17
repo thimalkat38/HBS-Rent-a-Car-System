@@ -42,7 +42,7 @@ class DashboardController extends Controller
         // Fetch vehicles that need service within 500km
         $serviceAlertVehicles = $this->getServiceAlertVehicles($businessId);
 
-        return view('Manager.ManagerDashboard', compact('bookingCounts', 'currentMonth', 'currentYear', 'expiringVehicles', 'serviceAlertVehicles'));
+        return view('Manager.Dashboard', compact('bookingCounts', 'currentMonth', 'currentYear', 'expiringVehicles', 'serviceAlertVehicles'));
     }
 
 

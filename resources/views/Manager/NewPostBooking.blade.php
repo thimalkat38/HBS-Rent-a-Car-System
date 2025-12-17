@@ -95,11 +95,41 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="{{ url('hr-management') }}"
-                        class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                    <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
                         <span class="material-icons mr-3">badge</span>
                         HRM
-                    </a>
+                    </div>
+                    <ul class="ml-8 space-y-1">
+                        <li>
+                            <a href="{{ url('employees') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                <span class="material-icons mr-3">people</span>
+                                Staff Management
+                            </a>
+                        </li>
+                        {{-- <li>
+                            <a href="{{ url('employees') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                <span class="material-icons mr-3">people</span>
+                                Leave Management
+                            </a>
+                        </li> --}}
+                        <li>
+                            <a href="{{ url('payrolls') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                <span class="material-icons mr-3">people</span>
+                                Payroll Management
+                            </a>
+                        </li>
+                        {{-- <li>
+                            <a href="{{ url('employees') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                <span class="material-icons mr-3">people</span>
+                                Staff Attendance
+                            </a>
+                        </li> --}}
+
+                    </ul>
                 </li>
                 <li>
                     <a href="{{ url('crms') }}"
@@ -152,10 +182,11 @@
         <!-- Top Nav -->
         <header class="bg-white shadow h-20 flex items-center px-10 justify-between">
             <div class="flex items-center space-x-4">
+                <span class="material-icons text-gray-400">assignment</span>
                 <span class="text-xl font-semibold text-slate-900">Bookings</span>
-                <span class="text-xl text-gray-400">/</span>
+                <span class="material-icons text-gray-400">chevron_right</span>
                 <span class="text-xl text-gray-500">Booking History</span>
-                <span class="text-xl text-gray-400">/</span>
+                <span class="material-icons text-gray-400">chevron_right</span>
                 <span class="text-xl text-teal-500">Post Booking</span>
             </div>
             <div class="flex items-center space-x-6">
@@ -285,6 +316,13 @@
             <form action="{{ route('postbookings.store') }}" method="POST">
                 @csrf
                 <div class="max-w-7xl mx-auto space-y-8">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-800 mb-1">Booking ID</label>
+                        <input type="text" name="booking_id" id="booking_id"
+                            value="{{ $booking->id }}" 
+                            class="w-full h-12 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                            readonly />
+                    </div
                     <!-- Customer Information -->
                     <section class="bg-white rounded-2xl shadow p-8">
                         <h2 class="text-xl font-semibold text-slate-900 mb-6">Customer Information</h2>

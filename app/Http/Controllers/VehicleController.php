@@ -84,7 +84,7 @@ class VehicleController extends Controller
      */
     public function create()
     {
-        return view('Manager.ManagerAddVehicle');
+        return view('Manager.NewAddVehicle');
     }
 
     /**
@@ -172,7 +172,7 @@ class VehicleController extends Controller
     public function edit($id)
     {
         $vehicle = Vehicle::findOrFail($id);
-        return view('Manager.ManagerEditVehicle', compact('vehicle'));
+        return view('Manager.NewEditVehicle', compact('vehicle'));
     }
 
     /**

@@ -12,6 +12,7 @@ class PostBooking extends Model
     protected $table = 'postbookings';
 
     protected $fillable = [
+        'booking_id',
         'business_id',
         'full_name',
         'nic',

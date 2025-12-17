@@ -48,10 +48,10 @@ Route::middleware(['manager'])->group(function () {
     Route::get('/customers/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
     Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
     Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
-    Route::get('/customers/searchb', [CustomerController::class, 'search']);
+    Route::get('/customers/searchb', [CustomerController::class, 'search'])->name('customers.search');
     Route::get('/customers/{id}', [CustomerController::class, 'show'])->name('Customer.show');
     Route::get('/customers/get-details/{id}', [CustomerController::class, 'getCustomerDetails']);
-    Route::get('/customers/search', [CustomerController::class, 'searche'])->name('customers.search');
+    // Route::get('/customers/search', [CustomerController::class, 'searche'])->name('customers.search'); privous route to get customer details in add expenses table
 });
 
 // Vehicle Control CRUD Routes
@@ -349,4 +349,9 @@ Route::patch('/vehicles/{vehicle}/service-status', [VehicleController::class, 'u
 
     Route::get('/commission', function () {
         return view('Manager.Commission');
+    });
+
+
+    Route::get('/new', function () {
+        return view('Manager.NewEditEmployee');
     });

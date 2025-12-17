@@ -173,9 +173,31 @@ class CustomerController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->input('query');
+        // Support both 'q' (Select2) and 'query' (booking page) parameters
+        $search = $request->input('q') ?: $request->input('query');
 
-        $customers = Customer::where('full_name', 'LIKE', "%{$query}%")->get();
+        // Return empty array if no search term
+        if (empty($search) || trim($search) === '') {
+            return response()->json([]);
+        }
+
+        // Get business_id from request or authenticated user
+        $businessId = $request->input('business_id') ?: Auth::user()->business_id;
+
+        // Build query with business_id filter
+        $query = Customer::where('business_id', $businessId);
+
+        // Filter by search term across multiple fields
+        $query->where(function ($q) use ($search) {
+            $q->where('full_name', 'LIKE', "%{$search}%")
+                ->orWhere('nic', 'LIKE', "%{$search}%")
+                ->orWhere('phone', 'LIKE', "%{$search}%");
+        });
+
+        // Return all fields (needed for booking page which uses status, etc.)
+        // Select2 will still work as it only uses id and full_name from the response
+        $customers = $query->limit(50) // Limit results for performance
+            ->get();
 
         return response()->json($customers);
     }

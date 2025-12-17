@@ -95,7 +95,7 @@
                             </li>
                             <li>
                                 <a href="{{ route('customers.index') }}"
-                                    class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">list</span>
                                     All Customers
                                 </a>
@@ -168,7 +168,7 @@
                             </li>
                             <li>
                                 <a href="{{ url('profit-loss-report') }}"
-                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
                                     <span class="material-icons mr-3">bar_chart</span>
                                     P/L Report
                                 </a>
@@ -191,9 +191,10 @@
             <header class="w-full h-20 bg-white border-b border-gray-200 flex items-center px-8">
                 <div class="w-full flex justify-between items-center">
                     <div class="flex items-center gap-2">
-                        <span class="material-icons text-gray-400">people</span>
-                        <span class="text-xl font-semibold font-poppins text-gray-900">Customers</span>
-                        <span class="text-xl font-normal text-gray-700">{{ $customer->full_name }}</span>
+                        <span class="material-icons text-gray-400">bar_chart</span>
+                        <span class="text-xl font-semibold font-poppins text-gray-900">Finance</span>
+                        <span class="material-icons text-gray-400">chevron_right</span>
+                        <span class="text-xl font-normal text-gray-700">P/L Report</span>
                     </div>
                     <div class="flex items-center space-x-6">
                         <div class="flex items-center space-x-2">
@@ -259,86 +260,180 @@
                     </div>
                 </div>
             </header>
-            <main class="flex-1 w-full px-0 py-0 flex flex-col h-[calc(100vh-5rem)]">
-            
-            @if ($errors->any())
-                <div class="max-w-5xl mx-auto mt-4">
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+            <main class="flex-1 w-full px-8 py-8 overflow-y-auto">
+                <div class="max-w-7xl mx-auto space-y-6">
+                    <!-- Filter Section -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-bold mb-4 text-gray-800">Filter Options</h2>
+                        <form method="GET" action="{{ route('profit.loss') }}" id="filterForm">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                                <div>
+                                    <label for="filterType" class="block text-gray-700 mb-2 font-semibold">Filter
+                                        Type</label>
+                                    <select id="filterType" name="filterType"
+                                        class="w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 px-3 transition"
+                                        onchange="changeFilter()">
+                                        <option value="today"
+                                            {{ request('filterType') == 'today' ? 'selected' : '' }}>Today</option>
+                                        <option value="this_month"
+                                            {{ request('filterType') == 'this_month' ? 'selected' : '' }}>This Month
+                                        </option>
+                                        <option value="last_month"
+                                            {{ request('filterType') == 'last_month' ? 'selected' : '' }}>Last Month
+                                        </option>
+                                        <option value="total"
+                                            {{ request('filterType') == 'total' ? 'selected' : '' }}>Total</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="startDate" class="block text-gray-700 mb-2 font-semibold">Start
+                                        Date</label>
+                                    <input type="date" id="startDate" name="startDate"
+                                        value="{{ request('startDate') }}"
+                                        class="w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 px-3 transition"
+                                        onchange="clearDropdownAndSubmit()">
+                                </div>
+                                <div>
+                                    <label for="endDate" class="block text-gray-700 mb-2 font-semibold">End
+                                        Date</label>
+                                    <input type="date" id="endDate" name="endDate"
+                                        value="{{ request('endDate') }}"
+                                        class="w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 px-3 transition"
+                                        onchange="clearDropdownAndSubmit()">
+                                </div>
+                            </div>
+                            <div class="flex justify-end">
+                                <a href="{{ route('profit.loss') }}"
+                                    class="inline-block bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+                                    Clear Filters
+                                </a>
+                            </div>
+                        </form>
                     </div>
-                </div>
-            @endif
-            
-            @if (session('error'))
-                <div class="max-w-5xl mx-auto mt-4">
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        {{ session('error') }}
-                    </div>
-                </div>
-            @endif
-            
-            <form class="max-w-5xl mx-auto mt-8 space-y-6" method="POST" action="{{ route('customers.update', $customer->id) }}" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="full_name">Full Name</label>
-                        <input type="text" id="full_name" name="full_name" value="{{ old('full_name', $customer->full_name) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Full Name" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="email">Email</label>
-                        <input type="email" id="email" name="email" value="{{ old('email', $customer->email) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Email" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="phone">Contact Number</label>
-                        <input type="text" id="phone" name="phone" value="{{ old('phone', $customer->phone) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Phone Number" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="whatsapp">Whatsapp Number</label>
-                        <input type="text" id="whatsapp" name="whatsapp" value="{{ old('whatsapp', $customer->whatsapp) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Whatsapp Number" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="address">Address</label>
-                        <input type="text" id="address" name="address" value="{{ old('address', $customer->address) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Address" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="nic">NIC</label>
-                        <input type="text" id="nic" name="nic" value="{{ old('nic', $customer->nic) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="NIC Number" readonly>
-                    </div>
-                    <!-- Department is not a field in Customer, so we remove it -->
-                </div>
-                <div class="flex space-x-6 mt-4">
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1">NIC Photo</label>
-                        <div class="w-48 h-32 border border-gray-300 rounded flex items-center justify-center bg-gray-50 overflow-hidden">
-                            @if(!empty($customer->nic_photos) && is_array($customer->nic_photos) && count($customer->nic_photos) > 0)
-                                <img src="{{ asset('storage/' . $customer->nic_photos[0]) }}" alt="NIC" class="object-cover w-full h-full">
-                            @else
-                                {{-- <img src="{{ asset('images/sample-nic.jpg') }}" alt="NIC" class="object-cover w-full h-full"> --}}
-                            @endif
+
+                    <!-- Report Section -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                            <!-- Expenses Section -->
+                            <div class="bg-gray-50 rounded-lg p-6">
+                                <h2 class="text-xl font-bold mb-4 text-gray-800 border-b-2 border-gray-300 pb-2">
+                                    Expenses</h2>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center border-b border-gray-200 py-2">
+                                        <span class="text-gray-700">Salary</span>
+                                        <span class="font-semibold text-gray-900">RS
+                                            {{ number_format($data['advanced_salary'], 2) }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center border-b border-gray-200 py-2">
+                                        <span class="text-gray-700">Advanced Salary</span>
+                                        <span class="font-semibold text-gray-900">RS
+                                            {{ number_format($data['salary'], 2) }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center border-b border-gray-200 py-2">
+                                        <span class="text-gray-700">Vehicle Services</span>
+                                        <span class="font-semibold text-gray-900">RS
+                                            {{ number_format($data['vehicle_services'], 2) }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center border-b border-gray-200 py-2">
+                                        <span class="text-gray-700">Vehicle Repair</span>
+                                        <span class="font-semibold text-gray-900">RS
+                                            {{ number_format($data['vehicle_repair'], 2) }}</span>
+                                    </div>
+                                    {{-- <div class="flex justify-between items-center border-b border-gray-200 py-2">
+                                        <span class="text-gray-700">Vehicle Maintenance</span>
+                                        <span class="font-semibold text-gray-900">RS
+                                            {{ number_format($data['vehicle_maintenance'], 2) }}</span>
+                                    </div> --}}
+                                    <div class="flex justify-between items-center border-b border-gray-200 py-2">
+                                        <span class="text-gray-700">Vehicle Owner Payment</span>
+                                        <span class="font-semibold text-gray-900">RS
+                                            {{ number_format($data['vehicle_owner_payment'], 2) }}</span>
+                                    </div>
+                                    {{-- <div class="flex justify-between items-center border-b border-gray-200 py-2">
+                                        <span class="text-gray-700">Fuel Charges</span>
+                                        <span class="font-semibold text-gray-900">RS
+                                            {{ number_format($data['fuel_chargers'], 2) }}</span>
+                                    </div> --}}
+                                    <div class="flex justify-between items-center border-b border-gray-200 py-2">
+                                        <span class="text-gray-700">Utility Bills</span>
+                                        <span class="font-semibold text-gray-900">RS
+                                            {{ number_format($data['utility_bills'], 2) }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center border-b border-gray-200 py-2">
+                                        <span class="text-gray-700">Travel Fees</span>
+                                        <span class="font-semibold text-gray-900">RS
+                                            {{ number_format($data['travel_fees'], 2) }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center border-b border-gray-200 py-2">
+                                        <span class="text-gray-700">Office Supplies</span>
+                                        <span class="font-semibold text-gray-900">RS
+                                            {{ number_format($data['office_supplies'], 2) }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center border-b border-gray-200 py-2">
+                                        <span class="text-gray-700">Other</span>
+                                        <span class="font-semibold text-gray-900">RS
+                                            {{ number_format($data['other_income'], 2) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Income Section -->
+                            <div class="bg-gray-50 rounded-lg p-6">
+                                <h2 class="text-xl font-bold mb-4 text-gray-800 border-b-2 border-gray-300 pb-2">Income
+                                </h2>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center border-b border-gray-200 py-2">
+                                        <span class="text-gray-700">Total Income By Rent</span>
+                                        <span class="font-semibold text-gray-900">RS
+                                            {{ number_format($data['total_income_by_rent'], 2) }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center border-b border-gray-200 py-2">
+                                        <span class="text-gray-700">Other Income</span>
+                                        <span class="font-semibold text-gray-900">RS 0.00</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        {{-- <input type="file" name="nic_photos[]" class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100" multiple> --}}
+
+                        <!-- Summary Section -->
+                        <div class="mt-8 pt-6 border-t-2 border-gray-300">
+                            <div class="flex flex-col items-center">
+                                <div
+                                    class="bg-green-500 text-white px-8 py-4 rounded-lg text-xl font-semibold shadow-lg">
+                                    Net Profit: RS {{ number_format($data['net_profit'], 2) }}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="mt-6 flex items-center space-x-4">
-                    <input type="checkbox" id="deactivate" name="deactivate" class="h-5 w-5 text-teal-600 border-gray-300 rounded focus:ring-teal-500" {{ old('deactivate', $customer->status === 'deactivate') ? 'checked' : '' }} disabled readonly>
-                    <label for="deactivate" class="text-gray-700 text-sm">Deactivate Customer</label>
-                </div>
-                <div id="deactivate_reason_container" class="mt-4" style="display: {{ old('deactivate', $customer->status === 'deactivate') ? 'block' : 'none' }};">
-                    <label for="deactivate_reason" class="block text-gray-700 text-sm mb-1">Reason for Deactivation</label>
-                    <input type="text" id="deactivate_reason" name="deactivate_reason" value="{{ old('deactivate_reason', $customer->reason ?? '') }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Please provide a reason for deactivation" readonly>
-                </div>
-                {{-- <div class="flex justify-end mt-8 space-x-4">
-                    <button type="submit" class="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 transition">Update Customer</button>
-                    <a href="{{ route('customers.index') }}" class="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400 transition">Cancel</a>
-                </div> --}}
-            </form>
             </main>
         </div>
     </div>
+
+    <!-- Scripts -->
+    <script>
+        function changeFilter() {
+            let form = document.getElementById('filterForm');
+            if (form && form.action.includes('logout')) {
+                event.preventDefault();
+                console.warn("Logout prevented!");
+                return;
+            }
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            if (form) {
+                form.submit();
+            }
+        }
+
+        function clearDropdownAndSubmit() {
+            document.getElementById('filterType').value = '';
+            const form = document.getElementById('filterForm');
+            if (form) {
+                form.submit();
+            }
+        }
+    </script>
 </body>
+
 </html>

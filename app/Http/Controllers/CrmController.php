@@ -16,7 +16,7 @@ class CrmController extends Controller
         $businessId = Auth::user()->business_id; // Get the logged-in user's business ID
 
         $crms = crm::where('business_id', $businessId)->get(); // Filter by business_id
-        return view('Manager.CRM', compact('crms'));
+        return view('Manager.NewCRM', compact('crms'));
     }
 
     /**
@@ -24,7 +24,7 @@ class CrmController extends Controller
      */
     public function create()
     {
-        return view('Manager.AddCRM');
+        return view('Manager.NewAddCRM');
     }
 
     /**
@@ -69,7 +69,7 @@ class CrmController extends Controller
      */
     public function edit(Crm $crm)
     {
-        return view('Manager.EditCrm', compact('crm'));
+        return view('Manager.NewEditCRM', compact('crm'));
     }
 
     /**
@@ -118,6 +118,6 @@ class CrmController extends Controller
         // Fetch filtered results
         $crms = $query->orderBy('date', 'asc')->get();
 
-        return view('Manager.CRM', compact('crms'));
+        return view('Manager.NewCRM', compact('crms'));
     }
 }

@@ -95,7 +95,7 @@
                             </li>
                             <li>
                                 <a href="{{ route('customers.index') }}"
-                                    class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">list</span>
                                     All Customers
                                 </a>
@@ -110,7 +110,7 @@
                         <ul class="ml-8 space-y-1">
                             <li>
                                 <a href="{{ url('employees') }}"
-                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
                                     <span class="material-icons mr-3">people</span>
                                     Staff Management
                                 </a>
@@ -191,9 +191,12 @@
             <header class="w-full h-20 bg-white border-b border-gray-200 flex items-center px-8">
                 <div class="w-full flex justify-between items-center">
                     <div class="flex items-center gap-2">
-                        <span class="material-icons text-gray-400">people</span>
-                        <span class="text-xl font-semibold font-poppins text-gray-900">Customers</span>
-                        <span class="text-xl font-normal text-gray-700">{{ $customer->full_name }}</span>
+                        <span class="material-icons text-gray-400">badge</span>
+                        <span class="text-xl font-semibold font-poppins text-gray-900">HRM</span>
+                        <span class="material-icons text-gray-400">chevron_right</span>
+                        <span class="text-xl font-normal text-gray-700">Edit Employee</span>
+                        <span class="material-icons text-gray-400">chevron_right</span>
+                        <span class="text-xl font-normal text-gray-700">{{$employee->emp_name}}</span>
                     </div>
                     <div class="flex items-center space-x-6">
                         <div class="flex items-center space-x-2">
@@ -260,83 +263,65 @@
                 </div>
             </header>
             <main class="flex-1 w-full px-0 py-0 flex flex-col h-[calc(100vh-5rem)]">
-            
-            @if ($errors->any())
-                <div class="max-w-5xl mx-auto mt-4">
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-            @endif
-            
-            @if (session('error'))
-                <div class="max-w-5xl mx-auto mt-4">
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        {{ session('error') }}
-                    </div>
-                </div>
-            @endif
-            
-            <form class="max-w-5xl mx-auto mt-8 space-y-6" method="POST" action="{{ route('customers.update', $customer->id) }}" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="full_name">Full Name</label>
-                        <input type="text" id="full_name" name="full_name" value="{{ old('full_name', $customer->full_name) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Full Name" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="email">Email</label>
-                        <input type="email" id="email" name="email" value="{{ old('email', $customer->email) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Email" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="phone">Contact Number</label>
-                        <input type="text" id="phone" name="phone" value="{{ old('phone', $customer->phone) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Phone Number" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="whatsapp">Whatsapp Number</label>
-                        <input type="text" id="whatsapp" name="whatsapp" value="{{ old('whatsapp', $customer->whatsapp) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Whatsapp Number" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="address">Address</label>
-                        <input type="text" id="address" name="address" value="{{ old('address', $customer->address) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Address" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="nic">NIC</label>
-                        <input type="text" id="nic" name="nic" value="{{ old('nic', $customer->nic) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="NIC Number" readonly>
-                    </div>
-                    <!-- Department is not a field in Customer, so we remove it -->
-                </div>
-                <div class="flex space-x-6 mt-4">
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1">NIC Photo</label>
-                        <div class="w-48 h-32 border border-gray-300 rounded flex items-center justify-center bg-gray-50 overflow-hidden">
-                            @if(!empty($customer->nic_photos) && is_array($customer->nic_photos) && count($customer->nic_photos) > 0)
-                                <img src="{{ asset('storage/' . $customer->nic_photos[0]) }}" alt="NIC" class="object-cover w-full h-full">
-                            @else
-                                {{-- <img src="{{ asset('images/sample-nic.jpg') }}" alt="NIC" class="object-cover w-full h-full"> --}}
-                            @endif
+                <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Employee's Details</h1>
+
+                @if ($employee)
+                    <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8">
+                        <div>
+                            <h2 class="text-xl text-blue-700 font-semibold mb-5 border-b pb-2">Personal Information</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-3 text-gray-700 mb-6">
+                                <p><span class="font-semibold">Full Name [ID]:</span> <span id="fullName">{{ $employee->title }} {{ $employee->emp_name }} [{{ $employee->emp_id }}]</span></p>
+                                <p><span class="font-semibold">Age:</span> <span id="mobileNumber">{{ $employee->age }}</span></p>
+                                <p><span class="font-semibold">NIC:</span> <span id="nic">{{ $employee->nic }}</span></p>
+                                <p><span class="font-semibold">Contact Number:</span> <span id="nic">{{ $employee->mobile_number }}</span></p>
+                                <p><span class="font-semibold">Email:</span> <span id="nic">{{ $employee->email }}</span></p>
+                                <p class="md:col-span-2"><span class="font-semibold">Address:</span> <span id="nic">{{ $employee->address }}</span></p>
+                            </div>
+
+                            <h2 class="text-xl text-blue-700 font-semibold mb-5 border-b pb-2 mt-8">Organizational Details</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-3 text-gray-700 mb-6">
+                                <p><span class="font-semibold">Employee Since:</span> <span id="nic">{{ $employee->join_date }}</span></p>
+                                <p><span class="font-semibold">Remaining Leaves:</span> <span id="nic">{{ $employee->remaining_leaves }}</span></p>
+                                <p><span class="font-semibold">Salary Per Month:</span> <span class="text-green-600 font-semibold">RS {{ number_format($employee->salary, 2) }}</span></p>
+                                <p><span class="font-semibold">Bank:</span> <span id="nic">{{ $employee->bank }}</span></p>
+                                <p class="md:col-span-2"><span class="font-semibold">Bank Account Number:</span> <span id="nic">{{ $employee->acc_number }}</span></p>
+                            </div>
+
+                            <!-- Photos Section -->
+                            <h2 class="text-xl text-blue-700 font-semibold mb-3 mt-10">Employee's Photo</h2>
+                            <div class="flex flex-wrap gap-4 mb-6">
+                                @if (!empty($employee->photo))
+                                    @foreach ($employee->photo as $photo)
+                                        <div class="w-32 h-32 rounded overflow-hidden shadow border">
+                                            <img src="{{ asset('storage/' . $photo) }}"
+                                                class="object-cover w-full h-full"
+                                                alt="Employee Photo">
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <p class="text-sm text-gray-500">No images for this employee.</p>
+                                @endif
+                            </div>
+
+                            <h2 class="text-xl text-blue-700 font-semibold mb-3 mt-10">Document About Employee</h2>
+                            <div class="flex flex-wrap gap-4">
+                                @if (!empty($employee->doc_photos))
+                                    @foreach ($employee->doc_photos as $doc_photo)
+                                        <div class="w-32 h-32 rounded overflow-hidden shadow border">
+                                            <img src="{{ asset('storage/' . $doc_photo) }}"
+                                                class="object-cover w-full h-full"
+                                                alt="Document Photo">
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <p class="text-sm text-gray-500">No document images for this employee.</p>
+                                @endif
+                            </div>
                         </div>
-                        {{-- <input type="file" name="nic_photos[]" class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100" multiple> --}}
                     </div>
-                </div>
-                <div class="mt-6 flex items-center space-x-4">
-                    <input type="checkbox" id="deactivate" name="deactivate" class="h-5 w-5 text-teal-600 border-gray-300 rounded focus:ring-teal-500" {{ old('deactivate', $customer->status === 'deactivate') ? 'checked' : '' }} disabled readonly>
-                    <label for="deactivate" class="text-gray-700 text-sm">Deactivate Customer</label>
-                </div>
-                <div id="deactivate_reason_container" class="mt-4" style="display: {{ old('deactivate', $customer->status === 'deactivate') ? 'block' : 'none' }};">
-                    <label for="deactivate_reason" class="block text-gray-700 text-sm mb-1">Reason for Deactivation</label>
-                    <input type="text" id="deactivate_reason" name="deactivate_reason" value="{{ old('deactivate_reason', $customer->reason ?? '') }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Please provide a reason for deactivation" readonly>
-                </div>
-                {{-- <div class="flex justify-end mt-8 space-x-4">
-                    <button type="submit" class="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 transition">Update Customer</button>
-                    <a href="{{ route('customers.index') }}" class="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400 transition">Cancel</a>
-                </div> --}}
-            </form>
+                @else
+                    <p class="text-center text-red-500 text-lg font-semibold mt-6">No employee found.</p>
+                @endif
             </main>
         </div>
     </div>

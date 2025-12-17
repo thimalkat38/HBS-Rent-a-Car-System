@@ -106,11 +106,41 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="{{ url('hr-management') }}"
-                        class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                    <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
                         <span class="material-icons mr-3">badge</span>
                         HRM
-                    </a>
+                    </div>
+                    <ul class="ml-8 space-y-1">
+                        <li>
+                            <a href="{{ url('employees') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                <span class="material-icons mr-3">people</span>
+                                Staff Management
+                            </a>
+                        </li>
+                        {{-- <li>
+                            <a href="{{ url('employees') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                <span class="material-icons mr-3">people</span>
+                                Leave Management
+                            </a>
+                        </li> --}}
+                        <li>
+                            <a href="{{ url('payrolls') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                <span class="material-icons mr-3">people</span>
+                                Payroll Management
+                            </a>
+                        </li>
+                        {{-- <li>
+                            <a href="{{ url('employees') }}"
+                                class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                <span class="material-icons mr-3">people</span>
+                                Staff Attendance
+                            </a>
+                        </li> --}}
+
+                    </ul>
                 </li>
                 <li>
                     <a href="{{ url('crms') }}"
@@ -163,7 +193,9 @@
         <!-- Header -->
         <header class="w-full bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
             <div class="flex items-center gap-4">
+                <span class="material-icons text-gray-400">assignment</span>
                 <span class="text-xl font-semibold text-gray-900">Bookings</span>
+                <span class="material-icons text-gray-400">chevron_right</span>
                 <span class="text-xl font-normal text-gray-700">Book Hire</span>
             </div>
             <div class="flex items-center gap-8">
