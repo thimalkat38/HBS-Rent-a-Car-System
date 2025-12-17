@@ -18,7 +18,7 @@ class EmployeeController extends Controller
 
         $employees = Employee::where('business_id', $businessId)->get(); // Filter by business_id
 
-        return view('Manager.ManagerEmployees', compact('employees'));
+        return view('Manager.StaffList', compact('employees'));
     }
 
 
@@ -27,7 +27,7 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        return view('Manager.AddEmp');
+        return view('Manager.NewAddEmployee');
     }
 
     /**
@@ -109,7 +109,7 @@ class EmployeeController extends Controller
     public function edit($id)
     {
         $employee = Employee::findOrFail($id);
-        return view('Manager.EditEmployee', compact('employee'));
+        return view('Manager.NewEditEmployee', compact('employee'));
     }
 
     /**
@@ -274,7 +274,7 @@ class EmployeeController extends Controller
         }
 
         // Pass the customer data to the view
-        return view('Manager.ManagerDetailedEmployee', compact('employee'));
+        return view('Manager.DetailedEmployee', compact('employee'));
     }
 
 

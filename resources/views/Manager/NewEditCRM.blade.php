@@ -95,7 +95,7 @@
                             </li>
                             <li>
                                 <a href="{{ route('customers.index') }}"
-                                    class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">list</span>
                                     All Customers
                                 </a>
@@ -141,7 +141,7 @@
                     </li>
                     <li>
                         <a href="{{ url('crms') }}"
-                            class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                            class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
                             <span class="material-icons mr-3">support_agent</span>
                             CRM
                         </a>
@@ -191,9 +191,10 @@
             <header class="w-full h-20 bg-white border-b border-gray-200 flex items-center px-8">
                 <div class="w-full flex justify-between items-center">
                     <div class="flex items-center gap-2">
-                        <span class="material-icons text-gray-400">people</span>
-                        <span class="text-xl font-semibold font-poppins text-gray-900">Customers</span>
-                        <span class="text-xl font-normal text-gray-700">{{ $customer->full_name }}</span>
+                        <span class="material-icons text-gray-400">support_agent</span>
+                        <span class="text-xl font-semibold font-poppins text-gray-900">CRM</span>
+                        <span class="material-icons text-gray-400">chevron_right</span>
+                        <span class="text-xl font-normal text-gray-700">Edit CRM</span>
                     </div>
                     <div class="flex items-center space-x-6">
                         <div class="flex items-center space-x-2">
@@ -260,85 +261,74 @@
                 </div>
             </header>
             <main class="flex-1 w-full px-0 py-0 flex flex-col h-[calc(100vh-5rem)]">
-            
-            @if ($errors->any())
-                <div class="max-w-5xl mx-auto mt-4">
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-            @endif
-            
-            @if (session('error'))
-                <div class="max-w-5xl mx-auto mt-4">
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        {{ session('error') }}
-                    </div>
-                </div>
-            @endif
-            
-            <form class="max-w-5xl mx-auto mt-8 space-y-6" method="POST" action="{{ route('customers.update', $customer->id) }}" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="full_name">Full Name</label>
-                        <input type="text" id="full_name" name="full_name" value="{{ old('full_name', $customer->full_name) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Full Name" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="email">Email</label>
-                        <input type="email" id="email" name="email" value="{{ old('email', $customer->email) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Email" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="phone">Contact Number</label>
-                        <input type="text" id="phone" name="phone" value="{{ old('phone', $customer->phone) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Phone Number" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="whatsapp">Whatsapp Number</label>
-                        <input type="text" id="whatsapp" name="whatsapp" value="{{ old('whatsapp', $customer->whatsapp) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Whatsapp Number" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="address">Address</label>
-                        <input type="text" id="address" name="address" value="{{ old('address', $customer->address) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Address" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="nic">NIC</label>
-                        <input type="text" id="nic" name="nic" value="{{ old('nic', $customer->nic) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="NIC Number" readonly>
-                    </div>
-                    <!-- Department is not a field in Customer, so we remove it -->
-                </div>
-                <div class="flex space-x-6 mt-4">
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1">NIC Photo</label>
-                        <div class="w-48 h-32 border border-gray-300 rounded flex items-center justify-center bg-gray-50 overflow-hidden">
-                            @if(!empty($customer->nic_photos) && is_array($customer->nic_photos) && count($customer->nic_photos) > 0)
-                                <img src="{{ asset('storage/' . $customer->nic_photos[0]) }}" alt="NIC" class="object-cover w-full h-full">
-                            @else
-                                {{-- <img src="{{ asset('images/sample-nic.jpg') }}" alt="NIC" class="object-cover w-full h-full"> --}}
-                            @endif
+                <div class="flex justify-center items-start h-full py-8 px-2 overflow-y-auto">
+                    <form action="{{ route('crms.update', $crm->id) }}" method="POST"
+                        class="w-full max-w-2xl bg-white rounded-lg shadow-md p-8 space-y-6">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="full_name" class="block mb-1 text-gray-700 font-semibold">Customer
+                                    Name</label>
+                                <input type="text" id="full_name" name="full_name"
+                                    value="{{ old('full_name', $crm->full_name) }}"
+                                    placeholder="Enter Customer Name"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-teal-500 focus:border-teal-500 transition"
+                                    required>
+                            </div>
+                            <div>
+                                <label for="phone" class="block mb-1 text-gray-700 font-semibold">Mobile
+                                    Number</label>
+                                <input type="text" id="phone" name="phone"
+                                    value="{{ old('phone', $crm->phone) }}"
+                                    placeholder="Enter Mobile Number"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-teal-500 focus:border-teal-500 transition"
+                                    required>
+                            </div>
+                            <div>
+                                <label for="date" class="block mb-1 text-gray-700 font-semibold">Date</label>
+                                <input type="date" id="date" name="date"
+                                    value="{{ old('date', $crm->date) }}"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-teal-500 focus:border-teal-500 transition"
+                                    required>
+                            </div>
+                            <div>
+                                <label for="subject" class="block mb-1 text-gray-700 font-semibold">Subject</label>
+                                <input type="text" id="subject" name="subject"
+                                    value="{{ old('subject', $crm->subject) }}"
+                                    placeholder="Enter Subject"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-teal-500 focus:border-teal-500 transition"
+                                    required>
+                            </div>
                         </div>
-                        {{-- <input type="file" name="nic_photos[]" class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100" multiple> --}}
-                    </div>
+
+                        <div class="mt-4">
+                            <label for="note" class="block mb-1 text-gray-700 font-semibold">Note</label>
+                            <textarea id="note" name="note" rows="4" placeholder="Enter any additional notes"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-teal-500 focus:border-teal-500 transition"
+                                required>{{ old('note', $crm->note) }}</textarea>
+                        </div>
+
+                        <div class="flex flex-wrap gap-4 justify-end mt-6">
+                            <a href="{{ route('crms.upcoming') }}"
+                                class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold transition">
+                                BACK
+                            </a>
+                            <button type="reset"
+                                class="px-6 py-2 bg-yellow-200 text-yellow-900 rounded-lg hover:bg-yellow-300 font-semibold transition">
+                                CLEAR
+                            </button>
+                            <button type="submit"
+                                class="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-semibold transition">
+                                UPDATE
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div class="mt-6 flex items-center space-x-4">
-                    <input type="checkbox" id="deactivate" name="deactivate" class="h-5 w-5 text-teal-600 border-gray-300 rounded focus:ring-teal-500" {{ old('deactivate', $customer->status === 'deactivate') ? 'checked' : '' }} disabled readonly>
-                    <label for="deactivate" class="text-gray-700 text-sm">Deactivate Customer</label>
-                </div>
-                <div id="deactivate_reason_container" class="mt-4" style="display: {{ old('deactivate', $customer->status === 'deactivate') ? 'block' : 'none' }};">
-                    <label for="deactivate_reason" class="block text-gray-700 text-sm mb-1">Reason for Deactivation</label>
-                    <input type="text" id="deactivate_reason" name="deactivate_reason" value="{{ old('deactivate_reason', $customer->reason ?? '') }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Please provide a reason for deactivation" readonly>
-                </div>
-                {{-- <div class="flex justify-end mt-8 space-x-4">
-                    <button type="submit" class="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 transition">Update Customer</button>
-                    <a href="{{ route('customers.index') }}" class="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400 transition">Cancel</a>
-                </div> --}}
-            </form>
             </main>
         </div>
     </div>
 </body>
+
 </html>

@@ -272,8 +272,8 @@
                                     {{ number_format($data['fuel_chargers'], 2) }}</span></div>
                             <div class="expense-item">Utility Bills <span>RS
                                     {{ number_format($data['utility_bills'], 2) }}</span></div>
-                            <div class="expense-item">Stock In <span>RS
-                                    {{ number_format($data['stock_in'], 2) }}</span></div>
+                            {{-- <div class="expense-item">Stock In <span>RS
+                                    {{ number_format($data['stock_in'], 2) }}</span></div> --}}
                             <div class="expense-item">Travel fees <span>RS
                                     {{ number_format($data['travel_fees'], 2) }}</span></div>
                             <div class="expense-item">Office supplies <span>RS

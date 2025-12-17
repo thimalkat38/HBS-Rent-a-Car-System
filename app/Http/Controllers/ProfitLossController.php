@@ -79,8 +79,8 @@ class ProfitLossController extends Controller
             'utility_bills' => Expense::where('business_id', $businessId)
                 ->where('cat', 'Utility Bills')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
 
-            'stock_in' => Inventory::where('business_id', $businessId)
-                ->whereBetween('date', [$startDate, $endDate])->sum('total_price'),
+            // 'stock_in' => Inventory::where('business_id', $businessId)
+            //     ->whereBetween('date', [$startDate, $endDate])->sum('total_price'),
 
             'travel_fees' => Expense::where('business_id', $businessId)
                 ->where('cat', 'Travel')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
@@ -97,7 +97,7 @@ class ProfitLossController extends Controller
 
         // Calculate Gross & Net Profit
         $total_expenses = $data['salary'] + $data['vehicle_services'] + $data['vehicle_maintenance'] + $data['fuel_chargers']
-            + $data['stock_in'] + $data['office_supplies'] + $data['advanced_salary']
+            + $data['office_supplies'] + $data['advanced_salary']
             + $data['vehicle_repair'] + $data['vehicle_owner_payment'] + $data['utility_bills']
             + $data['travel_fees'] + $data['other_income'];
 
@@ -106,6 +106,7 @@ class ProfitLossController extends Controller
         $data['gross_profit'] = $total_income - $total_expenses;
         $data['net_profit'] = $data['gross_profit']; // Adjust if needed
 
-        return view('Manager.PLReport', compact('data', 'startDate', 'endDate', 'filterType'));
+        return view('Manager.NewPL', compact('data', 'startDate', 'endDate', 'filterType'));
     }
 }
+// + $data['stock_in'] need to add in line 100 (net profite cal)

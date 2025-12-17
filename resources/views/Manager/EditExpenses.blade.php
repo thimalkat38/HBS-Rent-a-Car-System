@@ -88,14 +88,14 @@
                         <ul class="ml-8 space-y-1">
                             <li>
                                 <a href="{{ route('customers.create') }}"
-                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
                                     <span class="material-icons mr-3">person_add</span>
                                     Add Customer
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('customers.index') }}"
-                                    class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">list</span>
                                     All Customers
                                 </a>
@@ -103,41 +103,11 @@
                         </ul>
                     </li>
                     <li>
-                        <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
+                        <a href="{{ url('hr-management') }}"
+                            class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                             <span class="material-icons mr-3">badge</span>
                             HRM
-                        </div>
-                        <ul class="ml-8 space-y-1">
-                            <li>
-                                <a href="{{ url('employees') }}"
-                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
-                                    <span class="material-icons mr-3">people</span>
-                                    Staff Management
-                                </a>
-                            </li>
-                            {{-- <li>
-                                <a href="{{ url('employees') }}"
-                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
-                                    <span class="material-icons mr-3">people</span>
-                                    Leave Management
-                                </a>
-                            </li> --}}
-                            <li>
-                                <a href="{{ url('payrolls') }}"
-                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
-                                    <span class="material-icons mr-3">people</span>
-                                    Payroll Management
-                                </a>
-                            </li>
-                            {{-- <li>
-                                <a href="{{ url('employees') }}"
-                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
-                                    <span class="material-icons mr-3">people</span>
-                                    Staff Attendance
-                                </a>
-                            </li> --}}
-
-                        </ul>
+                        </a>
                     </li>
                     <li>
                         <a href="{{ url('crms') }}"
@@ -193,7 +163,7 @@
                     <div class="flex items-center gap-2">
                         <span class="material-icons text-gray-400">people</span>
                         <span class="text-xl font-semibold font-poppins text-gray-900">Customers</span>
-                        <span class="text-xl font-normal text-gray-700">{{ $customer->full_name }}</span>
+                        <span class="text-xl font-normal text-gray-700">Add Customer</span>
                     </div>
                     <div class="flex items-center space-x-6">
                         <div class="flex items-center space-x-2">
@@ -260,83 +230,7 @@
                 </div>
             </header>
             <main class="flex-1 w-full px-0 py-0 flex flex-col h-[calc(100vh-5rem)]">
-            
-            @if ($errors->any())
-                <div class="max-w-5xl mx-auto mt-4">
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-            @endif
-            
-            @if (session('error'))
-                <div class="max-w-5xl mx-auto mt-4">
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        {{ session('error') }}
-                    </div>
-                </div>
-            @endif
-            
-            <form class="max-w-5xl mx-auto mt-8 space-y-6" method="POST" action="{{ route('customers.update', $customer->id) }}" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="full_name">Full Name</label>
-                        <input type="text" id="full_name" name="full_name" value="{{ old('full_name', $customer->full_name) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Full Name" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="email">Email</label>
-                        <input type="email" id="email" name="email" value="{{ old('email', $customer->email) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Email" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="phone">Contact Number</label>
-                        <input type="text" id="phone" name="phone" value="{{ old('phone', $customer->phone) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Phone Number" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="whatsapp">Whatsapp Number</label>
-                        <input type="text" id="whatsapp" name="whatsapp" value="{{ old('whatsapp', $customer->whatsapp) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Whatsapp Number" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="address">Address</label>
-                        <input type="text" id="address" name="address" value="{{ old('address', $customer->address) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Address" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="nic">NIC</label>
-                        <input type="text" id="nic" name="nic" value="{{ old('nic', $customer->nic) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="NIC Number" readonly>
-                    </div>
-                    <!-- Department is not a field in Customer, so we remove it -->
-                </div>
-                <div class="flex space-x-6 mt-4">
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1">NIC Photo</label>
-                        <div class="w-48 h-32 border border-gray-300 rounded flex items-center justify-center bg-gray-50 overflow-hidden">
-                            @if(!empty($customer->nic_photos) && is_array($customer->nic_photos) && count($customer->nic_photos) > 0)
-                                <img src="{{ asset('storage/' . $customer->nic_photos[0]) }}" alt="NIC" class="object-cover w-full h-full">
-                            @else
-                                {{-- <img src="{{ asset('images/sample-nic.jpg') }}" alt="NIC" class="object-cover w-full h-full"> --}}
-                            @endif
-                        </div>
-                        {{-- <input type="file" name="nic_photos[]" class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100" multiple> --}}
-                    </div>
-                </div>
-                <div class="mt-6 flex items-center space-x-4">
-                    <input type="checkbox" id="deactivate" name="deactivate" class="h-5 w-5 text-teal-600 border-gray-300 rounded focus:ring-teal-500" {{ old('deactivate', $customer->status === 'deactivate') ? 'checked' : '' }} disabled readonly>
-                    <label for="deactivate" class="text-gray-700 text-sm">Deactivate Customer</label>
-                </div>
-                <div id="deactivate_reason_container" class="mt-4" style="display: {{ old('deactivate', $customer->status === 'deactivate') ? 'block' : 'none' }};">
-                    <label for="deactivate_reason" class="block text-gray-700 text-sm mb-1">Reason for Deactivation</label>
-                    <input type="text" id="deactivate_reason" name="deactivate_reason" value="{{ old('deactivate_reason', $customer->reason ?? '') }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Please provide a reason for deactivation" readonly>
-                </div>
-                {{-- <div class="flex justify-end mt-8 space-x-4">
-                    <button type="submit" class="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 transition">Update Customer</button>
-                    <a href="{{ route('customers.index') }}" class="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400 transition">Cancel</a>
-                </div> --}}
-            </form>
+
             </main>
         </div>
     </div>

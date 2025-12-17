@@ -30,7 +30,7 @@
                         </a>
                     </li>
                     <li>
-                        <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
+                        <div class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
                             <span class="material-icons mr-3">directions_car</span>
                             Vehicles
                         </div>
@@ -95,7 +95,7 @@
                             </li>
                             <li>
                                 <a href="{{ route('customers.index') }}"
-                                    class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">list</span>
                                     All Customers
                                 </a>
@@ -191,9 +191,10 @@
             <header class="w-full h-20 bg-white border-b border-gray-200 flex items-center px-8">
                 <div class="w-full flex justify-between items-center">
                     <div class="flex items-center gap-2">
-                        <span class="material-icons text-gray-400">people</span>
-                        <span class="text-xl font-semibold font-poppins text-gray-900">Customers</span>
-                        <span class="text-xl font-normal text-gray-700">{{ $customer->full_name }}</span>
+                        <span class="material-icons text-gray-400">directions_car</span>
+                        <span class="text-xl font-semibold font-poppins text-gray-900">Vehicles</span>
+                        <span class="material-icons text-gray-400">chevron_right</span>
+                        <span class="text-xl font-normal text-gray-700">Edit Vehicle</span>
                     </div>
                     <div class="flex items-center space-x-6">
                         <div class="flex items-center space-x-2">
@@ -260,83 +261,182 @@
                 </div>
             </header>
             <main class="flex-1 w-full px-0 py-0 flex flex-col h-[calc(100vh-5rem)]">
-            
-            @if ($errors->any())
-                <div class="max-w-5xl mx-auto mt-4">
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-            @endif
-            
-            @if (session('error'))
-                <div class="max-w-5xl mx-auto mt-4">
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        {{ session('error') }}
-                    </div>
-                </div>
-            @endif
-            
-            <form class="max-w-5xl mx-auto mt-8 space-y-6" method="POST" action="{{ route('customers.update', $customer->id) }}" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="full_name">Full Name</label>
-                        <input type="text" id="full_name" name="full_name" value="{{ old('full_name', $customer->full_name) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Full Name" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="email">Email</label>
-                        <input type="email" id="email" name="email" value="{{ old('email', $customer->email) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Email" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="phone">Contact Number</label>
-                        <input type="text" id="phone" name="phone" value="{{ old('phone', $customer->phone) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Phone Number" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="whatsapp">Whatsapp Number</label>
-                        <input type="text" id="whatsapp" name="whatsapp" value="{{ old('whatsapp', $customer->whatsapp) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Whatsapp Number" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="address">Address</label>
-                        <input type="text" id="address" name="address" value="{{ old('address', $customer->address) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Address" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="nic">NIC</label>
-                        <input type="text" id="nic" name="nic" value="{{ old('nic', $customer->nic) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="NIC Number" readonly>
-                    </div>
-                    <!-- Department is not a field in Customer, so we remove it -->
-                </div>
-                <div class="flex space-x-6 mt-4">
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1">NIC Photo</label>
-                        <div class="w-48 h-32 border border-gray-300 rounded flex items-center justify-center bg-gray-50 overflow-hidden">
-                            @if(!empty($customer->nic_photos) && is_array($customer->nic_photos) && count($customer->nic_photos) > 0)
-                                <img src="{{ asset('storage/' . $customer->nic_photos[0]) }}" alt="NIC" class="object-cover w-full h-full">
-                            @else
-                                {{-- <img src="{{ asset('images/sample-nic.jpg') }}" alt="NIC" class="object-cover w-full h-full"> --}}
-                            @endif
+                <div class="max-w-3xl mx-auto px-4 py-8">
+                    <!-- Success Message -->
+                    @if (session('success'))
+                        <div class="mb-4 rounded bg-green-100 text-green-800 px-4 py-2 border border-green-300">
+                            {{ session('success') }}
                         </div>
-                        {{-- <input type="file" name="nic_photos[]" class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100" multiple> --}}
+                    @endif
+
+                    <!-- Error Message -->
+                    @if ($errors->any())
+                        <div class="mb-4 rounded bg-red-100 text-red-800 px-4 py-2 border border-red-300">
+                            <ul class="list-disc pl-6">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <!-- Edit Vehicle Form -->
+                    <form id="updateVehicleForm" action="{{ route('vehicles.update', $vehicle->id) }}" method="POST"
+                        enctype="multipart/form-data" class="bg-white shadow rounded-lg p-6">
+                        @csrf
+                        @method('PUT')
+
+                        <h1 class="text-2xl font-bold mb-8 text-slate-700">Edit Vehicle</h1>
+
+                        <!-- Vehicle Name and Type -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                            <div>
+                                <label for="vehicle_name" class="block text-sm font-medium mb-2 text-slate-700">Vehicle Name</label>
+                                <input type="text" name="vehicle_name" id="vehicle_name" value="{{ old('vehicle_name', $vehicle->vehicle_name) }}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
+                            </div>
+                            <div>
+                                <label for="vehicle_type" class="block text-sm font-medium mb-2 text-slate-700">Vehicle Type</label>
+                                <input type="text" name="vehicle_type" id="vehicle_type" value="{{ old('vehicle_type', $vehicle->vehicle_type) }}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
+                            </div>
+                        </div>
+
+                        <!-- Vehicle Number and Model -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                            <div>
+                                <label for="vehicle_number" class="block text-sm font-medium mb-2 text-slate-700">Vehicle Number</label>
+                                <input type="text" name="vehicle_number" id="vehicle_number" value="{{ old('vehicle_number', $vehicle->vehicle_number) }}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
+                            </div>
+                            <div>
+                                <label for="vehicle_model" class="block text-sm font-medium mb-2 text-slate-700">Vehicle Model</label>
+                                <input type="text" name="vehicle_model" id="vehicle_model" value="{{ old('vehicle_model', $vehicle->vehicle_model) }}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
+                            </div>
+                        </div>
+
+                        <!-- Engine Number and Fuel Type -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                            <div>
+                                <label for="engine_number" class="block text-sm font-medium mb-2 text-slate-700">Engine Number</label>
+                                <input type="text" name="engine_number" id="engine_number" value="{{ old('engine_number', $vehicle->engine_number) }}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
+                            </div>
+                            <div>
+                                <label for="fuel_type" class="block text-sm font-medium mb-2 text-slate-700">Fuel Type</label>
+                                <input type="text" name="fuel_type" id="fuel_type" value="{{ old('fuel_type', $vehicle->fuel_type) }}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
+                            </div>
+                        </div>
+
+                        <!-- Chassis Number and Model Year -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                            <div>
+                                <label for="chassis_number" class="block text-sm font-medium mb-2 text-slate-700">Chassis Number</label>
+                                <input type="text" name="chassis_number" id="chassis_number" value="{{ old('chassis_number', $vehicle->chassis_number) }}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
+                            </div>
+                            <div>
+                                <label for="model_year" class="block text-sm font-medium mb-2 text-slate-700">Model Year</label>
+                                <input type="number" name="model_year" id="model_year" value="{{ old('model_year', $vehicle->model_year) }}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
+                            </div>
+                        </div>
+
+                        <!-- License & Insurance Expiry -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                            <div>
+                                <label for="license_exp_date" class="block text-sm font-medium mb-2 text-slate-700">License Expire Date</label>
+                                <input type="date" name="license_exp_date" id="license_exp_date" value="{{ old('license_exp_date', $vehicle->license_exp_date) }}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
+                            </div>
+                            <div>
+                                <label for="insurance_exp_date" class="block text-sm font-medium mb-2 text-slate-700">Insurance Expire Date</label>
+                                <input type="date" name="insurance_exp_date" id="insurance_exp_date" value="{{ old('insurance_exp_date', $vehicle->insurance_exp_date) }}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
+                            </div>
+                        </div>
+
+                        <!-- Pricing Inputs -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+                            <div>
+                                <label for="price_per_day" class="block text-sm font-medium mb-2 text-slate-700">Price Per Day</label>
+                                <input type="text" name="price_per_day" id="price_per_day" value="{{ old('price_per_day', $vehicle->price_per_day) }}" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
+                            </div>
+                            <div>
+                                <label for="free_km" class="block text-sm font-medium mb-2 text-slate-700">Free KM</label>
+                                <input type="text" name="free_km" id="free_km" value="{{ old('free_km', $vehicle->free_km) }}" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
+                            </div>
+                            <div>
+                                <label for="extra_km_chg" class="block text-sm font-medium mb-2 text-slate-700">Extra 1KM Charge</label>
+                                <input type="text" name="extra_km_chg" id="extra_km_chg" value="{{ old('extra_km_chg', $vehicle->extra_km_chg) }}" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400" />
+                            </div>
+                        </div>
+
+                        <!-- Select Display Image -->
+                        <div class="mb-5">
+                            <label for="display_image" class="block font-semibold mb-2 text-slate-700">
+                                Select Display Image:
+                            </label>
+                            <select name="display_image" id="display_image"
+                                class="w-1/3 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400 text-sm">
+                                @foreach ($vehicle->images as $image)
+                                    <option value="{{ $image }}"
+                                        {{ $image == $vehicle->display_image ? 'selected' : '' }}>
+                                        {{ basename($image) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Upload New Images -->
+                        <div class="mb-6">
+                            <label for="images" class="block text-sm font-medium mb-2 text-slate-700">Upload New Images (optional)</label>
+                            <input type="file" name="images[]" id="images" multiple
+                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
+                                    file:rounded file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-blue-50 file:text-blue-700
+                                    hover:file:bg-blue-100" />
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700 transition">
+                                Update Vehicle
+                            </button>
+                            <a href="{{ url('allvehicles') }}" class="bg-gray-300 text-gray-800 px-6 py-2 rounded font-bold hover:bg-gray-400 transition">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+
+                    <!-- Current Images (separate from update form) -->
+                    <div class="mt-10">
+                        <p class="font-semibold mb-2 text-slate-700">Current Vehicle Images</p>
+                        <div class="flex flex-wrap gap-6">
+                            @foreach ($vehicle->images as $image)
+                                <div class="flex flex-col items-center">
+                                    <img src="{{ asset('storage/' . $image) }}" alt="Vehicle Image" class="mb-2 rounded shadow h-24 w-24 object-cover"/>
+                                    <form action="{{ route('vehicles.deleteImage', ['id' => $vehicle->id]) }}" method="POST" class="inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <input type="hidden" name="image" value="{{ $image }}">
+                                        <button type="submit"
+                                            onclick="return confirm('Are you sure you want to delete this image?')"
+                                            class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1 rounded transition">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
-                <div class="mt-6 flex items-center space-x-4">
-                    <input type="checkbox" id="deactivate" name="deactivate" class="h-5 w-5 text-teal-600 border-gray-300 rounded focus:ring-teal-500" {{ old('deactivate', $customer->status === 'deactivate') ? 'checked' : '' }} disabled readonly>
-                    <label for="deactivate" class="text-gray-700 text-sm">Deactivate Customer</label>
-                </div>
-                <div id="deactivate_reason_container" class="mt-4" style="display: {{ old('deactivate', $customer->status === 'deactivate') ? 'block' : 'none' }};">
-                    <label for="deactivate_reason" class="block text-gray-700 text-sm mb-1">Reason for Deactivation</label>
-                    <input type="text" id="deactivate_reason" name="deactivate_reason" value="{{ old('deactivate_reason', $customer->reason ?? '') }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Please provide a reason for deactivation" readonly>
-                </div>
-                {{-- <div class="flex justify-end mt-8 space-x-4">
-                    <button type="submit" class="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 transition">Update Customer</button>
-                    <a href="{{ route('customers.index') }}" class="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400 transition">Cancel</a>
-                </div> --}}
-            </form>
+            </body>
             </main>
         </div>
     </div>

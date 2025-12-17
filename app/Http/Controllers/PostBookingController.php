@@ -24,6 +24,7 @@ class PostBookingController extends Controller
          $fromDate = $request->input('from_date');
          $toDate = $request->input('to_date');
          $agn = $request->input('agn');
+         $bookingId = $request->input('booking_id');
      
          // Start building the query with business_id scoping
          $query = PostBooking::where('business_id', Auth::user()->business_id);
@@ -35,6 +36,10 @@ class PostBookingController extends Controller
      
          if ($agn) {
              $query->where('agn', 'like', "%$agn%");
+         }
+
+         if ($bookingId) {
+             $query->where('booking_id', 'like', "%$bookingId%");
          }
      
          // Apply date range filter
@@ -70,6 +75,7 @@ class PostBookingController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'booking_id' => 'nullable|string',
             'full_name' => 'nullable|string',
             'nic' => 'nullable|string',
             'mobile_number' => 'nullable|string',

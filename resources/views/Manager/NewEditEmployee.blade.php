@@ -95,7 +95,7 @@
                             </li>
                             <li>
                                 <a href="{{ route('customers.index') }}"
-                                    class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">list</span>
                                     All Customers
                                 </a>
@@ -110,7 +110,7 @@
                         <ul class="ml-8 space-y-1">
                             <li>
                                 <a href="{{ url('employees') }}"
-                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
                                     <span class="material-icons mr-3">people</span>
                                     Staff Management
                                 </a>
@@ -191,9 +191,12 @@
             <header class="w-full h-20 bg-white border-b border-gray-200 flex items-center px-8">
                 <div class="w-full flex justify-between items-center">
                     <div class="flex items-center gap-2">
-                        <span class="material-icons text-gray-400">people</span>
-                        <span class="text-xl font-semibold font-poppins text-gray-900">Customers</span>
-                        <span class="text-xl font-normal text-gray-700">{{ $customer->full_name }}</span>
+                        <span class="material-icons text-gray-400">badge</span>
+                        <span class="text-xl font-semibold font-poppins text-gray-900">HRM</span>
+                        <span class="material-icons text-gray-400">chevron_right</span>
+                        <span class="text-xl font-normal text-gray-700">Edit Employee</span>
+                        <span class="material-icons text-gray-400">chevron_right</span>
+                        <span class="text-xl font-normal text-gray-700">{{$employee->emp_name}}</span>
                     </div>
                     <div class="flex items-center space-x-6">
                         <div class="flex items-center space-x-2">
@@ -259,84 +262,135 @@
                     </div>
                 </div>
             </header>
-            <main class="flex-1 w-full px-0 py-0 flex flex-col h-[calc(100vh-5rem)]">
-            
-            @if ($errors->any())
-                <div class="max-w-5xl mx-auto mt-4">
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-            @endif
-            
-            @if (session('error'))
-                <div class="max-w-5xl mx-auto mt-4">
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        {{ session('error') }}
-                    </div>
-                </div>
-            @endif
-            
-            <form class="max-w-5xl mx-auto mt-8 space-y-6" method="POST" action="{{ route('customers.update', $customer->id) }}" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="full_name">Full Name</label>
-                        <input type="text" id="full_name" name="full_name" value="{{ old('full_name', $customer->full_name) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Full Name" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="email">Email</label>
-                        <input type="email" id="email" name="email" value="{{ old('email', $customer->email) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Email" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="phone">Contact Number</label>
-                        <input type="text" id="phone" name="phone" value="{{ old('phone', $customer->phone) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Phone Number" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="whatsapp">Whatsapp Number</label>
-                        <input type="text" id="whatsapp" name="whatsapp" value="{{ old('whatsapp', $customer->whatsapp) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Whatsapp Number" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="address">Address</label>
-                        <input type="text" id="address" name="address" value="{{ old('address', $customer->address) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Address" readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1" for="nic">NIC</label>
-                        <input type="text" id="nic" name="nic" value="{{ old('nic', $customer->nic) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="NIC Number" readonly>
-                    </div>
-                    <!-- Department is not a field in Customer, so we remove it -->
-                </div>
-                <div class="flex space-x-6 mt-4">
-                    <div>
-                        <label class="block text-gray-700 text-sm mb-1">NIC Photo</label>
-                        <div class="w-48 h-32 border border-gray-300 rounded flex items-center justify-center bg-gray-50 overflow-hidden">
-                            @if(!empty($customer->nic_photos) && is_array($customer->nic_photos) && count($customer->nic_photos) > 0)
-                                <img src="{{ asset('storage/' . $customer->nic_photos[0]) }}" alt="NIC" class="object-cover w-full h-full">
-                            @else
-                                {{-- <img src="{{ asset('images/sample-nic.jpg') }}" alt="NIC" class="object-cover w-full h-full"> --}}
-                            @endif
+            <main class="flex-1 w-full px-4 py-6 flex flex-col overflow-y-auto">
+                <form action="{{ route('employees.update', $employee->id) }}" method="POST" enctype="multipart/form-data" class="w-full max-w-3xl mx-auto bg-white p-8 rounded-lg shadow">
+                    @csrf
+                    @method('PUT')
+
+                    <h1 class="text-2xl font-bold mb-6 text-center text-gray-700">Edit Employee</h1>
+
+                    <!-- Success Message -->
+                    @if (session('success'))
+                        <div class="mb-4 p-3 bg-green-100 border border-green-300 text-green-700 rounded">
+                            {{ session('success') }}
                         </div>
-                        {{-- <input type="file" name="nic_photos[]" class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100" multiple> --}}
+                    @endif
+
+                    <!-- General Error Message -->
+                    @if ($errors->any())
+                        <div class="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded">
+                            <ul class="list-disc ml-6">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <!-- Employee ID -->
+                    <div class="mb-4 flex flex-col">
+                        <label for="emp_id" class="mb-1 font-semibold text-gray-600">Employee ID</label>
+                        <input type="text" name="emp_id" value="{{ old('emp_id', $employee->emp_id) }}" class="input input-bordered border-gray-300 px-3 py-2 rounded bg-gray-100" required readonly>
                     </div>
-                </div>
-                <div class="mt-6 flex items-center space-x-4">
-                    <input type="checkbox" id="deactivate" name="deactivate" class="h-5 w-5 text-teal-600 border-gray-300 rounded focus:ring-teal-500" {{ old('deactivate', $customer->status === 'deactivate') ? 'checked' : '' }} disabled readonly>
-                    <label for="deactivate" class="text-gray-700 text-sm">Deactivate Customer</label>
-                </div>
-                <div id="deactivate_reason_container" class="mt-4" style="display: {{ old('deactivate', $customer->status === 'deactivate') ? 'block' : 'none' }};">
-                    <label for="deactivate_reason" class="block text-gray-700 text-sm mb-1">Reason for Deactivation</label>
-                    <input type="text" id="deactivate_reason" name="deactivate_reason" value="{{ old('deactivate_reason', $customer->reason ?? '') }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="Please provide a reason for deactivation" readonly>
-                </div>
-                {{-- <div class="flex justify-end mt-8 space-x-4">
-                    <button type="submit" class="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 transition">Update Customer</button>
-                    <a href="{{ route('customers.index') }}" class="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400 transition">Cancel</a>
-                </div> --}}
-            </form>
+
+                    <!-- Employee Name and Mobile Number -->
+                    <div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <label for="emp_name" class="mb-1 font-semibold text-gray-600">Employee Name</label>
+                            <input type="text" name="emp_name" value="{{ old('emp_name', $employee->emp_name) }}" class="input input-bordered border-gray-300 px-3 py-2 rounded bg-gray-100" readonly>
+                            @error('emp_name')
+                                <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="mobile_number" class="mb-1 font-semibold text-gray-600">Mobile Number</label>
+                            <input type="text" name="mobile_number" value="{{ old('mobile_number', $employee->mobile_number) }}" class="input input-bordered border-gray-300 px-3 py-2 rounded" required>
+                            @error('mobile_number')
+                                <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- Join Date and Email -->
+                    <div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <label for="join_date" class="mb-1 font-semibold text-gray-600">Join Date</label>
+                            <input type="date" name="join_date" value="{{ old('join_date', $employee->join_date) }}" class="input input-bordered border-gray-300 px-3 py-2 rounded bg-gray-100" readonly>
+                            @error('join_date')
+                                <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="email" class="mb-1 font-semibold text-gray-600">Email Address</label>
+                            <input type="email" name="email" value="{{ old('email', $employee->email) }}" class="input input-bordered border-gray-300 px-3 py-2 rounded" required>
+                            @error('email')
+                                <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- Age and NIC -->
+                    <div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <label for="age" class="mb-1 font-semibold text-gray-600">Age</label>
+                            <input type="number" name="age" value="{{ old('age', $employee->age) }}" class="input input-bordered border-gray-300 px-3 py-2 rounded" required>
+                            @error('age')
+                                <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="nic" class="mb-1 font-semibold text-gray-600">NIC</label>
+                            <input type="text" name="nic" value="{{ old('nic', $employee->nic) }}" class="input input-bordered border-gray-300 px-3 py-2 rounded bg-gray-100" readonly>
+                            @error('nic')
+                                <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- Bank and Account Number -->
+                    <div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <label for="bank" class="mb-1 font-semibold text-gray-600">Bank</label>
+                            <input type="text" name="bank" value="{{ old('bank', $employee->bank) }}" class="input input-bordered border-gray-300 px-3 py-2 rounded" required>
+                            @error('bank')
+                                <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="acc_number" class="mb-1 font-semibold text-gray-600">Account Number</label>
+                            <input type="text" name="acc_number" value="{{ old('acc_number', $employee->acc_number) }}" class="input input-bordered border-gray-300 px-3 py-2 rounded" required>
+                            @error('acc_number')
+                                <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- Address and File Inputs -->
+                    <div class="mb-6">
+                        <label for="address" class="mb-1 font-semibold text-gray-600 block">Address</label>
+                        <textarea name="address" rows="4" class="input input-bordered border-gray-300 px-3 py-2 rounded w-full" required>{{ old('address', $employee->address) }}</textarea>
+                        @error('address')
+                            <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                        @enderror
+
+                        <div class="mt-4 flex flex-col md:flex-row md:space-x-6">
+                            <div class="flex-1 flex flex-col mb-2 md:mb-0">
+                                <label for="photo" class="mb-1 font-semibold text-gray-600">Upload New Employee Image (optional)</label>
+                                <input type="file" name="photo[]" multiple class="file-input file-input-bordered w-full">
+                            </div>
+                            <div class="flex-1 flex flex-col">
+                                <label for="doc_photos" class="mb-1 font-semibold text-gray-600">Upload New Documents (optional)</label>
+                                <input type="file" name="doc_photos[]" multiple class="file-input file-input-bordered w-full">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit and Cancel Buttons -->
+                    <div class="flex justify-end gap-4">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded shadow">Update Employee</button>
+                        <a href="{{ route('employees.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold px-6 py-2 rounded shadow">Cancel</a>
+                    </div>
+                </form>
             </main>
         </div>
     </div>

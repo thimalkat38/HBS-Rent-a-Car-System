@@ -103,11 +103,41 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="{{ url('hr-management') }}"
-                            class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                        <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
                             <span class="material-icons mr-3">badge</span>
                             HRM
-                        </a>
+                        </div>
+                        <ul class="ml-8 space-y-1">
+                            <li>
+                                <a href="{{ url('employees') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">people</span>
+                                    Staff Management
+                                </a>
+                            </li>
+                            {{-- <li>
+                                <a href="{{ url('employees') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">people</span>
+                                    Leave Management
+                                </a>
+                            </li> --}}
+                            <li>
+                                <a href="{{ url('payrolls') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">people</span>
+                                    Payroll Management
+                                </a>
+                            </li>
+                            {{-- <li>
+                                <a href="{{ url('employees') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">people</span>
+                                    Staff Attendance
+                                </a>
+                            </li> --}}
+
+                        </ul>
                     </li>
                     <li>
                         <a href="{{ url('crms') }}"
@@ -499,14 +529,14 @@
                                                 <a href="{{ route('bookings.edit', $booking->id) }}"
                                                     class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-sm font-medium"
                                                 >Edit</a>
-                                                <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" style="display:inline;">
+                                                {{-- <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
                                                         class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm font-medium"
                                                         onclick="return confirm('Are you sure you want to delete this booking?')"
                                                     >Delete</button>
-                                                </form>
+                                                </form> --}}
                                             </div>
                                         </td>
                                     </tr>

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Car Rental Management System</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body class="bg-white min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-900 flex flex-col min-h-screen">
+            <div class="flex items-center justify-center h-20">
+                <span class="text-white text-4xl font-semibold font-poppins">R</span>
+                <span class="text-teal-500 text-4xl font-semibold font-poppins">E</span>
+                <span class="text-white text-4xl font-semibold font-poppins">NT CAR</span>
+            </div>
+            <nav class="flex-1 mt-6">
+                <ul class="space-y-1">
+                    <li>
+                        <a href="{{ url('manager/dashboard') }}"
+                            class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                            <span class="material-icons mr-3">dashboard</span>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
+                            <span class="material-icons mr-3">directions_car</span>
+                            Vehicles
+                        </div>
+                        <ul class="ml-8 space-y-1">
+                            <li>
+                                <a href="{{ url('addvehicle') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">add_circle_outline</span>
+                                    Add Vehicle
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('allvehicles') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">list_alt</span>
+                                    All Vehicles
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
+                            <span class="material-icons mr-3">assignment</span>
+                            Bookings
+                        </div>
+                        <ul class="ml-8 space-y-1">
+                            <li>
+                                <a href="{{ url('addbooking') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">add_circle_outline</span>
+                                    Book Hire
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('bookings') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">history</span>
+                                    Booking History
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('postbookings') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">check_circle_outline</span>
+                                    Completed Businesses
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
+                            <span class="material-icons mr-3">people</span>
+                            Customers
+                        </div>
+                        <ul class="ml-8 space-y-1">
+                            <li>
+                                <a href="{{ route('customers.create') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">person_add</span>
+                                    Add Customer
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('customers.index') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">list</span>
+                                    All Customers
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
+                            <span class="material-icons mr-3">badge</span>
+                            HRM
+                        </div>
+                        <ul class="ml-8 space-y-1">
+                            <li>
+                                <a href="{{ url('employees') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">people</span>
+                                    Staff Management
+                                </a>
+                            </li>
+                            {{-- <li>
+                                <a href="{{ url('employees') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">people</span>
+                                    Leave Management
+                                </a>
+                            </li> --}}
+                            <li>
+                                <a href="{{ url('payrolls') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">people</span>
+                                    Payroll Management
+                                </a>
+                            </li>
+                            {{-- <li>
+                                <a href="{{ url('employees') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">people</span>
+                                    Staff Attendance
+                                </a>
+                            </li> --}}
+
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="{{ url('crms') }}"
+                            class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                            <span class="material-icons mr-3">support_agent</span>
+                            CRM
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('inventory.index') }}"
+                            class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                            <span class="material-icons mr-3">inventory_2</span>
+                            Inventory
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
+                            <span class="material-icons mr-3">account_balance_wallet</span>
+                            Finance
+                        </div>
+                        <ul class="ml-8 space-y-1">
+                            <li>
+                                <a href="{{ url('expenses') }}"
+                                    class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
+                                    <span class="material-icons mr-3">receipt_long</span>
+                                    Expenses
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('profit-loss-report') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">bar_chart</span>
+                                    P/L Report
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('commission') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">bar_chart</span>
+                                    Commission
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col min-h-screen bg-gray-50">
+            <!-- Header -->
+            <header class="w-full h-20 bg-white border-b border-gray-200 flex items-center px-8">
+                <div class="w-full flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="material-icons text-gray-400">receipt_long</span>
+                        <span class="text-xl font-semibold font-poppins text-gray-900">Expenses</span>
+                        <span class="material-icons text-gray-400">chevron_right</span>
+                        <span class="text-xl font-normal text-gray-700">Manage Expenses</span>
+                    </div>
+                    <div class="flex items-center space-x-6">
+                        <div class="flex items-center space-x-2">
+                            <button id="lang-en"
+                                class="text-lg font-poppins underline text-gray-700 focus:outline-none"
+                                onclick="setLanguage('en')">EN</button>
+                            <button id="lang-si" class="text-lg font-poppins text-gray-400 focus:outline-none"
+                                onclick="setLanguage('si')">SIN</button>
+                        </div>
+                        <script>
+                            // ... (translation script unchanged)
+                            const translations = {
+                                // ... (translation dictionary unchanged)
+                                en: {
+                                    // ... (keys)
+                                },
+                                si: {
+                                    // ... (keys)
+                                }
+                            };
+
+                            function translatePage(lang) {
+                                Object.keys(translations.en).forEach(function(key) {
+                                    const enText = translations.en[key];
+                                    const siText = translations.si[key];
+
+                                    document.querySelectorAll('body *:not(script):not(style)').forEach(function(el) {
+                                        if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
+                                            let current = el.textContent.trim();
+                                            if (current === enText || current === siText) {
+                                                el.textContent = translations[lang][key];
+                                            }
+                                        }
+                                    });
+                                });
+                            }
+
+                            function setLanguage(lang) {
+                                document.getElementById('lang-en').classList.toggle('underline', lang === 'en');
+                                document.getElementById('lang-en').classList.toggle('opacity-50', lang !== 'en');
+                                document.getElementById('lang-si').classList.toggle('underline', lang === 'si');
+                                document.getElementById('lang-si').classList.toggle('opacity-50', lang !== 'si');
+                                translatePage(lang);
+                                localStorage.setItem('lang', lang);
+                            }
+
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const lang = localStorage.getItem('lang') || 'en';
+                                setLanguage(lang);
+                            });
+                        </script>
+                        <div class="w-px h-8 bg-gray-200"></div>
+                        <div>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <x-responsive-nav-link :href="route('logout')"
+                                    onclick="event.preventDefault();
+                                                    this.closest('form').submit();">
+                                    {{ __('LogOut') }}
+                                </x-responsive-nav-link>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <main class="flex-1 w-full px-8 py-6 overflow-y-auto">
+                <div class="w-full max-w-7xl mx-auto space-y-6">
+                    <!-- Filters Section -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="space-y-4">
+                            <!-- Filter Row 1 -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="flex flex-col">
+                                    <label for="catFilter"
+                                        class="mb-1 text-sm font-medium text-gray-700">Category:</label>
+                                    <input type="text" id="catFilter"
+                                        class="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                        placeholder="Filter by Category">
+                                </div>
+                                <div class="flex flex-col">
+                                    <label for="refNoFilter" class="mb-1 text-sm font-medium text-gray-700">Reference
+                                        No:</label>
+                                    <input type="text" id="refNoFilter"
+                                        class="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                        placeholder="Filter by Ref No(REF****)">
+                                </div>
+                                <div class="flex flex-col">
+                                    <label for="expenseForFilter"
+                                        class="mb-1 text-sm font-medium text-gray-700">Expenses For:</label>
+                                    <input type="text" id="expenseForFilter"
+                                        class="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                        placeholder="Filter by Vehicle Number/Employee/Customer">
+                                </div>
+                            </div>
+                            <!-- Filter Row 2 -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="flex flex-col">
+                                    <label for="startDate" class="mb-1 text-sm font-medium text-gray-700">Start
+                                        Date:</label>
+                                    <input type="date" id="startDate"
+                                        class="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                                </div>
+                                <div class="flex flex-col">
+                                    <label for="endDate" class="mb-1 text-sm font-medium text-gray-700">End
+                                        Date:</label>
+                                    <input type="date" id="endDate"
+                                        class="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                                </div>
+                            </div>
+                            <!-- Filter Row 3 -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="flex flex-col">
+                                    <label for="minAmount" class="mb-1 text-sm font-medium text-gray-700">Min
+                                        Amount:</label>
+                                    <input type="number" id="minAmount"
+                                        class="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                        placeholder="Min RS">
+                                </div>
+                                <div class="flex flex-col">
+                                    <label for="maxAmount" class="mb-1 text-sm font-medium text-gray-700">Max
+                                        Amount:</label>
+                                    <input type="number" id="maxAmount"
+                                        class="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                        placeholder="Max RS">
+                                </div>
+                            </div>
+                            <!-- Buttons -->
+                            <div class="flex flex-wrap gap-4 items-center pt-2">
+                                <button id="clearFilters" type="button"
+                                    class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-4 py-2 rounded transition">Clear
+                                    Filters</button>
+                                <a href="{{ url('expenses/create') }}"
+                                    class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded transition">Add
+                                    Expenses</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Expenses Table Section -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white border border-gray-200 rounded-lg text-sm">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 border-b font-semibold text-gray-700 text-left">Date</th>
+                                        <th class="px-4 py-3 border-b font-semibold text-gray-700 text-left">REF No
+                                        </th>
+                                        <th class="px-4 py-3 border-b font-semibold text-gray-700 text-left">Category
+                                        </th>
+                                        <th class="px-4 py-3 border-b font-semibold text-gray-700 text-left">Expenses
+                                            For</th>
+                                        <th class="px-4 py-3 border-b font-semibold text-gray-700 text-left">Note</th>
+                                        <th class="px-4 py-3 border-b font-semibold text-gray-700 text-left">Paid
+                                            Amount</th>
+                                        <th class="px-4 py-3 border-b font-semibold text-gray-700 text-left">Document
+                                        </th>
+                                        <th class="px-4 py-3 border-b font-semibold text-gray-700 text-left">Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="expensesTable">
+                                    @php $totalAmount = 0; @endphp
+                                    @foreach ($expenses as $expense)
+                                        <tr data-ref="{{ $expense->ref_no }}" class="hover:bg-gray-50 transition">
+                                            <td class="px-4 py-3 border-b">{{ $expense->date }}</td>
+                                            <td class="px-4 py-3 border-b">{{ $expense->ref_no }}</td>
+                                            <td class="px-4 py-3 border-b">{{ $expense->cat }}</td>
+                                            <td class="px-4 py-3 border-b">
+                                                @if ($expense->for_emp)
+                                                    Employee: {{ $expense->for_emp }}
+                                                @elseif($expense->for_cus)
+                                                    Customer: {{ $expense->for_cus }}
+                                                @elseif($expense->fuel_for)
+                                                    Vehicle: {{ $expense->fuel_for }}
+                                                @else
+                                                    N/A
+                                                @endif
+                                            </td>
+                                            <td class="px-4 py-3 border-b">{{ $expense->note }}</td>
+                                            <td class="px-4 py-3 border-b amnt-cell">
+                                                {{ number_format($expense->amnt, 2) }}</td>
+                                            <td class="px-4 py-3 border-b">
+                                                @if ($expense->docs)
+                                                    <a href="{{ route('expenses.download', $expense->id) }}"
+                                                        class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold px-3 py-1 rounded transition">Export</a>
+                                                @else
+                                                    <span class="text-gray-400 italic">No File</span>
+                                                @endif
+                                            </td>
+                                            {{-- <td class="px-4 py-3 border-b">
+                                                <a href="{{ route('expenses.edit', $expenses->id) }}" class="text-yellow-600 hover:underline">Edit</a>
+                                            </td> --}}
+                                        </tr>
+                                        @php $totalAmount += $expense->amnt; @endphp
+                                    @endforeach
+                                </tbody>
+                                <tfoot>
+                                    <tr class="bg-gray-100">
+                                        <td colspan="5"></td>
+                                        <th id="totalAmountCell" class="px-4 py-3 font-semibold border-t text-left">
+                                            {{ number_format($totalAmount, 2) }}
+                                        </th>
+                                        <td class="px-4 py-3 border-t"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    function filterTable() {
+                        let startDate = document.getElementById("startDate").value;
+                        let endDate = document.getElementById("endDate").value;
+                        let refNo = document.getElementById("refNoFilter").value.toLowerCase();
+                        let expenseFor = document.getElementById("expenseForFilter").value.toLowerCase();
+                        let cat = document.getElementById("catFilter").value.toLowerCase();
+                        let minAmount = parseFloat(document.getElementById("minAmount").value) || 0;
+                        let maxAmount = parseFloat(document.getElementById("maxAmount").value) || Infinity;
+
+                        let rows = document.querySelectorAll("#expensesTable tr");
+
+                        rows.forEach(row => {
+                            let dateText = row.cells[0].textContent.trim();
+                            let category = row.cells[1].textContent.toLowerCase();
+                            let ref = row.getAttribute("data-ref")?.toLowerCase() || "";
+                            let forWho = row.cells[2].textContent.toLowerCase();
+                            let amount = parseFloat(row.querySelector(".amnt-cell").textContent.replace(/[^0-9.-]+/g, "")) || 0;
+
+                            let show = true;
+
+                            // Date filter
+                            if (startDate && new Date(dateText) < new Date(startDate)) show = false;
+                            if (endDate && new Date(dateText) > new Date(endDate)) show = false;
+
+                            // Ref No filter
+                            if (refNo && !ref.includes(refNo)) show = false;
+
+                            // Expenses For filter
+                            if (expenseFor && !forWho.includes(expenseFor)) show = false;
+
+                            // ✅ Category filter
+                            if (cat && !category.includes(cat)) show = false;
+
+                            // Amount filter
+                            if (amount < minAmount || amount > maxAmount) show = false;
+
+                            row.style.display = show ? "" : "none";
+                        });
+
+                        updateTotalAmount();
+                    }
+
+                    function updateTotalAmount() {
+                        let rows = document.querySelectorAll("#expensesTable tr");
+                        let total = 0;
+
+                        rows.forEach(row => {
+                            if (row.style.display !== "none") {
+                                let amountCell = row.querySelector('.amnt-cell');
+                                if (amountCell) {
+                                    let val = parseFloat(amountCell.textContent.replace(/[^0-9.-]+/g, ""));
+                                    if (!isNaN(val)) total += val;
+                                }
+                            }
+                        });
+
+                        document.getElementById('totalAmountCell').textContent =
+                            total.toLocaleString(undefined, {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            });
+                    }
+
+                    document.addEventListener("DOMContentLoaded", function() {
+                        let filterInputs = [
+                            "startDate", "endDate", "refNoFilter", "expenseForFilter", "minAmount", "maxAmount", "catFilter"
+                        ];
+                        filterInputs.forEach(id => {
+                            let el = document.getElementById(id);
+                            if (el) {
+                                el.addEventListener("input", filterTable);
+                                el.addEventListener("change", filterTable);
+                            }
+                        });
+
+                        // Clear filters
+                        document.getElementById("clearFilters").addEventListener("click", function(e) {
+                            e.preventDefault();
+                            filterInputs.forEach(id => document.getElementById(id).value = "");
+                            filterTable();
+                        });
+
+                        // Initial calculation
+                        updateTotalAmount();
+                    });
+                </script>
+            </main>
+        </div>
+    </div>
+</body>
+
+</html>

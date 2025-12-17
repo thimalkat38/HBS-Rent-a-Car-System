@@ -241,7 +241,7 @@ class BookingController extends Controller
     // Show form to edit a booking
     public function edit(Booking $booking)
     {
-        return view('Manager.EditBooking', compact('booking'));
+        return view('Manager.NewEditBookings', compact('booking'));
     }
 
     // Update booking data

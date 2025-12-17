@@ -27,7 +27,7 @@ class ExpenseController extends Controller
             ->orderBy('date', 'desc')
             ->get();
 
-        return view('Manager.ListExpenses', compact('expenses'));
+        return view('Manager.NewExpenses', compact('expenses'));
     }
 
 
@@ -45,7 +45,7 @@ class ExpenseController extends Controller
         $employees = Employee::select('emp_id', 'emp_name')->where('business_id', $businessId)->get();
         $customers = Customer::select('id', 'full_name')->where('business_id', $businessId)->get();
 
-        return view('Manager.AddExpenses', compact('employees', 'customers'));
+        return view('Manager.NewAddExpenses', compact('employees', 'customers'));
     }
 
 
@@ -119,7 +119,7 @@ class ExpenseController extends Controller
     public function edit($id)
     {
         $expense = Expense::findOrFail($id);
-        return view('expenses.edit', compact('expense'));
+        return view('Manager.EditExpenses', compact('expense'));
     }
 
     /**
