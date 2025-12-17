@@ -147,11 +147,47 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('inventory.index') }}"
-                            class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                        <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
                             <span class="material-icons mr-3">inventory_2</span>
-                            Inventory
-                        </a>
+                            <span data-translate="Inventory">Inventory</span>
+                        </div>
+                        <ul class="ml-8 space-y-1">
+                            <li>
+                                <a href="{{ route('inventory.index') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">list</span>
+                                    <span data-translate="All Items">All Items</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('inventory.create') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">add_circle_outline</span>
+                                    <span data-translate="Add Item">Add Item</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('inventory.grn') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">input</span>
+                                    <span data-translate="Add Stock">Add Stock</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('inventory.issue') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">output</span>
+                                    <span data-translate="Issue Items">Issue Items</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('inventory.issued-items') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">assignment_turned_in</span>
+                                    <span data-translate="Issued Items">Issued Items</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                     <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">

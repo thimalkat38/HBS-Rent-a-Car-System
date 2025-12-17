@@ -189,8 +189,11 @@
         <div class="flex-1 flex flex-col min-h-screen">
             <!-- Header -->
             <header class="w-full bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <span class="text-xl font-semibold text-gray-900" data-translate="Issue Items">Issue Items</span>
+                <div class="flex items-center gap-2">
+                    <span class="material-icons text-gray-400">inventory_2</span>
+                    <span class="text-xl font-semibold font-poppins text-gray-900">Inventory</span>
+                    <span class="material-icons text-gray-400">chevron_right</span>
+                    <span class="text-xl font-normal font-poppins text-gray-900">Issued Items</span>
                 </div>
                 <div class="flex items-center gap-8">
                     <div class="flex gap-2">
