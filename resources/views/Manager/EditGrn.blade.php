@@ -225,8 +225,12 @@
         <div class="flex-1 flex flex-col min-h-screen">
             <!-- Header -->
             <header class="w-full bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <span class="text-xl font-semibold text-gray-900" data-translate="Edit GRN">Edit GRN</span>
+                <div class="flex items-center gap-2">
+                    <span class="material-icons text-gray-400">inventory_2</span>
+                    <span class="text-xl font-semibold font-poppins text-gray-900">Inventory</span>
+                    <span class="material-icons text-gray-400">chevron_right</span>
+                    <span class="text-xl font-normal font-poppins text-gray-900">Edit GRN Items</span>
+                    <span class="material-icons text-gray-400">chevron_right</span>
                     <span class="text-xl font-normal text-gray-700" data-translate="Item">Item: {{ $inventory->it_name }}</span>
                 </div>
                 <div class="flex items-center gap-8">

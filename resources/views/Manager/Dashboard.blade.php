@@ -147,11 +147,47 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('inventory.index') }}"
-                            class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                        <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
                             <span class="material-icons mr-3">inventory_2</span>
-                            Inventory
-                        </a>
+                            <span data-translate="Inventory">Inventory</span>
+                        </div>
+                        <ul class="ml-8 space-y-1">
+                            <li>
+                                <a href="{{ route('inventory.index') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">list</span>
+                                    <span data-translate="All Items">All Items</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('inventory.create') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">add_circle_outline</span>
+                                    <span data-translate="Add Item">Add Item</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('inventory.grn') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">input</span>
+                                    <span data-translate="Add Stock">Add Stock</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('inventory.issue') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">output</span>
+                                    <span data-translate="Issue Items">Issue Items</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('inventory.issued-items') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">assignment_turned_in</span>
+                                    <span data-translate="Issued Items">Issued Items</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                     <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
@@ -292,7 +328,6 @@
                                             $licenseDaysLeft = ceil($today->diffInDays($licenseExpiryDate, false));
                                             $insuranceDaysLeft = ceil($today->diffInDays($insuranceExpiryDate, false));
                                         @endphp
-
                                         @if ($licenseDaysLeft >= 0 && $licenseDaysLeft <= 10)
                                             <li class="py-3 flex items-center gap-2">
                                                 <span class="material-icons text-lg text-blue-600 align-middle">directions_car</span>
@@ -579,7 +614,7 @@
                                                         </div>
                                                     </div>
                                                     <span class="text-xs px-2 py-1 rounded-full ${itemsHtml ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}">
-                                                        ${itemsHtml ? 'Items' : 'None'}
+                                                        ${itemsHtml ? 'Vehicles' : 'None'}
                                                     </span>
                                                 </div>
                                                 <div class="divide-y divide-slate-100">
