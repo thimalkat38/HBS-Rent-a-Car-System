@@ -100,9 +100,9 @@
                             </li>
                             <li>
                                 <a href="{{ url('vehicle_owners') }}"
-                                   class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
-                                    <span class="material-icons mr-3">people_outline</span>
-                                    <span data-translate="Vehicle Owners">Vehicle Owners</span>
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">supervisor_account</span>
+                                    Vehicle Owner's Managment
                                 </a>
                             </li>
                         </ul>

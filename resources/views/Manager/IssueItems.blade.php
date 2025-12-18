@@ -68,7 +68,8 @@
                                 class="material-icons mr-3">dashboard</span>Dashboard</a></li>
                     <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
-                            <span class="material-icons mr-3">directions_car</span>Vehicles</div>
+                            <span class="material-icons mr-3">directions_car</span>Vehicles
+                        </div>
                         <ul class="ml-8 space-y-1">
                             <li><a href="{{ url('addvehicle') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition"><span
@@ -78,12 +79,14 @@
                                         class="material-icons mr-3">list_alt</span>All Vehicles</a></li>
                             <li><a href="{{ url('vehicle_owners') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition"><span
-                                        class="material-icons mr-3">people_outline</span>Vehicle Owners</a></li>
+                                        class="material-icons mr-3">supervisor_account</span>Vehicle Owner's
+                                    Managment</a></li>
                         </ul>
                     </li>
                     <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
-                            <span class="material-icons mr-3">assignment</span>Bookings</div>
+                            <span class="material-icons mr-3">assignment</span>Bookings
+                        </div>
                         <ul class="ml-8 space-y-1">
                             <li><a href="{{ url('addbooking') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition"><span
@@ -99,7 +102,8 @@
                     </li>
                     <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
-                            <span class="material-icons mr-3">people</span>Customers</div>
+                            <span class="material-icons mr-3">people</span>Customers
+                        </div>
                         <ul class="ml-8 space-y-1">
                             <li><a href="{{ route('customers.create') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition"><span
@@ -151,7 +155,8 @@
                                 class="material-icons mr-3">support_agent</span>CRM</a></li>
                     <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
-                            <span class="material-icons mr-3">inventory_2</span>Inventory</div>
+                            <span class="material-icons mr-3">inventory_2</span>Inventory
+                        </div>
                         <ul class="ml-8 space-y-1">
                             <li><a href="{{ route('inventory.index') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition"><span
@@ -172,7 +177,8 @@
                     </li>
                     <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
-                            <span class="material-icons mr-3">account_balance_wallet</span>Finance</div>
+                            <span class="material-icons mr-3">account_balance_wallet</span>Finance
+                        </div>
                         <ul class="ml-8 space-y-1">
                             <li><a href="{{ url('expenses') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition"><span
@@ -510,7 +516,7 @@
                         if (item.min_quantity && remaining <= item.min_quantity && remaining >= 0) {
                             showAlert('warning',
                                 `Stock running out for ${item.it_name}. Remaining after issue: ${remaining}`
-                                );
+                            );
                         }
                     }
                 }
@@ -641,7 +647,7 @@
                     complete: function() {
                         $('#submitBtn').prop('disabled', false).html(
                             '<span class="material-icons mr-2">send</span><span data-translate="ISSUE ITEMS">ISSUE ITEMS</span>'
-                            );
+                        );
                     }
                 });
             });
@@ -689,7 +695,7 @@
                 availableVehicles.forEach(function(v) {
                     select.append(
                         `<option value="${v.id}">${v.vehicle_number} - ${v.vehicle_name} ${v.vehicle_model}</option>`
-                        );
+                    );
                 });
                 select.select2({
                     placeholder: "Search vehicle by number",

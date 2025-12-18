@@ -5,19 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Ownerpayment extends Model
+class PaidOwner extends Model
 {
     use HasFactory;
 
-    protected $table = 'ownerpayment';
+    protected $table = 'paidowners';
 
     protected $fillable = [
         'business_id',
+        'owner_id',
+        'full_name',
+        'vehicle',
+        'acc_no',
+        'bank_details',
         'date',
         'paid_amnt',
     ];
 
     protected $casts = [
+        'date' => 'date',
         'paid_amnt' => 'decimal:2',
     ];
 

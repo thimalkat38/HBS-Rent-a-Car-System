@@ -8,7 +8,7 @@ use App\Models\Payroll;
 use App\Models\Service;
 use App\Models\Expense;
 use App\Models\Inventory;
-use App\Models\Ownerpayment;
+use App\Models\PaidOwner;
 use App\Models\PostBooking;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -70,7 +70,7 @@ class ProfitLossController extends Controller
             'vehicle_maintenance' => Service::where('business_id', $businessId)
                 ->where('type', 'Maintenance')->whereBetween('date', [$startDate, $endDate])->sum('amnt'),
 
-            'vehicle_owner_payment' => Ownerpayment::where('business_id', $businessId)
+            'vehicle_owner_payment' => PaidOwner::where('business_id', $businessId)
                 ->whereBetween('date', [$startDate, $endDate])->sum('paid_amnt'),
 
             'fuel_chargers' => Expense::where('business_id', $businessId)
