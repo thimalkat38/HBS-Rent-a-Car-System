@@ -16,6 +16,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PostBookingController;
 use App\Http\Controllers\VehicleOwnerController;
 use App\Http\Controllers\OwnerpaymentController;
+use App\Http\Controllers\PaidOwnerController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\SalaryController;
@@ -232,6 +233,9 @@ Route::middleware(['manager'])->group(function () {
     Route::get('/ownerpayments/{ownerpayment}/edit', [OwnerpaymentController::class, 'edit'])->name('ownerpayments.edit');
     Route::put('/ownerpayments/{ownerpayment}', [OwnerpaymentController::class, 'update'])->name('ownerpayments.update');
     Route::delete('/ownerpayments/{ownerpayment}', [OwnerpaymentController::class, 'destroy'])->name('ownerpayments.destroy');
+    
+    // Paid Owners Routes
+    Route::post('/paidowners', [PaidOwnerController::class, 'store'])->name('paidowners.store');
 });
 
 // Service Control Routes

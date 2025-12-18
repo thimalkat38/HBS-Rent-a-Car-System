@@ -394,10 +394,40 @@ class VehicleController extends Controller
     public function getVehicleNumbers(Request $request)
     {
         $search = $request->input('query');
-        $vehicleNumbers = Vehicle::where('vehicle_number', 'LIKE', "%{$search}%")
-            ->pluck('vehicle_number');
 
-        return response()->json($vehicleNumbers);
+        // Ensure we only return real vehicle numbers from the vehicles table
+        // and, if applicable, restrict to the authenticated user's business.
+        $query = Vehicle::query()
+            ->whereNotNull('vehicle_number')
+            ->where('vehicle_number', '!=', '');
+
+        if (Auth::check() && Auth::user()->business_id) {
+            $query->where('business_id', Auth::user()->business_id);
+        }
+
+        if ($search) {
+            $query->where('vehicle_number', 'LIKE', "%{$search}%");
+        }
+
+        $vehicles = $query
+            ->select('vehicle_number', 'vehicle_model', 'vehicle_name')
+            ->distinct()
+            ->orderBy('vehicle_number')
+            ->limit(15)
+            ->get();
+
+        // Return data in a format suitable for jQuery UI Autocomplete
+        $results = $vehicles->map(function ($vehicle) {
+            $displayName = trim(($vehicle->vehicle_model ?? '') . ' ' . ($vehicle->vehicle_name ?? ''));
+
+            return [
+                'label'        => $vehicle->vehicle_number . ($displayName ? ' - ' . $displayName : ''),
+                'value'        => $vehicle->vehicle_number,
+                'display_name' => $displayName,
+            ];
+        });
+
+        return response()->json($results);
     }
     public function renewDocs($id)
     {

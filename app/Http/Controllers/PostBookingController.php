@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Expense;
 use App\Models\Service;
 use App\Models\Vehicle;
+use App\Models\PaidOwner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -277,7 +278,7 @@ class PostBookingController extends Controller
             ->toArray();
     
         // -------------------------
-        // 2) EXPENSES (Fuel + Services) — unchanged
+        // 2) EXPENSES (Fuel + Services + Owner Payments)
         // -------------------------
         $fuelExpenses = Expense::selectRaw('DATE(date) as date, SUM(amnt) as total')
             ->where('fuel_for', $vehicleNumber)
@@ -295,11 +296,24 @@ class PostBookingController extends Controller
             ->groupBy('date')
             ->pluck('total', 'date');
     
+        // Owner payments from paidowners table
+        // Vehicle field format: "VehicleName[VehicleNumber]" (e.g., "Toyota[ABC-1234]")
+        $ownerPayments = PaidOwner::selectRaw('DATE(date) as date, SUM(paid_amnt) as total')
+            ->where('vehicle', 'LIKE', '%[' . $vehicleNumber . ']%')
+            ->when($businessId, fn ($q) => $q->where('business_id', $businessId))
+            ->when($fromDate, fn ($q) => $q->whereDate('date', '>=', $fromDate))
+            ->when($toDate, fn ($q) => $q->whereDate('date', '<=', $toDate))
+            ->groupBy('date')
+            ->pluck('total', 'date');
+    
         $expensesMap = [];
         foreach ($fuelExpenses as $date => $total) {
             $expensesMap[$date] = ($expensesMap[$date] ?? 0) + $total;
         }
         foreach ($serviceExpenses as $date => $total) {
+            $expensesMap[$date] = ($expensesMap[$date] ?? 0) + $total;
+        }
+        foreach ($ownerPayments as $date => $total) {
             $expensesMap[$date] = ($expensesMap[$date] ?? 0) + $total;
         }
     
