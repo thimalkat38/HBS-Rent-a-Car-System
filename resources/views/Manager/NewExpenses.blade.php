@@ -426,9 +426,10 @@
                                                     <span class="text-gray-400 italic">No File</span>
                                                 @endif
                                             </td>
-                                            {{-- <td class="px-4 py-3 border-b">
-                                                <a href="{{ route('expenses.edit', $expenses->id) }}" class="text-yellow-600 hover:underline">Edit</a>
-                                            </td> --}}
+                                            <td class="px-4 py-3 border-b">
+                                                <a href="{{ route('expenses.edit', $expense->id) }}"
+                                                    class="inline-block bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-3 py-1 rounded transition">Edit</a>
+                                            </td>
                                         </tr>
                                         @php $totalAmount += $expense->amnt; @endphp
                                     @endforeach
@@ -459,26 +460,37 @@
                         let rows = document.querySelectorAll("#expensesTable tr");
 
                         rows.forEach(row => {
+                            // Skip if row doesn't have enough cells
+                            if (!row.cells || row.cells.length < 6) return;
+
                             let dateText = row.cells[0].textContent.trim();
-                            let category = row.cells[1].textContent.toLowerCase();
                             let ref = row.getAttribute("data-ref")?.toLowerCase() || "";
-                            let forWho = row.cells[2].textContent.toLowerCase();
-                            let amount = parseFloat(row.querySelector(".amnt-cell").textContent.replace(/[^0-9.-]+/g, "")) || 0;
+                            let category = row.cells[2].textContent.toLowerCase(); // Category is at index 2
+                            let forWho = row.cells[3].textContent.toLowerCase(); // Expenses For is at index 3
+                            let amount = parseFloat(row.querySelector(".amnt-cell")?.textContent.replace(/[^0-9.-]+/g, "") || "0") || 0;
 
                             let show = true;
 
                             // Date filter
-                            if (startDate && new Date(dateText) < new Date(startDate)) show = false;
-                            if (endDate && new Date(dateText) > new Date(endDate)) show = false;
+                            if (startDate || endDate) {
+                                let rowDate = new Date(dateText);
+                                if (isNaN(rowDate.getTime())) {
+                                    // If date parsing fails, show the row if no date filter is set
+                                    if (startDate || endDate) show = false;
+                                } else {
+                                    if (startDate && rowDate < new Date(startDate)) show = false;
+                                    if (endDate && rowDate > new Date(endDate)) show = false;
+                                }
+                            }
 
                             // Ref No filter
                             if (refNo && !ref.includes(refNo)) show = false;
 
+                            // Category filter
+                            if (cat && !category.includes(cat)) show = false;
+
                             // Expenses For filter
                             if (expenseFor && !forWho.includes(expenseFor)) show = false;
-
-                            // ✅ Category filter
-                            if (cat && !category.includes(cat)) show = false;
 
                             // Amount filter
                             if (amount < minAmount || amount > maxAmount) show = false;
