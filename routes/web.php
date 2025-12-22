@@ -288,6 +288,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::middleware(['manager'])->group(function () {
     Route::get('/manager/dashboard', [DashboardController::class, 'calendarView'])->name('manager.dashboard');
     Route::get('/manager/bookings', [DashboardController::class, 'getBookingsByDate']);
+    Route::get('/manager/profit-data', [DashboardController::class, 'getProfitData']);
     Route::get('/profit-loss-report', [ProfitLossController::class, 'index'])->name('profit.loss');
     Route::post('/salary/store', [SalaryController::class, 'store'])->name('salary.store');
     Route::get('/manager/addbook', [HomeController::class, 'manageraddbook'])->name('manager.addbook');
