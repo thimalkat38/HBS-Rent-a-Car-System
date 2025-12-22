@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 
 <body class="bg-white min-h-screen">
@@ -458,6 +459,47 @@
                         @endif
                     </div>
 
+                    <!-- Profit Graph Section -->
+                    <div class="bg-white rounded-2xl shadow-lg p-6 border border-slate-100">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="material-icons text-3xl text-emerald-600">trending_up</span>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800">Profit & Loss Overview</h3>
+                                    <p class="text-sm text-gray-500" id="profitDateRange">
+                                        @php
+                                            $start = $profitStartDate ?? Carbon\Carbon::now()->startOfMonth()->format('Y-m-d');
+                                            $end = $profitEndDate ?? Carbon\Carbon::now()->endOfMonth()->format('Y-m-d');
+                                        @endphp
+                                        {{ Carbon\Carbon::parse($start)->format('M d, Y') }} - {{ Carbon\Carbon::parse($end)->format('M d, Y') }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                                <div class="flex items-center gap-2">
+                                    <label for="profitStartDate" class="text-sm font-medium text-gray-700 whitespace-nowrap">From:</label>
+                                    <input type="date" id="profitStartDate" name="profit_start_date" 
+                                        value="{{ $start }}"
+                                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <label for="profitEndDate" class="text-sm font-medium text-gray-700 whitespace-nowrap">To:</label>
+                                    <input type="date" id="profitEndDate" name="profit_end_date" 
+                                        value="{{ $end }}"
+                                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <button id="resetProfitBtn" 
+                                    class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg text-sm transition shadow-md hover:shadow-lg flex items-center gap-2">
+                                    <span class="material-icons text-base">refresh</span>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                        <div class="h-80 w-full">
+                            <canvas id="profitChart"></canvas>
+                        </div>
+                    </div>
+
                     <!-- Calendar Section -->
                     <div id="calendar" class="bg-white rounded-2xl shadow-lg p-6 mt-6 w-full mx-0 overflow-x-auto border border-slate-100">
                         <div class="flex items-center justify-between mb-5">
@@ -584,6 +626,210 @@
             </main>
             <script>
                 document.addEventListener('DOMContentLoaded', () => {
+                    // Initialize Profit Chart
+                    @php
+                        $profitLabels = collect($profitData)->pluck('month')->toArray();
+                        $profitValues = collect($profitData)->pluck('profit')->toArray();
+                        $incomeValues = collect($profitData)->pluck('income')->toArray();
+                        $expenseValues = collect($profitData)->pluck('expenses')->toArray();
+                    @endphp
+
+                    let initialProfitLabels = @json($profitLabels);
+                    let initialProfitData = @json($profitValues);
+                    let initialIncomeData = @json($incomeValues);
+                    let initialExpenseData = @json($expenseValues);
+
+                    const ctx = document.getElementById('profitChart').getContext('2d');
+                    let profitChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: initialProfitLabels,
+                            datasets: [
+                                {
+                                    label: 'Income',
+                                    data: initialIncomeData,
+                                    borderColor: 'rgb(34, 197, 94)',
+                                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                                    tension: 0.4,
+                                    fill: true,
+                                },
+                                {
+                                    label: 'Expenses',
+                                    data: initialExpenseData,
+                                    borderColor: 'rgb(239, 68, 68)',
+                                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                    tension: 0.4,
+                                    fill: true,
+                                },
+                                {
+                                    label: 'Net Profit',
+                                    data: initialProfitData,
+                                    borderColor: 'rgb(59, 130, 246)',
+                                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                    tension: 0.4,
+                                    fill: true,
+                                    borderWidth: 3,
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top',
+                                    labels: {
+                                        font: {
+                                            size: 12,
+                                            weight: 'bold'
+                                        },
+                                        padding: 15,
+                                        usePointStyle: true
+                                    }
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false,
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            label += 'LKR ' + context.parsed.y.toLocaleString('en-US', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            });
+                                            return label;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: false,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return 'LKR ' + value.toLocaleString('en-US', {
+                                                minimumFractionDigits: 0,
+                                                maximumFractionDigits: 0
+                                            });
+                                        },
+                                        font: {
+                                            size: 11
+                                        }
+                                    },
+                                    grid: {
+                                        color: 'rgba(0, 0, 0, 0.05)'
+                                    }
+                                },
+                                x: {
+                                    ticks: {
+                                        font: {
+                                            size: 11
+                                        }
+                                    },
+                                    grid: {
+                                        display: false
+                                    }
+                                }
+                            },
+                            interaction: {
+                                mode: 'nearest',
+                                axis: 'x',
+                                intersect: false
+                            }
+                        }
+                    });
+
+                    // Function to update chart with new data
+                    function updateProfitChart(data) {
+                        const labels = data.map(item => item.month);
+                        const incomeData = data.map(item => parseFloat(item.income));
+                        const expenseData = data.map(item => parseFloat(item.expenses));
+                        const profitData = data.map(item => parseFloat(item.profit));
+
+                        profitChart.data.labels = labels;
+                        profitChart.data.datasets[0].data = incomeData;
+                        profitChart.data.datasets[1].data = expenseData;
+                        profitChart.data.datasets[2].data = profitData;
+                        profitChart.update('none'); // 'none' for instant update without animation
+                    }
+
+                    // Function to format date range text
+                    function formatDateRange(startDate, endDate) {
+                        const start = new Date(startDate);
+                        const end = new Date(endDate);
+                        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                        return `${start.toLocaleDateString('en-US', options)} - ${end.toLocaleDateString('en-US', options)}`;
+                    }
+
+                    // Debounce function to limit API calls
+                    let debounceTimer;
+                    function debounce(func, delay) {
+                        clearTimeout(debounceTimer);
+                        debounceTimer = setTimeout(func, delay);
+                    }
+
+                    // Function to fetch and update profit data
+                    function fetchProfitData() {
+                        const startDate = document.getElementById('profitStartDate').value;
+                        const endDate = document.getElementById('profitEndDate').value;
+
+                        if (!startDate || !endDate) {
+                            return;
+                        }
+
+                        if (new Date(startDate) > new Date(endDate)) {
+                            alert('Start date must be before end date');
+                            return;
+                        }
+
+                        // Show loading state on chart
+                        profitChart.data.datasets.forEach(dataset => {
+                            dataset.data = [];
+                        });
+                        profitChart.data.labels = [];
+                        profitChart.update();
+
+                        // Fetch filtered data
+                        fetch(`/manager/profit-data?start_date=${startDate}&end_date=${endDate}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                updateProfitChart(data);
+                                document.getElementById('profitDateRange').textContent = formatDateRange(startDate, endDate);
+                            })
+                            .catch(error => {
+                                console.error('Error fetching profit data:', error);
+                                alert('Error loading profit data. Please try again.');
+                            });
+                    }
+
+                    // Auto-update chart when dates change
+                    document.getElementById('profitStartDate').addEventListener('change', function() {
+                        debounce(fetchProfitData, 300);
+                    });
+
+                    document.getElementById('profitEndDate').addEventListener('change', function() {
+                        debounce(fetchProfitData, 300);
+                    });
+
+                    // Reset button event handler - reset to current month
+                    document.getElementById('resetProfitBtn').addEventListener('click', function() {
+                        // Reset to current month
+                        const today = new Date();
+                        const startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                        const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+                        // Update input fields
+                        document.getElementById('profitStartDate').value = startDate.toISOString().split('T')[0];
+                        document.getElementById('profitEndDate').value = endDate.toISOString().split('T')[0];
+
+                        // Fetch data for current month
+                        fetchProfitData();
+                    });
+
                     // If page was loaded with #calendar, keep the calendar in view after navigation
                     if (window.location.hash === '#calendar') {
                         const calendarSection = document.getElementById('calendar');

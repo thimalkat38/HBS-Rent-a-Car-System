@@ -533,12 +533,15 @@ class VehicleController extends Controller
             $updatedCount = 0;
 
             foreach ($vehicles as $vehicle) {
+                // Use the most recent post-booking (order by id) that has an end_km recorded.
+                // latest() defaults to created_at which may not exist or reflect completion order.
                 $latestPostBooking = \App\Models\PostBooking::where('vehicle_number', $vehicle->vehicle_number)
                     ->where('business_id', $businessId)
-                    ->latest()
+                    ->whereNotNull('end_km')
+                    ->orderByDesc('id')
                     ->first();
 
-                if ($latestPostBooking && $latestPostBooking->end_km) {
+                if ($latestPostBooking) {
                     $vehicle->update(['current_mileage' => $latestPostBooking->end_km]);
                     $updatedCount++;
                 }
@@ -560,12 +563,14 @@ class VehicleController extends Controller
                 ->where('business_id', Auth::user()->business_id)
                 ->firstOrFail();
 
+            // Same reasoning as bulk updater: rely on newest record by id with an end_km present.
             $latestPostBooking = \App\Models\PostBooking::where('vehicle_number', $vehicle->vehicle_number)
                 ->where('business_id', Auth::user()->business_id)
-                ->latest()
+                ->whereNotNull('end_km')
+                ->orderByDesc('id')
                 ->first();
 
-            if ($latestPostBooking && $latestPostBooking->end_km) {
+            if ($latestPostBooking) {
                 $vehicle->update(['current_mileage' => $latestPostBooking->end_km]);
                 return redirect()->back()->with('success', 'Vehicle mileage updated successfully.');
             } else {
