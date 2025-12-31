@@ -79,32 +79,26 @@ class DashboardController extends Controller
         foreach ($vehicles as $vehicle) {
             // current_mileage may be nullable/string; sanitize to int
             $current = (int) preg_replace('/\D/', '', (string) $vehicle->current_mileage);
-    
-            // Build a base query for this vehicle's services
-            $base = Service::where('business_id', $businessId)
-                ->where('vehicle_number', $vehicle->vehicle_number);
-    
-            // Prefer the nearest *upcoming* next_mileage >= current
-            $upcoming = (clone $base)
-                ->where('next_mileage', '>=', $current)
-                ->orderBy('next_mileage', 'asc')
+
+            // Always take the latest recorded service for this vehicle (created_at/date desc)
+            $latestService = Service::where('business_id', $businessId)
+                ->where('vehicle_number', $vehicle->vehicle_number)
+                ->orderBy('date', 'desc')
+                ->orderBy('created_at', 'desc')
                 ->first();
-    
-            // If none upcoming, fall back to the *latest past* next_mileage
-            $candidate = $upcoming ?: (clone $base)->orderBy('next_mileage', 'desc')->first();
-    
-            if (!$candidate || is_null($candidate->next_mileage)) {
+
+            if (!$latestService || is_null($latestService->next_mileage)) {
                 continue;
             }
-    
-            $next = (int) preg_replace('/\D/', '', (string) $candidate->next_mileage);
+
+            $next = (int) preg_replace('/\D/', '', (string) $latestService->next_mileage);
             $diff = $next - $current; // positive => km left; negative/zero => overdue
-    
+
             // Include if overdue OR within the threshold
             if ($diff <= $thresholdKm) {
                 $serviceAlertVehicles->push([
                     'vehicle'       => $vehicle,
-                    'service'       => $candidate,
+                    'service'       => $latestService,
                     'mileage_left'  => $diff,                     // can be <= 0 when overdue
                     'abs_overdue'   => $diff < 0 ? abs($diff) : 0,
                     'status'        => $diff <= 0 ? 'overdue' : 'due_soon',

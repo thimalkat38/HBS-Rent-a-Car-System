@@ -492,11 +492,11 @@
                                     </div>
                                     <div class="text-slate-950 text-xl font-semibold font-poppins">
                                         @php
-                                            // Find the next service for this vehicle_number, prioritize services with a future next_mileage if possible
-                                            $nextService = \DB::table('services')
-                                                ->where('vehicle_number', $vehicle->vehicle_number)
+                                            // Use the latest service record (same logic as dashboard service alert)
+                                            $nextService = \App\Models\Service::where('vehicle_number', $vehicle->vehicle_number)
                                                 ->whereNotNull('next_mileage')
-                                                ->orderBy('next_mileage', 'asc')
+                                                ->orderBy('date', 'desc')
+                                                ->orderBy('created_at', 'desc')
                                                 ->first();
                                         @endphp
                                         @if ($nextService && $nextService->next_mileage)

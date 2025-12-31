@@ -516,6 +516,10 @@
                                         class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-40"
                                     >
 
+                                    <!-- Hidden fields to preserve sort parameters -->
+                                    <input type="hidden" name="sort_by" value="{{ request('sort_by', 'created_at') }}">
+                                    <input type="hidden" name="sort_order" value="{{ request('sort_order', 'desc') }}">
+
                                     <button type="submit"
                                         class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition font-semibold"
                                     >Search</button>
@@ -531,17 +535,115 @@
                         <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow">
                             <thead>
                                 <tr>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">ID</th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Full Name</th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">From</th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">To</th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Vehicle</th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Vehicle Number</th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Mobile Number</th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Additional Price</th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Discount Price</th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Payed</th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">Balance</th>
+                                    @php
+                                        $currentSortBy = request('sort_by', 'created_at');
+                                        $currentSortOrder = request('sort_order', 'desc');
+                                        
+                                        function getSortUrl($column, $currentSortBy, $currentSortOrder) {
+                                            $params = request()->except(['sort_by', 'sort_order']);
+                                            $newOrder = ($currentSortBy === $column && $currentSortOrder === 'asc') ? 'desc' : 'asc';
+                                            $params['sort_by'] = $column;
+                                            $params['sort_order'] = $newOrder;
+                                            return url('bookings') . '?' . http_build_query($params);
+                                        }
+                                        
+                                        function getSortIcon($column, $currentSortBy, $currentSortOrder) {
+                                            if ($currentSortBy !== $column) {
+                                                return '<span class="material-icons text-gray-400 text-sm">unfold_more</span>';
+                                            }
+                                            return $currentSortOrder === 'asc' 
+                                                ? '<span class="material-icons text-teal-500 text-sm">arrow_upward</span>'
+                                                : '<span class="material-icons text-teal-500 text-sm">arrow_downward</span>';
+                                        }
+                                    @endphp
+                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+                                        <a href="{{ getSortUrl('id', $currentSortBy, $currentSortOrder) }}" 
+                                           class="flex items-center gap-1 hover:text-teal-600 transition"
+                                           onclick="event.stopPropagation()">
+                                            ID
+                                            {!! getSortIcon('id', $currentSortBy, $currentSortOrder) !!}
+                                        </a>
+                                    </th>
+                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+                                        <a href="{{ getSortUrl('full_name', $currentSortBy, $currentSortOrder) }}" 
+                                           class="flex items-center gap-1 hover:text-teal-600 transition"
+                                           onclick="event.stopPropagation()">
+                                            Full Name
+                                            {!! getSortIcon('full_name', $currentSortBy, $currentSortOrder) !!}
+                                        </a>
+                                    </th>
+                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+                                        <a href="{{ getSortUrl('from_date', $currentSortBy, $currentSortOrder) }}" 
+                                           class="flex items-center gap-1 hover:text-teal-600 transition"
+                                           onclick="event.stopPropagation()">
+                                            From
+                                            {!! getSortIcon('from_date', $currentSortBy, $currentSortOrder) !!}
+                                        </a>
+                                    </th>
+                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+                                        <a href="{{ getSortUrl('to_date', $currentSortBy, $currentSortOrder) }}" 
+                                           class="flex items-center gap-1 hover:text-teal-600 transition"
+                                           onclick="event.stopPropagation()">
+                                            To
+                                            {!! getSortIcon('to_date', $currentSortBy, $currentSortOrder) !!}
+                                        </a>
+                                    </th>
+                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+                                        <a href="{{ getSortUrl('vehicle_name', $currentSortBy, $currentSortOrder) }}" 
+                                           class="flex items-center gap-1 hover:text-teal-600 transition"
+                                           onclick="event.stopPropagation()">
+                                            Vehicle
+                                            {!! getSortIcon('vehicle_name', $currentSortBy, $currentSortOrder) !!}
+                                        </a>
+                                    </th>
+                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+                                        <a href="{{ getSortUrl('vehicle_number', $currentSortBy, $currentSortOrder) }}" 
+                                           class="flex items-center gap-1 hover:text-teal-600 transition"
+                                           onclick="event.stopPropagation()">
+                                            Vehicle Number
+                                            {!! getSortIcon('vehicle_number', $currentSortBy, $currentSortOrder) !!}
+                                        </a>
+                                    </th>
+                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+                                        <a href="{{ getSortUrl('mobile_number', $currentSortBy, $currentSortOrder) }}" 
+                                           class="flex items-center gap-1 hover:text-teal-600 transition"
+                                           onclick="event.stopPropagation()">
+                                            Mobile Number
+                                            {!! getSortIcon('mobile_number', $currentSortBy, $currentSortOrder) !!}
+                                        </a>
+                                    </th>
+                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+                                        <a href="{{ getSortUrl('additional_chagers', $currentSortBy, $currentSortOrder) }}" 
+                                           class="flex items-center gap-1 hover:text-teal-600 transition"
+                                           onclick="event.stopPropagation()">
+                                            Additional Price
+                                            {!! getSortIcon('additional_chagers', $currentSortBy, $currentSortOrder) !!}
+                                        </a>
+                                    </th>
+                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+                                        <a href="{{ getSortUrl('discount_price', $currentSortBy, $currentSortOrder) }}" 
+                                           class="flex items-center gap-1 hover:text-teal-600 transition"
+                                           onclick="event.stopPropagation()">
+                                            Discount Price
+                                            {!! getSortIcon('discount_price', $currentSortBy, $currentSortOrder) !!}
+                                        </a>
+                                    </th>
+                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+                                        <a href="{{ getSortUrl('payed', $currentSortBy, $currentSortOrder) }}" 
+                                           class="flex items-center gap-1 hover:text-teal-600 transition"
+                                           onclick="event.stopPropagation()">
+                                            Payed
+                                            {!! getSortIcon('payed', $currentSortBy, $currentSortOrder) !!}
+                                        </a>
+                                    </th>
+                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+                                        <a href="{{ getSortUrl('price', $currentSortBy, $currentSortOrder) }}" 
+                                           class="flex items-center gap-1 hover:text-teal-600 transition"
+                                           onclick="event.stopPropagation()">
+                                            Balance
+                                            {!! getSortIcon('price', $currentSortBy, $currentSortOrder) !!}
+                                        </a>
+                                    </th>
                                     <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700" style="width: 310px;">Actions</th>
                                 </tr>
                             </thead>
