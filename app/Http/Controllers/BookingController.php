@@ -48,14 +48,30 @@ class BookingController extends Controller
             $query->whereDate('from_date', '<=', $request->input('to_date'));
         }
 
-        $bookings = $query->orderBy('created_at', 'desc')->get();
+        // Handle sorting
+        $sortBy = $request->input('sort_by', 'created_at');
+        $sortOrder = $request->input('sort_order', 'desc');
+        
+        // Validate sort column to prevent SQL injection
+        $allowedSortColumns = ['id', 'full_name', 'from_date', 'to_date', 'vehicle_name', 'vehicle_number', 'mobile_number', 'additional_chagers', 'discount_price', 'payed', 'price', 'created_at'];
+        if (!in_array($sortBy, $allowedSortColumns)) {
+            $sortBy = 'created_at';
+        }
+        
+        // Validate sort order
+        $sortOrder = strtolower($sortOrder) === 'asc' ? 'asc' : 'desc';
+        
+        $bookings = $query->orderBy($sortBy, $sortOrder)->get();
 
         // Scope dropdown values to current business
         $vehicleNumbers = Booking::where('business_id', $businessId)->select('vehicle_number')->distinct()->pluck('vehicle_number');
         $fullNames = Booking::where('business_id', $businessId)->select('full_name')->distinct()->pluck('full_name');
         $statuses = Booking::where('business_id', $businessId)->select('status')->distinct()->pluck('status');
 
-        return view('Manager.BookingHistory', compact('bookings', 'vehicleNumbers', 'fullNames', 'statuses'));
+        $currentSortBy = $sortBy;
+        $currentSortOrder = $sortOrder;
+        
+        return view('Manager.BookingHistory', compact('bookings', 'vehicleNumbers', 'fullNames', 'statuses', 'currentSortBy', 'currentSortOrder'));
     }
 
 

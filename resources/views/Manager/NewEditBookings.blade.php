@@ -8,6 +8,7 @@
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
@@ -418,7 +419,7 @@
                         <div>
                             <label for="commissioner" class="block text-sm font-medium text-gray-700 mb-1">Commision Agent</label>
                             <input type="text" name="commissioner" id="commissioner" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('commissioner', $booking->commission) }}" required>
+                                value="{{ old('commissioner', $booking->commission) }}" >
                             @error('commissioner')
                                 <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
                             @enderror
@@ -437,11 +438,13 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                         <div>
                             <label for="vehicle_number" class="block text-sm font-medium text-gray-700 mb-1">Vehicle Number</label>
-                            <input type="text" id="vehicle_number" name="vehicle_number" list="vehicle_numbers"
+                            <select id="vehicle_number" name="vehicle_number"
                                 class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                placeholder="Enter vehicle number"
-                                value="{{ old('vehicle_name', $booking->vehicle_number) }}" maxlength="8"
-                                oninput="formatVehicleNumber(this)">
+                                required>
+                                <option value="">Select vehicle number</option>
+                                <optgroup label="Available Vehicles" id="available-vehicles-group"></optgroup>
+                                <optgroup label="Unavailable Vehicles" id="unavailable-vehicles-group"></optgroup>
+                            </select>
                             @error('vehicle_number')
                                 <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
                             @enderror
@@ -450,7 +453,7 @@
                         <div>
                             <label for="vehicle_name" class="block text-sm font-medium text-gray-700 mb-1">Vehicle Name</label>
                             <input type="text" name="vehicle_name" id="vehicle_name" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('vehicle_name', $booking->vehicle_name) }}">
+                                value="{{ old('vehicle_name', $booking->vehicle_name) }}" readonly>
                             @error('vehicle_name')
                                 <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
                             @enderror
@@ -484,6 +487,14 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                         <div>
+                            <label for="price_per_day" class="block text-sm font-medium text-gray-700 mb-1">Price Per Day</label>
+                            <input type="text" name="price_per_day" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200" id="price_per_day"
+                                value="{{ old('price_per_day', $booking->price_per_day ?? '0.00') }}">
+                            @error('price_per_day')
+                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div>
                             <label for="additional_chagers" class="block text-sm font-medium text-gray-700 mb-1">Additional Charges</label>
                             <input type="text" name="additional_chagers" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200" id="additional_chagers"
                                 value="{{ old('additional_chagers', $booking->additional_chagers ?? '0.00') }}">
@@ -491,7 +502,6 @@
                                 <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-
                         <div>
                             <label for="reason" class="block text-sm font-medium text-gray-700 mb-1">Reason For Add Chg</label>
                             <input type="text" name="reason" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
@@ -565,118 +575,342 @@
             </main>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
-                    const additionalChagers = document.getElementById('additional_chagers');
-                    const discountPrice = document.getElementById('discount_price');
-                    const payed = document.getElementById('payed');
-                    const price = document.getElementById('price');
-            
-                    // Store the initial values
-                    let initialAdditionalChagers = parseFloat(additionalChagers.value) || 0;
-                    let initialDiscountPrice = parseFloat(discountPrice.value) || 0;
-                    let initialPayed = parseFloat(payed.value) || 0;
-                    let initialPrice = parseFloat(price.value) || 0;
-            
-                    function calculateTotalPrice() {
-                        // Get the current values
-                        const currentAdditionalChagers = parseFloat(additionalChagers.value) || 0;
-                        const currentDiscountPrice = parseFloat(discountPrice.value) || 0;
-                        const currentPayed = parseFloat(payed.value) || 0;
-            
-                        // Calculate the differences
-                        const additionalDiff = currentAdditionalChagers - initialAdditionalChagers;
-                        const discountDiff = currentDiscountPrice - initialDiscountPrice;
-                        const payedDiff = currentPayed - initialPayed;
-            
-                        // Update the initial values to the current ones
-                        initialAdditionalChagers = currentAdditionalChagers;
-                        initialDiscountPrice = currentDiscountPrice;
-                        initialPayed = currentPayed;
-            
-                        // Update the price based on the differences
-                        let totalPrice = initialPrice + additionalDiff - discountDiff - payedDiff;
-            
-                        // Update the price field
-                        price.value = totalPrice.toFixed(2); // Keep two decimal places
-            
-                        // Update the initial price to reflect the new total
-                        initialPrice = totalPrice;
+                    const businessId = @json(auth()->user()->business_id);
+                    const currentVehicleNumber = @json($booking->vehicle_number);
+                    const vehicleSelect = document.getElementById('vehicle_number');
+                    const availableGroup = document.getElementById('available-vehicles-group');
+                    const unavailableGroup = document.getElementById('unavailable-vehicles-group');
+                    const fromDateInput = document.getElementById('from_date');
+                    const toDateInput = document.getElementById('to_date');
+
+                    // Function to fetch and populate vehicle dropdown
+                    function updateVehicleDropdown() {
+                        const fromDate = fromDateInput.value;
+                        const toDate = toDateInput.value;
+
+                        // Clear previous options
+                        availableGroup.innerHTML = '';
+                        unavailableGroup.innerHTML = '';
+
+                        if (!fromDate || !toDate) {
+                            // If dates are not set, load all vehicles
+                            loadAllVehicles();
+                            return;
+                        }
+
+                        fetch(`/vehicle-availability?business_id=${businessId}&from_date=${encodeURIComponent(fromDate)}&to_date=${encodeURIComponent(toDate)}`)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Failed to fetch vehicle availability');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                // Populate available vehicles
+                                if (Array.isArray(data.available) && data.available.length > 0) {
+                                    data.available.forEach(v => {
+                                        const option = document.createElement('option');
+                                        option.value = v.number;
+                                        option.textContent = v.number + (v.model ? ' (' + v.model + ')' : '');
+                                        availableGroup.appendChild(option);
+                                    });
+                                }
+
+                                // Populate unavailable vehicles
+                                if (Array.isArray(data.unavailable) && data.unavailable.length > 0) {
+                                    data.unavailable.forEach(v => {
+                                        const option = document.createElement('option');
+                                        option.value = v.number;
+                                        let label = v.number + (v.model ? ' (' + v.model + ')' : '');
+                                        if (v.reason === 'in_service') {
+                                            label += ' (In Service)';
+                                        } else {
+                                            label += ' (Booked)';
+                                        }
+                                        option.textContent = label;
+                                        unavailableGroup.appendChild(option);
+                                    });
+                                }
+
+                                // Ensure current vehicle is in the list (add if not present)
+                                if (currentVehicleNumber) {
+                                    const allOptions = Array.from(vehicleSelect.options);
+                                    const currentVehicleExists = allOptions.some(opt => opt.value === currentVehicleNumber);
+                                    
+                                    if (!currentVehicleExists) {
+                                        const option = document.createElement('option');
+                                        option.value = currentVehicleNumber;
+                                        option.textContent = currentVehicleNumber + ' (Current Booking)';
+                                        availableGroup.appendChild(option);
+                                    }
+                                    
+                                    vehicleSelect.value = currentVehicleNumber;
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching vehicle availability:', error);
+                                // Fallback to loading all vehicles
+                                loadAllVehicles();
+                            });
                     }
-            
-                    // Attach the calculate function to the input events of the fields
-                    additionalChagers.addEventListener('input', calculateTotalPrice);
-                    discountPrice.addEventListener('input', calculateTotalPrice);
-                    payed.addEventListener('input', calculateTotalPrice);
-                });
-            </script>
-            <script>
-                document.getElementById('vehicle_number').addEventListener('change', function() {
-                    const vehicleNumber = this.value;
-            
-                    fetch(`/vehicles/get-details/${vehicleNumber}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.vehicle_name) {
-                                document.getElementById('vehicle_name').value =
-                                    `${data.vehicle_model} ${data.vehicle_name}`;
-                            } else {
-                                alert(data.message || 'Vehicle details not found');
-                                document.getElementById('vehicle_name').value = '';
+
+                    // Function to load all vehicles (fallback)
+                    function loadAllVehicles() {
+                        // Use the booking's dates to fetch vehicles, or use current dates
+                        const fromDate = fromDateInput.value || @json($booking->from_date);
+                        const toDate = toDateInput.value || @json($booking->to_date);
+                        
+                        if (fromDate && toDate) {
+                            fetch(`/vehicle-availability?business_id=${businessId}&from_date=${encodeURIComponent(fromDate)}&to_date=${encodeURIComponent(toDate)}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    // Populate available vehicles
+                                    if (Array.isArray(data.available) && data.available.length > 0) {
+                                        data.available.forEach(v => {
+                                            const option = document.createElement('option');
+                                            option.value = v.number;
+                                            option.textContent = v.number + (v.model ? ' (' + v.model + ')' : '');
+                                            availableGroup.appendChild(option);
+                                        });
+                                    }
+
+                                    // Populate unavailable vehicles
+                                    if (Array.isArray(data.unavailable) && data.unavailable.length > 0) {
+                                        data.unavailable.forEach(v => {
+                                            const option = document.createElement('option');
+                                            option.value = v.number;
+                                            let label = v.number + (v.model ? ' (' + v.model + ')' : '');
+                                            if (v.reason === 'in_service') {
+                                                label += ' (In Service)';
+                                            } else {
+                                                label += ' (Booked)';
+                                            }
+                                            option.textContent = label;
+                                            unavailableGroup.appendChild(option);
+                                        });
+                                    }
+
+                                    // Ensure current vehicle is in the list (add if not present)
+                                    if (currentVehicleNumber) {
+                                        const allOptions = Array.from(vehicleSelect.options);
+                                        const currentVehicleExists = allOptions.some(opt => opt.value === currentVehicleNumber);
+                                        
+                                        if (!currentVehicleExists) {
+                                            const option = document.createElement('option');
+                                            option.value = currentVehicleNumber;
+                                            option.textContent = currentVehicleNumber + ' (Current Booking)';
+                                            availableGroup.appendChild(option);
+                                        }
+                                        
+                                        vehicleSelect.value = currentVehicleNumber;
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error loading vehicles:', error);
+                                    // Ensure current vehicle is in the list
+                                    if (currentVehicleNumber) {
+                                        const option = document.createElement('option');
+                                        option.value = currentVehicleNumber;
+                                        option.textContent = currentVehicleNumber + ' (Current Booking)';
+                                        availableGroup.appendChild(option);
+                                        vehicleSelect.value = currentVehicleNumber;
+                                    }
+                                });
+                        } else {
+                            // If no dates, ensure current vehicle is in the list
+                            if (currentVehicleNumber) {
+                                const option = document.createElement('option');
+                                option.value = currentVehicleNumber;
+                                option.textContent = currentVehicleNumber + ' (Current)';
+                                availableGroup.appendChild(option);
+                                vehicleSelect.value = currentVehicleNumber;
                             }
-                        })
-                        .catch(error => console.error('Error fetching vehicle details:', error));
+                        }
+                    }
+
+                    // Function to calculate total price based on all factors
+                    function calculateTotalPrice() {
+                        const pricePerDayInput = document.getElementById('price_per_day');
+                        const fromDate = fromDateInput.value;
+                        const toDate = toDateInput.value;
+                        const additionalChagersEl = document.getElementById('additional_chagers');
+                        const discountPriceEl = document.getElementById('discount_price');
+                        const payedEl = document.getElementById('payed');
+                        const priceField = document.getElementById('price');
+
+                        if (!pricePerDayInput || !priceField) return;
+
+                        const pricePerDay = parseFloat(pricePerDayInput.value) || 0;
+                        const additionalChagers = parseFloat(additionalChagersEl?.value) || 0;
+                        const discountPrice = parseFloat(discountPriceEl?.value) || 0;
+                        const payed = parseFloat(payedEl?.value) || 0;
+                        let totalPrice = 0;
+
+                        // Calculate base price from days and price per day
+                        if (fromDate && toDate && pricePerDay > 0) {
+                            const from = new Date(fromDate + 'T00:00:00');
+                            const to = new Date(toDate + 'T00:00:00');
+                            const days = Math.ceil((to - from) / (1000 * 60 * 60 * 24));
+                            if (days > 0) {
+                                totalPrice = days * pricePerDay;
+                            }
+                        }
+
+                        // Add additional charges
+                        totalPrice += additionalChagers;
+
+                        // Subtract discount
+                        totalPrice -= discountPrice;
+
+                        // Subtract paid amount
+                        totalPrice -= payed;
+
+                        // Ensure price is not negative
+                        totalPrice = Math.max(0, totalPrice);
+
+                        // Update the price field
+                        priceField.value = totalPrice.toFixed(2);
+                    }
+
+                    // Make calculateTotalPrice available globally for other scripts
+                    window.calculateTotalPrice = calculateTotalPrice;
+
+                    // Attach event listeners for additional charges, discount, and paid fields
+                    const additionalChagersEl = document.getElementById('additional_chagers');
+                    const discountPriceEl = document.getElementById('discount_price');
+                    const payedEl = document.getElementById('payed');
+
+                    if (additionalChagersEl) {
+                        additionalChagersEl.addEventListener('input', calculateTotalPrice);
+                    }
+                    if (discountPriceEl) {
+                        discountPriceEl.addEventListener('input', calculateTotalPrice);
+                    }
+                    if (payedEl) {
+                        payedEl.addEventListener('input', calculateTotalPrice);
+                    }
+
+                    // Function to fetch and populate vehicle details
+                    function fetchVehicleDetails(vehicleNumber) {
+                        if (!vehicleNumber) {
+                            document.getElementById('vehicle_name').value = '';
+                            return;
+                        }
+
+                        fetch(`/vehicles/get-details/${vehicleNumber}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.vehicle_name && data.vehicle_model) {
+                                    document.getElementById('vehicle_name').value =
+                                        `${data.vehicle_model} ${data.vehicle_name}`;
+                                    
+                                    // Update price_per_day if it exists
+                                    if (data.price_per_day && document.getElementById('price_per_day')) {
+                                        document.getElementById('price_per_day').value = data.price_per_day;
+                                        // Recalculate total price when price per day changes
+                                        calculateTotalPrice();
+                                    }
+                                    
+                                    // Update free_km if it exists
+                                    if (data.free_km && document.getElementById('free_km')) {
+                                        // Calculate free_km based on dates
+                                        const fromDate = fromDateInput.value;
+                                        const toDate = toDateInput.value;
+                                        if (fromDate && toDate) {
+                                            const from = new Date(fromDate + 'T00:00:00');
+                                            const to = new Date(toDate + 'T00:00:00');
+                                            const days = Math.ceil((to - from) / (1000 * 60 * 60 * 24));
+                                            if (days > 0) {
+                                                document.getElementById('free_km').value = (days * parseFloat(data.free_km)).toFixed(2);
+                                            }
+                                        }
+                                    }
+                                    
+                                    // Update start_km if current_mileage exists
+                                    if (data.current_mileage && document.getElementById('start_km')) {
+                                        document.getElementById('start_km').value = data.current_mileage;
+                                    }
+                                } else {
+                                    console.warn('Vehicle details not found:', data.message);
+                                    document.getElementById('vehicle_name').value = '';
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching vehicle details:', error);
+                                document.getElementById('vehicle_name').value = '';
+                            });
+                    }
+
+                    // When vehicle is selected, fetch and populate related fields
+                    vehicleSelect.addEventListener('change', function() {
+                        fetchVehicleDetails(this.value);
+                    });
+
+                    // Update dropdown when dates change
+                    fromDateInput.addEventListener('change', function() {
+                        updateVehicleDropdown();
+                        // Re-fetch vehicle details if a vehicle is selected
+                        if (vehicleSelect.value) {
+                            fetchVehicleDetails(vehicleSelect.value);
+                        }
+                        // Recalculate price when dates change
+                        calculateTotalPrice();
+                    });
+                    
+                    toDateInput.addEventListener('change', function() {
+                        updateVehicleDropdown();
+                        // Re-fetch vehicle details if a vehicle is selected
+                        if (vehicleSelect.value) {
+                            fetchVehicleDetails(vehicleSelect.value);
+                        }
+                        // Recalculate price when dates change
+                        calculateTotalPrice();
+                    });
+
+                    // Initial load
+                    updateVehicleDropdown();
+                    
+                    // Load current vehicle details on page load
+                    if (currentVehicleNumber) {
+                        // Small delay to ensure dropdown is populated first
+                        setTimeout(function() {
+                            vehicleSelect.value = currentVehicleNumber;
+                            fetchVehicleDetails(currentVehicleNumber);
+                        }, 500);
+                    }
                 });
             </script>
             <script>
-                function formatVehicleNumber(input) {
-                    // Remove all characters that are not uppercase letters, digits, or "-"
-                    input.value = input.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+                // Update Free KM when dates change (price is now handled by calculateTotalPrice)
+                document.addEventListener('DOMContentLoaded', function() {
+                    function updateFreeKM() {
+                        const toDateInput = document.getElementById('to_date').value;
+                        const dailyFreeKm = parseFloat(document.getElementById('daily_free_km').value);
+                        const freeKmField = document.getElementById('free_km');
+                        const fromDateInput = document.getElementById('from_date').value;
+                        
+                        if (!fromDateInput || !toDateInput || !freeKmField) return;
+                        
+                        const fromDate = new Date(fromDateInput + 'T00:00:00');
+                        const newToDate = new Date(toDateInput + 'T00:00:00');
             
-                    // Ensure it follows the pattern "AAA-1234"
-                    const match = input.value.match(/^([A-Z]{0,3})(-?)([0-9]{0,4})$/);
-                    if (match) {
-                        input.value = (match[1] || '') + (match[3] ? '-' + match[3] : '');
-                    }
-                }
-            </script>
-            <script>
-                function updateFreeKMandPrice() {
-                    const toDateInput = document.getElementById('to_date').value;
-                    const dailyFreeKm = parseFloat(document.getElementById('daily_free_km').value);
-                    const freeKmField = document.getElementById('free_km');
-            
-                    const priceField = document.getElementById('price');
-                    const pricePerDay = parseFloat(document.getElementById('price_per_day').value);
-                    const originalPrice = parseFloat(priceField.dataset.originalPrice);
-                    const originalToDate = new Date(priceField.dataset.originalToDate + 'T00:00:00');
-                    const newToDate = new Date(toDateInput + 'T00:00:00');
-            
-                    if (isNaN(originalToDate.getTime()) || isNaN(newToDate.getTime())) return;
-            
-                    // ✅ Day difference between NEW to_date and ORIGINAL to_date
-                    let dayDifference = Math.ceil((newToDate - originalToDate) / (1000 * 60 * 60 * 24));
-            
-                    // ✅ Calculate and update price only if date is extended
-                    if (dayDifference > 0 && !isNaN(pricePerDay)) {
-                        const additionalPrice = dayDifference * pricePerDay;
-                        priceField.value = (originalPrice + additionalPrice).toFixed(2);
-                    } else {
-                        // Reset to original price if date was shortened or unchanged
-                        priceField.value = originalPrice.toFixed(2);
+                        if (!isNaN(fromDate.getTime()) && !isNaN(newToDate.getTime()) && !isNaN(dailyFreeKm)) {
+                            let freeKmDays = Math.ceil((newToDate - fromDate) / (1000 * 60 * 60 * 24));
+                            if (freeKmDays < 1) freeKmDays = 1;
+                            freeKmField.value = (freeKmDays * dailyFreeKm).toFixed(2);
+                        }
                     }
             
-                    // ✅ Optional: still update Free KM from from_date to to_date
-                    const fromDateInput = document.getElementById('from_date').value;
-                    const fromDate = new Date(fromDateInput + 'T00:00:00');
-            
-                    if (!isNaN(fromDate.getTime()) && !isNaN(newToDate.getTime()) && !isNaN(dailyFreeKm)) {
-                        let freeKmDays = Math.ceil((newToDate - fromDate) / (1000 * 60 * 60 * 24));
-                        if (freeKmDays < 1) freeKmDays = 1;
-                        freeKmField.value = (freeKmDays * dailyFreeKm).toFixed(2);
+                    const fromDateEl = document.getElementById('from_date');
+                    const toDateEl = document.getElementById('to_date');
+                    
+                    if (fromDateEl) {
+                        fromDateEl.addEventListener('change', updateFreeKM);
                     }
-                }
-            
-                document.getElementById('from_date').addEventListener('change', updateFreeKMandPrice);
-                document.getElementById('to_date').addEventListener('change', updateFreeKMandPrice);
+                    if (toDateEl) {
+                        toDateEl.addEventListener('change', updateFreeKM);
+                    }
+                });
             </script>
         </div>
     </div>
