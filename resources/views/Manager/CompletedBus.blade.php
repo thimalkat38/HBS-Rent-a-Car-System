@@ -11,8 +11,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-<body class="bg-white min-h-screen">
-    <div class="flex min-h-screen">
+<body class="bg-white min-h-screen overflow-x-hidden">
+    <div class="flex min-h-screen overflow-x-hidden">
         <!-- Sidebar -->
         <aside class="w-64 bg-slate-900 flex flex-col min-h-screen">
             <div class="flex items-center justify-center h-20">
@@ -229,7 +229,7 @@
             </nav>
         </aside>
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col min-h-screen bg-gray-50">
+        <div class="flex-1 flex flex-col min-h-screen bg-gray-50 overflow-x-hidden">
             <!-- Header -->
             <header class="w-full h-20 bg-white border-b border-gray-200 flex items-center px-8">
                 <div class="w-full flex justify-between items-center">
@@ -538,25 +538,19 @@
                             </form>
 
                         </div>
-                        <div class="overflow-x-auto">
-                            <div class="w-full overflow-x-auto">
+                        <div class="bg-white rounded-lg shadow overflow-hidden">
+                            <div class="overflow-x-auto w-full">
                                 <table
-                                    class="min-w-full bg-white border border-gray-200 rounded-lg shadow table-fixed">
+                                    class="w-full bg-white table-fixed">
                                     <colgroup>
-                                        <col style="width: 110px;">
-                                        <col style="width: 150px;">
-                                        <col style="width: 160px;">
-                                        <col style="width: 110px;">
-                                        <col style="width: 110px;">
-                                        <col style="width: 120px;">
-                                        <col style="width: 170px;">
-                                        <col style="width: 160px;">
-                                        <col style="width: 160px;">
-                                        <col style="width: 120px;">
-                                        <col style="width: 82px;">
-                                        <col style="width: 120px;">
-                                        <col style="width: 116px;">
-                                        <col style="width: 128px;">
+                                        <col style="width: 5%;">
+                                        <col style="width: 15%;">
+                                        <col style="width: 15%;">
+                                        <col style="width: 10%;">
+                                        <col style="width: 10%;">
+                                        <col style="width: 12%;">
+                                        <col style="width: 12%;">
+                                        <col style="width: 6%;">
                                     </colgroup>
                                     <thead>
                                         <tr class="bg-slate-900 text-white text-sm">
@@ -566,10 +560,10 @@
                                             <th class="px-4 py-2 font-semibold text-left">From Date</th>
                                             <th class="px-4 py-2 font-semibold text-left">To Date</th>
                                             <th class="px-4 py-2 font-semibold text-left">Released Price</th>
-                                            <th class="px-4 py-2 font-semibold text-left">Additional Charges(after)
-                                            </th>
-                                            <th class="px-4 py-2 font-semibold text-left">Reason for Add chg</th>
-                                            <th class="px-4 py-2 font-semibold text-left">Discount Price(after)</th>
+                                            {{-- <th class="px-4 py-2 font-semibold text-left">Additional Charges(after)
+                                            </th> --}}
+                                            {{-- <th class="px-4 py-2 font-semibold text-left">Reason for Add chg</th> --}}
+                                            {{-- <th class="px-4 py-2 font-semibold text-left">Discount Price(after)</th> --}}
                                             <th class="px-4 py-2 font-semibold text-left">Total Income</th>
                                             {{-- <th class="px-4 py-2 font-semibold text-left">Due Paid</th>
                                             <th class="px-4 py-2 font-semibold text-left">Deposit Refunded</th>
@@ -582,7 +576,7 @@
                                             <tr class="border-b border-gray-100 hover:bg-gray-50 text-sm align-top">
                                                 <td class="px-4 py-2 whitespace-nowrap">{{ $postBooking->booking_id }}
                                                 </td>
-                                                <td class="px-4 py-2 whitespace-nowrap">{{ $postBooking->full_name }}
+                                                <td class="px-4 py-2 break-words">{{ $postBooking->full_name }}
                                                 </td>
                                                 <td class="px-4 py-2 whitespace-nowrap">
                                                     {{ $postBooking->vehicle }} <br>
@@ -595,12 +589,12 @@
                                                 </td>
                                                 <td class="px-4 py-2 whitespace-nowrap">{{ $postBooking->base_price }}
                                                 </td>
-                                                <td class="px-4 py-2 whitespace-nowrap">
+                                                {{-- <td class="px-4 py-2 whitespace-nowrap">
                                                     {{ $postBooking->after_additional }}</td>
                                                 <td class="px-4 py-2 whitespace-nowrap">{{ $postBooking->reason }}
                                                 </td>
                                                 <td class="px-4 py-2 whitespace-nowrap">
-                                                    {{ $postBooking->after_discount }}</td>
+                                                    {{ $postBooking->after_discount }}</td> --}}
                                                 <td class="px-4 py-2 whitespace-nowrap">
                                                     {{ $postBooking->total_income }}</td>
                                                 {{-- <td class="px-4 py-2 whitespace-nowrap">
@@ -638,6 +632,7 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
                         </div>
                     </div>
                 </div>

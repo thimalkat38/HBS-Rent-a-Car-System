@@ -11,8 +11,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-<body class="bg-white min-h-screen">
-    <div class="flex min-h-screen">
+<body class="bg-white min-h-screen overflow-x-hidden">
+    <div class="flex min-h-screen overflow-x-hidden">
         <!-- Sidebar -->
         <aside class="w-64 bg-slate-900 flex flex-col min-h-screen">
             <div class="flex items-center justify-center h-20">
@@ -229,7 +229,7 @@
             </nav>
         </aside>
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col min-h-screen bg-gray-50">
+        <div class="flex-1 flex flex-col min-h-screen bg-gray-50 overflow-x-hidden">
             <!-- Header -->
             <header class="w-full h-20 bg-white border-b border-gray-200 flex items-center px-8">
                 <div class="w-full flex justify-between items-center">
@@ -320,8 +320,8 @@
                     </form>
                 </div>
                 <!-- Table Full Page -->
-                <div class="flex-1 w-full px-8 pb-6 flex flex-col overflow-hidden">
-                    <div class="flex-1 overflow-auto bg-white rounded-lg shadow border border-gray-200">
+                <div class="flex-1 w-full px-4 sm:px-6 lg:px-8 pb-6 flex flex-col overflow-hidden max-w-full">
+                    <div class="flex-1 overflow-x-auto bg-white rounded-lg shadow border border-gray-200 w-full">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-slate-100 sticky top-0 z-10">
                                 <tr>

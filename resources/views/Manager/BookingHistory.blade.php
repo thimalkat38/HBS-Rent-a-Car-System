@@ -11,8 +11,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-<body class="bg-white min-h-screen">
-    <div class="flex min-h-screen">
+<body class="bg-white min-h-screen overflow-x-hidden">
+    <div class="flex min-h-screen overflow-x-hidden">
         <!-- Sidebar -->
         <aside class="w-64 bg-slate-900 flex flex-col min-h-screen">
             <div class="flex items-center justify-center h-20">
@@ -229,7 +229,7 @@
             </nav>
         </aside>
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col min-h-screen bg-gray-50">
+        <div class="flex-1 flex flex-col min-h-screen bg-gray-50 overflow-x-hidden">
             <!-- Header -->
             <header class="w-full h-20 bg-white border-b border-gray-200 flex items-center px-8">
                 <div class="w-full flex justify-between items-center">
@@ -472,13 +472,13 @@
                     </div>
                 </div>
             </header>
-            <main class="flex-1 w-full px-6 py-6">
-                <div class="w-full">
+            <main class="flex-1 w-full px-6 py-6 overflow-x-hidden max-w-full">
+                <div class="w-full max-w-full">
                     <div class="mb-6">
                         <div class="bg-white rounded-lg shadow p-6">
                             {{-- Search --}}
                             <form action="{{ url('bookings') }}" method="GET" id="searchForm">
-                                <div class="flex flex-wrap gap-4 items-center">
+                                <div class="flex flex-wrap gap-4 items-center max-w-full">
                                     <!-- Mobile Number Input (Auto-Search on Typing) -->
                                     <input type="text" name="mobile_number" placeholder="Search by Mobile Number"
                                         value="{{ request('mobile_number') }}"
@@ -552,8 +552,9 @@
                             </form>
                         </div>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow">
+                    <div class="overflow-x-auto w-full max-w-full">
+                        <div class="inline-block min-w-full align-middle">
+                            <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow">
                             <thead>
                                 <tr>
                                     @php
@@ -709,6 +710,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </main>

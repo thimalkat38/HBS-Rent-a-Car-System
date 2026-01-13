@@ -7,8 +7,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-<body class="bg-white min-h-screen">
-    <div class="flex min-h-screen">
+<body class="bg-white min-h-screen overflow-x-hidden">
+    <div class="flex min-h-screen overflow-x-hidden">
         <!-- Sidebar -->
         <aside class="w-64 bg-slate-900 flex flex-col">
             <div class="flex items-center justify-center h-20">
@@ -337,14 +337,14 @@
                 </div>
             </header>
             <!-- Main Sections -->
-            <main class="flex-1 relative">
+            <main class="flex-1 relative overflow-x-hidden max-w-full">
                 <!-- Top Row: Vehicle Info + Calendar -->
-                <div class="flex flex-row gap-4 mt-8 px-8">
+                <div class="flex flex-col lg:flex-row gap-4 mt-8 px-4 sm:px-6 lg:px-8 max-w-full overflow-x-hidden">
                     <!-- Wrap the three sections tightly with no extra space between them -->
-                    <div class="flex flex-row gap-4 w-full">
+                    <div class="flex flex-col lg:flex-row gap-4 w-full max-w-full">
                         <!-- Vehicle Info Card -->
                         <section
-                            class="w-[350px] min-w-[300px] bg-gradient-to-br from-black to-slate-900 rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 relative">
+                            class="w-full lg:w-[350px] lg:min-w-[300px] bg-gradient-to-br from-black to-slate-900 rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 relative">
                             @if ($vehicle)
                                 <div>
                                     <div class="text-white text-3xl font-bold font-poppins">
