@@ -505,6 +505,26 @@
                                         class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-32"
                                     >
 
+                                    <!-- Quick Date Filters -->
+                                    <div class="flex gap-2 items-center">
+                                        <button type="button" onclick="setDateFilter('today')"
+                                            class="px-3 py-2 text-sm {{ request('date_filter') === 'today' ? 'bg-teal-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }} rounded transition font-medium">
+                                            Today
+                                        </button>
+                                        <button type="button" onclick="setDateFilter('this_week')"
+                                            class="px-3 py-2 text-sm {{ request('date_filter') === 'this_week' ? 'bg-teal-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }} rounded transition font-medium">
+                                            This Week
+                                        </button>
+                                        <button type="button" onclick="setDateFilter('upcoming')"
+                                            class="px-3 py-2 text-sm {{ request('date_filter') === 'upcoming' ? 'bg-teal-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }} rounded transition font-medium">
+                                            Upcoming (7 days)
+                                        </button>
+                                        <button type="button" onclick="setDateFilter('all')"
+                                            class="px-3 py-2 text-sm {{ !request('date_filter') || request('date_filter') === 'all' ? 'bg-teal-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }} rounded transition font-medium">
+                                            All
+                                        </button>
+                                    </div>
+
                                     <!-- Date Range Fields (Auto-Search on Change) -->
                                     <input type="date" name="from_date" value="{{ request('from_date') }}"
                                         placeholder="From Date"
@@ -517,8 +537,9 @@
                                     >
 
                                     <!-- Hidden fields to preserve sort parameters -->
-                                    <input type="hidden" name="sort_by" value="{{ request('sort_by', 'created_at') }}">
+                                    <input type="hidden" name="sort_by" value="{{ request('sort_by', 'from_date') }}">
                                     <input type="hidden" name="sort_order" value="{{ request('sort_order', 'desc') }}">
+                                    <input type="hidden" name="date_filter" id="date_filter" value="{{ request('date_filter') }}">
 
                                     <button type="submit"
                                         class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition font-semibold"
@@ -536,7 +557,7 @@
                             <thead>
                                 <tr>
                                     @php
-                                        $currentSortBy = request('sort_by', 'created_at');
+                                        $currentSortBy = request('sort_by', 'from_date');
                                         $currentSortOrder = request('sort_order', 'desc');
                                         
                                         function getSortUrl($column, $currentSortBy, $currentSortOrder) {
@@ -704,6 +725,16 @@
         if (match) {
             input.value = (match[1] || '') + (match[3] ? '-' + match[3] : '');
         }
+    }
+
+    function setDateFilter(filter) {
+        document.getElementById('date_filter').value = filter;
+        // Clear manual date inputs when using quick filters (except 'all')
+        if (filter !== 'all') {
+            document.querySelector('input[name="from_date"]').value = '';
+            document.querySelector('input[name="to_date"]').value = '';
+        }
+        document.getElementById('searchForm').submit();
     }
 </script>
 </html>

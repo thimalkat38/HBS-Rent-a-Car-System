@@ -40,22 +40,45 @@ class BookingController extends Controller
             $query->where('status', $request->input('status'));
         }
 
-        if ($request->filled('from_date')) {
-            $query->whereDate('from_date', '>=', $request->input('from_date'));
-        }
+        // Handle date filters
+        if ($request->filled('date_filter')) {
+            $dateFilter = $request->input('date_filter');
+            $today = now()->startOfDay();
+            
+            switch ($dateFilter) {
+                case 'today':
+                    $query->whereDate('from_date', $today);
+                    break;
+                case 'this_week':
+                    $query->whereBetween('from_date', [$today, now()->endOfWeek()]);
+                    break;
+                case 'upcoming':
+                    // Next 7 days from today
+                    $query->whereBetween('from_date', [$today, now()->addDays(7)->endOfDay()]);
+                    break;
+                case 'all':
+                    // No filter applied
+                    break;
+            }
+        } else {
+            // Use individual date filters if date_filter is not set
+            if ($request->filled('from_date')) {
+                $query->whereDate('from_date', '>=', $request->input('from_date'));
+            }
 
-        if ($request->filled('to_date')) {
-            $query->whereDate('from_date', '<=', $request->input('to_date'));
+            if ($request->filled('to_date')) {
+                $query->whereDate('from_date', '<=', $request->input('to_date'));
+            }
         }
 
         // Handle sorting
-        $sortBy = $request->input('sort_by', 'created_at');
+        $sortBy = $request->input('sort_by', 'from_date');
         $sortOrder = $request->input('sort_order', 'desc');
         
         // Validate sort column to prevent SQL injection
         $allowedSortColumns = ['id', 'full_name', 'from_date', 'to_date', 'vehicle_name', 'vehicle_number', 'mobile_number', 'additional_chagers', 'discount_price', 'payed', 'price', 'created_at'];
         if (!in_array($sortBy, $allowedSortColumns)) {
-            $sortBy = 'created_at';
+            $sortBy = 'from_date';
         }
         
         // Validate sort order
