@@ -11,8 +11,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-<body class="bg-white min-h-screen">
-    <div class="flex min-h-screen">
+<body class="bg-white min-h-screen overflow-x-hidden">
+    <div class="flex min-h-screen overflow-x-hidden">
         <!-- Sidebar -->
         <aside class="w-64 bg-slate-900 flex flex-col min-h-screen">
             <div class="flex items-center justify-center h-20">
@@ -229,7 +229,7 @@
             </nav>
         </aside>
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col min-h-screen bg-gray-50">
+        <div class="flex-1 flex flex-col min-h-screen bg-gray-50 overflow-x-hidden">
             <!-- Header -->
             <header class="w-full h-20 bg-white border-b border-gray-200 flex items-center px-8">
                 <div class="w-full flex justify-between items-center">
@@ -303,15 +303,16 @@
                     </div>
                 </div>
             </header>
-            <main class="flex-1 w-full px-0 py-0 flex flex-col h-[calc(100vh-5rem)]">
-                <div class="overflow-x-auto w-full">
+            <main class="flex-1 w-full px-0 py-0 flex flex-col h-[calc(100vh-5rem)] overflow-x-hidden max-w-full">
+                <div class="overflow-x-auto w-full max-w-full">
                     <div class="mb-4 flex justify-end p-4">
                         <a href="{{ route('employees.create') }}"
                            class="inline-block px-5 py-2 bg-teal-600 text-white text-sm font-semibold rounded shadow hover:bg-teal-700 transition">
                             + Add Employee
                         </a>
                     </div>
-                    <table class="min-w-full divide-y divide-gray-200 rounded-lg shadow-lg bg-white">
+                    <div class="inline-block min-w-full align-middle">
+                        <table class="min-w-full divide-y divide-gray-200 rounded-lg shadow-lg bg-white">
                         <thead class="bg-gray-100">
                             <tr>
                                 <th class="px-4 py-2"></th>
@@ -368,6 +369,7 @@
                             @endforelse
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </main>
         </div>

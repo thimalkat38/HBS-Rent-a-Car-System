@@ -14,8 +14,8 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
-<body>
-<div class="min-h-screen bg-white flex">
+<body class="overflow-x-hidden">
+<div class="min-h-screen bg-white flex overflow-x-hidden">
     <!-- Sidebar -->
     <aside class="w-64 bg-slate-900 flex flex-col">
         <div class="flex items-center justify-center h-20">
@@ -255,7 +255,7 @@
         </header>
 
         <!-- Main Content -->
-        <main class="flex-1 p-8 bg-gray-50 overflow-y-auto">
+        <main class="flex-1 p-4 sm:p-6 lg:p-8 bg-gray-50 overflow-y-auto overflow-x-hidden max-w-full">
             <!-- Search and Action Buttons -->
             <div class="max-w-6xl mx-auto mb-6">
                 <div class="bg-white rounded-2xl shadow p-6 border border-gray-200">

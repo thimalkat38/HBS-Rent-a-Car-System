@@ -206,25 +206,13 @@ class DashboardController extends Controller
         $vehicle_owner_payment = PaidOwner::where('business_id', $businessId)
             ->whereDate('date', $dateStr)->sum('paid_amnt');
 
-        $fuel_chargers = Expense::where('business_id', $businessId)
-            ->where('cat', 'Fuel')->whereDate('date', $dateStr)->sum('amnt');
+        // Sum ALL expenses regardless of category
+        $all_expenses = Expense::where('business_id', $businessId)
+            ->whereDate('date', $dateStr)->sum('amnt');
 
-        $utility_bills = Expense::where('business_id', $businessId)
-            ->where('cat', 'Utility Bills')->whereDate('date', $dateStr)->sum('amnt');
-
-        $travel_fees = Expense::where('business_id', $businessId)
-            ->where('cat', 'Travel')->whereDate('date', $dateStr)->sum('amnt');
-
-        $office_supplies = Expense::where('business_id', $businessId)
-            ->where('cat', 'Office Supplies')->whereDate('date', $dateStr)->sum('amnt');
-
-        $other_income = Expense::where('business_id', $businessId)
-            ->whereIn('cat', ['Foods', 'Other'])->whereDate('date', $dateStr)->sum('amnt');
-
-        $total_expenses = $salary + $vehicle_services + $vehicle_maintenance + $fuel_chargers
-            + $office_supplies + $advanced_salary
-            + $vehicle_repair + $vehicle_owner_payment + $utility_bills
-            + $travel_fees + $other_income;
+        $total_expenses = $salary + $vehicle_services + $vehicle_maintenance
+            + $advanced_salary + $vehicle_repair + $vehicle_owner_payment
+            + $all_expenses;
 
         $net_profit = $total_income - $total_expenses;
 
@@ -267,25 +255,13 @@ class DashboardController extends Controller
         $vehicle_owner_payment = PaidOwner::where('business_id', $businessId)
             ->whereBetween('date', [$startDate, $endDate])->sum('paid_amnt');
 
-        $fuel_chargers = Expense::where('business_id', $businessId)
-            ->where('cat', 'Fuel')->whereBetween('date', [$startDate, $endDate])->sum('amnt');
+        // Sum ALL expenses regardless of category
+        $all_expenses = Expense::where('business_id', $businessId)
+            ->whereBetween('date', [$startDate, $endDate])->sum('amnt');
 
-        $utility_bills = Expense::where('business_id', $businessId)
-            ->where('cat', 'Utility Bills')->whereBetween('date', [$startDate, $endDate])->sum('amnt');
-
-        $travel_fees = Expense::where('business_id', $businessId)
-            ->where('cat', 'Travel')->whereBetween('date', [$startDate, $endDate])->sum('amnt');
-
-        $office_supplies = Expense::where('business_id', $businessId)
-            ->where('cat', 'Office Supplies')->whereBetween('date', [$startDate, $endDate])->sum('amnt');
-
-        $other_income = Expense::where('business_id', $businessId)
-            ->whereIn('cat', ['Foods', 'Other'])->whereBetween('date', [$startDate, $endDate])->sum('amnt');
-
-        $total_expenses = $salary + $vehicle_services + $vehicle_maintenance + $fuel_chargers
-            + $office_supplies + $advanced_salary
-            + $vehicle_repair + $vehicle_owner_payment + $utility_bills
-            + $travel_fees + $other_income;
+        $total_expenses = $salary + $vehicle_services + $vehicle_maintenance
+            + $advanced_salary + $vehicle_repair + $vehicle_owner_payment
+            + $all_expenses;
 
         $net_profit = $total_income - $total_expenses;
 

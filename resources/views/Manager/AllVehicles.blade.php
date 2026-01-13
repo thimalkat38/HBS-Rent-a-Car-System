@@ -11,8 +11,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-<body class="bg-white min-h-screen">
-    <div class="flex min-h-screen">
+<body class="bg-white min-h-screen overflow-x-hidden">
+    <div class="flex min-h-screen overflow-x-hidden">
         <!-- Sidebar -->
         <aside class="w-64 bg-slate-900 flex flex-col min-h-screen">
             <div class="flex items-center justify-center h-20">
@@ -228,7 +228,7 @@
             </nav>
         </aside>
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col min-h-screen bg-gray-50">
+        <div class="flex-1 flex flex-col min-h-screen bg-gray-50 overflow-x-hidden">
             <!-- Header -->
             <header class="w-full h-20 bg-white border-b border-gray-200 flex items-center px-8">
                 <div class="w-full flex justify-between items-center">
@@ -451,11 +451,11 @@
                 </div>
             </header>
             <!-- Search/Filter Bar -->
-            <section class="w-full px-8 mt-6">
+            <section class="w-full px-8 mt-6 max-w-full overflow-x-hidden">
                 <form method="GET" action="{{ url('allvehicles') }}">
-                    <div class="w-full p-4 bg-gray-900 rounded-2xl border border-gray-700 flex flex-col gap-4">
-                        <div class="flex flex-wrap items-center gap-4">
-                            <div class="flex items-center px-4 py-1.5 rounded-lg border border-gray-500 bg-white min-w-[250px]">
+                    <div class="w-full max-w-full p-4 bg-gray-900 rounded-2xl border border-gray-700 flex flex-col gap-4">
+                        <div class="flex flex-wrap items-center gap-4 max-w-full">
+                            <div class="flex items-center px-4 py-1.5 rounded-lg border border-gray-500 bg-white min-w-[200px] sm:min-w-[250px] flex-1 sm:flex-initial">
                                 <input
                                     type="text"
                                     name="search"
@@ -486,7 +486,7 @@
                                         const form = input.form;
                                         const debouncedSubmit = debounce(function() {
                                             form.submit();
-                                        }, 600);
+                                        }, 800);
 
                                         input.addEventListener('input', function(e) {
                                             debouncedSubmit();
@@ -521,8 +521,8 @@
                 </form>
             </section>
             <!-- Vehicles Grid -->
-            <main class="flex-1 w-full px-8 py-6">
-                <div class="flex flex-wrap gap-6 justify-center">
+            <main class="flex-1 w-full px-4 sm:px-6 lg:px-8 py-6 overflow-x-hidden max-w-full">
+                <div class="flex flex-wrap gap-4 sm:gap-6 justify-center max-w-full">
                     @foreach ($vehicles as $vehicle)
                         @php
                             $todayStr = now()->toDateString();
@@ -533,7 +533,7 @@
                             $isInService = (int)($vehicle->status ?? 0) === 1;
                         @endphp
 
-                        <div class="relative w-96 h-72 mb-4 flex-shrink-0 cursor-pointer"
+                        <div class="relative w-full sm:w-80 lg:w-96 h-64 sm:h-72 mb-4 flex-shrink-0 cursor-pointer max-w-full"
                              onclick="window.location='{{ route('vehicles.show', $vehicle->id) }}'">
                             @if ($vehicle->display_image)
                                 <img class="absolute w-96 h-72 rounded-2xl object-cover"

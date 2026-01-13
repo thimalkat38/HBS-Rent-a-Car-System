@@ -35,8 +35,8 @@
         .status-paid:hover { opacity: 0.7; }
     </style>
 </head>
-<body>
-    <div class="min-h-screen bg-white flex">
+<body class="overflow-x-hidden">
+    <div class="min-h-screen bg-white flex overflow-x-hidden">
         <!-- Sidebar -->
         <aside class="w-64 bg-slate-900 flex flex-col">
             <div class="flex items-center justify-center h-20">

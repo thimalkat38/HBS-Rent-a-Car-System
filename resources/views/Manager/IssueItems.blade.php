@@ -52,8 +52,8 @@
 
 </head>
 
-<body>
-    <div class="min-h-screen bg-white flex">
+<body class="overflow-x-hidden">
+    <div class="min-h-screen bg-white flex overflow-x-hidden">
         <!-- Sidebar (unchanged) -->
         <aside class="w-64 bg-slate-900 flex flex-col">
             <div class="flex items-center justify-center h-20">

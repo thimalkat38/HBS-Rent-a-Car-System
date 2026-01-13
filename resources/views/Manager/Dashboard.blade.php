@@ -12,8 +12,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 
-<body class="bg-white min-h-screen">
-    <div class="flex min-h-screen">
+<body class="bg-white min-h-screen overflow-x-hidden">
+    <div class="flex min-h-screen overflow-x-hidden">
         <!-- Sidebar -->
         <aside class="w-64 bg-slate-900 flex flex-col min-h-screen">
             <div class="flex items-center justify-center h-20">
@@ -230,7 +230,7 @@
             </nav>
         </aside>
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col min-h-screen bg-gray-50">
+        <div class="flex-1 flex flex-col min-h-screen bg-gray-50 overflow-x-hidden">
             <!-- Header -->
             @php
                 $bName = \App\Models\Business::where('id', auth()->user()->business_id)->value('b_name');
@@ -306,8 +306,8 @@
                     </div>
                 </div>
             </header>
-            <main class="flex-1 w-full px-0 py-0 flex flex-col h-[calc(100vh-5rem)]">
-                <div class="flex flex-col gap-6 p-6">
+            <main class="flex-1 w-full px-0 py-0 flex flex-col h-[calc(100vh-5rem)] overflow-x-hidden">
+                <div class="flex flex-col gap-6 p-6 w-full max-w-full">
                     <!-- Welcome and All Bookings Button -->
                     <div class="bg-gradient-to-r from-blue-600 to-slate-800 rounded-xl shadow-lg p-6 flex justify-between items-center text-white mb-2">
                         <div>
@@ -501,7 +501,7 @@
                     </div>
 
                     <!-- Calendar Section -->
-                    <div id="calendar" class="bg-white rounded-2xl shadow-lg p-6 mt-6 w-full mx-0 overflow-x-auto border border-slate-100">
+                    <div id="calendar" class="bg-white rounded-2xl shadow-lg p-6 mt-6 w-full max-w-full mx-0 overflow-x-auto border border-slate-100">
                         <div class="flex items-center justify-between mb-5">
                             <a href="{{ route('manager.dashboard', ['month' => $currentMonth - 1, 'year' => $currentYear]) }}#calendar"
                                 class="text-blue-500 hover:underline font-semibold px-3 py-2 rounded-lg hover:bg-blue-100 transition flex items-center gap-1">
