@@ -330,7 +330,7 @@
                                 @foreach ($vehicleOwners as $vehicleOwner)
                                     <tr onclick="window.location='{{ route('vehicle_owners.show', $vehicleOwner->id) }}'"
                                         class="hover:bg-gray-50 cursor-pointer transition">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <td class="px-6 py-4 text-sm text-gray-900 max-w-xs break-words">
                                             {{ $vehicleOwner->title }}. {{ $vehicleOwner->full_name }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -339,7 +339,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             {{ $vehicleOwner->phone }}
                                         </td>
-                                        <td class="px-6 py-4 text-sm text-gray-900">
+                                        <td class="px-6 py-4 text-sm text-gray-900 max-w-sm break-words">
                                             {{ $vehicleOwner->address }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
