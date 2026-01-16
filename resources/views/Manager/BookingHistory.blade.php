@@ -717,14 +717,20 @@
                                                     @endif
                                                     <a href="{{ route('bookings.edit', $booking->id) }}"
                                                         class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition font-medium">Edit</a>
-                                                    {{-- <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                        class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm font-medium"
-                                                        onclick="return confirm('Are you sure you want to delete this booking?')"
-                                                    >Delete</button>
-                                                </form> --}}
+                                                    @if (!empty($booking->note))
+                                                        <button type="button"
+                                                            onclick="event.stopPropagation(); alert({{ json_encode($booking->note) }})"
+                                                            class="p-1 bg-yellow-400 text-black rounded-full hover:bg-yellow-500 transition flex items-center justify-center"
+                                                            style="width: 24px; height: 24px;" title="View Note">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4"
+                                                                fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M13 16h-1v-4h-1m1-4h.01M12 20c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z" />
+                                                            </svg>
+                                                        </button>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>

@@ -1542,6 +1542,17 @@
                         });
                     </script>
                 </section>
+                <section class="bg-white rounded-2xl shadow p-6 space-y-4 border border-gray-200">
+                    <h2 class="text-xl font-medium text-gray-900 mb-2">Other Informations</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="col-span-1 md:col-span-2 lg:col-span-3">
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="note">Note</label>
+                            <input id="note" name="note" type="text"
+                                class="w-full h-12 px-3 py-2 bg-gray-100 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                placeholder="Enter Note" />
+                        </div>
+                    </div>
+                </section>
 
                 <!-- Vehicle Photos Before Release -->
                 <section class="bg-white rounded-2xl shadow p-6 space-y-4 border border-gray-200">

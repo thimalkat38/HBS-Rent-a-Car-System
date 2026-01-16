@@ -425,6 +425,10 @@
                                             <p><span class="font-semibold text-gray-600">Start KM:</span>
                                                 <span id="stratKm" class="ml-1">{{ $booking->start_km }}</span>
                                             </p>
+                                            <p><span class="font-semibold text-gray-600">Note:</span>
+                                                <span id="note"
+                                                    class="ml-1">{{ $booking->note ?? 'No Note..' }}</span>
+                                            </p>
                                         </div>
                                     </section>
 

@@ -49,7 +49,8 @@ class Booking extends Model
         'extra_km_chg',
         'free_km',
         'free_kmd',
-        'start_km'
+        'start_km',
+        'note'
     ];
 
     protected $casts = [
