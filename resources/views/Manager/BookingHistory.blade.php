@@ -482,28 +482,23 @@
                                     <!-- Mobile Number Input (Auto-Search on Typing) -->
                                     <input type="text" name="mobile_number" placeholder="Search by Mobile Number"
                                         value="{{ request('mobile_number') }}"
-                                        class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-48"
-                                    >
+                                        class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-48">
 
                                     <!-- Full Name Input (Auto-Search on Typing) -->
                                     <input type="text" name="full_name" placeholder="Search by Full Name"
                                         value="{{ request('full_name') }}"
-                                        class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-48"
-                                    >
+                                        class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-48">
 
                                     <!-- Vehicle Number Input (Auto-Search on Typing) -->
                                     <input type="text" id="vehicle_number" name="vehicle_number"
-                                        list="vehicle_numbers"
-                                        placeholder="Search by vehicle number" maxlength="8"
+                                        list="vehicle_numbers" placeholder="Search by vehicle number" maxlength="8"
                                         value="{{ request('vehicle_number') }}"
-                                        class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-48"
-                                    >
+                                        class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-48">
 
                                     <!-- ID Input (Auto-Search on Typing) -->
                                     <input type="text" name="id" placeholder="Search by ID"
                                         value="{{ request('id') }}"
-                                        class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-32"
-                                    >
+                                        class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-32">
 
                                     <!-- Quick Date Filters -->
                                     <div class="flex gap-2 items-center">
@@ -528,188 +523,220 @@
                                     <!-- Date Range Fields (Auto-Search on Change) -->
                                     <input type="date" name="from_date" value="{{ request('from_date') }}"
                                         placeholder="From Date"
-                                        class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-40"
-                                    >
+                                        class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-40">
 
                                     <input type="date" name="to_date" value="{{ request('to_date') }}"
                                         placeholder="To Date"
-                                        class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-40"
-                                    >
+                                        class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 transition w-40">
 
                                     <!-- Hidden fields to preserve sort parameters -->
-                                    <input type="hidden" name="sort_by" value="{{ request('sort_by', 'from_date') }}">
-                                    <input type="hidden" name="sort_order" value="{{ request('sort_order', 'desc') }}">
-                                    <input type="hidden" name="date_filter" id="date_filter" value="{{ request('date_filter') }}">
+                                    <input type="hidden" name="sort_by"
+                                        value="{{ request('sort_by', 'from_date') }}">
+                                    <input type="hidden" name="sort_order"
+                                        value="{{ request('sort_order', 'asc') }}">
+                                    <input type="hidden" name="date_filter" id="date_filter"
+                                        value="{{ request('date_filter') }}">
 
                                     <button type="submit"
-                                        class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition font-semibold"
-                                    >Search</button>
+                                        class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition font-semibold">Search</button>
 
                                     <a href="{{ url('/bookings') }}"
-                                        class="ml-2 px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition font-semibold"
-                                    >Clear</a>
+                                        class="ml-2 px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition font-semibold">Clear</a>
                                 </div>
                             </form>
                         </div>
                     </div>
                     <div class="overflow-x-auto w-full max-w-full">
                         <div class="inline-block min-w-full align-middle">
-                            <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow">
-                            <thead>
-                                <tr>
-                                    @php
-                                        $currentSortBy = request('sort_by', 'from_date');
-                                        $currentSortOrder = request('sort_order', 'desc');
-                                        
-                                        function getSortUrl($column, $currentSortBy, $currentSortOrder) {
-                                            $params = request()->except(['sort_by', 'sort_order']);
-                                            $newOrder = ($currentSortBy === $column && $currentSortOrder === 'asc') ? 'desc' : 'asc';
-                                            $params['sort_by'] = $column;
-                                            $params['sort_order'] = $newOrder;
-                                            return url('bookings') . '?' . http_build_query($params);
-                                        }
-                                        
-                                        function getSortIcon($column, $currentSortBy, $currentSortOrder) {
-                                            if ($currentSortBy !== $column) {
-                                                return '<span class="material-icons text-gray-400 text-sm">unfold_more</span>';
+                            <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow text-xs">
+                                <thead>
+                                    <tr>
+                                        @php
+                                            $currentSortBy = request('sort_by', 'from_date');
+                                            $currentSortOrder = request('sort_order', 'desc');
+
+                                            function getSortUrl($column, $currentSortBy, $currentSortOrder)
+                                            {
+                                                $params = request()->except(['sort_by', 'sort_order']);
+                                                $newOrder =
+                                                    $currentSortBy === $column && $currentSortOrder === 'asc'
+                                                        ? 'desc'
+                                                        : 'asc';
+                                                $params['sort_by'] = $column;
+                                                $params['sort_order'] = $newOrder;
+                                                return url('bookings') . '?' . http_build_query($params);
                                             }
-                                            return $currentSortOrder === 'asc' 
-                                                ? '<span class="material-icons text-teal-500 text-sm">arrow_upward</span>'
-                                                : '<span class="material-icons text-teal-500 text-sm">arrow_downward</span>';
-                                        }
-                                    @endphp
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
-                                        <a href="{{ getSortUrl('id', $currentSortBy, $currentSortOrder) }}" 
-                                           class="flex items-center gap-1 hover:text-teal-600 transition"
-                                           onclick="event.stopPropagation()">
-                                            ID
-                                            {!! getSortIcon('id', $currentSortBy, $currentSortOrder) !!}
-                                        </a>
-                                    </th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
-                                        <a href="{{ getSortUrl('full_name', $currentSortBy, $currentSortOrder) }}" 
-                                           class="flex items-center gap-1 hover:text-teal-600 transition"
-                                           onclick="event.stopPropagation()">
-                                            Full Name
-                                            {!! getSortIcon('full_name', $currentSortBy, $currentSortOrder) !!}
-                                        </a>
-                                    </th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
-                                        <a href="{{ getSortUrl('from_date', $currentSortBy, $currentSortOrder) }}" 
-                                           class="flex items-center gap-1 hover:text-teal-600 transition"
-                                           onclick="event.stopPropagation()">
-                                            From
-                                            {!! getSortIcon('from_date', $currentSortBy, $currentSortOrder) !!}
-                                        </a>
-                                    </th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
-                                        <a href="{{ getSortUrl('to_date', $currentSortBy, $currentSortOrder) }}" 
-                                           class="flex items-center gap-1 hover:text-teal-600 transition"
-                                           onclick="event.stopPropagation()">
-                                            To
-                                            {!! getSortIcon('to_date', $currentSortBy, $currentSortOrder) !!}
-                                        </a>
-                                    </th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
-                                        <a href="{{ getSortUrl('vehicle_name', $currentSortBy, $currentSortOrder) }}" 
-                                           class="flex items-center gap-1 hover:text-teal-600 transition"
-                                           onclick="event.stopPropagation()">
-                                            Vehicle
-                                            {!! getSortIcon('vehicle_name', $currentSortBy, $currentSortOrder) !!}
-                                        </a>
-                                    </th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+
+                                            function getSortIcon($column, $currentSortBy, $currentSortOrder)
+                                            {
+                                                if ($currentSortBy !== $column) {
+                                                    return '<span class="material-icons text-gray-400 text-sm">unfold_more</span>';
+                                                }
+                                                return $currentSortOrder === 'asc'
+                                                    ? '<span class="material-icons text-teal-500 text-sm">arrow_upward</span>'
+                                                    : '<span class="material-icons text-teal-500 text-sm">arrow_downward</span>';
+                                            }
+                                        @endphp
+                                        <th
+                                            class="px-3 py-2 border-b text-left font-semibold text-gray-700 whitespace-nowrap w-12">
+                                            <a href="{{ getSortUrl('id', $currentSortBy, $currentSortOrder) }}"
+                                                class="flex items-center gap-1 hover:text-teal-600 transition"
+                                                onclick="event.stopPropagation()">
+                                                ID
+                                                {!! getSortIcon('id', $currentSortBy, $currentSortOrder) !!}
+                                            </a>
+                                        </th>
+                                        <th
+                                            class="px-3 py-2 border-b text-left font-semibold text-gray-700 whitespace-nowrap max-w-[140px]">
+                                            <a href="{{ getSortUrl('full_name', $currentSortBy, $currentSortOrder) }}"
+                                                class="flex items-center gap-1 hover:text-teal-600 transition"
+                                                onclick="event.stopPropagation()">
+                                                <span class="truncate">Full Name</span>
+                                                {!! getSortIcon('full_name', $currentSortBy, $currentSortOrder) !!}
+                                            </a>
+                                        </th>
+                                        <th
+                                            class="px-3 py-2 border-b text-left font-semibold text-gray-700 whitespace-nowrap">
+                                            <a href="{{ getSortUrl('from_date', $currentSortBy, $currentSortOrder) }}"
+                                                class="flex items-center gap-1 hover:text-teal-600 transition"
+                                                onclick="event.stopPropagation()">
+                                                From
+                                                {!! getSortIcon('from_date', $currentSortBy, $currentSortOrder) !!}
+                                            </a>
+                                        </th>
+                                        <th
+                                            class="px-3 py-2 border-b text-left font-semibold text-gray-700 whitespace-nowrap">
+                                            <a href="{{ getSortUrl('to_date', $currentSortBy, $currentSortOrder) }}"
+                                                class="flex items-center gap-1 hover:text-teal-600 transition"
+                                                onclick="event.stopPropagation()">
+                                                To
+                                                {!! getSortIcon('to_date', $currentSortBy, $currentSortOrder) !!}
+                                            </a>
+                                        </th>
+                                        <th
+                                            class="px-3 py-2 border-b text-left font-semibold text-gray-700 whitespace-nowrap max-w-[140px]">
+                                            <a href="{{ getSortUrl('vehicle_number', $currentSortBy, $currentSortOrder) }}"
+                                                class="flex items-center gap-1 hover:text-teal-600 transition"
+                                                onclick="event.stopPropagation()">
+                                                Vehicle
+                                                {!! getSortIcon('vehicle_number', $currentSortBy, $currentSortOrder) !!}
+                                            </a>
+                                        </th>
+                                        {{-- <th class="px-3 py-2 border-b text-left font-semibold text-gray-700 whitespace-nowrap">
                                         <a href="{{ getSortUrl('vehicle_number', $currentSortBy, $currentSortOrder) }}" 
                                            class="flex items-center gap-1 hover:text-teal-600 transition"
                                            onclick="event.stopPropagation()">
                                             Vehicle Number
                                             {!! getSortIcon('vehicle_number', $currentSortBy, $currentSortOrder) !!}
                                         </a>
-                                    </th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
-                                        <a href="{{ getSortUrl('mobile_number', $currentSortBy, $currentSortOrder) }}" 
-                                           class="flex items-center gap-1 hover:text-teal-600 transition"
-                                           onclick="event.stopPropagation()">
-                                            Mobile Number
-                                            {!! getSortIcon('mobile_number', $currentSortBy, $currentSortOrder) !!}
-                                        </a>
-                                    </th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+                                    </th> --}}
+                                        <th
+                                            class="px-3 py-2 border-b text-left font-semibold text-gray-700 whitespace-nowrap">
+                                            <a href="{{ getSortUrl('mobile_number', $currentSortBy, $currentSortOrder) }}"
+                                                class="flex items-center gap-1 hover:text-teal-600 transition"
+                                                onclick="event.stopPropagation()">
+                                                Mobile Number
+                                                {!! getSortIcon('mobile_number', $currentSortBy, $currentSortOrder) !!}
+                                            </a>
+                                        </th>
+                                        {{-- <th class="px-3 py-2 border-b text-left font-semibold text-gray-700 whitespace-nowrap">
                                         <a href="{{ getSortUrl('additional_chagers', $currentSortBy, $currentSortOrder) }}" 
                                            class="flex items-center gap-1 hover:text-teal-600 transition"
                                            onclick="event.stopPropagation()">
                                             Additional Price
                                             {!! getSortIcon('additional_chagers', $currentSortBy, $currentSortOrder) !!}
                                         </a>
-                                    </th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
+                                    </th> --}}
+                                        {{-- <th class="px-3 py-2 border-b text-left font-semibold text-gray-700 whitespace-nowrap">
                                         <a href="{{ getSortUrl('discount_price', $currentSortBy, $currentSortOrder) }}" 
                                            class="flex items-center gap-1 hover:text-teal-600 transition"
                                            onclick="event.stopPropagation()">
                                             Discount Price
                                             {!! getSortIcon('discount_price', $currentSortBy, $currentSortOrder) !!}
                                         </a>
-                                    </th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
-                                        <a href="{{ getSortUrl('payed', $currentSortBy, $currentSortOrder) }}" 
-                                           class="flex items-center gap-1 hover:text-teal-600 transition"
-                                           onclick="event.stopPropagation()">
-                                            Payed
-                                            {!! getSortIcon('payed', $currentSortBy, $currentSortOrder) !!}
-                                        </a>
-                                    </th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700">
-                                        <a href="{{ getSortUrl('price', $currentSortBy, $currentSortOrder) }}" 
-                                           class="flex items-center gap-1 hover:text-teal-600 transition"
-                                           onclick="event.stopPropagation()">
-                                            Balance
-                                            {!! getSortIcon('price', $currentSortBy, $currentSortOrder) !!}
-                                        </a>
-                                    </th>
-                                    <th class="px-4 py-2 border-b text-left text-sm font-semibold text-gray-700" style="width: 310px;">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($bookings as $booking)
-                                    <tr onclick="window.location='{{ route('bookings.show', $booking->id) }}'"
-                                        class="hover:bg-teal-50 cursor-pointer transition">
-                                        <td class="px-4 py-2 border-b">{{ $booking->id }}</td>
-                                        <td class="px-4 py-2 border-b">{{ $booking->full_name }}</td>
-                                        <td class="px-4 py-2 border-b">{{ $booking->from_date }} [{{ $booking->booking_time }}]</td>
-                                        <td class="px-4 py-2 border-b">{{ $booking->to_date }} [{{ $booking->arrival_time }}]</td>
-                                        <td class="px-4 py-2 border-b">{{ $booking->vehicle_name }}</td>
-                                        <td class="px-4 py-2 border-b">{{ $booking->vehicle_number }}</td>
-                                        <td class="px-4 py-2 border-b">{{ $booking->mobile_number }}</td>
-                                        <td class="px-4 py-2 border-b">{{ $booking->additional_chagers }}</td>
-                                        <td class="px-4 py-2 border-b">{{ $booking->discount_price }}</td>
-                                        <td class="px-4 py-2 border-b">{{ $booking->payed }}</td>
-                                        <td class="px-4 py-2 border-b">{{ $booking->price }}</td>
-                                        <td class="px-4 py-2 border-b">
-                                            <div class="flex flex-wrap gap-2">
-                                                @if ($booking->status !== 'Completed')
-                                                    <a href="{{ route('bookings.postbooking', $booking->id) }}"
-                                                        class="px-3 py-1 bg-teal-500 text-white rounded hover:bg-teal-600 transition text-sm font-medium"
-                                                    >View PostBooking</a>
-                                                @else
-                                                    <button class="px-3 py-1 bg-gray-300 text-gray-600 rounded cursor-not-allowed text-sm font-medium" disabled>Completed</button>
-                                                @endif
-                                                <a href="{{ route('bookings.edit', $booking->id) }}"
-                                                    class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-sm font-medium"
-                                                >Edit</a>
-                                                {{-- <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                        class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm font-medium"
-                                                        onclick="return confirm('Are you sure you want to delete this booking?')"
-                                                    >Delete</button>
-                                                </form> --}}
-                                            </div>
-                                        </td>
+                                    </th> --}}
+                                        <th
+                                            class="px-3 py-2 border-b text-left font-semibold text-gray-700 whitespace-nowrap">
+                                            <a href="{{ getSortUrl('payed', $currentSortBy, $currentSortOrder) }}"
+                                                class="flex items-center gap-1 hover:text-teal-600 transition"
+                                                onclick="event.stopPropagation()">
+                                                Payed
+                                                {!! getSortIcon('payed', $currentSortBy, $currentSortOrder) !!}
+                                            </a>
+                                        </th>
+                                        <th
+                                            class="px-3 py-2 border-b text-left font-semibold text-gray-700 whitespace-nowrap">
+                                            <a href="{{ getSortUrl('price', $currentSortBy, $currentSortOrder) }}"
+                                                class="flex items-center gap-1 hover:text-teal-600 transition"
+                                                onclick="event.stopPropagation()">
+                                                Balance
+                                                {!! getSortIcon('price', $currentSortBy, $currentSortOrder) !!}
+                                            </a>
+                                        </th>
+                                        <th class="px-3 py-2 border-b text-left font-semibold text-gray-700 whitespace-nowrap"
+                                            style="width: 220px;">Actions</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach ($bookings as $booking)
+                                        <tr onclick="window.location='{{ route('bookings.show', $booking->id) }}'"
+                                            class="hover:bg-teal-50 cursor-pointer transition">
+                                            <td class="px-3 py-2 border-b whitespace-nowrap">{{ $booking->id }}</td>
+                                            <td class="px-3 py-2 border-b max-w-[160px]">
+                                                <span class="block truncate"
+                                                    title="{{ $booking->full_name }}">{{ $booking->full_name }}</span>
+                                            </td>
+                                            <td class="px-3 py-2 border-b whitespace-nowrap">{{ $booking->from_date }}
+                                                [{{ $booking->booking_time }}]</td>
+                                            <td class="px-3 py-2 border-b whitespace-nowrap">{{ $booking->to_date }}
+                                                [{{ $booking->arrival_time }}]</td>
+                                            <td class="px-3 py-2 border-b max-w-[160px]">
+                                                <span class="block truncate"
+                                                    title="{{ $booking->vehicle_name }}">{{ $booking->vehicle_name }}
+                                                    [{{ $booking->vehicle_number }}]</span>
+                                            </td>
+                                            {{-- <td class="px-3 py-2 border-b whitespace-nowrap">{{ $booking->vehicle_number }}</td> --}}
+                                            <td class="px-3 py-2 border-b whitespace-nowrap">
+                                                {{ $booking->mobile_number }}</td>
+                                            {{-- <td class="px-3 py-2 border-b whitespace-nowrap">{{ $booking->additional_chagers }}</td> --}}
+                                            {{-- <td class="px-3 py-2 border-b whitespace-nowrap">{{ $booking->discount_price }}</td> --}}
+                                            <td class="px-3 py-2 border-b whitespace-nowrap">{{ $booking->payed }}
+                                            </td>
+                                            <td class="px-3 py-2 border-b whitespace-nowrap">{{ $booking->price }}
+                                            </td>
+                                            <td class="px-3 py-2 border-b">
+                                                <div class="flex flex-wrap gap-1">
+                                                    @if ($booking->status !== 'Completed')
+                                                        <a href="{{ route('bookings.postbooking', $booking->id) }}"
+                                                            class="px-2 py-1 bg-teal-500 text-white rounded hover:bg-teal-600 transition font-medium">View
+                                                            PostBooking</a>
+                                                    @else
+                                                        <button
+                                                            class="px-2 py-1 bg-gray-300 text-gray-600 rounded cursor-not-allowed font-medium"
+                                                            disabled>Completed</button>
+                                                    @endif
+                                                    <a href="{{ route('bookings.edit', $booking->id) }}"
+                                                        class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition font-medium">Edit</a>
+                                                    @if (!empty($booking->note))
+                                                        <button type="button"
+                                                            onclick="event.stopPropagation(); alert({{ json_encode($booking->note) }})"
+                                                            class="p-1 bg-yellow-400 text-black rounded-full hover:bg-yellow-500 transition flex items-center justify-center"
+                                                            style="width: 24px; height: 24px;" title="View Note">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4"
+                                                                fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M13 16h-1v-4h-1m1-4h.01M12 20c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z" />
+                                                            </svg>
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -739,4 +766,5 @@
         document.getElementById('searchForm').submit();
     }
 </script>
+
 </html>

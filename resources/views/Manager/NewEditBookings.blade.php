@@ -306,270 +306,338 @@
             </header>
             <main class="flex-1 w-full px-6 py-6 flex flex-col overflow-y-auto">
                 <div class="flex-1 w-full max-w-7xl mx-auto">
-                    <form action="{{ route('bookings.update', $booking->id) }}" method="POST" enctype="multipart/form-data" class="bg-white rounded-lg shadow-lg p-8">
-                    @csrf
-                    @method('PUT')
+                    <form action="{{ route('bookings.update', $booking->id) }}" method="POST"
+                        enctype="multipart/form-data" class="bg-white rounded-lg shadow-lg p-8">
+                        @csrf
+                        @method('PUT')
 
-                    <h1 class="text-2xl font-bold text-gray-700 mb-8 text-center">Edit Booking</h1>
+                        <h1 class="text-2xl font-bold text-gray-700 mb-8 text-center">Edit Booking</h1>
 
-                    <!-- Show Success or Error Messages -->
-                    @if (session('success'))
-                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-                            {{ session('success') }}
-                        </div>
-                    @endif
+                        <!-- Show Success or Error Messages -->
+                        @if (session('success'))
+                            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+                                {{ session('success') }}
+                            </div>
+                        @endif
 
-                    @if ($errors->any())
-                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-                            <ul class="list-disc list-inside">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+                        @if ($errors->any())
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                                <ul class="list-disc list-inside">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="full_name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                            <input type="text" name="full_name" id="full_name" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('full_name', $booking->full_name) }}" required>
-                            @error('full_name')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="full_name" class="block text-sm font-medium text-gray-700 mb-1">Full
+                                    Name</label>
+                                <input type="text" name="full_name" id="full_name"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('full_name', $booking->full_name) }}" required>
+                                @error('full_name')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-                        <div>
-                            <label for="mobile_number" class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
-                            <input type="text" name="mobile_number" id="mobile_number" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('mobile_number', $booking->mobile_number) }}" required>
-                            @error('mobile_number')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
+                            <div>
+                                <label for="mobile_number" class="block text-sm font-medium text-gray-700 mb-1">Mobile
+                                    Number</label>
+                                <input type="text" name="mobile_number" id="mobile_number"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('mobile_number', $booking->mobile_number) }}" required>
+                                @error('mobile_number')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-                        <div>
-                            <label for="nic" class="block text-sm font-medium text-gray-700 mb-1">NIC</label>
-                            <input type="text" name="nic" id="nic" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('nic', $booking->nic) }}">
-                            @error('nic')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div>
-                            <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                            <input type="text" name="address" id="address" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('address', $booking->address) }}">
-                            @error('address')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
+                            <div>
+                                <label for="nic" class="block text-sm font-medium text-gray-700 mb-1">NIC</label>
+                                <input type="text" name="nic" id="nic"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('nic', $booking->nic) }}">
+                                @error('nic')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-                    <input type="hidden" id="daily_free_km"
-                        value="{{ $booking->free_kmd / max(\Carbon\Carbon::parse($booking->to_date)->diffInDays($booking->from_date), 1) }}">
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                        <div>
-                            <label for="from_date" class="block text-sm font-medium text-gray-700 mb-1">From Date</label>
-                            <input type="date" name="from_date" id="from_date" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('from_date', $booking->from_date) }}" required>
-                            @error('from_date')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
+                            <div>
+                                <label for="address"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                                <input type="text" name="address" id="address"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('address', $booking->address) }}">
+                                @error('address')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
-                        <div>
-                            <label for="to_date" class="block text-sm font-medium text-gray-700 mb-1">To Date</label>
-                            <input type="date" name="to_date" id="to_date" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('to_date', $booking->to_date) }}" required>
-                            @error('to_date')
+                        <input type="hidden" id="daily_free_km"
+                            value="{{ $booking->free_kmd / max(\Carbon\Carbon::parse($booking->to_date)->diffInDays($booking->from_date), 1) }}">
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <div>
+                                <label for="from_date" class="block text-sm font-medium text-gray-700 mb-1">From
+                                    Date</label>
+                                <input type="date" name="from_date" id="from_date"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('from_date', $booking->from_date) }}" required>
+                                @error('from_date')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="to_date" class="block text-sm font-medium text-gray-700 mb-1">To
+                                    Date</label>
+                                <input type="date" name="to_date" id="to_date"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('to_date', $booking->to_date) }}" required>
+                                @error('to_date')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="booking_time" class="block text-sm font-medium text-gray-700 mb-1">Booking
+                                    Time</label>
+                                <input type="time" name="booking_time" id="booking_time"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('booking_time', $booking->booking_time) }}" required>
+                                @error('booking_time')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="arrival_time" class="block text-sm font-medium text-gray-700 mb-1">Arrival
+                                    Time</label>
+                                <input type="time" name="arrival_time" id="arrival_time"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('arrival_time', $booking->arrival_time) }}" required>
+                                @error('arrival_time')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="start_km" class="block text-sm font-medium text-gray-700 mb-1">Starting
+                                    Milage</label>
+                                <input type="text" name="start_km" id="start_km"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('start_km', $booking->start_km) }}" required>
+                                @error('start_km')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="commissioner"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Commision Agent</label>
+                                <input type="text" name="commissioner" id="commissioner"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('commissioner', $booking->commission) }}">
+                                @error('commissioner')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="free_km" class="block text-sm font-medium text-gray-700 mb-1">Free
+                                    KM</label>
+                                <input type="text" name="free_km" id="free_km"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('free_km', $booking->free_km) }}" required>
+                                @error('free_km')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="note"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Note</label>
+                                <input type="text" name="note" id="note"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('note', $booking->note) }}">
+                                @error('note')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <div>
+                                <label for="vehicle_number"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Vehicle Number</label>
+                                <select id="vehicle_number" name="vehicle_number"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    required>
+                                    <option value="">Select vehicle number</option>
+                                    <optgroup label="Available Vehicles" id="available-vehicles-group"></optgroup>
+                                    <optgroup label="Unavailable Vehicles" id="unavailable-vehicles-group"></optgroup>
+                                </select>
+                                @error('vehicle_number')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="vehicle_name" class="block text-sm font-medium text-gray-700 mb-1">Vehicle
+                                    Name</label>
+                                <input type="text" name="vehicle_name" id="vehicle_name"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('vehicle_name', $booking->vehicle_name) }}" readonly>
+                                @error('vehicle_name')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="deposit"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Deposit</label>
+                                <input type="text" name="deposit" id="deposit"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('deposit', $booking->deposit) }}">
+                                @error('deposit')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="guarantor"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Guarantor</label>
+                                <input type="text" name="guarantor" id="guarantor"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('guarantor', $booking->guarantor) }}">
+                                @error('guarantor')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="officer" class="block text-sm font-medium text-gray-700 mb-1">Released
+                                    Officer</label>
+                                <input type="text" name="officer" id="officer"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('officer', $booking->officer) }}">
+                                @error('officer')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <div>
+                                <label for="price_per_day" class="block text-sm font-medium text-gray-700 mb-1">Price
+                                    Per Day</label>
+                                <input type="text" name="price_per_day"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    id="price_per_day"
+                                    value="{{ old('price_per_day', $booking->price_per_day ?? '0.00') }}">
+                                @error('price_per_day')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="additional_chagers"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Additional Charges</label>
+                                <input type="text" name="additional_chagers"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    id="additional_chagers"
+                                    value="{{ old('additional_chagers', $booking->additional_chagers ?? '0.00') }}">
+                                @error('additional_chagers')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="reason" class="block text-sm font-medium text-gray-700 mb-1">Reason For
+                                    Add Chg</label>
+                                <input type="text" name="reason"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('reason', $booking->reason) }}">
+                                @error('reason')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="discount_price"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Discount Price</label>
+                                <input type="text" name="discount_price"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    id="discount_price"
+                                    value="{{ old('discount_price', $booking->discount_price) }}">
+                                @error('discount_price')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="payed"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Paid</label>
+                                <input type="text" name="payed"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    id="payed" value="{{ old('payed', $booking->payed) }}">
+                                @error('payed')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="method" class="block text-sm font-medium text-gray-700 mb-1">Payment
+                                    Note</label>
+                                <input type="text" name="method"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    value="{{ old('method', $booking->method) }}">
+                                @error('method')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <input type="hidden" id="price_per_day" value="{{ $booking->price_per_day }}">
+                                <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Total
+                                    Price</label>
+                                <input type="text" name="price"
+                                    class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
+                                    id="price" value="{{ old('price', $booking->price) }}"
+                                    data-original-price="{{ $booking->price }}"
+                                    data-original-to-date="{{ $booking->to_date }}">
+                                @error('price')
+                                    <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mt-6">
+                            <label for="driving_photos" class="block text-sm font-medium text-gray-700 mb-1">Update
+                                Driving Photos</label>
+                            <input type="file" name="driving_photos[]" id="driving_photos"
+                                class="border rounded w-full py-2 px-3 focus:outline-none focus:ring focus:ring-teal-200"
+                                multiple>
+                            @error('driving_photos')
                                 <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div>
-                            <label for="booking_time" class="block text-sm font-medium text-gray-700 mb-1">Booking Time</label>
-                            <input type="time" name="booking_time" id="booking_time" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('booking_time', $booking->booking_time) }}" required>
-                            @error('booking_time')
+                        <div class="mt-6">
+                            <label for="nic_photos" class="block text-sm font-medium text-gray-700 mb-1">Update NIC
+                                Photos</label>
+                            <input type="file" name="nic_photos[]" id="nic_photos"
+                                class="border rounded w-full py-2 px-3 focus:outline-none focus:ring focus:ring-teal-200"
+                                multiple>
+                            @error('nic_photos')
                                 <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div>
-                            <label for="arrival_time" class="block text-sm font-medium text-gray-700 mb-1">Arrival Time</label>
-                            <input type="time" name="arrival_time" id="arrival_time" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('arrival_time', $booking->arrival_time) }}" required>
-                            @error('arrival_time')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
+                        <div class="flex justify-between mt-8">
+                            <a href="{{ route('bookings.index') }}"
+                                class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-6 rounded shadow">Cancel</a>
+                            <button type="submit"
+                                class="bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 px-6 rounded shadow">Update
+                                Booking</button>
                         </div>
-
-                        <div>
-                            <label for="start_km" class="block text-sm font-medium text-gray-700 mb-1">Starting Milage</label>
-                            <input type="text" name="start_km" id="start_km" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('start_km', $booking->start_km) }}" required>
-                            @error('start_km')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label for="commissioner" class="block text-sm font-medium text-gray-700 mb-1">Commision Agent</label>
-                            <input type="text" name="commissioner" id="commissioner" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('commissioner', $booking->commission) }}" >
-                            @error('commissioner')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label for="free_km" class="block text-sm font-medium text-gray-700 mb-1">Free KM</label>
-                            <input type="text" name="free_km" id="free_km" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('free_km', $booking->free_km) }}" required>
-                            @error('free_km')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                        <div>
-                            <label for="vehicle_number" class="block text-sm font-medium text-gray-700 mb-1">Vehicle Number</label>
-                            <select id="vehicle_number" name="vehicle_number"
-                                class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                required>
-                                <option value="">Select vehicle number</option>
-                                <optgroup label="Available Vehicles" id="available-vehicles-group"></optgroup>
-                                <optgroup label="Unavailable Vehicles" id="unavailable-vehicles-group"></optgroup>
-                            </select>
-                            @error('vehicle_number')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div>
-                            <label for="vehicle_name" class="block text-sm font-medium text-gray-700 mb-1">Vehicle Name</label>
-                            <input type="text" name="vehicle_name" id="vehicle_name" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('vehicle_name', $booking->vehicle_name) }}" readonly>
-                            @error('vehicle_name')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label for="deposit" class="block text-sm font-medium text-gray-700 mb-1">Deposit</label>
-                            <input type="text" name="deposit" id="deposit" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('deposit', $booking->deposit) }}">
-                            @error('deposit')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div>
-                            <label for="guarantor" class="block text-sm font-medium text-gray-700 mb-1">Guarantor</label>
-                            <input type="text" name="guarantor" id="guarantor" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('guarantor', $booking->guarantor) }}">
-                            @error('guarantor')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div>
-                            <label for="officer" class="block text-sm font-medium text-gray-700 mb-1">Released Officer</label>
-                            <input type="text" name="officer" id="officer" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('officer', $booking->officer) }}">
-                            @error('officer')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                        <div>
-                            <label for="price_per_day" class="block text-sm font-medium text-gray-700 mb-1">Price Per Day</label>
-                            <input type="text" name="price_per_day" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200" id="price_per_day"
-                                value="{{ old('price_per_day', $booking->price_per_day ?? '0.00') }}">
-                            @error('price_per_day')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div>
-                            <label for="additional_chagers" class="block text-sm font-medium text-gray-700 mb-1">Additional Charges</label>
-                            <input type="text" name="additional_chagers" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200" id="additional_chagers"
-                                value="{{ old('additional_chagers', $booking->additional_chagers ?? '0.00') }}">
-                            @error('additional_chagers')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div>
-                            <label for="reason" class="block text-sm font-medium text-gray-700 mb-1">Reason For Add Chg</label>
-                            <input type="text" name="reason" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('reason', $booking->reason) }}">
-                            @error('reason')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label for="discount_price" class="block text-sm font-medium text-gray-700 mb-1">Discount Price</label>
-                            <input type="text" name="discount_price" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200" id="discount_price"
-                                value="{{ old('discount_price', $booking->discount_price) }}">
-                            @error('discount_price')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label for="payed" class="block text-sm font-medium text-gray-700 mb-1">Paid</label>
-                            <input type="text" name="payed" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200" id="payed"
-                                value="{{ old('payed', $booking->payed) }}">
-                            @error('payed')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label for="method" class="block text-sm font-medium text-gray-700 mb-1">Payment Note</label>
-                            <input type="text" name="method" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200"
-                                value="{{ old('method', $booking->method) }}">
-                            @error('method')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <input type="hidden" id="price_per_day" value="{{ $booking->price_per_day }}">
-                            <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Total Price</label>
-                            <input type="text" name="price" class="border rounded w-full p-2 focus:outline-none focus:ring focus:ring-teal-200" id="price"
-                                value="{{ old('price', $booking->price) }}" data-original-price="{{ $booking->price }}"
-                                data-original-to-date="{{ $booking->to_date }}">
-                            @error('price')
-                                <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6">
-                        <label for="driving_photos" class="block text-sm font-medium text-gray-700 mb-1">Update Driving Photos</label>
-                        <input type="file" name="driving_photos[]" id="driving_photos" class="border rounded w-full py-2 px-3 focus:outline-none focus:ring focus:ring-teal-200" multiple>
-                        @error('driving_photos')
-                            <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    
-                    <div class="mt-6">
-                        <label for="nic_photos" class="block text-sm font-medium text-gray-700 mb-1">Update NIC Photos</label>
-                        <input type="file" name="nic_photos[]" id="nic_photos" class="border rounded w-full py-2 px-3 focus:outline-none focus:ring focus:ring-teal-200" multiple>
-                        @error('nic_photos')
-                            <div class="text-red-600 text-xs mt-1">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="flex justify-between mt-8">
-                        <a href="{{ route('bookings.index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-6 rounded shadow">Cancel</a>
-                        <button type="submit" class="bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 px-6 rounded shadow">Update Booking</button>
-                    </div>
                     </form>
                 </div>
             </main>
@@ -598,7 +666,8 @@
                             return;
                         }
 
-                        fetch(`/vehicle-availability?business_id=${businessId}&from_date=${encodeURIComponent(fromDate)}&to_date=${encodeURIComponent(toDate)}`)
+                        fetch(
+                                `/vehicle-availability?business_id=${businessId}&from_date=${encodeURIComponent(fromDate)}&to_date=${encodeURIComponent(toDate)}`)
                             .then(response => {
                                 if (!response.ok) {
                                     throw new Error('Failed to fetch vehicle availability');
@@ -635,15 +704,16 @@
                                 // Ensure current vehicle is in the list (add if not present)
                                 if (currentVehicleNumber) {
                                     const allOptions = Array.from(vehicleSelect.options);
-                                    const currentVehicleExists = allOptions.some(opt => opt.value === currentVehicleNumber);
-                                    
+                                    const currentVehicleExists = allOptions.some(opt => opt.value ===
+                                        currentVehicleNumber);
+
                                     if (!currentVehicleExists) {
                                         const option = document.createElement('option');
                                         option.value = currentVehicleNumber;
                                         option.textContent = currentVehicleNumber + ' (Current Booking)';
                                         availableGroup.appendChild(option);
                                     }
-                                    
+
                                     vehicleSelect.value = currentVehicleNumber;
                                 }
                             })
@@ -659,9 +729,10 @@
                         // Use the booking's dates to fetch vehicles, or use current dates
                         const fromDate = fromDateInput.value || @json($booking->from_date);
                         const toDate = toDateInput.value || @json($booking->to_date);
-                        
+
                         if (fromDate && toDate) {
-                            fetch(`/vehicle-availability?business_id=${businessId}&from_date=${encodeURIComponent(fromDate)}&to_date=${encodeURIComponent(toDate)}`)
+                            fetch(
+                                    `/vehicle-availability?business_id=${businessId}&from_date=${encodeURIComponent(fromDate)}&to_date=${encodeURIComponent(toDate)}`)
                                 .then(response => response.json())
                                 .then(data => {
                                     // Populate available vehicles
@@ -669,7 +740,8 @@
                                         data.available.forEach(v => {
                                             const option = document.createElement('option');
                                             option.value = v.number;
-                                            option.textContent = v.number + (v.model ? ' (' + v.model + ')' : '');
+                                            option.textContent = v.number + (v.model ? ' (' + v.model + ')' :
+                                                '');
                                             availableGroup.appendChild(option);
                                         });
                                     }
@@ -693,15 +765,16 @@
                                     // Ensure current vehicle is in the list (add if not present)
                                     if (currentVehicleNumber) {
                                         const allOptions = Array.from(vehicleSelect.options);
-                                        const currentVehicleExists = allOptions.some(opt => opt.value === currentVehicleNumber);
-                                        
+                                        const currentVehicleExists = allOptions.some(opt => opt.value ===
+                                            currentVehicleNumber);
+
                                         if (!currentVehicleExists) {
                                             const option = document.createElement('option');
                                             option.value = currentVehicleNumber;
                                             option.textContent = currentVehicleNumber + ' (Current Booking)';
                                             availableGroup.appendChild(option);
                                         }
-                                        
+
                                         vehicleSelect.value = currentVehicleNumber;
                                     }
                                 })
@@ -803,14 +876,14 @@
                                 if (data.vehicle_name && data.vehicle_model) {
                                     document.getElementById('vehicle_name').value =
                                         `${data.vehicle_model} ${data.vehicle_name}`;
-                                    
+
                                     // Update price_per_day if it exists
                                     if (data.price_per_day && document.getElementById('price_per_day')) {
                                         document.getElementById('price_per_day').value = data.price_per_day;
                                         // Recalculate total price when price per day changes
                                         calculateTotalPrice();
                                     }
-                                    
+
                                     // Update free_km if it exists
                                     if (data.free_km && document.getElementById('free_km')) {
                                         // Calculate free_km based on dates
@@ -821,11 +894,12 @@
                                             const to = new Date(toDate + 'T00:00:00');
                                             const days = Math.ceil((to - from) / (1000 * 60 * 60 * 24));
                                             if (days > 0) {
-                                                document.getElementById('free_km').value = (days * parseFloat(data.free_km)).toFixed(2);
+                                                document.getElementById('free_km').value = (days * parseFloat(data
+                                                    .free_km)).toFixed(2);
                                             }
                                         }
                                     }
-                                    
+
                                     // Update start_km if current_mileage exists
                                     if (data.current_mileage && document.getElementById('start_km')) {
                                         document.getElementById('start_km').value = data.current_mileage;
@@ -856,7 +930,7 @@
                         // Recalculate price when dates change
                         calculateTotalPrice();
                     });
-                    
+
                     toDateInput.addEventListener('change', function() {
                         updateVehicleDropdown();
                         // Re-fetch vehicle details if a vehicle is selected
@@ -869,7 +943,7 @@
 
                     // Initial load
                     updateVehicleDropdown();
-                    
+
                     // Load current vehicle details on page load
                     if (currentVehicleNumber) {
                         // Small delay to ensure dropdown is populated first
@@ -888,22 +962,22 @@
                         const dailyFreeKm = parseFloat(document.getElementById('daily_free_km').value);
                         const freeKmField = document.getElementById('free_km');
                         const fromDateInput = document.getElementById('from_date').value;
-                        
+
                         if (!fromDateInput || !toDateInput || !freeKmField) return;
-                        
+
                         const fromDate = new Date(fromDateInput + 'T00:00:00');
                         const newToDate = new Date(toDateInput + 'T00:00:00');
-            
+
                         if (!isNaN(fromDate.getTime()) && !isNaN(newToDate.getTime()) && !isNaN(dailyFreeKm)) {
                             let freeKmDays = Math.ceil((newToDate - fromDate) / (1000 * 60 * 60 * 24));
                             if (freeKmDays < 1) freeKmDays = 1;
                             freeKmField.value = (freeKmDays * dailyFreeKm).toFixed(2);
                         }
                     }
-            
+
                     const fromDateEl = document.getElementById('from_date');
                     const toDateEl = document.getElementById('to_date');
-                    
+
                     if (fromDateEl) {
                         fromDateEl.addEventListener('change', updateFreeKM);
                     }
@@ -915,4 +989,5 @@
         </div>
     </div>
 </body>
+
 </html>

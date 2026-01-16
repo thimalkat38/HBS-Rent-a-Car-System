@@ -44,7 +44,7 @@ class BookingController extends Controller
         if ($request->filled('date_filter')) {
             $dateFilter = $request->input('date_filter');
             $today = now()->startOfDay();
-            
+
             switch ($dateFilter) {
                 case 'today':
                     $query->whereDate('from_date', $today);
@@ -72,19 +72,43 @@ class BookingController extends Controller
         }
 
         // Handle sorting
+        // Default: show dates closest to today first (not simply newest/oldest)
         $sortBy = $request->input('sort_by', 'from_date');
-        $sortOrder = $request->input('sort_order', 'desc');
-        
+        $sortOrder = $request->input('sort_order', 'asc');
+
         // Validate sort column to prevent SQL injection
-        $allowedSortColumns = ['id', 'full_name', 'from_date', 'to_date', 'vehicle_name', 'vehicle_number', 'mobile_number', 'additional_chagers', 'discount_price', 'payed', 'price', 'created_at'];
+        $allowedSortColumns = [
+            'id',
+            'full_name',
+            'from_date',
+            'to_date',
+            'vehicle_name',
+            'vehicle_number',
+            'mobile_number',
+            'additional_chagers',
+            'discount_price',
+            'payed',
+            'price',
+            'created_at',
+        ];
         if (!in_array($sortBy, $allowedSortColumns)) {
             $sortBy = 'from_date';
         }
-        
+
         // Validate sort order
         $sortOrder = strtolower($sortOrder) === 'asc' ? 'asc' : 'desc';
-        
-        $bookings = $query->orderBy($sortBy, $sortOrder)->get();
+
+        // If sorting by from_date, order by "closeness" to today (nearest date first)
+        if ($sortBy === 'from_date') {
+            $today = now()->toDateString();
+            $bookings = $query
+                ->orderByRaw('ABS(DATEDIFF(from_date, ?))', [$today])
+                ->orderBy('from_date', $sortOrder) // tie-breaker for same distance
+                ->get();
+        } else {
+            // Normal column sort
+            $bookings = $query->orderBy($sortBy, $sortOrder)->get();
+        }
 
         // Scope dropdown values to current business
         $vehicleNumbers = Booking::where('business_id', $businessId)->select('vehicle_number')->distinct()->pluck('vehicle_number');
@@ -93,7 +117,7 @@ class BookingController extends Controller
 
         $currentSortBy = $sortBy;
         $currentSortOrder = $sortOrder;
-        
+
         return view('Manager.BookingHistory', compact('bookings', 'vehicleNumbers', 'fullNames', 'statuses', 'currentSortBy', 'currentSortOrder'));
     }
 
@@ -150,6 +174,7 @@ class BookingController extends Controller
             'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'deposit_img.*' => 'nullable|file|mimes:jpg,jpeg,png',
             'grnt_nic.*' => 'nullable|file|mimes:jpg,jpeg,png',
+            'note' => 'nullable|string',
             'status' => 'nullable',
             'additional_chagers' => 'nullable|numeric',
             'discount_price' => 'nullable|numeric',
@@ -323,6 +348,7 @@ class BookingController extends Controller
             'commissioner' => 'nullable|string',
             'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
             'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'note' => 'nullable|string',
         ]);
 
         $validatedData['additional_chagers'] = $validatedData['additional_chagers'] ?? 0.00;
@@ -426,18 +452,18 @@ class BookingController extends Controller
         // Apply officer/type filter only to postbooking
         if ($type === 'driving') {
             $query->where('hand_over_booking', 1)
-                  ->whereRaw('LOWER(TRIM(driver_name)) = ?', [$empName]);
+                ->whereRaw('LOWER(TRIM(driver_name)) = ?', [$empName]);
         } elseif ($type === 'normal') {
             $query->where('hand_over_booking', 0)
-                  ->where(function ($q) use ($empName) {
-                      $q->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
+                ->where(function ($q) use ($empName) {
+                    $q->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
                         ->orWhereRaw('LOWER(TRIM(commission2)) = ?', [$empName]);
-                  });
+                });
         } else { // all types
             $query->where(function ($q) use ($empName) {
                 $q->whereRaw('LOWER(TRIM(commission)) = ?', [$empName])
-                  ->orWhereRaw('LOWER(TRIM(commission2)) = ?', [$empName])
-                  ->orWhereRaw('LOWER(TRIM(driver_name)) = ?', [$empName]);
+                    ->orWhereRaw('LOWER(TRIM(commission2)) = ?', [$empName])
+                    ->orWhereRaw('LOWER(TRIM(driver_name)) = ?', [$empName]);
             });
         }
 
@@ -458,8 +484,8 @@ class BookingController extends Controller
         ];
 
         $rows = $query->select(array_merge($selectCols, [DB::raw("'Completed business' as source")]))
-                      ->orderByDesc('created_at')
-                      ->get();
+            ->orderByDesc('created_at')
+            ->get();
 
         $fileName = 'commission_report_' . preg_replace('/\s+/', '_', strtolower($officer)) . '_' . $start->format('Ymd') . '_' . $end->format('Ymd') . '.csv';
 
