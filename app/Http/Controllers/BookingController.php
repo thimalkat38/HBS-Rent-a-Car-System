@@ -414,7 +414,7 @@ class BookingController extends Controller
     {
         $booking->delete();
 
-        return redirect()->route('bookings.index')->with('success', 'Booking deleted successfully.');
+        return redirect()->route('owner.bookings.index')->with('success', 'Booking deleted successfully.');
     }
 
     public function postBooking($id)
@@ -553,5 +553,266 @@ class BookingController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+
+
+    
+
+
+    #Acc Functions
+
+    
+    public function accindex(Request $request)
+    {
+        $businessId = Auth::user()->business_id;
+
+        $query = Booking::where('business_id', $businessId); // scope to current business
+
+        if ($request->filled('mobile_number')) {
+            $query->where('mobile_number', 'LIKE', "%" . $request->input('mobile_number') . "%");
+        }
+
+        if ($request->filled('full_name')) {
+            $query->where('full_name', 'LIKE', "%" . $request->input('full_name') . "%");
+        }
+
+        if ($request->filled('vehicle_number')) {
+            $query->where('vehicle_number', 'LIKE', "%" . $request->input('vehicle_number') . "%");
+        }
+
+        if ($request->filled('id')) {
+            $query->where('id', $request->input('id'));
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        // Handle date filters
+        if ($request->filled('date_filter')) {
+            $dateFilter = $request->input('date_filter');
+            $today = now()->startOfDay();
+
+            switch ($dateFilter) {
+                case 'today':
+                    $query->whereDate('from_date', $today);
+                    break;
+                case 'this_week':
+                    $query->whereBetween('from_date', [$today, now()->endOfWeek()]);
+                    break;
+                case 'upcoming':
+                    // Next 7 days from today
+                    $query->whereBetween('from_date', [$today, now()->addDays(7)->endOfDay()]);
+                    break;
+                case 'all':
+                    // No filter applied
+                    break;
+            }
+        } else {
+            // Use individual date filters if date_filter is not set
+            if ($request->filled('from_date')) {
+                $query->whereDate('from_date', '>=', $request->input('from_date'));
+            }
+
+            if ($request->filled('to_date')) {
+                $query->whereDate('from_date', '<=', $request->input('to_date'));
+            }
+        }
+
+        // Handle sorting
+        // Default: show dates closest to today first (not simply newest/oldest)
+        $sortBy = $request->input('sort_by', 'from_date');
+        $sortOrder = $request->input('sort_order', 'asc');
+
+        // Validate sort column to prevent SQL injection
+        $allowedSortColumns = [
+            'id',
+            'full_name',
+            'from_date',
+            'to_date',
+            'vehicle_name',
+            'vehicle_number',
+            'mobile_number',
+            'additional_chagers',
+            'discount_price',
+            'payed',
+            'price',
+            'created_at',
+        ];
+        if (!in_array($sortBy, $allowedSortColumns)) {
+            $sortBy = 'from_date';
+        }
+
+        // Validate sort order
+        $sortOrder = strtolower($sortOrder) === 'asc' ? 'asc' : 'desc';
+
+        // If sorting by from_date, order by "closeness" to today (nearest date first)
+        if ($sortBy === 'from_date') {
+            $today = now()->toDateString();
+            $bookings = $query
+                ->orderByRaw('ABS(DATEDIFF(from_date, ?))', [$today])
+                ->orderBy('from_date', $sortOrder) // tie-breaker for same distance
+                ->get();
+        } else {
+            // Normal column sort
+            $bookings = $query->orderBy($sortBy, $sortOrder)->get();
+        }
+
+        // Scope dropdown values to current business
+        $vehicleNumbers = Booking::where('business_id', $businessId)->select('vehicle_number')->distinct()->pluck('vehicle_number');
+        $fullNames = Booking::where('business_id', $businessId)->select('full_name')->distinct()->pluck('full_name');
+        $statuses = Booking::where('business_id', $businessId)->select('status')->distinct()->pluck('status');
+
+        $currentSortBy = $sortBy;
+        $currentSortOrder = $sortOrder;
+
+        return view('Acc.BookingHistory', compact('bookings', 'vehicleNumbers', 'fullNames', 'statuses', 'currentSortBy', 'currentSortOrder'));
+    }
+
+    public function accshow($id)
+    {
+        // Fetch the specific booking using the ID
+        $booking = Booking::findOrFail($id);
+
+        // Fetch the customer information based on the booking's full_name
+        $customer = Customer::where('full_name', $booking->full_name)->first();
+
+        // ✅ Fetch the full business record
+        $business = \App\Models\Business::find(Auth::user()->business_id);
+
+        // Pass all to the view
+        return view('Acc.DetailedBooking', compact('booking', 'customer', 'business'));
+    }
+
+
+
+
+
+
+
+
+    #Owner Functions
+
+    public function ownerindex(Request $request)
+    {
+        $businessId = Auth::user()->business_id;
+
+        $query = Booking::where('business_id', $businessId); // scope to current business
+
+        if ($request->filled('mobile_number')) {
+            $query->where('mobile_number', 'LIKE', "%" . $request->input('mobile_number') . "%");
+        }
+
+        if ($request->filled('full_name')) {
+            $query->where('full_name', 'LIKE', "%" . $request->input('full_name') . "%");
+        }
+
+        if ($request->filled('vehicle_number')) {
+            $query->where('vehicle_number', 'LIKE', "%" . $request->input('vehicle_number') . "%");
+        }
+
+        if ($request->filled('id')) {
+            $query->where('id', $request->input('id'));
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        // Handle date filters
+        if ($request->filled('date_filter')) {
+            $dateFilter = $request->input('date_filter');
+            $today = now()->startOfDay();
+
+            switch ($dateFilter) {
+                case 'today':
+                    $query->whereDate('from_date', $today);
+                    break;
+                case 'this_week':
+                    $query->whereBetween('from_date', [$today, now()->endOfWeek()]);
+                    break;
+                case 'upcoming':
+                    // Next 7 days from today
+                    $query->whereBetween('from_date', [$today, now()->addDays(7)->endOfDay()]);
+                    break;
+                case 'all':
+                    // No filter applied
+                    break;
+            }
+        } else {
+            // Use individual date filters if date_filter is not set
+            if ($request->filled('from_date')) {
+                $query->whereDate('from_date', '>=', $request->input('from_date'));
+            }
+
+            if ($request->filled('to_date')) {
+                $query->whereDate('from_date', '<=', $request->input('to_date'));
+            }
+        }
+
+        // Handle sorting
+        // Default: show dates closest to today first (not simply newest/oldest)
+        $sortBy = $request->input('sort_by', 'from_date');
+        $sortOrder = $request->input('sort_order', 'asc');
+
+        // Validate sort column to prevent SQL injection
+        $allowedSortColumns = [
+            'id',
+            'full_name',
+            'from_date',
+            'to_date',
+            'vehicle_name',
+            'vehicle_number',
+            'mobile_number',
+            'additional_chagers',
+            'discount_price',
+            'payed',
+            'price',
+            'created_at',
+        ];
+        if (!in_array($sortBy, $allowedSortColumns)) {
+            $sortBy = 'from_date';
+        }
+
+        // Validate sort order
+        $sortOrder = strtolower($sortOrder) === 'asc' ? 'asc' : 'desc';
+
+        // If sorting by from_date, order by "closeness" to today (nearest date first)
+        if ($sortBy === 'from_date') {
+            $today = now()->toDateString();
+            $bookings = $query
+                ->orderByRaw('ABS(DATEDIFF(from_date, ?))', [$today])
+                ->orderBy('from_date', $sortOrder) // tie-breaker for same distance
+                ->get();
+        } else {
+            // Normal column sort
+            $bookings = $query->orderBy($sortBy, $sortOrder)->get();
+        }
+
+        // Scope dropdown values to current business
+        $vehicleNumbers = Booking::where('business_id', $businessId)->select('vehicle_number')->distinct()->pluck('vehicle_number');
+        $fullNames = Booking::where('business_id', $businessId)->select('full_name')->distinct()->pluck('full_name');
+        $statuses = Booking::where('business_id', $businessId)->select('status')->distinct()->pluck('status');
+
+        $currentSortBy = $sortBy;
+        $currentSortOrder = $sortOrder;
+
+        return view('Manager.OwnerBookingHistory', compact('bookings', 'vehicleNumbers', 'fullNames', 'statuses', 'currentSortBy', 'currentSortOrder'));
+    }
+
+    public function Ownershow($id)
+    {
+        // Fetch the specific booking using the ID
+        $booking = Booking::findOrFail($id);
+
+        // Fetch the customer information based on the booking's full_name
+        $customer = Customer::where('full_name', $booking->full_name)->first();
+
+        // ✅ Fetch the full business record
+        $business = \App\Models\Business::find(Auth::user()->business_id);
+
+        // Pass all to the view
+        return view('Manager.OwnerDetailedBooking', compact('booking', 'customer', 'business'));
     }
 }

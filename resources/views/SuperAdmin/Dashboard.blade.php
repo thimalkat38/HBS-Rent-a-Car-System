@@ -177,9 +177,9 @@
                                 <div class="mb-3">
                                     <label>User Type:</label>
                                     <select name="userType" class="form-control" required>
-                                        <option value="user">User</option>
                                         <option value="manager">Manager</option>
-                                        <option value="admin">Admin</option>
+                                        <option value="acc">Accountant</option>
+                                        <option value="emp">Employee</option>
                                     </select>
                                 </div>
 

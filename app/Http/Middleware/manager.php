@@ -21,7 +21,7 @@ class manager
         }
 
         if (Auth::user()->userType != 'manager') {
-            return redirect('/');
+            return redirect()->route('access-denied');
         }
 
         return $next($request);

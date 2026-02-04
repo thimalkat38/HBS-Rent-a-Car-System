@@ -63,7 +63,7 @@
             </div>
             <nav class="flex-1 mt-6">
                 <ul class="space-y-1">
-                    <li><a href="{{ url('manager/dashboard') }}"
+                    <li><a href="{{ url('emp/dashboard') }}"
                             class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition"><span
                                 class="material-icons mr-3">dashboard</span>Dashboard</a></li>
                     <li>
@@ -71,13 +71,13 @@
                             <span class="material-icons mr-3">directions_car</span>Vehicles
                         </div>
                         <ul class="ml-8 space-y-1">
-                            <li><a href="{{ url('addvehicle') }}"
+                            <li><a href="{{ url('emp/addvehicle') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition"><span
                                         class="material-icons mr-3">add_circle_outline</span>Add Vehicle</a></li>
-                            <li><a href="{{ url('allvehicles') }}"
+                            <li><a href="{{ url('emp/allvehicles') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition"><span
                                         class="material-icons mr-3">list_alt</span>All Vehicles</a></li>
-                            <li><a href="{{ url('vehicle_owners') }}"
+                            <li><a href="{{ url('emp/vehicle_owners') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition"><span
                                         class="material-icons mr-3">supervisor_account</span>Vehicle Owner's
                                     Managment</a></li>
@@ -105,15 +105,15 @@
                             <span class="material-icons mr-3">people</span>Customers
                         </div>
                         <ul class="ml-8 space-y-1">
-                            <li><a href="{{ route('customers.create') }}"
+                            <li><a href="{{ route('emp.customers.create') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition"><span
                                         class="material-icons mr-3">person_add</span>Add Customer</a></li>
-                            <li><a href="{{ route('customers.index') }}"
+                            <li><a href="{{ route('emp.customers.index') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition"><span
                                         class="material-icons mr-3">list</span>All Customers</a></li>
                         </ul>
                     </li>
-                    <li>
+                    {{-- <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
                             <span class="material-icons mr-3">badge</span>
                             HRM
@@ -126,13 +126,6 @@
                                     Staff Management
                                 </a>
                             </li>
-                            {{-- <li>
-                                <a href="{{ url('employees') }}"
-                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
-                                    <span class="material-icons mr-3">people</span>
-                                    Leave Management
-                                </a>
-                            </li> --}}
                             <li>
                                 <a href="{{ url('payrolls') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
@@ -140,17 +133,10 @@
                                     Payroll Management
                                 </a>
                             </li>
-                            {{-- <li>
-                                <a href="{{ url('employees') }}"
-                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
-                                    <span class="material-icons mr-3">people</span>
-                                    Staff Attendance
-                                </a>
-                            </li> --}}
 
                         </ul>
-                    </li>
-                    <li><a href="{{ url('crms') }}"
+                    </li> --}}
+                    <li><a href="{{ url('emp/crms') }}"
                             class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition"><span
                                 class="material-icons mr-3">support_agent</span>CRM</a></li>
                     <li>
@@ -175,7 +161,7 @@
                                         class="material-icons mr-3">assignment_turned_in</span>Issued Items</a></li>
                         </ul>
                     </li>
-                    <li>
+                    {{-- <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
                             <span class="material-icons mr-3">account_balance_wallet</span>Finance
                         </div>
@@ -187,7 +173,7 @@
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition"><span
                                         class="material-icons mr-3">bar_chart</span>P/L Report</a></li>
                         </ul>
-                    </li>
+                    </li> --}}
                 </ul>
             </nav>
         </aside>

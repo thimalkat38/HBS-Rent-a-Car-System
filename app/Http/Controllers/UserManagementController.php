@@ -46,7 +46,7 @@ class UserManagementController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
-            'userType' => 'required|in:user,manager,admin',
+            'userType' => 'required|in:emp,manager,acc',
             'business_id' => 'required|exists:businesses,id',
         ]);
 

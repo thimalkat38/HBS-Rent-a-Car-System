@@ -255,10 +255,26 @@ class EmployeeController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->get('query', '');
-        $employees = Employee::where('emp_id', 'like', "%$query%")
-            ->orWhere('emp_name', 'like', "%$query%")
+        // Support both 'q' (Select2) and 'query' parameters
+        $search = $request->input('q') ?: $request->input('query', '');
+
+        if (empty(trim($search ?? ''))) {
+            return response()->json([]);
+        }
+
+        $businessId = Auth::user()->business_id ?? null;
+        $query = Employee::query();
+
+        if ($businessId) {
+            $query->where('business_id', $businessId);
+        }
+
+        $employees = $query->where(function ($q) use ($search) {
+            $q->where('emp_id', 'like', "%{$search}%")
+                ->orWhere('emp_name', 'like', "%{$search}%");
+        })
             ->select('emp_id', 'emp_name')
+            ->limit(50)
             ->get();
 
         return response()->json($employees);
@@ -297,6 +313,235 @@ class EmployeeController extends Controller
         $search = $request->input('q');
         $employees = Employee::where('emp_name', 'LIKE', "%{$search}%")
             ->select('emp_id', 'emp_name')
+            ->get();
+
+        return response()->json($employees);
+    }
+
+
+
+
+
+
+
+
+
+
+
+    #Acc Functions
+
+    public function accindex()
+    {
+        $businessId = Auth::user()->business_id; // Get the logged-in user's business ID
+
+        $employees = Employee::where('business_id', $businessId)->get(); // Filter by business_id
+
+        return view('Acc.StaffList', compact('employees'));
+    }
+
+    public function acccreate()
+    {
+        return view('Acc.AddEmployee');
+    }
+
+    public function accstore(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string',
+            'emp_name' => 'required|string|max:255',
+            'nic' => 'required|string|max:20|unique:employees,nic',
+            'mobile_number' => 'required|string|max:15',
+            'salary' => 'nullable|string',
+            'acc_number'  => 'required|string|max:30',
+            'bank' => 'required|string',
+            'email' => 'required|email|unique:employees,email',
+            'address' => 'required|string|max:255',
+            'join_date' => 'required|date',
+            'birthday' => 'nullable|date',
+            'remaining_leaves' => 'required|integer|min:0',
+            'photo.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'doc_photos.*' => 'file|mimes:pdf,doc,docx,jpeg,png,jpg,gif|max:5120'
+        ]);
+        $businessId = Auth::user()->business_id;
+
+        // Auto-generate emp_id
+        $lastEmployee = Employee::orderBy('id', 'desc')->first();
+        $nextId = $lastEmployee ? $lastEmployee->id + 1 : 1;
+        $empId = 'Emp' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
+
+        // Handle file uploads
+        $photoPaths = [];
+        $docPhotoPaths = []; // Array to store doc_photos paths
+
+        if ($request->hasFile('photo')) {
+            foreach ($request->file('photo') as $photo) {
+                $photoPaths[] = $photo->store('employee_photos', 'public');
+            }
+        }
+
+        if ($request->hasFile('doc_photos')) {
+            foreach ($request->file('doc_photos') as $docPhoto) {
+                $docPhotoPaths[] = $docPhoto->store('employee_documents', 'public');
+            }
+        }
+
+        // Set salary and remaining_salary values
+        $salary = $request->salary ?? '0'; // Default to '0' if null
+        $remainingSalary = $salary; // Remaining salary should be the same as salary initially
+
+        // Create Employee
+        Employee::create([
+            'business_id' => $businessId,
+            'emp_id' => $empId,
+            'title' => $request->title,
+            'emp_name' => $request->emp_name,
+            'nic' => $request->nic,
+            'mobile_number' => $request->mobile_number,
+            'salary'  => $salary,
+            'remaining_salary' => $remainingSalary, // Set remaining_salary same as salary
+            'acc_number' => $request->acc_number,
+            'bank' => $request->bank,
+            'email' => $request->email,
+            'address' => $request->address,
+            'join_date' => $request->join_date,
+            'age' => $this->calculateAge($request->birthday),
+            'remaining_leaves' => $request->remaining_leaves,
+            'photo' => $photoPaths,
+            'doc_photos' => $docPhotoPaths,
+        ]);
+
+        return redirect()->route('acc.employees.index')->with('success', 'Employee added successfully!');
+    }
+
+    public function accedit($id)
+    {
+        $employee = Employee::findOrFail($id);
+        return view('Acc.EditEmployee', compact('employee'));
+    }
+
+    /**
+     * Update the specified employee in storage.
+     */
+    public function accupdate(Request $request, $id)
+    {
+        $request->validate([
+            'emp_name' => 'required|string|max:255',
+            'mobile_number' => 'required|string|max:15',
+            'salary' => 'nullable|string',
+            'acc_number' => 'required|string|max:30',
+            'bank' => 'required|string',
+            'join_date' => 'required|date',
+            'email' => 'required|email',
+            'age' => 'required',
+            'nic' => 'required|string|max:12',
+            'address' => 'required|string',
+            'photo.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'doc_photos.*' => 'nullable|file|mimes:pdf,doc,docx,jpeg,png,jpg,gif|max:5120',
+        ]);
+
+        $employee = Employee::findOrFail($id);
+
+        // Update basic employee fields
+        $employee->update($request->only(['emp_name', 'mobile_number', 'acc_number', 'bank', 'join_date', 'email', 'age', 'nic', 'address']));
+
+        // Handle photo update
+        $photoPaths = $employee->photo ?? [];
+
+        if ($request->hasFile('photo')) {
+            foreach ($photoPaths as $path) {
+                Storage::disk('public')->delete($path);
+            }
+
+            $photoPaths = [];
+            foreach ($request->file('photo') as $file) {
+                $photoPaths[] = $file->store('employee_photos', 'public');
+            }
+
+            $employee->update(['photo' => $photoPaths]);
+        }
+
+        // Handle document photo update
+        $docPhotoPaths = $employee->doc_photos ?? [];
+
+        if ($request->hasFile('doc_photos')) {
+            foreach ($docPhotoPaths as $path) {
+                Storage::disk('public')->delete($path);
+            }
+
+            $docPhotoPaths = [];
+            foreach ($request->file('doc_photos') as $docFile) {
+                $docPhotoPaths[] = $docFile->store('employee_documents', 'public');
+            }
+
+            $employee->update(['doc_photos' => $docPhotoPaths]);
+        }
+
+        // Run the copy storage function
+        $this->copyStorageToPublic();
+
+        return redirect()->route('acc.employees.index')->with('success', 'Employee updated successfully!');
+    }
+    public function accdestroy($id)
+    {
+        $employee = Employee::findOrFail($id);
+
+        // Delete associated photos
+        if ($employee->photo) {
+            foreach ($employee->photo as $path) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
+        $employee->delete();
+
+        return redirect()->route('acc.employees.index')->with('success', 'Employee deleted successfully!');
+    }
+
+    public function accshow($id)
+    {
+        $employee = Employee::find($id);
+
+        if (!$employee) {
+            // Redirect or handle the error if the vehicle is not found
+            return redirect()->route('employees.index')->with('error', 'Employee not found.');
+        }
+
+        // Pass the customer data to the view
+        return view('Manager.DetailedEmployee', compact('employee'));
+    }
+ 
+    // public function accsearche(Request $request)
+    // {
+    //     $search = $request->input('q');
+    //     $employees = Employee::where('emp_name', 'LIKE', "%{$search}%")
+    //         ->select('emp_id', 'emp_name')
+    //         ->get();
+
+    //     return response()->json($employees);
+    // }
+
+    public function accsearch(Request $request)
+    {
+        // Support both 'q' (Select2) and 'query' parameters - same as CustomerController::accsearch
+        $search = $request->input('q') ?: $request->input('query', '');
+
+        if (empty(trim($search ?? ''))) {
+            return response()->json([]);
+        }
+
+        $businessId = Auth::user()->business_id ?? null;
+        $query = Employee::query();
+
+        if ($businessId) {
+            $query->where('business_id', $businessId);
+        }
+
+        $employees = $query->where(function ($q) use ($search) {
+            $q->where('emp_id', 'like', "%{$search}%")
+                ->orWhere('emp_name', 'like', "%{$search}%");
+        })
+            ->select('emp_id', 'emp_name')
+            ->limit(50)
             ->get();
 
         return response()->json($employees);
