@@ -347,7 +347,120 @@ class PostBookingController extends Controller
     }
     
     
+
+
+
+
+
+    #Acc Functions
+
+    public function accindex(Request $request)
+    {
+        // Get the query parameters
+        $vehicleNumber = $request->input('vehicle_number');
+        $fromDate = $request->input('from_date');
+        $toDate = $request->input('to_date');
+        $agn = $request->input('agn');
+        $bookingId = $request->input('booking_id');
     
+        // Start building the query with business_id scoping
+        $query = PostBooking::where('business_id', Auth::user()->business_id);
     
+        // Apply filters
+        if ($vehicleNumber) {
+            $query->where('vehicle_number', 'like', "%$vehicleNumber%");
+        }
     
+        if ($agn) {
+            $query->where('agn', 'like', "%$agn%");
+        }
+
+        if ($bookingId) {
+            $query->where('booking_id', 'like', "%$bookingId%");
+        }
+    
+        // Apply date range filter
+        if ($fromDate && $toDate) {
+            // both from_date and to_date provided
+            $query->whereBetween('from_date', [$fromDate, $toDate]);
+        } elseif ($fromDate) {
+            // only from_date provided
+            $query->whereDate('from_date', '>=', $fromDate);
+        } elseif ($toDate) {
+            // only to_date provided
+            $query->whereDate('from_date', '<=', $toDate);
+        }
+    
+        // Get the filtered results, ordered by latest first
+        $postBookings = $query->latest()->get();
+    
+        // Return the view with the filtered results
+        return view('Acc.CompletedBus', compact('postBookings'));
+    }
+
+        public function accshow(PostBooking $postBooking)
+    {
+        $business = \App\Models\Business::find(Auth::user()->business_id);
+
+        return view('Acc.DetailedPostBookings', compact('postBooking', 'business'));
+    }
+  
+    
+
+
+
+
+    #Owner Functions
+
+    public function ownerindex(Request $request)
+    {
+        // Get the query parameters
+        $vehicleNumber = $request->input('vehicle_number');
+        $fromDate = $request->input('from_date');
+        $toDate = $request->input('to_date');
+        $agn = $request->input('agn');
+        $bookingId = $request->input('booking_id');
+    
+        // Start building the query with business_id scoping
+        $query = PostBooking::where('business_id', Auth::user()->business_id);
+    
+        // Apply filters
+        if ($vehicleNumber) {
+            $query->where('vehicle_number', 'like', "%$vehicleNumber%");
+        }
+    
+        if ($agn) {
+            $query->where('agn', 'like', "%$agn%");
+        }
+
+        if ($bookingId) {
+            $query->where('booking_id', 'like', "%$bookingId%");
+        }
+    
+        // Apply date range filter
+        if ($fromDate && $toDate) {
+            // both from_date and to_date provided
+            $query->whereBetween('from_date', [$fromDate, $toDate]);
+        } elseif ($fromDate) {
+            // only from_date provided
+            $query->whereDate('from_date', '>=', $fromDate);
+        } elseif ($toDate) {
+            // only to_date provided
+            $query->whereDate('from_date', '<=', $toDate);
+        }
+    
+        // Get the filtered results, ordered by latest first
+        $postBookings = $query->latest()->get();
+    
+        // Return the view with the filtered results
+        return view('Manager.OwnerCompletedBus', compact('postBookings'));
+    }
+
+        public function ownershow(PostBooking $postBooking)
+    {
+        $business = \App\Models\Business::find(Auth::user()->business_id);
+
+        return view('Manager.OwnerDetailedPostBookings', compact('postBooking', 'business'));
+    }
+  
 }

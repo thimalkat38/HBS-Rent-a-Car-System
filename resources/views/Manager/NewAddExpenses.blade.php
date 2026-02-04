@@ -105,22 +105,22 @@
                             Bookings
                         </div>
                         <ul class="ml-8 space-y-1">
-                            <li>
+                            {{-- <li>
                                 <a href="{{ url('addbooking') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">add_circle_outline</span>
                                     Book Hire
                                 </a>
-                            </li>
+                            </li> --}}
                             <li>
-                                <a href="{{ url('bookings') }}"
+                                <a href="{{ url('owner/bookings') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">history</span>
                                     Booking History
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ url('postbookings') }}"
+                                <a href="{{ url('owner/postbookings') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">check_circle_outline</span>
                                     Completed Businesses
@@ -194,7 +194,7 @@
                             CRM
                         </a>
                     </li>
-                    <li>
+                    {{-- <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
                             <span class="material-icons mr-3">inventory_2</span>
                             <span data-translate="Inventory">Inventory</span>
@@ -236,7 +236,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </li> --}}
                     <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
                             <span class="material-icons mr-3">account_balance_wallet</span>
@@ -589,13 +589,15 @@
                                 };
                             },
                             processResults: function(data) {
+                                if (!Array.isArray(data)) return { results: [] };
                                 return {
                                     results: data.map(employee => ({
                                         id: employee.emp_id,
                                         text: employee.emp_name
                                     }))
                                 };
-                            }
+                            },
+                            cache: true
                         }
                     });
             
@@ -613,13 +615,15 @@
                                 };
                             },
                             processResults: function(data) {
+                                if (!Array.isArray(data)) return { results: [] };
                                 return {
                                     results: data.map(customer => ({
                                         id: customer.id,
                                         text: customer.full_name
                                     }))
                                 };
-                            }
+                            },
+                            cache: true
                         }
                     });
             

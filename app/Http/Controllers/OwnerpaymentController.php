@@ -155,4 +155,57 @@ class OwnerpaymentController extends Controller
         return redirect()->route('ownerpayments.index')
             ->with('success', 'Owner payment deleted successfully.');
     }
+
+
+    #Acc functions
+
+    public function accstore(Request $request)
+    {
+        $request->validate([
+            'full_name' => 'required',
+            'owner_id' => 'required|string|max:255',
+            'vehicle' => 'required|string|max:255',
+            'date' => 'required|date',
+            'paid_amnt' => 'required|numeric',
+            'bank_details' => 'nullable|string|max:255',
+            'acc_no' => 'required|string|max:255',
+            'receipt.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $receiptPaths = [];
+
+        if ($request->hasFile('receipt')) {
+            foreach ($request->file('receipt') as $receipt) {
+                $receiptPaths[] = $receipt->store('Ownerpay_receipts', 'public');
+            }
+        }
+
+        $vehicleOwner = VehicleOwner::where('owner_id', $request->owner_id)->first();
+
+        if (!$vehicleOwner) {
+            return back()->withErrors(['error' => 'Vehicle owner not found!']);
+        }
+
+        $fullNameWithTitle = $vehicleOwner->title . ' ' . $vehicleOwner->full_name;
+
+        $businessId = Auth::user()->business_id;
+
+        // Save owner payment with business_id
+        Ownerpayment::create([
+            'business_id' => $businessId,
+            'full_name' => $fullNameWithTitle,
+            'owner_id' => $request->owner_id,
+            'vehicle' => $request->vehicle,
+            'date' => $request->date,
+            'paid_amnt' => $request->paid_amnt,
+            'bank_details' => $request->bank_details,
+            'acc_no' => $request->acc_no,
+            'receipt' => $receiptPaths,
+        ]);
+
+        // Update remaining rental amount
+        $vehicleOwner->decrement('rem_rental', $request->paid_amnt);
+
+        return redirect()->route('acc.vehicle_owners.index')->with('success', 'Owner payment created successfully.');
+    }
 }

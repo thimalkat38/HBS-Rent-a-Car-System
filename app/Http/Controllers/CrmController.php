@@ -120,4 +120,108 @@ class CrmController extends Controller
 
         return view('Manager.NewCRM', compact('crms'));
     }
+
+
+
+
+
+
+
+
+
+
+
+    #Emp Functions
+
+    public function empupcomingSchedule(Request $request)
+    {
+        $businessId = Auth::user()->business_id;
+
+        $query = Crm::where('business_id', $businessId);
+
+        // Apply filters if present
+        if ($request->filled('full_name')) {
+            $query->where('full_name', 'like', '%' . $request->input('full_name') . '%');
+        }
+
+        if ($request->filled('date')) {
+            $query->whereDate('date', '=', $request->input('date'));
+        }
+
+        // Fetch filtered results
+        $crms = $query->orderBy('date', 'asc')->get();
+
+        return view('Employee.CRM', compact('crms'));
+    }
+
+
+    public function empcreate()
+    {
+        return view('Employee.AddCRM');
+    }
+
+    /**
+     * Store a newly created CRM in storage.
+     */
+    public function empstore(Request $request)
+    {
+        $request->validate([
+            'full_name' => 'required|string|max:255',
+            'phone' => 'required',
+            'date' => 'required|date',
+            'subject' => 'required|string|max:255',
+            'note' => 'nullable|string',
+        ]);
+        $businessId = Auth::user()->business_id;
+
+        // Crm::create($request->all());
+
+
+        Crm::create([
+            'business_id' => $businessId,
+            'full_name' => $request->full_name,
+            'phone' => $request->phone,
+            'date' => $request->date,
+            'subject' => $request->subject,
+            'note' => $request->note,
+        ]);
+
+        return redirect()->route('emp.crms.upcoming')->with('success', 'CRM entry created successfully.');
+    }
+
+
+    public function empedit(Crm $crm)
+    {
+        return view('Employee.EditCRM', compact('crm'));
+    }
+
+    /**
+     * Update the specified CRM in storage.
+     */
+    public function empupdate(Request $request, Crm $crm)
+    {
+        $request->validate([
+            'full_name' => 'required|string|max:255',
+            'date' => 'required|date',
+            'phone' => 'required',
+            'subject' => 'required|string|max:255',
+            'note' => 'nullable|string',
+        ]);
+
+        $crm->update($request->all());
+
+        return redirect()->route('emp.crms.upcoming')->with('success', 'CRM entry updated successfully.');
+    }
+
+    /**
+     * Remove the specified CRM from storage.
+     */
+    public function empdestroy(Crm $crm)
+    {
+        $crm->delete();
+
+        return redirect()->route('emp.crms.upcoming')->with('success', 'CRM entry deleted successfully.');
+    }
+
+
 }

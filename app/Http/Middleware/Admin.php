@@ -23,7 +23,7 @@ class Admin
 
         // If user is logged in but not an admin
         if (Auth::user()->userType !== 'admin') {
-            return redirect('/');
+            return redirect()->route('access-denied');
         }
 
         // Allow access

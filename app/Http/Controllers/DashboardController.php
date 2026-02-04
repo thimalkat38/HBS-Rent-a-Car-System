@@ -63,6 +63,92 @@ class DashboardController extends Controller
         return view('Manager.Dashboard', compact('bookingCounts', 'currentMonth', 'currentYear', 'expiringVehicles', 'serviceAlertVehicles', 'profitData', 'profitStartDate', 'profitEndDate'));
     }
 
+    /**
+     * Acc dashboard – same data as manager dashboard, Acc view.
+     */
+    public function accDashboard()
+    {
+        $businessId = Auth::user()->business_id;
+        $currentMonth = request()->input('month', now()->month);
+        $currentYear = request()->input('year', now()->year);
+
+        $startDate = Carbon::createFromDate($currentYear, $currentMonth, 1)->startOfMonth();
+        $endDate = $startDate->copy()->endOfMonth();
+
+        $bookingCounts = Booking::where('business_id', $businessId)
+            ->whereBetween('from_date', [$startDate, $endDate])
+            ->selectRaw('DATE(from_date) as date, COUNT(*) as count')
+            ->groupBy('date')
+            ->pluck('count', 'date');
+
+        $currentDate = Carbon::now();
+        $tenDaysLater = $currentDate->copy()->addDays(10);
+
+        $expiringVehicles = Vehicle::where('business_id', $businessId)
+            ->where(function ($query) use ($tenDaysLater) {
+                $query->whereDate('license_exp_date', '<=', $tenDaysLater)
+                    ->orWhereDate('insurance_exp_date', '<=', $tenDaysLater);
+            })
+            ->get();
+
+        $serviceAlertVehicles = $this->getServiceAlertVehicles($businessId);
+
+        $profitStartDate = request()->input('profit_start_date');
+        $profitEndDate = request()->input('profit_end_date');
+
+        if (!$profitStartDate || !$profitEndDate) {
+            $profitStartDate = Carbon::now()->startOfMonth()->toDateString();
+            $profitEndDate = Carbon::now()->endOfMonth()->toDateString();
+        }
+
+        $profitData = $this->getProfitDataForGraph($businessId, null, $profitStartDate, $profitEndDate);
+
+        return view('Acc.AccDashboard', compact('bookingCounts', 'currentMonth', 'currentYear', 'expiringVehicles', 'serviceAlertVehicles', 'profitData', 'profitStartDate', 'profitEndDate'));
+    }
+
+    /**
+     * Emp dashboard – same data as manager dashboard, Employee view.
+     */
+    public function empDashboard()
+    {
+        $businessId = Auth::user()->business_id;
+        $currentMonth = request()->input('month', now()->month);
+        $currentYear = request()->input('year', now()->year);
+
+        $startDate = Carbon::createFromDate($currentYear, $currentMonth, 1)->startOfMonth();
+        $endDate = $startDate->copy()->endOfMonth();
+
+        $bookingCounts = Booking::where('business_id', $businessId)
+            ->whereBetween('from_date', [$startDate, $endDate])
+            ->selectRaw('DATE(from_date) as date, COUNT(*) as count')
+            ->groupBy('date')
+            ->pluck('count', 'date');
+
+        $currentDate = Carbon::now();
+        $tenDaysLater = $currentDate->copy()->addDays(10);
+
+        $expiringVehicles = Vehicle::where('business_id', $businessId)
+            ->where(function ($query) use ($tenDaysLater) {
+                $query->whereDate('license_exp_date', '<=', $tenDaysLater)
+                    ->orWhereDate('insurance_exp_date', '<=', $tenDaysLater);
+            })
+            ->get();
+
+        $serviceAlertVehicles = $this->getServiceAlertVehicles($businessId);
+
+        $profitStartDate = request()->input('profit_start_date');
+        $profitEndDate = request()->input('profit_end_date');
+
+        if (!$profitStartDate || !$profitEndDate) {
+            $profitStartDate = Carbon::now()->startOfMonth()->toDateString();
+            $profitEndDate = Carbon::now()->endOfMonth()->toDateString();
+        }
+
+        $profitData = $this->getProfitDataForGraph($businessId, null, $profitStartDate, $profitEndDate);
+
+        return view('Employee.EmpDashboard', compact('bookingCounts', 'currentMonth', 'currentYear', 'expiringVehicles', 'serviceAlertVehicles', 'profitData', 'profitStartDate', 'profitEndDate'));
+    }
+
 
 
 

@@ -41,6 +41,13 @@ Route::middleware('auth')->group(function () {
 // Include authentication routes
 require __DIR__ . '/auth.php';
 
+// Customer autocomplete (must be before /customers/{id} so they match first; works for both manager and emp)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/customers/searchb', [CustomerController::class, 'search'])->name('customers.search');
+    Route::get('/customers/get-details/{id}', [CustomerController::class, 'getCustomerDetails']);
+    Route::get('/manager/profit-data', [DashboardController::class, 'getProfitData']);
+});
+
 // Customer Control CRUD Routes
 Route::middleware(['manager'])->group(function () {
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
@@ -49,9 +56,9 @@ Route::middleware(['manager'])->group(function () {
     Route::get('/customers/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
     Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
     Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
-    Route::get('/customers/searchb', [CustomerController::class, 'search'])->name('customers.search');
+    
     Route::get('/customers/{id}', [CustomerController::class, 'show'])->name('Customer.show');
-    Route::get('/customers/get-details/{id}', [CustomerController::class, 'getCustomerDetails']);
+    
     // Route::get('/customers/search', [CustomerController::class, 'searche'])->name('customers.search'); privous route to get customer details in add expenses table
 });
 
@@ -63,48 +70,49 @@ Route::middleware(['manager'])->group(function () {
     Route::put('/manager/vehicles/{id}', [VehicleController::class, 'update'])->name('vehicles.update');
     Route::delete('/manager/vehicles/{id}', [VehicleController::class, 'destroy'])->name('vehicles.destroy');
     Route::get('/vehicles/{id}', [VehicleController::class, 'show'])->name('vehicles.show');
-    Route::get('/vehicle/{id}/renew-docs', [VehicleController::class, 'renewDocs'])->name('vehicle.renewDocs');
-    Route::get('/vehicles/get-details/{vehicle_number}', [VehicleController::class, 'getDetails'])->name('vehicles.getDetails');
-    Route::get('/get-vehicle-models', [VehicleController::class, 'getVehicleModels'])->name('getVehicleModels');
-    Route::get('/manager/vehicles', [VehicleController::class, 'search'])->name('vehicles.search');
-    Route::get('/autocomplete-vehicle-models', [VehicleController::class, 'autocomplete']);
-    Route::get('/autocomplete-vehicle-numbers', [VehicleController::class, 'autocompleteVehicleNumber']);
-    Route::get('/get-vehicle-numbers', [VehicleController::class, 'getVehicleNumbers']);
-    Route::get('/api/vehicles/search', [VehicleController::class, 'searchVehicles'])->name('api.vehicles.search');
     Route::get('/allvehicles', [VehicleController::class, 'index'])->name('vehicles.index');
 });
 
+Route::get('/vehicle/{id}/renew-docs', [VehicleController::class, 'renewDocs'])->name('vehicle.renewDocs');
+Route::get('/vehicles/get-details/{vehicle_number}', [VehicleController::class, 'getDetails'])->name('vehicles.getDetails');
+Route::get('/get-vehicle-models', [VehicleController::class, 'getVehicleModels'])->name('getVehicleModels');
+Route::get('/manager/vehicles', [VehicleController::class, 'search'])->name('vehicles.search');
+Route::get('/autocomplete-vehicle-models', [VehicleController::class, 'autocomplete']);
+Route::get('/autocomplete-vehicle-numbers', [VehicleController::class, 'autocompleteVehicleNumber']);
+Route::get('/get-vehicle-numbers', [VehicleController::class, 'getVehicleNumbers']);
+Route::get('/api/vehicles/search', [VehicleController::class, 'searchVehicles'])->name('api.vehicles.search');
+
 // Booking Control CRUD Routes
-Route::middleware(['manager'])->group(function () {
+Route::middleware(['emp'])->group(function () {
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
     Route::get('/bookings/{booking}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
     Route::put('/bookings/{booking}', [BookingController::class, 'update'])->name('bookings.update');
-    Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+    
     Route::get('/bookings/{id}', [BookingController::class, 'show'])->name('bookings.show');
     Route::post('/bookings/{id}/complete', [BookingController::class, 'markAsCompleted'])->name('bookings.complete');
     Route::get('/bookings/{id}/postbooking', [BookingController::class, 'postBooking'])->name('bookings.postbooking');
     Route::get('/addbooking', function () {
         return view('Manager.NewAddBooking');
     });
-    Route::get('/commission/export-csv', [BookingController::class, 'exportCommissionCsv'])->name('commission.export_csv');
 });
+Route::get('/commission/export-csv', [BookingController::class, 'exportCommissionCsv'])->name('commission.export_csv');
 
 // Inventory Control CRUD Routes
-Route::middleware(['manager'])->group(function () {
+Route::middleware(['emp'])->group(function () {
     // Supplier and Item Management
     Route::get('/inventory/available-suppliers', [InventoryController::class, 'availableSuppliers'])->name('inventory.available-suppliers');
     Route::post('/inventory/create-supplier', [InventoryController::class, 'createSupplier'])->name('inventory.create-supplier');
-    Route::get('/inventory/available-items', [InventoryController::class, 'availableItems'])->name('inventory.available-items');
+    
     Route::post('/inventory/create-item', [InventoryController::class, 'createItem'])->name('inventory.create-item');
     Route::post('/inventory/add-to-existing', [InventoryController::class, 'addToExisting'])->name('inventory.add-to-existing');
     Route::post('/inventory/check-duplicate', [InventoryController::class, 'checkDuplicate'])->name('inventory.checkDuplicate');
 
     // Main Inventory CRUD
-    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
-    Route::get('/inventory/create', [InventoryController::class, 'create'])->name('inventory.create');
-    Route::post('/inventory/store', [InventoryController::class, 'store'])->name('inventory.store');
+    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');#
+    Route::get('/inventory/create', [InventoryController::class, 'create'])->name('inventory.create');#
+    Route::post('/inventory/store', [InventoryController::class, 'store'])->name('inventory.store');#
     Route::get('/inventory/edit/{id}', [InventoryController::class, 'edit'])->name('inventory.edit');
     Route::put('/inventory/{id}', [InventoryController::class, 'update'])->name('inventory.update');
     Route::delete('/inventory/{id}', [InventoryController::class, 'destroy'])->name('inventory.destroy');
@@ -121,50 +129,66 @@ Route::middleware(['manager'])->group(function () {
     Route::get('inventory/grn/{grn_id}/payment-history', [InventoryController::class, 'getGrnPaymentHistory'])->name('inventory.grn-payment-history');
 
     // Item Issuing Management
-    Route::get('/inventory/issue', [InventoryController::class, 'issue'])->name('inventory.issue');
-    Route::get('/inventory/issued-items', [InventoryController::class, 'issuedItems'])->name('inventory.issued-items');
+    Route::get('/inventory/issue', [InventoryController::class, 'issue'])->name('inventory.issue');#
+    Route::get('/inventory/issued-items', [InventoryController::class, 'issuedItems'])->name('inventory.issued-items');#
     Route::post('/inventory/store-issued-items', [InventoryController::class, 'storeIssuedItems'])->name('inventory.store-issued-items');
     Route::post('/inventory/return-items', [InventoryController::class, 'returnItems'])->name('inventory.returnItems');
 
     // Vehicle and Employee Related
-    Route::get('/inventory/available-vehicles', [InventoryController::class, 'availableVehicles'])->name('inventory.available-vehicles');
-    Route::get('/inventory/available-employees', [InventoryController::class, 'availableEmployees'])->name('inventory.available-employees');
-    Route::post('/inventory/verify-vehicle', [InventoryController::class, 'verifyVehicle'])->name('inventory.verifyVehicle');
-    Route::post('/inventory/verify-employee', [InventoryController::class, 'verifyEmployee'])->name('inventory.verifyEmployee');
+
     Route::get('/inventory/vehicle-issued-items/{vehicleId}', [InventoryController::class, 'vehicleIssuedItems'])->name('inventory.vehicleIssuedItems');
     Route::get('/inventory/employee-issued-items/{employeeId}', [InventoryController::class, 'employeeIssuedItems'])->name('inventory.employeeIssuedItems');
 
     // Statistics and Reporting
     Route::get('/inventory/stats', [InventoryController::class, 'getStats'])->name('inventory.getStats');
     Route::get('/inventory/low-stock', [InventoryController::class, 'getLowStockItems'])->name('inventory.getLowStockItems');
+
+    Route::get('/inventory/available-vehicles', [InventoryController::class, 'availableVehicles'])->name('inventory.available-vehicles');
+Route::get('/inventory/available-employees', [InventoryController::class, 'availableEmployees'])->name('inventory.available-employees');
+Route::post('/inventory/verify-vehicle', [InventoryController::class, 'verifyVehicle'])->name('inventory.verifyVehicle');
+Route::post('/inventory/verify-employee', [InventoryController::class, 'verifyEmployee'])->name('inventory.verifyEmployee');
+Route::get('/inventory/available-items', [InventoryController::class, 'availableItems'])->name('inventory.available-items');
 });
+
+
 
 // Employee Control CRUD Routes
 Route::middleware(['manager'])->group(function () {
     Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+    Route::get('/employees/search', [EmployeeController::class, 'search'])->name('employees.search');
     Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
     Route::post('/employees/store', [EmployeeController::class, 'store'])->name('employees.store');
     Route::get('/employees/{id}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
     Route::put('/employees/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
     Route::delete('/employees/{id}/delete', [EmployeeController::class, 'destroy'])->name('employees.destroy');
-    Route::get('/employees/search', [EmployeeController::class, 'search'])->name('employees.search');
     Route::get('/employees/{id}', [EmployeeController::class, 'show'])->name('Employee.show');
-    Route::get('/autocomplete-employees', [EmployeeController::class, 'autocomplete']);
-    Route::get('/employees/search', [EmployeeController::class, 'searche'])->name('employees.search');
+    
 });
+Route::get('/autocomplete-employees', [EmployeeController::class, 'autocomplete']);
 
 // Leave Control CRUD Routes
 Route::middleware(['manager'])->group(function () {
-    Route::get('/leaves', [LeaveController::class, 'index'])->name('leaves.index');
-    Route::get('/leaves/create', [LeaveController::class, 'create'])->name('leaves.create');
-    Route::post('/leaves', [LeaveController::class, 'store'])->name('leaves.store');
-    Route::get('/leaves/{id}', [LeaveController::class, 'show'])->name('leaves.show');
-    Route::get('/leaves/{id}/edit', [LeaveController::class, 'edit'])->name('leaves.edit');
-    Route::put('/leaves/{id}', [LeaveController::class, 'update'])->name('leaves.update');
-    Route::delete('/leaves/{id}', [LeaveController::class, 'destroy'])->name('leaves.destroy');
-    Route::patch('/leaves/{id}/status/{status}', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
-    Route::get('/approved', [LeaveController::class, 'showApprovedLeaves'])->name('leaves.approved');
-    Route::get('/rejected', [LeaveController::class, 'showRejectededLeaves'])->name('leaves.rejected');
+
+    Route::get('owner/bookings', [BookingController::class, 'ownerindex'])->name('owner.bookings.index');
+    Route::get('owner/bookings/{id}', [BookingController::class, 'ownershow'])->name('owner.bookings.show');
+    Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+
+    Route::get('owner/postbookings', [PostBookingController::class, 'ownerindex'])->name('owner.postbookings.index');
+    Route::get('owner/postbookings/{postBooking}', [PostBookingController::class, 'ownershow'])->name('owner.postbookings.show');
+
+
+
+
+    // Route::get('/leaves', [LeaveController::class, 'index'])->name('leaves.index');
+    // Route::get('/leaves/create', [LeaveController::class, 'create'])->name('leaves.create');
+    // Route::post('/leaves', [LeaveController::class, 'store'])->name('leaves.store');
+    // Route::get('/leaves/{id}', [LeaveController::class, 'show'])->name('leaves.show');
+    // Route::get('/leaves/{id}/edit', [LeaveController::class, 'edit'])->name('leaves.edit');
+    // Route::put('/leaves/{id}', [LeaveController::class, 'update'])->name('leaves.update');
+    // Route::delete('/leaves/{id}', [LeaveController::class, 'destroy'])->name('leaves.destroy');
+    // Route::patch('/leaves/{id}/status/{status}', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
+    // Route::get('/approved', [LeaveController::class, 'showApprovedLeaves'])->name('leaves.approved');
+    // Route::get('/rejected', [LeaveController::class, 'showRejectededLeaves'])->name('leaves.rejected');
 });
 
 // Payroll Control CRUD Routes
@@ -200,7 +224,7 @@ Route::middleware(['manager'])->group(function () {
 });
 
 // PostBooking Control Routes
-Route::middleware(['manager'])->group(function () {
+Route::middleware(['emp'])->group(function () {
     Route::get('/postbookings', [PostBookingController::class, 'index'])->name('postbookings.index');
     Route::get('/postbookings/create', [PostBookingController::class, 'create'])->name('postbookings.create');
     Route::post('/postbookings', [PostBookingController::class, 'store'])->name('postbookings.store');
@@ -224,8 +248,7 @@ Route::middleware(['manager'])->group(function () {
     Route::delete('/vehicle_owners/{vehicleOwner}', [VehicleOwnerController::class, 'destroy'])->name('vehicle_owners.destroy');
 });
 
-// Owner Payment Control Routes
-Route::middleware(['manager'])->group(function () {
+
     Route::get('/ownerpayments', [OwnerpaymentController::class, 'index'])->name('ownerpayments.index');
     Route::get('/ownerpayments/create', [OwnerpaymentController::class, 'create'])->name('ownerpayments.create');
     Route::post('/ownerpayments', [OwnerpaymentController::class, 'store'])->name('ownerpayments.store');
@@ -236,10 +259,9 @@ Route::middleware(['manager'])->group(function () {
     
     // Paid Owners Routes
     Route::post('/paidowners', [PaidOwnerController::class, 'store'])->name('paidowners.store');
-});
 
 // Service Control Routes
-Route::middleware(['manager'])->group(function () {
+
     Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
     Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
     Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
@@ -248,7 +270,7 @@ Route::middleware(['manager'])->group(function () {
     Route::put('/services/{service}', [ServiceController::class, 'update'])->name('services.update');
     Route::delete('/services/{service}', [ServiceController::class, 'destroy'])->name('services.destroy');
     Route::get('/services/{service}/download-excel', [ServiceController::class, 'downloadExcel'])->name('services.download-excel');
-});
+
 
 // Expenses Control Routes
 Route::middleware(['manager'])->group(function () {
@@ -259,8 +281,9 @@ Route::middleware(['manager'])->group(function () {
     Route::get('/expenses/{id}/edit', [ExpenseController::class, 'edit'])->name('expenses.edit');
     Route::put('/expenses/{id}', [ExpenseController::class, 'update'])->name('expenses.update');
     Route::delete('/expenses/{id}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
-    Route::get('/expenses/download/{id}', [ExpenseController::class, 'download'])->name('expenses.download');
+    
 });
+Route::get('/expenses/download/{id}', [ExpenseController::class, 'download'])->name('expenses.download');
 
 // Business Control Routes
 Route::middleware(['admin'])->group(function () {
@@ -287,8 +310,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 // Home Routes and Other Routes
 Route::middleware(['manager'])->group(function () {
     Route::get('/manager/dashboard', [DashboardController::class, 'calendarView'])->name('manager.dashboard');
-    Route::get('/manager/bookings', [DashboardController::class, 'getBookingsByDate']);
-    Route::get('/manager/profit-data', [DashboardController::class, 'getProfitData']);
+    
+    
     Route::get('/profit-loss-report', [ProfitLossController::class, 'index'])->name('profit.loss');
     Route::post('/salary/store', [SalaryController::class, 'store'])->name('salary.store');
     Route::get('/manager/addbook', [HomeController::class, 'manageraddbook'])->name('manager.addbook');
@@ -300,9 +323,15 @@ Route::middleware(['manager'])->group(function () {
     });
 });
 
+Route::get('/manager/bookings', [DashboardController::class, 'getBookingsByDate']);
+
 Route::get('/please-login', function () {
     return view('please-login');
 });
+
+Route::get('/access-denied', function () {
+    return view('AccessDenied');
+})->name('access-denied');
 
 Route::get('/profit-data', [PostBookingController::class, 'getProfitData']);
 Route::get('/vehicle-availability', [VehicleController::class, 'vehicleAvailability']);
@@ -349,8 +378,7 @@ Route::delete('/vehicles/{id}/image', [VehicleController::class, 'deleteImage'])
     ->name('vehicles.deleteImage');
 
 Route::patch('/vehicles/{vehicle}/service-status', [VehicleController::class, 'updateServiceStatus'])
-    ->name('vehicles.serviceStatus')
-    ->middleware(['manager']);
+    ->name('vehicles.serviceStatus');
 
     Route::get('/commission', function () {
         return view('Manager.Commission');
@@ -359,4 +387,126 @@ Route::patch('/vehicles/{vehicle}/service-status', [VehicleController::class, 'u
 
     Route::get('/new', function () {
         return view('Manager.NewEditEmployee');
+    });
+
+
+
+
+
+
+
+
+    #Acc Middleweare Routes
+
+    Route::middleware(['auth', 'acc'])->group(function () {
+        Route::get('/acc/dashboard', [DashboardController::class, 'accDashboard'])->name('acc.dashboard');
+
+        Route::get('/acc/addvehicle', [VehicleController::class, 'acccreate'])->name('acc.addvehicle');
+        Route::post('/acc/addvehicle', [VehicleController::class, 'accstore'])->name('acc.storevehicle');
+        Route::get('/acc/allvehicles', [VehicleController::class, 'accindex'])->name('acc.vehicles.index');
+        Route::get('/acc/vehicles/{id}', [VehicleController::class, 'accshow'])->name('acc.vehicles.show');
+
+        Route::get('/acc/vehicle_owners', [VehicleOwnerController::class, 'accindex'])->name('acc.vehicle_owners.index');
+        Route::get('/acc/vehicle_owners/create', [VehicleOwnerController::class, 'acccreate'])->name('acc.vehicle_owners.create');
+        Route::post('/acc/vehicle_owners', [VehicleOwnerController::class, 'accstore'])->name('acc.vehicle_owners.store');
+        Route::get('/acc/vehicle_owners/{vehicleOwner}', [VehicleOwnerController::class, 'accshow'])->name('acc.vehicle_owners.show');
+        Route::post('/acc/paidowners', [PaidOwnerController::class, 'accstore'])->name('acc.paidowners.store');
+
+        Route::get('/acc/bookings', [BookingController::class, 'accindex'])->name('acc.bookings.index');
+        Route::get('acc/bookings/{id}', [BookingController::class, 'accshow'])->name('acc.bookings.show');
+        Route::get('acc/postbookings', [PostBookingController::class, 'accindex'])->name('acc.postbookings.index');
+        Route::get('acc/postbookings/{postBooking}', [PostBookingController::class, 'accshow'])->name('acc.postbookings.show');
+
+        Route::get('acc/employees', [EmployeeController::class, 'accindex'])->name('acc.employees.index');
+        Route::get('acc/employees/search', [EmployeeController::class, 'accsearch'])->name('acc.employees.search');
+        Route::get('acc/employees/create', [EmployeeController::class, 'acccreate'])->name('acc.employees.create');
+        Route::post('acc/employees/store', [EmployeeController::class, 'accstore'])->name('acc.employees.store');
+        Route::get('acc/employees/{id}/edit', [EmployeeController::class, 'accedit'])->name('acc.employees.edit');
+        Route::put('acc/employees/{employee}', [EmployeeController::class, 'accupdate'])->name('acc.employees.update');
+        Route::delete('acc/employees/{id}/delete', [EmployeeController::class, 'accdestroy'])->name('acc.employees.destroy');
+        Route::get('acc/employees/{id}', [EmployeeController::class, 'accshow'])->name('acc.Employee.show');
+
+        Route::get('acc/payrolls', [PayrollController::class, 'accindex'])->name('acc.payrolls.index');
+        Route::get('acc/payrolls/create', [PayrollController::class, 'acccreate'])->name('acc.payrolls.create');
+        Route::post('acc/payrolls', [PayrollController::class, 'accstore'])->name('acc.payrolls.store');
+        Route::get('acc/payrolls/{id}', [PayrollController::class, 'accshow'])->name('acc.payrolls.show');
+
+        // Route::get('acc/inventory', [InventoryController::class, 'accindex'])->name('acc.inventory.index');
+        // Route::get('acc/inventory/issued-items', [InventoryController::class, 'accissuedItems'])->name('acc.inventory.issued-items');
+        // Route::get('acc/inventory/issue', [InventoryController::class, 'accissue'])->name('acc.inventory.issue');
+        // Route::get('acc/inventory/create', [InventoryController::class, 'acccreate'])->name('acc.inventory.create');
+        // Route::post('acc/inventory/store', [InventoryController::class, 'accstore'])->name('acc.inventory.store');
+
+        Route::get('acc/expenses', [ExpenseController::class, 'accindex'])->name('acc.expenses.index');
+        Route::get('acc/expenses/create', [ExpenseController::class, 'acccreate'])->name('acc.expenses.create');
+        Route::post('acc/expenses', [ExpenseController::class, 'accstore'])->name('acc.expenses.store');
+        Route::get('acc/customers/searchb', [CustomerController::class, 'accsearch'])->name('acc.customers.search');
+        Route::get('acc/expenses/{id}/edit', [ExpenseController::class, 'accedit'])->name('acc.expenses.edit');
+        Route::put('acc/expenses/{id}', [ExpenseController::class, 'accupdate'])->name('acc.expenses.update');
+        Route::get('acc/profit-loss-report', [ProfitLossController::class, 'accindex'])->name('acc.profit.loss');
+
+        Route::get('acc/commission', function () {
+            return view('Acc.Commission');
+        });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Emp dashboard (userType = emp)
+    Route::middleware(['auth', 'emp'])->group(function () {
+        Route::get('/emp/dashboard', [DashboardController::class, 'empDashboard'])->name('emp.dashboard');
+
+        Route::get('/emp/addvehicle', [VehicleController::class, 'empcreate'])->name('emp.addvehicle');
+        Route::post('/emp/addvehicle', [VehicleController::class, 'empstore'])->name('emp.storevehicle');
+        Route::get('/emp/allvehicles', [VehicleController::class, 'empindex'])->name('emp.vehicles.index');
+        Route::get('/emp/vehicles/{id}', [VehicleController::class, 'empshow'])->name('emp.vehicles.show');
+        Route::get('/emp/vehicles/{id}/edit', [VehicleController::class, 'empedit'])->name('emp.vehicles.edit');
+        Route::put('/emp/vehicles/{id}', [VehicleController::class, 'empupdate'])->name('emp.vehicles.update');
+
+        Route::get('emp/services', [ServiceController::class, 'empindex'])->name('emp.services.index');
+        Route::get('emp/services/create', [ServiceController::class, 'empcreate'])->name('emp.services.create');
+        Route::post('emp/services', [ServiceController::class, 'empstore'])->name('emp.services.store');
+
+        Route::get('/emp/vehicle_owners', [VehicleOwnerController::class, 'empindex'])->name('emp.vehicle_owners.index');
+        Route::get('/emp/vehicle_owners/create', [VehicleOwnerController::class, 'empcreate'])->name('emp.vehicle_owners.create');
+        Route::post('/emp/vehicle_owners', [VehicleOwnerController::class, 'empstore'])->name('emp.vehicle_owners.store');
+        Route::get('/emp/vehicle_owners/{vehicleOwner}', [VehicleOwnerController::class, 'empshow'])->name('emp.vehicle_owners.show');
+        Route::post('/emp/paidowners', [PaidOwnerController::class, 'empstore'])->name('emp.paidowners.store');
+
+        Route::get('emp/customers', [CustomerController::class, 'empindex'])->name('emp.customers.index');
+        Route::get('emp/customers/create', [CustomerController::class, 'empcreate'])->name('emp.customers.create');
+        Route::post('emp/customers', [CustomerController::class, 'empstore'])->name('emp.customers.store');
+        Route::get('emp/customers/{customer}/edit', [CustomerController::class, 'empedit'])->name('emp.customers.edit');
+        Route::put('emp/customers/{customer}', [CustomerController::class, 'empupdate'])->name('emp.customers.update');
+        Route::get('emp/customers/{id}', [CustomerController::class, 'empshow'])->name('emp.Customer.show');
+
+        Route::get('emp/crms', [CrmController::class, 'empupcomingSchedule'])->name('emp.crms.upcoming');
+        Route::get('emp/crms/create', [CrmController::class, 'empcreate'])->name('emp.crms.create');
+        Route::post('emp/crms', [CrmController::class, 'empstore'])->name('emp.crms.store');
+        Route::get('emp/crms/{crm}/edit', [CrmController::class, 'empedit'])->name('emp.crms.edit');
+        Route::put('emp/crms/{crm}', [CrmController::class, 'empupdate'])->name('emp.crms.update');
+        Route::delete('emp/crms/{crm}', [CrmController::class, 'empdestroy'])->name('emp.crms.destroy');
+
+
+
+        // Route::get('emp/bookings', [BookingController::class, 'empindex'])->name('emp.bookings.index');
+        // Route::get('emp/bookings/create', [BookingController::class, 'empcreate'])->name('emp.bookings.create');
+        // Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+        // Route::get('/bookings/{booking}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
+        // Route::put('/bookings/{booking}', [BookingController::class, 'update'])->name('bookings.update');
+        // Route::get('emp/addbooking', function () {return view('Employee.AddBooking');});
+        
     });

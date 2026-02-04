@@ -123,4 +123,158 @@ class VehicleOwnerController extends Controller
 
         return redirect()->route('vehicle_owners.index')->with('success', 'Vehicle owner deleted successfully.');
     }
+
+
+
+
+    #Acc Middlewear Functions
+
+    public function accindex(Request $request)
+    {
+        $businessId = Auth::user()->business_id;
+
+        // Start the query scoped by business_id
+        $query = VehicleOwner::where('business_id', $businessId);
+
+        // Filter by Full Name if provided
+        if ($request->filled('full_name')) {
+            $query->where('full_name', 'LIKE', '%' . $request->input('full_name') . '%');
+        }
+
+        // Filter by Vehicle Number if provided
+        if ($request->filled('vehicle_number')) {
+            $query->where('vehicle_number', 'LIKE', '%' . $request->input('vehicle_number') . '%');
+        }
+
+        // Get the filtered vehicle owners
+        $vehicleOwners = $query->get();
+
+        return view('Acc.VehicleOwners', compact('vehicleOwners'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function acccreate()
+    {
+        return view('Acc.AddVehicleOwner');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function accstore(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'full_name' => 'required|string|max:255',
+            'vehicle_number' => 'required',
+            'vehicle_name' => 'nullable',
+            'phone' => 'required|string|max:15',
+            'address' => 'nullable|string',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date',
+            'rental_amnt' => 'required|numeric',
+            'monthly_km' => 'required|numeric',
+            'extra_km_chg' => 'required|numeric',
+            'acc_no' => 'nullable|string|max:255',
+            'bank_detais' => 'nullable|string',
+        ]);
+
+        // Attach business_id
+        $validated['business_id'] = Auth::user()->business_id;
+
+        // Create the vehicle owner
+        VehicleOwner::create($validated);
+
+        return redirect()->route('acc.vehicle_owners.index')->with('success', 'Vehicle owner created successfully.');
+    }
+
+
+    /**
+     * Display the specified resource.
+     */
+    public function accshow(VehicleOwner $vehicleOwner)
+    {
+        return view('Acc.DetailedVehicleOwner', compact('vehicleOwner'));
+    }
+
+
+
+
+
+
+    #Emp Functions
+
+
+    public function empindex(Request $request)
+    {
+        $businessId = Auth::user()->business_id;
+
+        // Start the query scoped by business_id
+        $query = VehicleOwner::where('business_id', $businessId);
+
+        // Filter by Full Name if provided
+        if ($request->filled('full_name')) {
+            $query->where('full_name', 'LIKE', '%' . $request->input('full_name') . '%');
+        }
+
+        // Filter by Vehicle Number if provided
+        if ($request->filled('vehicle_number')) {
+            $query->where('vehicle_number', 'LIKE', '%' . $request->input('vehicle_number') . '%');
+        }
+
+        // Get the filtered vehicle owners
+        $vehicleOwners = $query->get();
+
+        return view('Employee.VehicleOwners', compact('vehicleOwners'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function empcreate()
+    {
+        return view('Employee.AddVehicleOwner');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function empstore(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'full_name' => 'required|string|max:255',
+            'vehicle_number' => 'required',
+            'vehicle_name' => 'nullable',
+            'phone' => 'required|string|max:15',
+            'address' => 'nullable|string',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date',
+            'rental_amnt' => 'required|numeric',
+            'monthly_km' => 'required|numeric',
+            'extra_km_chg' => 'required|numeric',
+            'emp_no' => 'nullable|string|max:255',
+            'bank_detais' => 'nullable|string',
+        ]);
+
+        // Attach business_id
+        $validated['business_id'] = Auth::user()->business_id;
+
+        // Create the vehicle owner
+        VehicleOwner::create($validated);
+
+        return redirect()->route('emp.vehicle_owners.index')->with('success', 'Vehicle owner created successfully.');
+    }
+
+
+    /**
+     * Display the specified resource.
+     */
+    public function empshow(VehicleOwner $vehicleOwner)
+    {
+        return view('Employee.DetailedVehicleOwner', compact('vehicleOwner'));
+    }
+
 }

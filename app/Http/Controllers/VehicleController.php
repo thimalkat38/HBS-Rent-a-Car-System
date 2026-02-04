@@ -153,6 +153,9 @@ class VehicleController extends Controller
 
         return redirect()->route('vehicles.index')->with('success', 'Vehicle added successfully!');
     }
+
+
+
     private function copyUploadedFileToPublic($relativePath)
     {
         $source = storage_path('app/public/' . $relativePath);
@@ -602,4 +605,381 @@ class VehicleController extends Controller
                 : 'Vehicle marked as active.'
         );
     }
+
+
+
+
+
+    #ACC Middlewear Functions
+
+    public function acccreate()
+    {
+        return view('Acc.AddVehicle');
+    }
+
+    /**
+     * Store a newly created vehicle in storage.
+     */
+    public function accstore(Request $request)
+    {
+        $request->validate([
+            'vehicle_name' => 'required|string|max:255',
+            'vehicle_type' => 'required|string|max:255',
+            'vehicle_number' => 'required|string|max:255|unique:vehicles,vehicle_number',
+            'vehicle_model' => 'required|string|max:255',
+            'engine_number' => 'required|string|max:255',
+            'fuel_type' => 'required|string|max:255',
+            'chassis_number' => 'required|string|max:255',
+            'model_year' => 'required|integer|min:1886|max:' . date('Y'),
+            'license_exp_date' => 'required|date',
+            'insurance_exp_date' => 'required|date',
+            'price_per_day' => 'required|string|max:255',
+            'free_km' => 'required|string|max:255',
+            'extra_km_chg' => 'required|string|max:255',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $businessId = Auth::user()->business_id;
+
+        $images = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('vehicle_images', 'public');
+                $images[] = $path;
+
+                // ✅ Copy uploaded file to public/storage
+                $this->copyUploadedFileToPublic($path);
+            }
+        }
+
+        $features = [
+            'chassy_number' => $request->has('chassyNumber'),
+            'leather_seats' => $request->has('leatherSeats'),
+            'air_conditioner' => $request->has('airConditioner'),
+            'power_steering' => $request->has('powerSteering'),
+            'cd_player' => $request->has('cdPlayer'),
+            'power_door' => $request->has('powerDoor'),
+        ];
+
+        Vehicle::create([
+            'vehicle_name' => $request->vehicle_name,
+            'vehicle_type' => $request->vehicle_type,
+            'vehicle_number' => $request->vehicle_number,
+            'vehicle_model' => $request->vehicle_model,
+            'engine_number' => $request->engine_number,
+            'fuel_type' => $request->fuel_type,
+            'chassis_number' => $request->chassis_number,
+            'model_year' => $request->model_year,
+            'license_exp_date' => $request->license_exp_date,
+            'insurance_exp_date' => $request->insurance_exp_date,
+            'price_per_day' => $request->price_per_day,
+            'free_km' => $request->free_km,
+            'extra_km_chg' => $request->extra_km_chg,
+            'features' => $features,
+            'images' => $images,
+            'display_image' => $images[0] ?? null,
+            'business_id' => $businessId,
+        ]);
+
+        return redirect()->route('acc.addvehicle')->with('success', 'Vehicle added successfully!');
+    }
+
+    public function accindex(Request $request)
+    {
+        $businessId = Auth::user()->business_id;
+
+        $query = \App\Models\Vehicle::where('business_id', $businessId);
+
+        // Filter: Search by vehicle_number or vehicle_name
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('vehicle_number', 'like', "%$search%")
+                    ->orWhere('vehicle_name', 'like', "%$search%");
+            });
+        }
+
+        // Filter: Availability
+        if ($request->filled('availability')) {
+            $today = now()->toDateString();
+
+            $query->where(function ($q) use ($request, $today) {
+                if ($request->availability === 'available') {
+                    $q->whereDoesntHave('bookings', function ($subQuery) use ($today) {
+                        $subQuery->whereDate('from_date', '<=', $today)
+                            ->whereDate('to_date', '>=', $today);
+                    });
+                }
+
+                if ($request->availability === 'in_tour') {
+                    $q->whereHas('bookings', function ($subQuery) use ($today) {
+                        $subQuery->whereDate('from_date', '<=', $today)
+                            ->whereDate('to_date', '>=', $today);
+                    });
+                }
+            });
+        }
+
+        // Filter: Service status (treat null or 0 as Active, 1 as In Service)
+        if ($request->filled('service_status')) {
+            if ($request->service_status === 'active') {
+                $query->where(function ($q) {
+                    $q->whereNull('status')->orWhere('status', 0);
+                });
+            } elseif ($request->service_status === 'in_service') {
+                $query->where('status', 1);
+            }
+        }
+
+        $vehicles = $query->paginate(9);
+
+        return view('Acc.AllVehicles', compact('vehicles'));
+    }
+
+    public function accshow($id)
+    {
+        $vehicle = vehicle::find($id);
+
+        if (!$vehicle) {
+            // Redirect or handle the error if the vehicle is not found
+            return redirect()->route('vehicles.index')->with('error', 'vehicle not found.');
+        }
+
+        // Pass the customer data to the view
+        return view('Acc.DetailedVehicle', compact('vehicle'));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #Emp Functions
+
+
+    public function empindex(Request $request)
+    {
+        $businessId = Auth::user()->business_id;
+
+        $query = \App\Models\Vehicle::where('business_id', $businessId);
+
+        // Filter: Search by vehicle_number or vehicle_name
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('vehicle_number', 'like', "%$search%")
+                    ->orWhere('vehicle_name', 'like', "%$search%");
+            });
+        }
+
+        // Filter: Availability
+        if ($request->filled('availability')) {
+            $today = now()->toDateString();
+
+            $query->where(function ($q) use ($request, $today) {
+                if ($request->availability === 'available') {
+                    $q->whereDoesntHave('bookings', function ($subQuery) use ($today) {
+                        $subQuery->whereDate('from_date', '<=', $today)
+                            ->whereDate('to_date', '>=', $today);
+                    });
+                }
+
+                if ($request->availability === 'in_tour') {
+                    $q->whereHas('bookings', function ($subQuery) use ($today) {
+                        $subQuery->whereDate('from_date', '<=', $today)
+                            ->whereDate('to_date', '>=', $today);
+                    });
+                }
+            });
+        }
+
+        // Filter: Service status (treat null or 0 as Active, 1 as In Service)
+        if ($request->filled('service_status')) {
+            if ($request->service_status === 'active') {
+                $query->where(function ($q) {
+                    $q->whereNull('status')->orWhere('status', 0);
+                });
+            } elseif ($request->service_status === 'in_service') {
+                $query->where('status', 1);
+            }
+        }
+
+        $vehicles = $query->paginate(9);
+
+        return view('Employee.AllVehicles', compact('vehicles'));
+    }
+
+    public function empshow($id)
+    {
+        $vehicle = vehicle::find($id);
+
+        if (!$vehicle) {
+            // Redirect or handle the error if the vehicle is not found
+            return redirect()->route('vehicles.index')->with('error', 'vehicle not found.');
+        }
+
+        // Pass the customer data to the view
+        return view('Employee.DetailedVehicle', compact('vehicle'));
+    }
+
+
+
+    public function empcreate()
+    {
+        return view('Employee.AddVehicle');
+    }
+
+    /**
+     * Store a newly created vehicle in storage.
+     */
+    public function empstore(Request $request)
+    {
+        $request->validate([
+            'vehicle_name' => 'required|string|max:255',
+            'vehicle_type' => 'required|string|max:255',
+            'vehicle_number' => 'required|string|max:255|unique:vehicles,vehicle_number',
+            'vehicle_model' => 'required|string|max:255',
+            'engine_number' => 'required|string|max:255',
+            'fuel_type' => 'required|string|max:255',
+            'chassis_number' => 'required|string|max:255',
+            'model_year' => 'required|integer|min:1886|max:' . date('Y'),
+            'license_exp_date' => 'required|date',
+            'insurance_exp_date' => 'required|date',
+            'price_per_day' => 'required|string|max:255',
+            'free_km' => 'required|string|max:255',
+            'extra_km_chg' => 'required|string|max:255',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $businessId = Auth::user()->business_id;
+
+        $images = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('vehicle_images', 'public');
+                $images[] = $path;
+
+                // ✅ Copy uploaded file to public/storage
+                $this->copyUploadedFileToPublic($path);
+            }
+        }
+
+        $features = [
+            'chassy_number' => $request->has('chassyNumber'),
+            'leather_seats' => $request->has('leatherSeats'),
+            'air_conditioner' => $request->has('airConditioner'),
+            'power_steering' => $request->has('powerSteering'),
+            'cd_player' => $request->has('cdPlayer'),
+            'power_door' => $request->has('powerDoor'),
+        ];
+
+        Vehicle::create([
+            'vehicle_name' => $request->vehicle_name,
+            'vehicle_type' => $request->vehicle_type,
+            'vehicle_number' => $request->vehicle_number,
+            'vehicle_model' => $request->vehicle_model,
+            'engine_number' => $request->engine_number,
+            'fuel_type' => $request->fuel_type,
+            'chassis_number' => $request->chassis_number,
+            'model_year' => $request->model_year,
+            'license_exp_date' => $request->license_exp_date,
+            'insurance_exp_date' => $request->insurance_exp_date,
+            'price_per_day' => $request->price_per_day,
+            'free_km' => $request->free_km,
+            'extra_km_chg' => $request->extra_km_chg,
+            'features' => $features,
+            'images' => $images,
+            'display_image' => $images[0] ?? null,
+            'business_id' => $businessId,
+        ]);
+
+        return redirect()->route('vehicles.index')->with('success', 'Vehicle added successfully!');
+    }
+
+    public function empedit($id)
+    {
+        $vehicle = Vehicle::findOrFail($id);
+        return view('Employee.EditVehicle', compact('vehicle'));
+    }
+
+    /**
+     * Update the specified vehicle in storage.
+     */
+    public function empupdate(Request $request, $id)
+    {
+        $vehicle = Vehicle::findOrFail($id);
+
+        $request->validate([
+            'vehicle_name' => 'required|string|max:255',
+            'vehicle_type' => 'required|string|max:255',
+            'vehicle_number' => 'required|string|max:255|unique:vehicles,vehicle_number,' . $vehicle->id,
+            'vehicle_model' => 'required|string|max:255',
+            'engine_number' => 'required|string|max:255',
+            'fuel_type' => 'required|string|max:255',
+            'chassis_number' => 'required|string|max:255',
+            'model_year' => 'required|integer|min:1886|max:' . date('Y'),
+            'license_exp_date' => 'required|date',
+            'insurance_exp_date' => 'required|date',
+            'price_per_day' => 'required|string|max:255',
+            'free_km' => 'required|string|max:255',
+            'extra_km_chg' => 'required|string|max:255',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        // Delete old images if new ones are uploaded
+        $images = $vehicle->images ?? [];
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('vehicle_images', 'public');
+                $images[] = $path;
+
+                // ✅ Copy uploaded file to public/storage just like in store()
+                $this->copyUploadedFileToPublic($path);
+            }
+        }
+
+        $features = [
+            'chassy_number' => $request->has('chassyNumber'),
+            'leather_seats' => $request->has('leatherSeats'),
+            'air_conditioner' => $request->has('airConditioner'),
+            'power_steering' => $request->has('powerSteering'),
+            'cd_player' => $request->has('cdPlayer'),
+            'power_door' => $request->has('powerDoor'),
+        ];
+
+        $vehicle->update([
+            'vehicle_name' => $request->vehicle_name,
+            'vehicle_type' => $request->vehicle_type,
+            'vehicle_number' => $request->vehicle_number,
+            'vehicle_model' => $request->vehicle_model,
+            'engine_number' => $request->engine_number,
+            'fuel_type' => $request->fuel_type,
+            'chassis_number' => $request->chassis_number,
+            'model_year' => $request->model_year,
+            'license_exp_date' => $request->license_exp_date,
+            'insurance_exp_date' => $request->insurance_exp_date,
+            'price_per_day' => $request->price_per_day,
+            'free_km' => $request->free_km,
+            'extra_km_chg' => $request->extra_km_chg,
+            'features' => $features,
+            'images' => $images,
+            'display_image' => $request->input('display_image') ?? $vehicle->display_image, // Ensure this line
+        ]);
+
+
+        return redirect('emp/allvehicles')->with('success', 'Vehicle updated successfully!');
+    }
+
+
 }
