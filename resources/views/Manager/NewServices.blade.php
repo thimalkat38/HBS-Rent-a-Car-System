@@ -332,8 +332,9 @@
                             </select>
                             {{-- <input type="text" name="current_mileage" placeholder="Current Mileage"
                                 class="flex-1 px-4 py-2 border rounded text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500"> --}}
-                                <input type="text" name="next_mileage" placeholder="Next Service Mileage"
-                                class="flex-1 px-4 py-2 border rounded text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                <input type="number" name="next_mileage" placeholder="Next Service Mileage"
+                                class="flex-1 px-4 py-2 border rounded text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                inputmode="numeric" pattern="[0-9]*" min="0" step="1">
                         </div>
 
                         <div class="flex flex-col md:flex-row gap-4">

@@ -18,50 +18,55 @@ class PostBookingController extends Controller
      * Display a listing of the resource.
      */
 
-     public function index(Request $request)
-     {
-         // Get the query parameters
-         $vehicleNumber = $request->input('vehicle_number');
-         $fromDate = $request->input('from_date');
-         $toDate = $request->input('to_date');
-         $agn = $request->input('agn');
-         $bookingId = $request->input('booking_id');
-     
-         // Start building the query with business_id scoping
-         $query = PostBooking::where('business_id', Auth::user()->business_id);
-     
-         // Apply filters
-         if ($vehicleNumber) {
-             $query->where('vehicle_number', 'like', "%$vehicleNumber%");
-         }
-     
-         if ($agn) {
-             $query->where('agn', 'like', "%$agn%");
-         }
+    public function index(Request $request)
+    {
+        // Get the query parameters
+        $vehicleNumber = $request->input('vehicle_number');
+        $fromDate = $request->input('from_date');
+        $toDate = $request->input('to_date');
+        $agn = $request->input('agn');
+        $bookingId = $request->input('booking_id');
 
-         if ($bookingId) {
-             $query->where('booking_id', 'like', "%$bookingId%");
-         }
-     
-         // Apply date range filter
-         if ($fromDate && $toDate) {
-             // both from_date and to_date provided
-             $query->whereBetween('from_date', [$fromDate, $toDate]);
-         } elseif ($fromDate) {
-             // only from_date provided
-             $query->whereDate('from_date', '>=', $fromDate);
-         } elseif ($toDate) {
-             // only to_date provided
-             $query->whereDate('from_date', '<=', $toDate);
-         }
-     
-         // Get the filtered results, ordered by latest first
-         $postBookings = $query->latest()->get();
-     
-         // Return the view with the filtered results
-         return view('Manager.CompletedBus', compact('postBookings'));
-     }
-     
+        // Start building the query with business_id scoping
+        $query = PostBooking::where('business_id', Auth::user()->business_id);
+
+        // Apply filters
+        if ($vehicleNumber) {
+            $query->where('vehicle_number', 'like', "%$vehicleNumber%");
+        }
+
+        if ($agn) {
+            $query->where('agn', 'like', "%$agn%");
+        }
+
+        if ($bookingId) {
+            $query->where('booking_id', 'like', "%$bookingId%");
+        }
+
+        // Apply date range filter
+        // Apply date range / single-date filter
+        // Apply date range / single-date filter
+        if ($fromDate && $toDate) {
+            // both dates provided (your current logic)
+            $query->whereBetween('from_date', [$fromDate, $toDate]);
+        } elseif ($fromDate) {
+            // only from_date -> match that exact from_date
+            $query->whereDate('from_date', $fromDate);
+        } elseif ($toDate) {
+            // only to_date -> match that exact to_date
+            $query->whereDate('to_date', $toDate);
+        }
+
+
+
+        // Get the filtered results, ordered by latest first
+        $postBookings = $query->latest()->get();
+        $sumTotalIncome = $postBookings->sum('total_income');
+
+        // Return the view with the filtered results
+        return view('Manager.CompletedBus', compact('postBookings', 'sumTotalIncome'));
+    }
+
 
 
     public function create()
@@ -254,58 +259,58 @@ class PostBookingController extends Controller
             'from_date'      => 'nullable|date',
             'to_date'        => 'nullable|date',
         ]);
-    
+
         $vehicleNumber = $request->vehicle_number;
         $fromDate      = $request->from_date;
         $toDate        = $request->to_date;
         $businessId    = Auth::check() ? Auth::user()->business_id : null;
-    
+
         // -------------------------
         // 1) INCOME (recognize on to_date ONLY)
         //    Instead of distributing over the range, we group by DATE(to_date).
         // -------------------------
         $incomeMap = PostBooking::query()
             ->where('vehicle_number', $vehicleNumber)
-            ->when($businessId, fn ($q) => $q->where('business_id', $businessId))
+            ->when($businessId, fn($q) => $q->where('business_id', $businessId))
             // Only bookings whose END falls inside the selected range
-            ->when($fromDate, fn ($q) => $q->whereDate('to_date', '>=', $fromDate))
-            ->when($toDate,   fn ($q) => $q->whereDate('to_date', '<=', $toDate))
+            ->when($fromDate, fn($q) => $q->whereDate('to_date', '>=', $fromDate))
+            ->when($toDate,   fn($q) => $q->whereDate('to_date', '<=', $toDate))
             // If you only want completed bookings, add:
             // ->where('status', 'completed')
             ->selectRaw('DATE(to_date) as date, SUM(total_income) as total')
             ->groupBy('date')
             ->pluck('total', 'date')     // ['YYYY-MM-DD' => 12345.67, ...]
             ->toArray();
-    
+
         // -------------------------
         // 2) EXPENSES (Fuel + Services + Owner Payments)
         // -------------------------
         $fuelExpenses = Expense::selectRaw('DATE(date) as date, SUM(amnt) as total')
             ->where('fuel_for', $vehicleNumber)
-            ->when($businessId, fn ($q) => $q->where('business_id', $businessId))
-            ->when($fromDate, fn ($q) => $q->whereDate('date', '>=', $fromDate))
-            ->when($toDate, fn ($q) => $q->whereDate('date', '<=', $toDate))
+            ->when($businessId, fn($q) => $q->where('business_id', $businessId))
+            ->when($fromDate, fn($q) => $q->whereDate('date', '>=', $fromDate))
+            ->when($toDate, fn($q) => $q->whereDate('date', '<=', $toDate))
             ->groupBy('date')
             ->pluck('total', 'date');
-    
+
         $serviceExpenses = Service::selectRaw('DATE(date) as date, SUM(amnt) as total')
             ->where('vehicle_number', $vehicleNumber)
-            ->when($businessId, fn ($q) => $q->where('business_id', $businessId))
-            ->when($fromDate, fn ($q) => $q->whereDate('date', '>=', $fromDate))
-            ->when($toDate, fn ($q) => $q->whereDate('date', '<=', $toDate))
+            ->when($businessId, fn($q) => $q->where('business_id', $businessId))
+            ->when($fromDate, fn($q) => $q->whereDate('date', '>=', $fromDate))
+            ->when($toDate, fn($q) => $q->whereDate('date', '<=', $toDate))
             ->groupBy('date')
             ->pluck('total', 'date');
-    
+
         // Owner payments from paidowners table
         // Vehicle field format: "VehicleName[VehicleNumber]" (e.g., "Toyota[ABC-1234]")
         $ownerPayments = PaidOwner::selectRaw('DATE(date) as date, SUM(paid_amnt) as total')
             ->where('vehicle', 'LIKE', '%[' . $vehicleNumber . ']%')
-            ->when($businessId, fn ($q) => $q->where('business_id', $businessId))
-            ->when($fromDate, fn ($q) => $q->whereDate('date', '>=', $fromDate))
-            ->when($toDate, fn ($q) => $q->whereDate('date', '<=', $toDate))
+            ->when($businessId, fn($q) => $q->where('business_id', $businessId))
+            ->when($fromDate, fn($q) => $q->whereDate('date', '>=', $fromDate))
+            ->when($toDate, fn($q) => $q->whereDate('date', '<=', $toDate))
             ->groupBy('date')
             ->pluck('total', 'date');
-    
+
         $expensesMap = [];
         foreach ($fuelExpenses as $date => $total) {
             $expensesMap[$date] = ($expensesMap[$date] ?? 0) + $total;
@@ -316,27 +321,27 @@ class PostBookingController extends Controller
         foreach ($ownerPayments as $date => $total) {
             $expensesMap[$date] = ($expensesMap[$date] ?? 0) + $total;
         }
-    
+
         // -------------------------
         // 3) Merge income & expenses (keep your current response shape)
         // -------------------------
         $allDates = collect(array_unique(array_merge(array_keys($incomeMap), array_keys($expensesMap))))
             ->sort()
             ->values();
-    
-        if ($fromDate) $allDates = $allDates->filter(fn ($d) => $d >= $fromDate);
-        if ($toDate)   $allDates = $allDates->filter(fn ($d) => $d <= $toDate);
-    
+
+        if ($fromDate) $allDates = $allDates->filter(fn($d) => $d >= $fromDate);
+        if ($toDate)   $allDates = $allDates->filter(fn($d) => $d <= $toDate);
+
         $labels        = [];
         $incomeValues  = [];
         $expenseValues = [];
-    
+
         foreach ($allDates as $date) {
             $labels[]        = $date;
             $incomeValues[]  = round($incomeMap[$date]   ?? 0, 2);
             $expenseValues[] = round($expensesMap[$date] ?? 0, 2);
         }
-    
+
         return response()->json([
             'labels'         => $labels,
             'income'         => $incomeValues,
@@ -345,8 +350,8 @@ class PostBookingController extends Controller
             'total_expenses' => array_sum($expenseValues),
         ]);
     }
-    
-    
+
+
 
 
 
@@ -362,15 +367,15 @@ class PostBookingController extends Controller
         $toDate = $request->input('to_date');
         $agn = $request->input('agn');
         $bookingId = $request->input('booking_id');
-    
+
         // Start building the query with business_id scoping
         $query = PostBooking::where('business_id', Auth::user()->business_id);
-    
+
         // Apply filters
         if ($vehicleNumber) {
             $query->where('vehicle_number', 'like', "%$vehicleNumber%");
         }
-    
+
         if ($agn) {
             $query->where('agn', 'like', "%$agn%");
         }
@@ -378,34 +383,41 @@ class PostBookingController extends Controller
         if ($bookingId) {
             $query->where('booking_id', 'like', "%$bookingId%");
         }
-    
-        // Apply date range filter
+
+        // Apply date range / single-date filter
         if ($fromDate && $toDate) {
-            // both from_date and to_date provided
+            // both dates provided (your current logic)
             $query->whereBetween('from_date', [$fromDate, $toDate]);
         } elseif ($fromDate) {
-            // only from_date provided
-            $query->whereDate('from_date', '>=', $fromDate);
+            // only from_date -> match that exact from_date
+            $query->whereDate('from_date', $fromDate);
         } elseif ($toDate) {
-            // only to_date provided
-            $query->whereDate('from_date', '<=', $toDate);
+            // only to_date -> match that exact to_date
+            $query->whereDate('to_date', $toDate);
         }
-    
+
+
+
         // Get the filtered results, ordered by latest first
         $postBookings = $query->latest()->get();
-    
+
+        $sumTotalIncome = $postBookings->sum('total_income');
+
+
         // Return the view with the filtered results
-        return view('Acc.CompletedBus', compact('postBookings'));
+        return view('Acc.CompletedBus', compact('postBookings', 'sumTotalIncome'));
     }
 
-        public function accshow(PostBooking $postBooking)
+
+
+    public function accshow(PostBooking $postBooking)
     {
         $business = \App\Models\Business::find(Auth::user()->business_id);
 
         return view('Acc.DetailedPostBookings', compact('postBooking', 'business'));
     }
-  
-    
+
+
 
 
 
@@ -420,15 +432,15 @@ class PostBookingController extends Controller
         $toDate = $request->input('to_date');
         $agn = $request->input('agn');
         $bookingId = $request->input('booking_id');
-    
+
         // Start building the query with business_id scoping
         $query = PostBooking::where('business_id', Auth::user()->business_id);
-    
+
         // Apply filters
         if ($vehicleNumber) {
             $query->where('vehicle_number', 'like', "%$vehicleNumber%");
         }
-    
+
         if ($agn) {
             $query->where('agn', 'like', "%$agn%");
         }
@@ -436,31 +448,33 @@ class PostBookingController extends Controller
         if ($bookingId) {
             $query->where('booking_id', 'like', "%$bookingId%");
         }
-    
-        // Apply date range filter
+
+        // Apply date range / single-date filter
         if ($fromDate && $toDate) {
-            // both from_date and to_date provided
+            // both dates provided (your current logic)
             $query->whereBetween('from_date', [$fromDate, $toDate]);
         } elseif ($fromDate) {
-            // only from_date provided
-            $query->whereDate('from_date', '>=', $fromDate);
+            // only from_date -> match that exact from_date
+            $query->whereDate('from_date', $fromDate);
         } elseif ($toDate) {
-            // only to_date provided
-            $query->whereDate('from_date', '<=', $toDate);
+            // only to_date -> match that exact to_date
+            $query->whereDate('to_date', $toDate);
         }
-    
+
+
         // Get the filtered results, ordered by latest first
         $postBookings = $query->latest()->get();
-    
+
+        $sumTotalIncome = $postBookings->sum('total_income');
+
         // Return the view with the filtered results
-        return view('Manager.OwnerCompletedBus', compact('postBookings'));
+        return view('Manager.OwnerCompletedBus', compact('postBookings', 'sumTotalIncome'));
     }
 
-        public function ownershow(PostBooking $postBooking)
+    public function ownershow(PostBooking $postBooking)
     {
         $business = \App\Models\Business::find(Auth::user()->business_id);
 
         return view('Manager.OwnerDetailedPostBookings', compact('postBooking', 'business'));
     }
-  
 }

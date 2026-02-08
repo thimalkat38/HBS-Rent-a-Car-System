@@ -530,10 +530,15 @@
                                         class="inline-block px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition font-semibold text-sm shadow">
                                         SEARCH
                                     </button>
-                                    <a href="{{ url('/postbookings') }}"
+                                    <a href="{{ url('acc/postbookings') }}"
                                         class="inline-block px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition font-semibold text-sm shadow">
                                         Clear
                                     </a>
+                                    @if(request()->anyFilled(['vehicle_number','agn','booking_id','from_date','to_date']))
+                                    <div class="px-4 py-2 bg-yellow-100 text-yellow-800 rounded shadow font-semibold text-sm">
+                                        Total Income: Rs. {{ number_format($sumTotalIncome, 2) }}
+                                    </div>
+                                @endif
                                 </div>
                             </form>
 
