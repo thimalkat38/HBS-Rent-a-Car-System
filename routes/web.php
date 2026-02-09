@@ -405,6 +405,8 @@ Route::patch('/vehicles/{vehicle}/service-status', [VehicleController::class, 'u
         Route::post('/acc/addvehicle', [VehicleController::class, 'accstore'])->name('acc.storevehicle');
         Route::get('/acc/allvehicles', [VehicleController::class, 'accindex'])->name('acc.vehicles.index');
         Route::get('/acc/vehicles/{id}', [VehicleController::class, 'accshow'])->name('acc.vehicles.show');
+        Route::get('/acc/vehicles/{id}/edit', [VehicleController::class, 'accedit'])->name('acc.vehicles.edit');
+        Route::put('/acc/vehicles/{id}', [VehicleController::class, 'accupdate'])->name('acc.vehicles.update');
 
         Route::get('/acc/vehicle_owners', [VehicleOwnerController::class, 'accindex'])->name('acc.vehicle_owners.index');
         Route::get('/acc/vehicle_owners/create', [VehicleOwnerController::class, 'acccreate'])->name('acc.vehicle_owners.create');
