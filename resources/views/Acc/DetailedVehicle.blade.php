@@ -404,9 +404,9 @@
                                 <div class="text-white text-base font-poppins">No vehicle data found.</div>
                             @endif
                             <div class="flex-grow"></div>
-                            {{-- <a href="{{ route('vehicles.edit', $vehicle->id) }}"
+                            <a href="{{ route('acc.vehicles.edit', $vehicle->id) }}"
                                 class="mt-4 px-2 py-2 bg-blue-500 rounded-3xl text-white text-xs font-semibold font-poppins hover:bg-blue-600 transition text-center w-full self-end">Edit
-                                Vehicle Details</a> --}}
+                                Vehicle Details</a>
                             <a href="{{ route('vehicle.renewDocs', $vehicle->id) }}"
                                 class="mt-4 px-2 py-2 bg-teal-500 rounded-3xl text-white text-xs font-semibold font-poppins hover:bg-teal-600 transition text-center w-full self-end"
                                 onclick="return confirmRenewal();">
