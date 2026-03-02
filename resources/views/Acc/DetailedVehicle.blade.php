@@ -412,7 +412,7 @@
                                 onclick="return confirmRenewal();">
                                 Renew License/Insurance
                             </a>
-                            <a href="{{ route('services.index', ['vehicle_number' => $vehicle->vehicle_number]) }}"
+                            <a href="{{ route('acc.services.index', ['vehicle_number' => $vehicle->vehicle_number]) }}"
                                 class="mt-4 px-2 py-2 bg-orange-400 rounded-3xl text-white text-xs font-semibold font-poppins hover:bg-red-600 transition text-center w-full self-end">
                                 Log Service
                             </a>

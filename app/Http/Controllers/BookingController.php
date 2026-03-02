@@ -264,11 +264,18 @@ class BookingController extends Controller
     {
         $paths = [];
 
+        if (!$files) return $paths;
+
+        // Allow single file or array
+        if (!is_array($files)) {
+            $files = [$files];
+        }
+
         foreach ($files as $file) {
-            $path = $file->store($directory, 'public'); // stored in storage/app/public
+            $path = $file->store($directory, 'public'); // storage/app/public/...
             $paths[] = $path;
 
-            // Copy to public/storage manually
+            // Copy to public/storage manually (for servers without storage:link)
             $source = storage_path('app/public/' . $path);
             $destination = public_path('storage/' . $path);
 
@@ -281,6 +288,28 @@ class BookingController extends Controller
 
         return $paths;
     }
+
+    private function deletePublicAndStorageFiles($paths)
+    {
+        if (empty($paths)) return;
+
+        if (!is_array($paths)) {
+            $paths = [$paths];
+        }
+
+        foreach ($paths as $p) {
+            // Delete from storage/app/public
+            Storage::disk('public')->delete($p);
+
+            // Delete manual copy from public/storage
+            $publicCopy = public_path('storage/' . $p);
+            if (file_exists($publicCopy)) {
+                @unlink($publicCopy);
+            }
+        }
+    }
+
+
 
 
 
@@ -311,18 +340,17 @@ class BookingController extends Controller
     // Update booking data
     public function update(Request $request, Booking $booking)
     {
-        // Validate incoming data
         $validatedData = $request->validate([
             'full_name' => 'required|string|max:255',
             'mobile_number' => 'required',
             'nic' => 'nullable|string|max:20',
             'address' => 'nullable|string',
-            'deposit' => 'nullable',
+            'deposit' => 'nullable|string',
             'booking_time' => 'required',
             'arrival_time' => 'required',
-            'vehicle_number' => 'nullable',
-            'fuel_type' => 'nullable',
-            'vehicle_name' => 'nullable',
+            'vehicle_number' => 'nullable|string',
+            'fuel_type' => 'nullable|string',
+            'vehicle_name' => 'nullable|string',
             'from_date' => 'required|date',
             'to_date' => 'required|date',
             'officer' => 'nullable|string',
@@ -338,75 +366,60 @@ class BookingController extends Controller
             'guarantor' => 'nullable|string',
             'payed' => 'nullable|numeric',
             'price' => 'nullable|numeric',
-            'discount_price' => 'nullable|string',
-            'additional_chagers' => 'nullable|string',
-            'price' => 'nullable|string',
-            'deposit' => 'nullable|string',
+            'discount_price' => 'nullable|numeric',
+            'additional_chagers' => 'nullable|numeric',
             'reason' => 'nullable|string',
-            'start_km' => 'nullable|string',
-            'free_km' => 'nullable|string',
+            'start_km' => 'nullable|numeric',
+            'free_km' => 'nullable|numeric',
             'commissioner' => 'nullable|string',
             'driving_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
             'nic_photos.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
             'note' => 'nullable|string',
         ]);
 
+        // Defaults
         $validatedData['additional_chagers'] = $validatedData['additional_chagers'] ?? 0.00;
         $validatedData['discount_price'] = $validatedData['discount_price'] ?? 0.00;
 
-        // Map commissioner field to commission for the model
+        // Map commissioner -> commission
         if (isset($validatedData['commissioner'])) {
             $validatedData['commission'] = $validatedData['commissioner'];
             unset($validatedData['commissioner']);
         }
 
-        // Normalize checkbox to boolean
+        // checkbox normalize
         $validatedData['hand_over_booking'] = $request->boolean('hand_over_booking');
 
-        // Update basic details
+        /**
+         * ✅ IMPORTANT:
+         * Remove file keys before update(), because update() can't store arrays/files.
+         */
+        unset($validatedData['driving_photos']);
+        unset($validatedData['nic_photos']);
+        unset($validatedData['driving_photos.*']);
+        unset($validatedData['nic_photos.*']);
+
+        // Update text/number fields only
         $booking->update($validatedData);
 
-        // Handling Driving Photos (if new ones are uploaded)
+        // ✅ Driving photos (upload + copy like store)
         if ($request->hasFile('driving_photos')) {
-            // Delete old photos
-            if ($booking->driving_photos) {
-                foreach ($booking->driving_photos as $oldPhoto) {
-                    Storage::disk('public')->delete($oldPhoto);
-                }
-            }
-
-            // Store new photos
-            $drivingPhotos = [];
-            foreach ($request->file('driving_photos') as $photo) {
-                $path = $photo->store('driving_photos', 'public');
-                $drivingPhotos[] = $path;
-            }
-            $booking->driving_photos = $drivingPhotos;
+            $this->deletePublicAndStorageFiles($booking->driving_photos);
+            $booking->driving_photos = $this->uploadAndCopy($request->file('driving_photos'), 'driving_photos');
         }
 
-        // Handling NIC Photos (if new ones are uploaded)
+        // ✅ NIC photos (upload + copy like store)
         if ($request->hasFile('nic_photos')) {
-            // Delete old photos
-            if ($booking->nic_photos) {
-                foreach ($booking->nic_photos as $oldPhoto) {
-                    Storage::disk('public')->delete($oldPhoto);
-                }
-            }
-
-            // Store new photos
-            $nicPhotos = [];
-            foreach ($request->file('nic_photos') as $photo) {
-                $path = $photo->store('nic_photos', 'public');
-                $nicPhotos[] = $path;
-            }
-            $booking->nic_photos = $nicPhotos;
+            $this->deletePublicAndStorageFiles($booking->nic_photos);
+            $booking->nic_photos = $this->uploadAndCopy($request->file('nic_photos'), 'nic_photos');
         }
 
-        // Save JSON fields explicitly
+        // Save JSON fields
         $booking->save();
 
         return redirect()->route('bookings.index')->with('success', 'Booking updated successfully.');
     }
+
 
 
     // Delete a booking
@@ -557,12 +570,12 @@ class BookingController extends Controller
 
 
 
-    
+
 
 
     #Acc Functions
 
-    
+
     public function accindex(Request $request)
     {
         $businessId = Auth::user()->business_id;

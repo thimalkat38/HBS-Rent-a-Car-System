@@ -303,6 +303,9 @@ class ServiceController extends Controller
     
 
 
+
+
+
     #Emp Functions
 
     public function empindex(Request $request)
@@ -374,6 +377,82 @@ class ServiceController extends Controller
     
         return redirect()
             ->route('emp.services.index', ['vehicle_number' => $request->vehicle_number])
+            ->with('success', 'Service added successfully!');
+    }
+
+
+
+
+    #Acc Functions
+    public function accindex(Request $request)
+    {
+        $businessId = Auth::user()->business_id;
+        $vehicle_number = $request->query('vehicle_number'); // Get vehicle number from URL
+
+        // Fetch services belonging to the same business
+        $services = Service::where('business_id', $businessId)
+            ->where('vehicle_number', $vehicle_number)
+            ->get();
+
+        $latestService = Service::where('business_id', $businessId)
+            ->where('vehicle_number', $vehicle_number)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        return view('Acc.Services', compact('services', 'vehicle_number', 'latestService'));
+    }
+
+    public function acccreate()
+    {
+        return view('Acc.Services');
+    }
+
+    public function accstore(Request $request)
+    {
+        $request->validate([
+            'vehicle_number'   => 'required|string',
+            'invoice_number'   => 'nullable|string',
+            'type'             => 'required|string',
+            'current_mileage'  => 'nullable|string',
+            'next_mileage'     => 'nullable|string',
+            'amnt'             => 'nullable|string',
+            'station'          => 'nullable|string',
+            'date'             => 'nullable|date',
+            'next_date'        => 'nullable|date',
+            'features'         => 'nullable|array',
+    
+            // 🔁 new validation for brake KM
+            'front_brake_km'   => 'nullable|integer|min:0',
+            'rear_brake_km'    => 'nullable|integer|min:0',
+        ]);
+    
+        // Base data
+        $data = $request->all();
+        $data['business_id'] = Auth::user()->business_id;
+    
+        // Build features array
+        $features = $request->input('features', []);
+    
+        // 🔁 Add brakes (in KM) to features
+        if ($request->filled('front_brake_km')) {
+            $features[] = 'Front Brake: ' . $request->front_brake_km . ' km';
+        }
+    
+        if ($request->filled('rear_brake_km')) {
+            $features[] = 'Rear Brake: ' . $request->rear_brake_km . ' km';
+        }
+    
+        $data['features'] = $features;
+    
+        // Save
+        $service = Service::create($data);
+    
+        if ($request->ajax()) {
+            return response()->json(['service' => $service], 201);
+        }
+    
+        return redirect()
+            ->route('acc.services.index', ['vehicle_number' => $request->vehicle_number])
             ->with('success', 'Service added successfully!');
     }
 }
