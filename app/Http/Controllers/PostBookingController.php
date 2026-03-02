@@ -22,45 +22,59 @@ class PostBookingController extends Controller
     {
         // Get the query parameters
         $vehicleNumber = $request->input('vehicle_number');
-        $fromDate = $request->input('from_date');
-        $toDate = $request->input('to_date');
-        $agn = $request->input('agn');
-        $bookingId = $request->input('booking_id');
+        $fromDate      = $request->input('from_date');
+        $toDate        = $request->input('to_date');
+        $agn           = $request->input('agn');
+        $bookingId     = $request->input('booking_id');
 
         // Start building the query with business_id scoping
         $query = PostBooking::where('business_id', Auth::user()->business_id);
 
-        // Apply filters
-        if ($vehicleNumber) {
-            $query->where('vehicle_number', 'like', "%$vehicleNumber%");
+        // Apply text filters
+        if (!empty($vehicleNumber)) {
+            $query->where('vehicle_number', 'like', "%{$vehicleNumber}%");
         }
 
-        if ($agn) {
-            $query->where('agn', 'like', "%$agn%");
+        if (!empty($agn)) {
+            $query->where('agn', 'like', "%{$agn}%");
         }
 
-        if ($bookingId) {
-            $query->where('booking_id', 'like', "%$bookingId%");
+        if (!empty($bookingId)) {
+            $query->where('booking_id', 'like', "%{$bookingId}%");
         }
 
-        // Apply date range filter
-        // Apply date range / single-date filter
-        // Apply date range / single-date filter
-        if ($fromDate && $toDate) {
-            // both dates provided (your current logic)
-            $query->whereBetween('from_date', [$fromDate, $toDate]);
-        } elseif ($fromDate) {
-            // only from_date -> match that exact from_date
+        /**
+         * DATE FILTER LOGIC
+         *
+         * 🔹 If both from_date and to_date are given:
+         *     -> show ONLY bookings fully inside that range
+         *        from_date >= fromDate
+         *        to_date   <= toDate
+         *
+         * 🔹 If only from_date is given:
+         *     -> match that exact from_date
+         *
+         * 🔹 If only to_date is given:
+         *     -> match that exact to_date
+         */
+        if (!empty($fromDate) && !empty($toDate)) {
+
+            // Bookings fully inside the selected period
+            $query->whereDate('from_date', '>=', $fromDate)
+                ->whereDate('to_date',   '<=', $toDate);
+        } elseif (!empty($fromDate)) {
+
+            // Only from_date given -> match bookings starting on that date
             $query->whereDate('from_date', $fromDate);
-        } elseif ($toDate) {
-            // only to_date -> match that exact to_date
+        } elseif (!empty($toDate)) {
+
+            // Only to_date given -> match bookings ending on that date
             $query->whereDate('to_date', $toDate);
         }
 
-
-
         // Get the filtered results, ordered by latest first
-        $postBookings = $query->latest()->get();
+        // (you can change latest() to latest('from_date') if you want by from_date)
+        $postBookings   = $query->latest()->get();
         $sumTotalIncome = $postBookings->sum('total_income');
 
         // Return the view with the filtered results
@@ -363,46 +377,60 @@ class PostBookingController extends Controller
     {
         // Get the query parameters
         $vehicleNumber = $request->input('vehicle_number');
-        $fromDate = $request->input('from_date');
-        $toDate = $request->input('to_date');
-        $agn = $request->input('agn');
-        $bookingId = $request->input('booking_id');
+        $fromDate      = $request->input('from_date');
+        $toDate        = $request->input('to_date');
+        $agn           = $request->input('agn');
+        $bookingId     = $request->input('booking_id');
 
         // Start building the query with business_id scoping
         $query = PostBooking::where('business_id', Auth::user()->business_id);
 
-        // Apply filters
-        if ($vehicleNumber) {
-            $query->where('vehicle_number', 'like', "%$vehicleNumber%");
+        // Apply text filters
+        if (!empty($vehicleNumber)) {
+            $query->where('vehicle_number', 'like', "%{$vehicleNumber}%");
         }
 
-        if ($agn) {
-            $query->where('agn', 'like', "%$agn%");
+        if (!empty($agn)) {
+            $query->where('agn', 'like', "%{$agn}%");
         }
 
-        if ($bookingId) {
-            $query->where('booking_id', 'like', "%$bookingId%");
+        if (!empty($bookingId)) {
+            $query->where('booking_id', 'like', "%{$bookingId}%");
         }
 
-        // Apply date range / single-date filter
-        if ($fromDate && $toDate) {
-            // both dates provided (your current logic)
-            $query->whereBetween('from_date', [$fromDate, $toDate]);
-        } elseif ($fromDate) {
-            // only from_date -> match that exact from_date
+        /**
+         * DATE FILTER LOGIC
+         *
+         * 🔹 If both from_date and to_date are given:
+         *     -> show ONLY bookings fully inside that range
+         *        from_date >= fromDate
+         *        to_date   <= toDate
+         *
+         * 🔹 If only from_date is given:
+         *     -> match that exact from_date
+         *
+         * 🔹 If only to_date is given:
+         *     -> match that exact to_date
+         */
+        if (!empty($fromDate) && !empty($toDate)) {
+
+            // Bookings fully inside the selected period
+            $query->whereDate('from_date', '>=', $fromDate)
+                ->whereDate('to_date',   '<=', $toDate);
+        } elseif (!empty($fromDate)) {
+
+            // Only from_date given -> match bookings starting on that date
             $query->whereDate('from_date', $fromDate);
-        } elseif ($toDate) {
-            // only to_date -> match that exact to_date
+        } elseif (!empty($toDate)) {
+
+            // Only to_date given -> match bookings ending on that date
             $query->whereDate('to_date', $toDate);
         }
 
-
-
         // Get the filtered results, ordered by latest first
-        $postBookings = $query->latest()->get();
-
+        // (you can change latest() to latest('from_date') if you want by from_date)
+        $postBookings   = $query->latest()->get();
         $sumTotalIncome = $postBookings->sum('total_income');
-
 
         // Return the view with the filtered results
         return view('Acc.CompletedBus', compact('postBookings', 'sumTotalIncome'));
@@ -428,43 +456,59 @@ class PostBookingController extends Controller
     {
         // Get the query parameters
         $vehicleNumber = $request->input('vehicle_number');
-        $fromDate = $request->input('from_date');
-        $toDate = $request->input('to_date');
-        $agn = $request->input('agn');
-        $bookingId = $request->input('booking_id');
+        $fromDate      = $request->input('from_date');
+        $toDate        = $request->input('to_date');
+        $agn           = $request->input('agn');
+        $bookingId     = $request->input('booking_id');
 
         // Start building the query with business_id scoping
         $query = PostBooking::where('business_id', Auth::user()->business_id);
 
-        // Apply filters
-        if ($vehicleNumber) {
-            $query->where('vehicle_number', 'like', "%$vehicleNumber%");
+        // Apply text filters
+        if (!empty($vehicleNumber)) {
+            $query->where('vehicle_number', 'like', "%{$vehicleNumber}%");
         }
 
-        if ($agn) {
-            $query->where('agn', 'like', "%$agn%");
+        if (!empty($agn)) {
+            $query->where('agn', 'like', "%{$agn}%");
         }
 
-        if ($bookingId) {
-            $query->where('booking_id', 'like', "%$bookingId%");
+        if (!empty($bookingId)) {
+            $query->where('booking_id', 'like', "%{$bookingId}%");
         }
 
-        // Apply date range / single-date filter
-        if ($fromDate && $toDate) {
-            // both dates provided (your current logic)
-            $query->whereBetween('from_date', [$fromDate, $toDate]);
-        } elseif ($fromDate) {
-            // only from_date -> match that exact from_date
+        /**
+         * DATE FILTER LOGIC
+         *
+         * 🔹 If both from_date and to_date are given:
+         *     -> show ONLY bookings fully inside that range
+         *        from_date >= fromDate
+         *        to_date   <= toDate
+         *
+         * 🔹 If only from_date is given:
+         *     -> match that exact from_date
+         *
+         * 🔹 If only to_date is given:
+         *     -> match that exact to_date
+         */
+        if (!empty($fromDate) && !empty($toDate)) {
+
+            // Bookings fully inside the selected period
+            $query->whereDate('from_date', '>=', $fromDate)
+                ->whereDate('to_date',   '<=', $toDate);
+        } elseif (!empty($fromDate)) {
+
+            // Only from_date given -> match bookings starting on that date
             $query->whereDate('from_date', $fromDate);
-        } elseif ($toDate) {
-            // only to_date -> match that exact to_date
+        } elseif (!empty($toDate)) {
+
+            // Only to_date given -> match bookings ending on that date
             $query->whereDate('to_date', $toDate);
         }
 
-
         // Get the filtered results, ordered by latest first
-        $postBookings = $query->latest()->get();
-
+        // (you can change latest() to latest('from_date') if you want by from_date)
+        $postBookings   = $query->latest()->get();
         $sumTotalIncome = $postBookings->sum('total_income');
 
         // Return the view with the filtered results

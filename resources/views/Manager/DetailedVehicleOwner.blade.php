@@ -273,6 +273,77 @@
                     </h1>
 
                     @if ($vehicleOwner)
+                        <!-- Payment Summary Section -->
+                        <section class="bg-white shadow-sm border border-gray-200 rounded-xl p-6 sm:p-8 mb-6">
+                            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+                                <div>
+                                    <h2 class="text-lg font-semibold text-gray-800 mb-1">
+                                        Payment Summary
+                                    </h2>
+                                    <p class="text-sm text-gray-500">
+                                        For selected period
+                                        ({{ isset($fromDate) ? $fromDate->toDateString() : now()->startOfMonth()->toDateString() }}
+                                        to
+                                        {{ isset($toDate) ? $toDate->toDateString() : now()->endOfMonth()->toDateString() }})
+                                    </p>
+                                </div>
+                                <form method="GET" class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                                    <div class="flex flex-col">
+                                        <label for="from_date" class="text-xs font-medium text-gray-500 mb-1">From
+                                            Date</label>
+                                        <input type="date" id="from_date" name="from_date"
+                                            class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                            value="{{ request('from_date', isset($fromDate) ? $fromDate->toDateString() : now()->startOfMonth()->toDateString()) }}">
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <label for="to_date" class="text-xs font-medium text-gray-500 mb-1">To
+                                            Date</label>
+                                        <input type="date" id="to_date" name="to_date"
+                                            class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                            value="{{ request('to_date', isset($toDate) ? $toDate->toDateString() : now()->endOfMonth()->toDateString()) }}">
+                                    </div>
+                                    <div class="flex gap-2 mt-2 sm:mt-5">
+                                        <button type="submit"
+                                            class="inline-flex items-center justify-center rounded-lg bg-teal-600 px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
+                                            Filter
+                                        </button>
+                                        <a href="{{ url()->current() }}"
+                                            class="inline-flex items-center justify-center rounded-lg border border-gray-300 px-3 py-2 text-xs sm:text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50">
+                                            Reset
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div class="bg-teal-50 border border-teal-100 rounded-lg p-4">
+                                    <p class="text-xs font-medium text-teal-700 uppercase tracking-wide">
+                                        Monthly Rent
+                                    </p>
+                                    <p class="mt-1 text-xl font-semibold text-teal-900">
+                                        {{ number_format($monthlyRent ?? $vehicleOwner->rental_amnt, 2) }}
+                                    </p>
+                                </div>
+                                <div class="bg-emerald-50 border border-emerald-100 rounded-lg p-4">
+                                    <p class="text-xs font-medium text-emerald-700 uppercase tracking-wide">
+                                        Paid Amount (Selected Period)
+                                    </p>
+                                    <p class="mt-1 text-xl font-semibold text-emerald-900">
+                                        {{ number_format($paidThisPeriod ?? 0, 2) }}
+                                    </p>
+                                </div>
+                                <div class="bg-red-50 border border-red-100 rounded-lg p-4">
+                                    <p class="text-xs font-medium text-red-700 uppercase tracking-wide">
+                                        Due Amount (Selected Period)
+                                    </p>
+                                    <p class="mt-1 text-xl font-semibold text-red-900">
+                                        {{ number_format($dueThisPeriod ?? (($vehicleOwner->rental_amnt ?? 0) - ($paidThisPeriod ?? 0)), 2) }}
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Vehicle Owner Information Section -->
                         <section class="bg-white shadow-sm border border-gray-200 rounded-xl p-6 sm:p-8">
                             <h2 class="text-lg font-semibold text-gray-800 mb-6">
                                 Information
@@ -359,6 +430,12 @@
 
                             <!-- Edit and Delete Buttons -->
                             <div class="mt-8 flex flex-col sm:flex-row gap-3 sm:justify-end">
+                                <a href="{{ route('vehicle_owners.payments', $vehicleOwner->id) }}"
+                                    class="inline-flex items-center justify-center rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
+                                    <span class="material-icons text-sm mr-2">receipt_long</span>
+                                    View Payment Details
+                                </a>
+
                                 <a href="{{ route('vehicle_owners.edit', $vehicleOwner->id) }}"
                                     class="inline-flex items-center justify-center rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2">
                                     Edit Vehicle Owner

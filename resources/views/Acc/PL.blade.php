@@ -308,7 +308,7 @@
                     <!-- Filter Section -->
                     <div class="bg-white rounded-lg shadow-md p-6">
                         <h2 class="text-xl font-bold mb-4 text-gray-800">Filter Options</h2>
-                        <form method="GET" action="{{ route('profit.loss') }}" id="filterForm">
+                        <form method="GET" action="{{ route('acc.profit.loss') }}" id="filterForm">
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                                 <div>
                                     <label for="filterType" class="block text-gray-700 mb-2 font-semibold">Filter
@@ -346,7 +346,7 @@
                                 </div>
                             </div>
                             <div class="flex justify-end">
-                                <a href="{{ route('profit.loss') }}"
+                                <a href="{{ route('acc.profit.loss') }}"
                                     class="inline-block bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
                                     Clear Filters
                                 </a>

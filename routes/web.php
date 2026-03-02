@@ -256,6 +256,8 @@ Route::middleware(['manager'])->group(function () {
     Route::get('/ownerpayments/{ownerpayment}/edit', [OwnerpaymentController::class, 'edit'])->name('ownerpayments.edit');
     Route::put('/ownerpayments/{ownerpayment}', [OwnerpaymentController::class, 'update'])->name('ownerpayments.update');
     Route::delete('/ownerpayments/{ownerpayment}', [OwnerpaymentController::class, 'destroy'])->name('ownerpayments.destroy');
+
+    Route::get('/vehicle_owners/{vehicleOwner}/payments', [VehicleOwnerController::class, 'Payments'])->name('vehicle_owners.payments');
     
     // Paid Owners Routes
     Route::post('/paidowners', [PaidOwnerController::class, 'store'])->name('paidowners.store');
@@ -412,6 +414,7 @@ Route::patch('/vehicles/{vehicle}/service-status', [VehicleController::class, 'u
         Route::get('/acc/vehicle_owners/create', [VehicleOwnerController::class, 'acccreate'])->name('acc.vehicle_owners.create');
         Route::post('/acc/vehicle_owners', [VehicleOwnerController::class, 'accstore'])->name('acc.vehicle_owners.store');
         Route::get('/acc/vehicle_owners/{vehicleOwner}', [VehicleOwnerController::class, 'accshow'])->name('acc.vehicle_owners.show');
+        Route::get('/acc/vehicle_owners/{vehicleOwner}/payments', [VehicleOwnerController::class, 'accPayments'])->name('acc.vehicle_owners.payments');
         Route::post('/acc/paidowners', [PaidOwnerController::class, 'accstore'])->name('acc.paidowners.store');
 
         Route::get('/acc/bookings', [BookingController::class, 'accindex'])->name('acc.bookings.index');
@@ -447,8 +450,11 @@ Route::patch('/vehicles/{vehicle}/service-status', [VehicleController::class, 'u
         Route::put('acc/expenses/{id}', [ExpenseController::class, 'accupdate'])->name('acc.expenses.update');
         Route::get('acc/profit-loss-report', [ProfitLossController::class, 'accindex'])->name('acc.profit.loss');
 
-        Route::get('acc/commission', function () {
-            return view('Acc.Commission');
+        Route::get('acc/services', [ServiceController::class, 'accindex'])->name('acc.services.index');
+        Route::get('acc/services/create', [ServiceController::class, 'acccreate'])->name('acc.services.create');
+        Route::post('acc/services', [ServiceController::class, 'accstore'])->name('acc.services.store');
+
+        Route::get('acc/commission', function () {return view('Acc.Commission');
         });
     });
 

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\VehicleOwner;
+use App\Models\PaidOwner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class VehicleOwnerController extends Controller
 {
@@ -76,9 +78,36 @@ class VehicleOwnerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(VehicleOwner $vehicleOwner)
+    public function show(Request $request, VehicleOwner $vehicleOwner)
     {
-        return view('Manager.DetailedVehicleOwner', compact('vehicleOwner'));
+        $businessId = Auth::user()->business_id;
+
+        // Determine date range (defaults to current month)
+        $fromDate = $request->filled('from_date')
+            ? Carbon::parse($request->input('from_date'))->startOfDay()
+            : Carbon::now()->startOfMonth();
+
+        $toDate = $request->filled('to_date')
+            ? Carbon::parse($request->input('to_date'))->endOfDay()
+            : Carbon::now()->endOfMonth();
+
+        // Total paid amount for this owner within selected period
+        $paidThisPeriod = PaidOwner::where('business_id', $businessId)
+            ->where('owner_id', $vehicleOwner->owner_id)
+            ->whereBetween('date', [$fromDate, $toDate])
+            ->sum('paid_amnt');
+
+        $monthlyRent = $vehicleOwner->rental_amnt;
+        $dueThisPeriod = max($monthlyRent - $paidThisPeriod, 0);
+
+        return view('Manager.DetailedVehicleOwner', [
+            'vehicleOwner'   => $vehicleOwner,
+            'paidThisPeriod' => $paidThisPeriod,
+            'monthlyRent'    => $monthlyRent,
+            'dueThisPeriod'  => $dueThisPeriod,
+            'fromDate'       => $fromDate,
+            'toDate'         => $toDate,
+        ]);
     }
 
     /**
@@ -122,6 +151,34 @@ class VehicleOwnerController extends Controller
         $vehicleOwner->delete();
 
         return redirect()->route('vehicle_owners.index')->with('success', 'Vehicle owner deleted successfully.');
+    }
+
+
+    public function Payments(Request $request, VehicleOwner $vehicleOwner)
+    {
+        $businessId = Auth::user()->business_id;
+
+        $query = PaidOwner::where('business_id', $businessId)
+            ->where('owner_id', $vehicleOwner->owner_id)
+            ->orderBy('date', 'desc');
+
+        if ($request->filled('from_date')) {
+            $query->whereDate('date', '>=', $request->input('from_date'));
+        }
+
+        if ($request->filled('to_date')) {
+            $query->whereDate('date', '<=', $request->input('to_date'));
+        }
+
+        $payments = $query->paginate(15)->withQueryString();
+
+        $totalPaid = (clone $query)->sum('paid_amnt');
+
+        return view('Manager.OwnerPayments', [
+            'vehicleOwner' => $vehicleOwner,
+            'payments'     => $payments,
+            'totalPaid'    => $totalPaid,
+        ]);
     }
 
 
@@ -192,11 +249,68 @@ class VehicleOwnerController extends Controller
 
 
     /**
-     * Display the specified resource.
+     * Display the specified resource for Accounts users with payment summary.
      */
-    public function accshow(VehicleOwner $vehicleOwner)
+    public function accshow(Request $request, VehicleOwner $vehicleOwner)
     {
-        return view('Acc.DetailedVehicleOwner', compact('vehicleOwner'));
+        $businessId = Auth::user()->business_id;
+
+        // Determine date range (defaults to current month)
+        $fromDate = $request->filled('from_date')
+            ? Carbon::parse($request->input('from_date'))->startOfDay()
+            : Carbon::now()->startOfMonth();
+
+        $toDate = $request->filled('to_date')
+            ? Carbon::parse($request->input('to_date'))->endOfDay()
+            : Carbon::now()->endOfMonth();
+
+        // Total paid amount for this owner within selected period
+        $paidThisPeriod = PaidOwner::where('business_id', $businessId)
+            ->where('owner_id', $vehicleOwner->owner_id)
+            ->whereBetween('date', [$fromDate, $toDate])
+            ->sum('paid_amnt');
+
+        $monthlyRent = $vehicleOwner->rental_amnt;
+        $dueThisPeriod = max($monthlyRent - $paidThisPeriod, 0);
+
+        return view('Acc.DetailedVehicleOwner', [
+            'vehicleOwner'   => $vehicleOwner,
+            'paidThisPeriod' => $paidThisPeriod,
+            'monthlyRent'    => $monthlyRent,
+            'dueThisPeriod'  => $dueThisPeriod,
+            'fromDate'       => $fromDate,
+            'toDate'         => $toDate,
+        ]);
+    }
+
+    /**
+     * List all payments for a specific owner (Accounts module).
+     */
+    public function accPayments(Request $request, VehicleOwner $vehicleOwner)
+    {
+        $businessId = Auth::user()->business_id;
+
+        $query = PaidOwner::where('business_id', $businessId)
+            ->where('owner_id', $vehicleOwner->owner_id)
+            ->orderBy('date', 'desc');
+
+        if ($request->filled('from_date')) {
+            $query->whereDate('date', '>=', $request->input('from_date'));
+        }
+
+        if ($request->filled('to_date')) {
+            $query->whereDate('date', '<=', $request->input('to_date'));
+        }
+
+        $payments = $query->paginate(15)->withQueryString();
+
+        $totalPaid = (clone $query)->sum('paid_amnt');
+
+        return view('Acc.OwnerPayments', [
+            'vehicleOwner' => $vehicleOwner,
+            'payments'     => $payments,
+            'totalPaid'    => $totalPaid,
+        ]);
     }
 
 
