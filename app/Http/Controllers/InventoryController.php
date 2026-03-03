@@ -1200,4 +1200,136 @@ class InventoryController extends Controller
     //     return view('Acc.IssueItems');
     // }
 
+    /**
+     * Accountant inventory listing.
+     */
+    public function accindex(Request $request)
+    {
+        $businessId = Auth::user()->business_id;
+
+        $query = Inventory::with('batches')->where('business_id', $businessId);
+
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('Itm_id', 'LIKE', "%{$search}%")
+                    ->orWhere('it_name', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $inventories = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        return view('Acc.Inventory', compact('inventories'));
+    }
+
+    /**
+     * Accountant inventory create form.
+     */
+    public function acccreate()
+    {
+        return view('Acc.AddInventory');
+    }
+
+    /**
+     * Accountant store inventory item.
+     */
+    public function accstore(Request $request)
+    {
+        $request->validate([
+            'it_name' => 'required|string|max:255',
+            'quantity' => 'nullable|integer|min:0',
+            'min_quantity' => 'nullable|integer|min:0',
+            'date' => 'nullable|date',
+            'price_per_unit' => 'required|numeric|min:0',
+            'it_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $businessId = Auth::user()->business_id;
+
+        try {
+            DB::beginTransaction();
+
+            $nextItmId = $this->generateNextItemId($businessId);
+
+            $images = [];
+            if ($request->hasFile('it_images')) {
+                foreach ($request->file('it_images') as $file) {
+                    $path = $file->store('it_images', 'public');
+                    $images[] = $path;
+                }
+            }
+
+            $inventory = Inventory::create([
+                'Itm_id' => $nextItmId,
+                'it_name' => $request->input('it_name'),
+                'min_quantity' => $request->input('min_quantity'),
+                'date' => $request->input('date', now()->format('Y-m-d')),
+                'it_images' => !empty($images) ? json_encode($images) : null,
+                'business_id' => $businessId,
+            ]);
+
+            // Create stock batch only if quantity is provided
+            if ($request->filled('quantity') && $request->input('quantity') > 0) {
+                $batchId = StockBatch::generateNextBatchId($inventory->id);
+                StockBatch::create([
+                    'inventory_id' => $inventory->id,
+                    'batch_id' => $batchId,
+                    'quantity' => $request->input('quantity'),
+                    'unit_price' => $request->input('price_per_unit'),
+                    'batch_value' => $request->input('quantity') * $request->input('price_per_unit'),
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->route('acc.inventory.index')->with('success', 'Item added successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Inventory creation failed: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Failed to add item: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Accountant issued items listing.
+     */
+    public function accissuedItems(Request $request)
+    {
+        $businessId = Auth::user()->business_id;
+
+        $query = IssuedItem::with(['inventory', 'vehicle', 'employee', 'issuedBy'])
+            ->where('business_id', $businessId);
+
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('issue_id', 'like', '%' . $search . '%')
+                    ->orWhere('item_name', 'like', '%' . $search . '%')
+                    ->orWhere('quantity_issued', 'like', '%' . $search . '%')
+                    ->orWhere('issue_type', 'like', '%' . $search . '%')
+                    ->orWhere('vehicle_number', 'like', '%' . $search . '%')
+                    ->orWhere('employee_nic', 'like', '%' . $search . '%')
+                    ->orWhere('employee_name', 'like', '%' . $search . '%')
+                    ->orWhere('issue_date', 'like', '%' . $search . '%')
+                    ->orWhere('total_value', 'like', '%' . $search . '%');
+            });
+        }
+
+        $issuedItems = $query->orderBy('issue_date', 'desc')->paginate(15);
+        $stats = IssuedItem::getIssueStats($businessId);
+
+        return view('Acc.IssueItemsView', compact('issuedItems', 'stats'));
+    }
+
+    /**
+     * Accountant issue items form.
+     */
+    public function accissue()
+    {
+        return view('Acc.IssueItems');
+    }
+
+    public function accgrn()
+    {
+        return view('Acc.GRN');
+    }
 }

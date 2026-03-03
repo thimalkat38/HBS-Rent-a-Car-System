@@ -94,7 +94,7 @@
                                 <th>Owner's Contact</th>
                                 <th>Email</th>
                                 <th>Address</th>
-                                {{-- <th>Status</th> --}}
+                                <th>Status</th>
                                 <th>REG Date</th>
                                 <th>Actions</th>
                             </tr>
@@ -110,6 +110,7 @@
                                     <td>{{ $Busines->o_phone }}</td>
                                     <td>{{ $Busines->email }}</td>
                                     <td>{{ $Busines->address }}</td>
+                                    <td>{{ ucfirst($Busines->status) }}</td>
                                     <td>{{ $Busines->reg_date }}</td>
                                     <td>
                                         <div style="display: flex; justify-content: center; gap: 5px;">
@@ -121,6 +122,16 @@
 
                                             <a href="{{ route('bus.edit', $Busines->id) }}" class="btn-edit"
                                                 onclick="event.stopPropagation();">Edit</a>
+
+                                            <form action="{{ route('bus.toggle-status', $Busines->id) }}" method="POST"
+                                                style="display:inline;" onclick="event.stopPropagation();">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit"
+                                                    class="{{ $Busines->status === 'active' ? 'btn-delete' : 'btn-blue' }}">
+                                                    {{ $Busines->status === 'active' ? 'Deactivate' : 'Activate' }}
+                                                </button>
+                                            </form>
 
                                             <form action="{{ route('bus.destroy', $Busines->id) }}" method="POST"
                                                 style="display:inline;" onclick="event.stopPropagation();">
