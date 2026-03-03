@@ -99,8 +99,8 @@ Route::middleware(['emp'])->group(function () {
 });
 Route::get('/commission/export-csv', [BookingController::class, 'exportCommissionCsv'])->name('commission.export_csv');
 
-// Inventory Control CRUD Routes
-Route::middleware(['emp'])->group(function () {
+// Inventory Control CRUD Routes (shared backend for authenticated users)
+Route::middleware(['auth'])->group(function () {
     // Supplier and Item Management
     Route::get('/inventory/available-suppliers', [InventoryController::class, 'availableSuppliers'])->name('inventory.available-suppliers');
     Route::post('/inventory/create-supplier', [InventoryController::class, 'createSupplier'])->name('inventory.create-supplier');
@@ -144,10 +144,10 @@ Route::middleware(['emp'])->group(function () {
     Route::get('/inventory/low-stock', [InventoryController::class, 'getLowStockItems'])->name('inventory.getLowStockItems');
 
     Route::get('/inventory/available-vehicles', [InventoryController::class, 'availableVehicles'])->name('inventory.available-vehicles');
-Route::get('/inventory/available-employees', [InventoryController::class, 'availableEmployees'])->name('inventory.available-employees');
-Route::post('/inventory/verify-vehicle', [InventoryController::class, 'verifyVehicle'])->name('inventory.verifyVehicle');
-Route::post('/inventory/verify-employee', [InventoryController::class, 'verifyEmployee'])->name('inventory.verifyEmployee');
-Route::get('/inventory/available-items', [InventoryController::class, 'availableItems'])->name('inventory.available-items');
+    Route::get('/inventory/available-employees', [InventoryController::class, 'availableEmployees'])->name('inventory.available-employees');
+    Route::post('/inventory/verify-vehicle', [InventoryController::class, 'verifyVehicle'])->name('inventory.verifyVehicle');
+    Route::post('/inventory/verify-employee', [InventoryController::class, 'verifyEmployee'])->name('inventory.verifyEmployee');
+    Route::get('/inventory/available-items', [InventoryController::class, 'availableItems'])->name('inventory.available-items');
 });
 
 
@@ -294,6 +294,7 @@ Route::middleware(['admin'])->group(function () {
     Route::get('/bus/{id}', [BusinessController::class, 'show'])->name('buss.show');
     Route::get('/bus/{id}/edit', [BusinessController::class, 'edit'])->name('bus.edit');
     Route::put('/bus/{id}', [BusinessController::class, 'update'])->name('bus.update');
+    Route::patch('/bus/{id}/toggle-status', [BusinessController::class, 'toggleStatus'])->name('bus.toggle-status');
     Route::delete('/bus/{id}', [BusinessController::class, 'destroy'])->name('bus.destroy');
     Route::get('/superadmin', [HomeController::class, 'index'])->name('business.index');
     Route::get('/superadmin', [HomeController::class, 'search'])->name('bus.search');
@@ -436,11 +437,13 @@ Route::patch('/vehicles/{vehicle}/service-status', [VehicleController::class, 'u
         Route::post('acc/payrolls', [PayrollController::class, 'accstore'])->name('acc.payrolls.store');
         Route::get('acc/payrolls/{id}', [PayrollController::class, 'accshow'])->name('acc.payrolls.show');
 
-        // Route::get('acc/inventory', [InventoryController::class, 'accindex'])->name('acc.inventory.index');
-        // Route::get('acc/inventory/issued-items', [InventoryController::class, 'accissuedItems'])->name('acc.inventory.issued-items');
-        // Route::get('acc/inventory/issue', [InventoryController::class, 'accissue'])->name('acc.inventory.issue');
-        // Route::get('acc/inventory/create', [InventoryController::class, 'acccreate'])->name('acc.inventory.create');
-        // Route::post('acc/inventory/store', [InventoryController::class, 'accstore'])->name('acc.inventory.store');
+        // Acc Inventory
+        Route::get('acc/inventory', [InventoryController::class, 'accindex'])->name('acc.inventory.index');
+        Route::get('acc/inventory/create', [InventoryController::class, 'acccreate'])->name('acc.inventory.create');
+        Route::post('acc/inventory/store', [InventoryController::class, 'accstore'])->name('acc.inventory.store');
+        Route::get('acc/inventory/issue', [InventoryController::class, 'accissue'])->name('acc.inventory.issue');
+        Route::get('acc/inventory/issued-items', [InventoryController::class, 'accissuedItems'])->name('acc.inventory.issued-items');
+        Route::get('acc/inventory/grn', [InventoryController::class, 'accgrn'])->name('acc.inventory.grn');
 
         Route::get('acc/expenses', [ExpenseController::class, 'accindex'])->name('acc.expenses.index');
         Route::get('acc/expenses/create', [ExpenseController::class, 'acccreate'])->name('acc.expenses.create');

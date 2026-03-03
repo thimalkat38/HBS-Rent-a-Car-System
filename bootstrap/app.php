@@ -19,6 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'acc' => \App\Http\Middleware\Acc::class,
             'emp' => \App\Http\Middleware\Emp::class,
         ]);
+
+        // Force logout if business is deactivated (next request)
+        $middleware->appendToGroup('web', \App\Http\Middleware\EnsureBusinessIsActive::class);
     })
 
 

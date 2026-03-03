@@ -33,34 +33,34 @@
             <nav class="flex-1 mt-6">
                 <ul class="space-y-1">
                     <li>
-                        <a href="{{ url('manager/dashboard') }}"
+                        <a href="{{ route('acc.dashboard') }}"
                             class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                             <span class="material-icons mr-3">dashboard</span>
-                            <span data-translate="Dashboard">Dashboard</span>
+                            Dashboard
                         </a>
                     </li>
                     <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
                             <span class="material-icons mr-3">directions_car</span>
-                            <span data-translate="Vehicles">Vehicles</span>
+                            Vehicles
                         </div>
                         <ul class="ml-8 space-y-1">
                             <li>
-                                <a href="{{ url('addvehicle') }}"
+                                <a href="{{ url('acc/addvehicle') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">add_circle_outline</span>
-                                    <span data-translate="Add Vehicle">Add Vehicle</span>
+                                    Add Vehicle
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ url('allvehicles') }}"
+                                <a href="{{ url('acc/allvehicles') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">list_alt</span>
-                                    <span data-translate="All Vehicles">All Vehicles</span>
+                                    All Vehicles
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ url('vehicle_owners') }}"
+                                <a href="{{ url('acc/vehicle_owners') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">supervisor_account</span>
                                     Vehicle Owner's Managment
@@ -71,54 +71,54 @@
                     <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
                             <span class="material-icons mr-3">assignment</span>
-                            <span data-translate="Bookings">Bookings</span>
+                            Bookings
                         </div>
                         <ul class="ml-8 space-y-1">
-                            <li>
+                            {{-- <li>
                                 <a href="{{ url('addbooking') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">add_circle_outline</span>
-                                    <span data-translate="Book Vehicle">Book Vehicle</span>
+                                    Book Hire
                                 </a>
-                            </li>
+                            </li> --}}
                             <li>
-                                <a href="{{ url('bookings') }}"
+                                <a href="{{ url('acc/bookings') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">history</span>
-                                    <span data-translate="Booking History">Booking History</span>
+                                    Booking History
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ url('postbookings') }}"
+                                <a href="{{ url('acc/postbookings') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">check_circle_outline</span>
-                                    <span data-translate="Completed Businesses">Completed Businesses</span>
+                                    Completed Businesses
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    <li>
+                    {{-- <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
                             <span class="material-icons mr-3">people</span>
-                            <span data-translate="Customers">Customers</span>
+                            Customers
                         </div>
                         <ul class="ml-8 space-y-1">
                             <li>
                                 <a href="{{ route('customers.create') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">person_add</span>
-                                    <span data-translate="Add Customer">Add Customer</span>
+                                    Add Customer
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('customers.index') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">list</span>
-                                    <span data-translate="All Customers">All Customers</span>
+                                    All Customers
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </li> --}}
                     <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
                             <span class="material-icons mr-3">badge</span>
@@ -126,7 +126,7 @@
                         </div>
                         <ul class="ml-8 space-y-1">
                             <li>
-                                <a href="{{ url('employees') }}"
+                                <a href="{{ url('acc/employees') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">people</span>
                                     Staff Management
@@ -140,7 +140,7 @@
                                 </a>
                             </li> --}}
                             <li>
-                                <a href="{{ url('payrolls') }}"
+                                <a href="{{ url('acc/payrolls') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">people</span>
                                     Payroll Management
@@ -156,13 +156,13 @@
 
                         </ul>
                     </li>
-                    <li>
+                    {{-- <li>
                         <a href="{{ url('crms') }}"
                             class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                             <span class="material-icons mr-3">support_agent</span>
-                            <span data-translate="CRM">CRM</span>
+                            CRM
                         </a>
-                    </li>
+                    </li> --}}
                     <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
                             <span class="material-icons mr-3">inventory_2</span>
@@ -170,35 +170,35 @@
                         </div>
                         <ul class="ml-8 space-y-1">
                             <li>
-                                <a href="{{ route('inventory.index') }}"
+                                <a href="{{ route('acc.inventory.index') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">list</span>
                                     <span data-translate="All Items">All Items</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('inventory.create') }}"
+                                <a href="{{ route('acc.inventory.create') }}"
                                     class="flex items-center px-6 py-3 text-teal-500 font-semibold bg-slate-800 rounded-l-full">
                                     <span class="material-icons mr-3">add_circle_outline</span>
                                     <span data-translate="Add Item">Add Item</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('inventory.grn') }}"
+                                <a href="{{ route('acc.inventory.grn') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">input</span>
                                     <span data-translate="Add Stock">Add Stock</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('inventory.issue') }}"
+                                <a href="{{ route('acc.inventory.issue') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">output</span>
                                     <span data-translate="Issue Items">Issue Items</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('inventory.issued-items') }}"
+                                <a href="{{ route('acc.inventory.issued-items') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">assignment_turned_in</span>
                                     <span data-translate="Issued Items">Issued Items</span>
@@ -209,21 +209,28 @@
                     <li>
                         <div class="flex items-center px-6 py-3 text-white font-semibold rounded-l-full cursor-default">
                             <span class="material-icons mr-3">account_balance_wallet</span>
-                            <span data-translate="Finance">Finance</span>
+                            Finance
                         </div>
                         <ul class="ml-8 space-y-1">
                             <li>
-                                <a href="{{ url('expenses') }}"
+                                <a href="{{ url('acc/expenses') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">receipt_long</span>
-                                    <span data-translate="Expenses">Expenses</span>
+                                    Expenses
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ url('profit-loss-report') }}"
+                                <a href="{{ url('acc/profit-loss-report') }}"
                                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
                                     <span class="material-icons mr-3">bar_chart</span>
-                                    <span data-translate="P/L Report">P/L Report</span>
+                                    P/L Report
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('acc/commission') }}"
+                                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-slate-800 hover:text-white transition">
+                                    <span class="material-icons mr-3">bar_chart</span>
+                                    Commission
                                 </a>
                             </li>
                         </ul>
@@ -412,7 +419,7 @@
                                     class="h-12 px-6 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition">
                                     <span data-translate="CLEAR">CLEAR</span>
                                 </button>
-                                <a href="{{ route('inventory.index') }}"
+                                <a href="{{ route('acc.inventory.index') }}"
                                     class="h-12 px-6 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition flex items-center justify-center">
                                     <span data-translate="BACK">BACK</span>
                                 </a>

@@ -445,7 +445,8 @@
                     </div>
 
                     <!-- Profit Graph Section -->
-                    <div class="bg-white rounded-2xl shadow-lg p-6 border border-slate-100">
+                    
+                    {{-- <div class="bg-white rounded-2xl shadow-lg p-6 border border-slate-100">
                         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
                             <div class="flex items-center gap-3">
                                 <span class="material-icons text-3xl text-emerald-600">trending_up</span>
@@ -483,7 +484,7 @@
                         <div class="h-80 w-full">
                             <canvas id="profitChart"></canvas>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Calendar Section -->
                     <div id="calendar" class="bg-white rounded-2xl shadow-lg p-6 mt-6 w-full max-w-full mx-0 overflow-x-auto border border-slate-100">
@@ -611,312 +612,304 @@
             </main>
             <script>
                 document.addEventListener('DOMContentLoaded', () => {
-                    // Initialize Profit Chart
-                    @php
-                        $profitLabels = collect($profitData)->pluck('month')->toArray();
-                        $profitValues = collect($profitData)->pluck('profit')->toArray();
-                        $incomeValues = collect($profitData)->pluck('income')->toArray();
-                        $expenseValues = collect($profitData)->pluck('expenses')->toArray();
-                    @endphp
-
-                    let initialProfitLabels = @json($profitLabels);
-                    let initialProfitData = @json($profitValues);
-                    let initialIncomeData = @json($incomeValues);
-                    let initialExpenseData = @json($expenseValues);
-
-                    const ctx = document.getElementById('profitChart').getContext('2d');
-                    let profitChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: initialProfitLabels,
-                            datasets: [
-                                {
-                                    label: 'Income',
-                                    data: initialIncomeData,
-                                    borderColor: 'rgb(34, 197, 94)',
-                                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                                    tension: 0.4,
-                                    fill: true,
-                                },
-                                {
-                                    label: 'Expenses',
-                                    data: initialExpenseData,
-                                    borderColor: 'rgb(239, 68, 68)',
-                                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                                    tension: 0.4,
-                                    fill: true,
-                                },
-                                {
-                                    label: 'Net Profit',
-                                    data: initialProfitData,
-                                    borderColor: 'rgb(59, 130, 246)',
-                                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                                    tension: 0.4,
-                                    fill: true,
-                                    borderWidth: 3,
-                                }
-                            ]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: true,
-                                    position: 'top',
-                                    labels: {
-                                        font: {
-                                            size: 12,
-                                            weight: 'bold'
-                                        },
-                                        padding: 15,
-                                        usePointStyle: true
+                    // ================= PROFIT CHART (SAFE WRAPPED) =================
+                    const profitChartCanvas = document.getElementById('profitChart');
+            
+                    if (profitChartCanvas) {
+                        @php
+                            $profitLabels = collect($profitData)->pluck('month')->toArray();
+                            $profitValues = collect($profitData)->pluck('profit')->toArray();
+                            $incomeValues = collect($profitData)->pluck('income')->toArray();
+                            $expenseValues = collect($profitData)->pluck('expenses')->toArray();
+                        @endphp
+            
+                        let initialProfitLabels = @json($profitLabels);
+                        let initialProfitData   = @json($profitValues);
+                        let initialIncomeData   = @json($incomeValues);
+                        let initialExpenseData  = @json($expenseValues);
+            
+                        const ctx = profitChartCanvas.getContext('2d');
+                        let profitChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: initialProfitLabels,
+                                datasets: [
+                                    {
+                                        label: 'Income',
+                                        data: initialIncomeData,
+                                        borderColor: 'rgb(34, 197, 94)',
+                                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                                        tension: 0.4,
+                                        fill: true,
+                                    },
+                                    {
+                                        label: 'Expenses',
+                                        data: initialExpenseData,
+                                        borderColor: 'rgb(239, 68, 68)',
+                                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                        tension: 0.4,
+                                        fill: true,
+                                    },
+                                    {
+                                        label: 'Net Profit',
+                                        data: initialProfitData,
+                                        borderColor: 'rgb(59, 130, 246)',
+                                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                        tension: 0.4,
+                                        fill: true,
+                                        borderWidth: 3,
                                     }
-                                },
-                                tooltip: {
-                                    mode: 'index',
-                                    intersect: false,
-                                    callbacks: {
-                                        label: function(context) {
-                                            let label = context.dataset.label || '';
-                                            if (label) {
-                                                label += ': ';
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        display: true,
+                                        position: 'top',
+                                        labels: {
+                                            font: {
+                                                size: 12,
+                                                weight: 'bold'
+                                            },
+                                            padding: 15,
+                                            usePointStyle: true
+                                        }
+                                    },
+                                    tooltip: {
+                                        mode: 'index',
+                                        intersect: false,
+                                        callbacks: {
+                                            label: function(context) {
+                                                let label = context.dataset.label || '';
+                                                if (label) label += ': ';
+                                                label += 'LKR ' + context.parsed.y.toLocaleString('en-US', {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2
+                                                });
+                                                return label;
                                             }
-                                            label += 'LKR ' + context.parsed.y.toLocaleString('en-US', {
-                                                minimumFractionDigits: 2,
-                                                maximumFractionDigits: 2
-                                            });
-                                            return label;
                                         }
-                                    }
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: false,
-                                    ticks: {
-                                        callback: function(value) {
-                                            return 'LKR ' + value.toLocaleString('en-US', {
-                                                minimumFractionDigits: 0,
-                                                maximumFractionDigits: 0
-                                            });
-                                        },
-                                        font: {
-                                            size: 11
-                                        }
-                                    },
-                                    grid: {
-                                        color: 'rgba(0, 0, 0, 0.05)'
                                     }
                                 },
-                                x: {
-                                    ticks: {
-                                        font: {
-                                            size: 11
-                                        }
+                                scales: {
+                                    y: {
+                                        beginAtZero: false,
+                                        ticks: {
+                                            callback: function(value) {
+                                                return 'LKR ' + value.toLocaleString('en-US', {
+                                                    minimumFractionDigits: 0,
+                                                    maximumFractionDigits: 0
+                                                });
+                                            },
+                                            font: { size: 11 }
+                                        },
+                                        grid: { color: 'rgba(0, 0, 0, 0.05)' }
                                     },
-                                    grid: {
-                                        display: false
+                                    x: {
+                                        ticks: { font: { size: 11 } },
+                                        grid: { display: false }
                                     }
+                                },
+                                interaction: {
+                                    mode: 'nearest',
+                                    axis: 'x',
+                                    intersect: false
                                 }
-                            },
-                            interaction: {
-                                mode: 'nearest',
-                                axis: 'x',
-                                intersect: false
                             }
-                        }
-                    });
-
-                    // Function to update chart with new data
-                    function updateProfitChart(data) {
-                        const labels = data.map(item => item.month);
-                        const incomeData = data.map(item => parseFloat(item.income));
-                        const expenseData = data.map(item => parseFloat(item.expenses));
-                        const profitData = data.map(item => parseFloat(item.profit));
-
-                        profitChart.data.labels = labels;
-                        profitChart.data.datasets[0].data = incomeData;
-                        profitChart.data.datasets[1].data = expenseData;
-                        profitChart.data.datasets[2].data = profitData;
-                        profitChart.update('none'); // 'none' for instant update without animation
-                    }
-
-                    // Function to format date range text
-                    function formatDateRange(startDate, endDate) {
-                        const start = new Date(startDate);
-                        const end = new Date(endDate);
-                        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-                        return `${start.toLocaleDateString('en-US', options)} - ${end.toLocaleDateString('en-US', options)}`;
-                    }
-
-                    // Debounce function to limit API calls
-                    let debounceTimer;
-                    function debounce(func, delay) {
-                        clearTimeout(debounceTimer);
-                        debounceTimer = setTimeout(func, delay);
-                    }
-
-                    // Function to fetch and update profit data
-                    function fetchProfitData() {
-                        const startDate = document.getElementById('profitStartDate').value;
-                        const endDate = document.getElementById('profitEndDate').value;
-
-                        if (!startDate || !endDate) {
-                            return;
-                        }
-
-                        if (new Date(startDate) > new Date(endDate)) {
-                            alert('Start date must be before end date');
-                            return;
-                        }
-
-                        // Show loading state on chart
-                        profitChart.data.datasets.forEach(dataset => {
-                            dataset.data = [];
                         });
-                        profitChart.data.labels = [];
-                        profitChart.update();
-
-                        // Fetch filtered data
-                        fetch(`/manager/profit-data?start_date=${startDate}&end_date=${endDate}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                updateProfitChart(data);
-                                document.getElementById('profitDateRange').textContent = formatDateRange(startDate, endDate);
-                            })
-                            .catch(error => {
-                                console.error('Error fetching profit data:', error);
-                                alert('Error loading profit data. Please try again.');
+            
+                        function updateProfitChart(data) {
+                            const labels      = data.map(item => item.month);
+                            const incomeData  = data.map(item => parseFloat(item.income));
+                            const expenseData = data.map(item => parseFloat(item.expenses));
+                            const profitData  = data.map(item => parseFloat(item.profit));
+            
+                            profitChart.data.labels = labels;
+                            profitChart.data.datasets[0].data = incomeData;
+                            profitChart.data.datasets[1].data = expenseData;
+                            profitChart.data.datasets[2].data = profitData;
+                            profitChart.update('none');
+                        }
+            
+                        function formatDateRange(startDate, endDate) {
+                            const start   = new Date(startDate);
+                            const end     = new Date(endDate);
+                            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                            return `${start.toLocaleDateString('en-US', options)} - ${end.toLocaleDateString('en-US', options)}`;
+                        }
+            
+                        let debounceTimer;
+                        function debounce(func, delay) {
+                            clearTimeout(debounceTimer);
+                            debounceTimer = setTimeout(func, delay);
+                        }
+            
+                        const startInput  = document.getElementById('profitStartDate');
+                        const endInput    = document.getElementById('profitEndDate');
+                        const resetBtn    = document.getElementById('resetProfitBtn');
+                        const rangeLabel  = document.getElementById('profitDateRange');
+            
+                        function fetchProfitData() {
+                            if (!startInput || !endInput) return;
+            
+                            const startDate = startInput.value;
+                            const endDate   = endInput.value;
+            
+                            if (!startDate || !endDate) return;
+            
+                            if (new Date(startDate) > new Date(endDate)) {
+                                alert('Start date must be before end date');
+                                return;
+                            }
+            
+                            profitChart.data.datasets.forEach(dataset => { dataset.data = []; });
+                            profitChart.data.labels = [];
+                            profitChart.update();
+            
+                            fetch(`/manager/profit-data?start_date=${startDate}&end_date=${endDate}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    updateProfitChart(data);
+                                    if (rangeLabel) {
+                                        rangeLabel.textContent = formatDateRange(startDate, endDate);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching profit data:', error);
+                                    alert('Error loading profit data. Please try again.');
+                                });
+                        }
+            
+                        if (startInput) {
+                            startInput.addEventListener('change', () => debounce(fetchProfitData, 300));
+                        }
+            
+                        if (endInput) {
+                            endInput.addEventListener('change', () => debounce(fetchProfitData, 300));
+                        }
+            
+                        if (resetBtn && startInput && endInput) {
+                            resetBtn.addEventListener('click', function() {
+                                const today    = new Date();
+                                const startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                                const endDate   = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            
+                                startInput.value = startDate.toISOString().split('T')[0];
+                                endInput.value   = endDate.toISOString().split('T')[0];
+            
+                                fetchProfitData();
                             });
-                    }
-
-                    // Auto-update chart when dates change
-                    document.getElementById('profitStartDate').addEventListener('change', function() {
-                        debounce(fetchProfitData, 300);
-                    });
-
-                    document.getElementById('profitEndDate').addEventListener('change', function() {
-                        debounce(fetchProfitData, 300);
-                    });
-
-                    // Reset button event handler - reset to current month
-                    document.getElementById('resetProfitBtn').addEventListener('click', function() {
-                        // Reset to current month
-                        const today = new Date();
-                        const startDate = new Date(today.getFullYear(), today.getMonth(), 1);
-                        const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-
-                        // Update input fields
-                        document.getElementById('profitStartDate').value = startDate.toISOString().split('T')[0];
-                        document.getElementById('profitEndDate').value = endDate.toISOString().split('T')[0];
-
-                        // Fetch data for current month
-                        fetchProfitData();
-                    });
-
-                    // If page was loaded with #calendar, keep the calendar in view after navigation
+                        }
+                    } // <-- end of profit chart guard
+            
+                    // ================= CALENDAR + BOOKING MODAL (UNCHANGED) =================
+            
                     if (window.location.hash === '#calendar') {
                         const calendarSection = document.getElementById('calendar');
                         if (calendarSection) {
                             calendarSection.scrollIntoView({ behavior: 'auto', block: 'start' });
                         }
                     }
-
-                    const modal = document.getElementById('bookingModal');
+            
+                    const modal        = document.getElementById('bookingModal');
                     const modalContent = document.getElementById('bookingDetails');
-                    const modalDate = document.getElementById('bookingModalDate');
+                    const modalDate    = document.getElementById('bookingModalDate');
                     const closeModalBtn = document.querySelector('.close-btn');
-        
+            
                     document.querySelectorAll('.calendar-day').forEach(day => {
                         day.addEventListener('click', () => {
                             const date = day.getAttribute('data-date');
-                            if (date) {
-                                modalDate.textContent = new Date(date).toLocaleDateString(undefined, {
-                                    weekday: 'long',
-                                    year: 'numeric',
-                                    month: 'short',
-                                    day: 'numeric'
-                                });
-                                fetch(`/manager/bookings?date=${date}`)
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        const section = (title, subtitle, icon, color, itemsHtml, emptyText) => `
-                                            <div class="bg-white border border-slate-100 rounded-xl shadow-sm p-4 flex flex-col gap-3">
-                                                <div class="flex items-center justify-between">
-                                                    <div class="flex items-center gap-3">
-                                                        <span class="material-icons ${color}">${icon}</span>
-                                                        <div>
-                                                            <p class="text-xs uppercase tracking-[0.2em] text-slate-400">${subtitle}</p>
-                                                            <h4 class="text-base font-semibold text-slate-800">${title}</h4>
-                                                        </div>
+                            if (!date) return;
+            
+                            modalDate.textContent = new Date(date).toLocaleDateString(undefined, {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                            });
+            
+                            fetch(`/manager/bookings?date=${date}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    const section = (title, subtitle, icon, color, itemsHtml, emptyText) => `
+                                        <div class="bg-white border border-slate-100 rounded-xl shadow-sm p-4 flex flex-col gap-3">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center gap-3">
+                                                    <span class="material-icons ${color}">${icon}</span>
+                                                    <div>
+                                                        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">${subtitle}</p>
+                                                        <h4 class="text-base font-semibold text-slate-800">${title}</h4>
                                                     </div>
-                                                    <span class="text-xs px-2 py-1 rounded-full ${itemsHtml ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}">
-                                                        ${itemsHtml ? 'Vehicles' : 'None'}
-                                                    </span>
                                                 </div>
-                                                <div class="divide-y divide-slate-100">
-                                                    ${itemsHtml || `<p class="text-sm text-slate-500">${emptyText}</p>`}
-                                                </div>
+                                                <span class="text-xs px-2 py-1 rounded-full ${itemsHtml ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}">
+                                                    ${itemsHtml ? 'Vehicles' : 'None'}
+                                                </span>
                                             </div>
-                                        `;
-
-                                        const listItems = (arr, formatter) => arr.map(item => `
-                                            <div class="py-2 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                                                <div class="flex flex-wrap items-center gap-2 text-slate-800">
-                                                    ${formatter(item)}
-                                                </div>
+                                            <div class="divide-y divide-slate-100">
+                                                ${itemsHtml || `<p class="text-sm text-slate-500">${emptyText}</p>`}
                                             </div>
-                                        `).join('');
-
-                                        const outList = listItems(data.in_bookings || [], b => `
-                                            <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-blue-50 text-blue-700 text-sm font-semibold">${b.vehicle_number}</span>
-                                            <span class="text-sm text-slate-600">${b.vehicle_name}</span>
-                                            <span class="text-xs text-slate-500">Pickup: <span class="font-semibold text-slate-800">${b.booking_time}</span></span>
-                                        `);
-
-                                        const inList = listItems(data.out_bookings || [], b => `
-                                            <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-emerald-50 text-emerald-700 text-sm font-semibold">${b.vehicle_number}</span>
-                                            <span class="text-sm text-slate-600">${b.vehicle_name}</span>
-                                            <span class="text-xs text-slate-500">Return: <span class="font-semibold text-slate-800">${b.arrival_time}</span></span>
-                                        `);
-
-                                        const availableList = listItems(data.available_vehicles || [], v => `
-                                            <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-indigo-50 text-indigo-700 text-sm font-semibold">${v.vehicle_number}</span>
-                                            <span class="text-sm text-slate-600">${v.vehicle_name}</span>
-                                        `);
-
-                                        const serviceList = listItems((data.in_service_vehicles || []), v => `
-                                            <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-amber-50 text-amber-700 text-sm font-semibold">${v.vehicle_number}</span>
-                                            <span class="text-sm text-slate-600">${v.vehicle_name}</span>
-                                            <span class="text-xs text-amber-700">In service</span>
-                                        `);
-
-                                        modalContent.innerHTML = `
-                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                ${section('Outbound', 'Vehicles going out', 'north_east', 'text-blue-600', outList, 'No vehicles are booked to go out on this day.')}
-                                                ${section('Inbound', 'Vehicles returning', 'south_west', 'text-emerald-600', inList, 'No vehicles return on this day.')}
-                                                ${section('Available Vehicles', 'Ready to allocate', 'directions_car', 'text-indigo-600', availableList, 'No vehicles available on this day.')}
-                                                ${section('Unavailable', 'In service or blocked', 'build', 'text-amber-600', serviceList, 'No vehicles are marked as in service.')}
+                                        </div>
+                                    `;
+            
+                                    const listItems = (arr, formatter) => arr.map(item => `
+                                        <div class="py-2 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                                            <div class="flex flex-wrap items-center gap-2 text-slate-800">
+                                                ${formatter(item)}
                                             </div>
-                                        `;
-                                        modal.classList.remove('hidden');
-                                    })
-                                    .catch(error => {
-                                        modalContent.innerHTML = `
-                                            <div class="flex items-center gap-3 text-red-600">
-                                                <span class="material-icons">error_outline</span>
-                                                <p class="text-sm">Error loading bookings.</p>
-                                            </div>`;
-                                        console.error(error);
-                                    });
-                            }
+                                        </div>
+                                    `).join('');
+            
+                                    const outList = listItems(data.in_bookings || [], b => `
+                                        <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-blue-50 text-blue-700 text-sm font-semibold">${b.vehicle_number}</span>
+                                        <span class="text-sm text-slate-600">${b.vehicle_name}</span>
+                                        <span class="text-xs text-slate-500">Pickup: <span class="font-semibold text-slate-800">${b.booking_time}</span></span>
+                                    `);
+            
+                                    const inList = listItems(data.out_bookings || [], b => `
+                                        <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-emerald-50 text-emerald-700 text-sm font-semibold">${b.vehicle_number}</span>
+                                        <span class="text-sm text-slate-600">${b.vehicle_name}</span>
+                                        <span class="text-xs text-slate-500">Return: <span class="font-semibold text-slate-800">${b.arrival_time}</span></span>
+                                    `);
+            
+                                    const availableList = listItems(data.available_vehicles || [], v => `
+                                        <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-indigo-50 text-indigo-700 text-sm font-semibold">${v.vehicle_number}</span>
+                                        <span class="text-sm text-slate-600">${v.vehicle_name}</span>
+                                    `);
+            
+                                    const serviceList = listItems(data.in_service_vehicles || [], v => `
+                                        <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-amber-50 text-amber-700 text-sm font-semibold">${v.vehicle_number}</span>
+                                        <span class="text-sm text-slate-600">${v.vehicle_name}</span>
+                                        <span class="text-xs text-amber-700">In service</span>
+                                    `);
+            
+                                    modalContent.innerHTML = `
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            ${section('Outbound', 'Vehicles going out', 'north_east', 'text-blue-600', outList, 'No vehicles are booked to go out on this day.')}
+                                            ${section('Inbound', 'Vehicles returning', 'south_west', 'text-emerald-600', inList, 'No vehicles return on this day.')}
+                                            ${section('Available Vehicles', 'Ready to allocate', 'directions_car', 'text-indigo-600', availableList, 'No vehicles available on this day.')}
+                                            ${section('Unavailable', 'In service or blocked', 'build', 'text-amber-600', serviceList, 'No vehicles are marked as in service.')}
+                                        </div>
+                                    `;
+                                    modal.classList.remove('hidden');
+                                })
+                                .catch(error => {
+                                    modalContent.innerHTML = `
+                                        <div class="flex items-center gap-3 text-red-600">
+                                            <span class="material-icons">error_outline</span>
+                                            <p class="text-sm">Error loading bookings.</p>
+                                        </div>`;
+                                    console.error(error);
+                                });
                         });
                     });
-        
-                    closeModalBtn.addEventListener('click', () => {
-                        modal.classList.add('hidden');
-                    });
+            
+                    if (closeModalBtn) {
+                        closeModalBtn.addEventListener('click', () => {
+                            modal.classList.add('hidden');
+                        });
+                    }
                 });
             </script>
         </div>

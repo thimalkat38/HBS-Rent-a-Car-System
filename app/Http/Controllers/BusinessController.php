@@ -85,6 +85,16 @@ public function store(Request $request)
         return view('SuperAdmin.EditBusiness', compact('Business'));
     }
 
+    public function toggleStatus($id)
+    {
+        $business = Business::findOrFail($id);
+
+        $business->status = $business->status === 'active' ? 'inactive' : 'active';
+        $business->save();
+
+        return redirect()->back()->with('success', 'Business status updated successfully!');
+    }
+
 public function update(Request $request, $id)
 {
     $business = Business::findOrFail($id);

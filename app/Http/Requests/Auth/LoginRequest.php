@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Models\Business;
 
 class LoginRequest extends FormRequest
 {
@@ -47,6 +48,20 @@ class LoginRequest extends FormRequest
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
+        }
+
+        $user = Auth::user();
+
+        if ($user && $user->business_id) {
+            $business = Business::find($user->business_id);
+
+            if ($business && $business->status !== 'active') {
+                Auth::logout();
+
+                throw ValidationException::withMessages([
+                    'email' => 'Your Account is deactivated. Please do nessecry paymnets for reactivate a bussince',
+                ]);
+            }
         }
 
         RateLimiter::clear($this->throttleKey());
