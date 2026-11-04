@@ -433,7 +433,7 @@
                         </div>
                         <div>
                             <label class="block text-gray-700 font-medium mb-1" for="birthday">Birthday</label>
-                            <input type="date" name="birthday" id="birthday" max="2005-12-31"
+                            <input type="date" name="birthday" id="birthday" max="2010-12-31"
                                 value="{{ old('birthday') }}"
                                 class="w-full rounded border-gray-300 focus:ring-teal-500 focus:border-teal-500 @error('birthday') border-red-500 @enderror">
                             @error('birthday')

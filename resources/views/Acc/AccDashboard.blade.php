@@ -500,6 +500,108 @@
                         </div>
                     </div>
 
+                    
+                    <!-- Vehicle occupancy board (vehicle × day) -->
+                    @php
+                        $chartVehicles = $vehicleChart['vehicles'] ?? collect();
+                        $chartOccupancy = $vehicleChart['occupancy'] ?? [];
+                        $chartDayCounts = $vehicleChart['dayCounts'] ?? [];
+                        $chartDays = $vehicleChart['daysInMonth'] ?? Carbon\Carbon::create($currentYear, $currentMonth)->daysInMonth;
+                        $chartToday = \Carbon\Carbon::today();
+                        $isCurrentMonth = $chartToday->month == $currentMonth && $chartToday->year == $currentYear;
+                        $prevMonth = Carbon\Carbon::create($currentYear, $currentMonth, 1)->subMonth();
+                        $nextMonth = Carbon\Carbon::create($currentYear, $currentMonth, 1)->addMonth();
+                    @endphp
+                    <div id="vehicle-board" class="bg-white rounded-2xl shadow-lg p-6 border border-slate-100">
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
+                            <div class="flex items-center gap-3">
+                                <span class="material-icons text-3xl text-red-600">grid_on</span>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800">Vehicle Booking Board</h3>
+                                    <p class="text-sm text-gray-500">Current bookings and completed businesses, with booked-day totals per vehicle</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+                                <input type="search" id="vehicleBoardSearch" placeholder="Search plate..."
+                                    class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <div class="flex items-center justify-between gap-2">
+                                    <a href="{{ route('acc.dashboard', ['month' => $prevMonth->month, 'year' => $prevMonth->year]) }}#vehicle-board"
+                                        class="text-blue-500 hover:underline font-semibold px-3 py-2 rounded-lg hover:bg-blue-100 transition flex items-center gap-1">
+                                        <span class="material-icons text-lg">chevron_left</span>
+                                        Prev
+                                    </a>
+                                    <div class="text-base md:text-lg font-bold text-gray-800 whitespace-nowrap px-2">
+                                        {{ Carbon\Carbon::create($currentYear, $currentMonth)->format('F Y') }}
+                                    </div>
+                                    <a href="{{ route('acc.dashboard', ['month' => $nextMonth->month, 'year' => $nextMonth->year]) }}#vehicle-board"
+                                        class="text-blue-500 hover:underline font-semibold px-3 py-2 rounded-lg hover:bg-blue-100 transition flex items-center gap-1">
+                                        Next
+                                        <span class="material-icons text-lg">chevron_right</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-4 mb-3 text-xs text-slate-600">
+                            <div class="flex items-center gap-1"><span class="inline-flex items-center justify-center w-5 h-5 bg-red-600 text-white font-bold rounded">X</span> Booked</div>
+                            <div class="flex items-center gap-1"><span class="inline-block w-5 h-5 bg-white border border-slate-300 rounded"></span> Available</div>
+                            <div class="flex items-center gap-1"><span class="inline-block w-5 h-5 bg-amber-100 border border-amber-300 rounded"></span> In service</div>
+                            <div class="flex items-center gap-1"><span class="inline-block w-5 h-5 bg-blue-100 border-2 border-blue-500 rounded"></span> Today</div>
+                        </div>
+                        <div class="overflow-auto max-h-[70vh] border border-slate-200 rounded-xl">
+                            <table class="min-w-max w-full text-xs border-collapse">
+                                <thead class="sticky top-0 z-20">
+                                    <tr class="bg-slate-800 text-white">
+                                        <th class="sticky left-0 z-30 bg-slate-800 px-2 py-2 border-b border-r border-slate-700 w-10">#</th>
+                                        <th class="sticky left-10 z-30 bg-slate-800 px-3 py-2 border-b border-r border-slate-700 text-left min-w-[8.5rem]">Vehicle</th>
+                                        @for ($d = 1; $d <= $chartDays; $d++)
+                                            @php $isTodayCol = $isCurrentMonth && $chartToday->day == $d; @endphp
+                                            <th class="px-0 py-2 border-b border-slate-700 w-8 min-w-[2rem] text-center {{ $isTodayCol ? 'bg-blue-700' : '' }}">{{ str_pad($d, 2, '0', STR_PAD_LEFT) }}</th>
+                                        @endfor
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($chartVehicles as $index => $vehicle)
+                                        @php $inService = (int) ($vehicle->status ?? 0) === 1; @endphp
+                                        <tr class="vehicle-board-row hover:bg-slate-50" data-plate="{{ strtolower($vehicle->vehicle_number) }}">
+                                            <td class="sticky left-0 z-10 bg-white px-2 py-1 border-b border-r border-slate-200 text-center text-slate-500 font-medium">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</td>
+                                            <td class="sticky left-10 z-10 bg-white px-3 py-1 border-b border-r border-slate-200 whitespace-nowrap">
+                                                <div class="font-semibold text-slate-800">{{ $vehicle->vehicle_number }}</div>
+                                                <div class="text-[10px] text-slate-500 truncate max-w-[8rem]">{{ $vehicle->vehicle_name }}</div>
+                                                @if ($inService)
+                                                    <span class="inline-block mt-0.5 px-1 rounded bg-amber-100 text-amber-800 text-[10px] font-semibold">In service</span>
+                                                @endif
+                                            </td>
+                                            @for ($d = 1; $d <= $chartDays; $d++)
+                                                @php
+                                                    $cellDate = Carbon\Carbon::create($currentYear, $currentMonth, $d);
+                                                    $isTodayCell = $isCurrentMonth && $chartToday->day == $d;
+                                                    $bookingCell = $chartOccupancy[$vehicle->vehicle_number][$d] ?? null;
+                                                    $title = $bookingCell
+                                                        ? trim(($bookingCell['name'] ?? '') . ' · ' . Carbon\Carbon::parse($bookingCell['from'])->format('d M') . '–' . Carbon\Carbon::parse($bookingCell['to'])->format('d M') . ($bookingCell['status'] ? ' (' . $bookingCell['status'] . ')' : ''))
+                                                        : ($inService ? 'In service / repair' : 'Available');
+                                                @endphp
+                                                <td class="border-b border-r border-slate-200 p-0 w-8 h-8 text-center {{ $isTodayCell ? 'bg-blue-50' : ($inService && !$bookingCell ? 'bg-amber-50' : 'bg-white') }}"
+                                                    title="{{ $vehicle->vehicle_number }} · {{ $cellDate->format('d M Y') }} — {{ $title }}">
+                                                    @if ($bookingCell)
+                                                        <a href="{{ route('bookings.show', ['id' => $bookingCell['id']]) }}"
+                                                            class="flex items-center justify-center w-full h-8 bg-red-600 hover:bg-red-700 text-white font-black leading-none"
+                                                            title="{{ $title }}">
+                                                            X
+                                                        </a>
+                                                    @endif
+                                                </td>
+                                            @endfor
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="{{ $chartDays + 2 }}" class="px-4 py-8 text-center text-slate-500">No vehicles found for this business.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     <!-- Calendar Section -->
                     <div id="calendar" class="bg-white rounded-2xl shadow-lg p-6 mt-6 w-full max-w-full mx-0 overflow-x-auto border border-slate-100">
                         <div class="flex items-center justify-between mb-5">
@@ -836,6 +938,17 @@
                         if (calendarSection) {
                             calendarSection.scrollIntoView({ behavior: 'auto', block: 'start' });
                         }
+                    }
+
+                                        const boardSearch = document.getElementById('vehicleBoardSearch');
+                    if (boardSearch) {
+                        boardSearch.addEventListener('input', function() {
+                            const q = this.value.trim().toLowerCase();
+                            document.querySelectorAll('.vehicle-board-row').forEach(function(row) {
+                                const plate = row.getAttribute('data-plate') || '';
+                                row.style.display = !q || plate.includes(q) ? '' : 'none';
+                            });
+                        });
                     }
 
                     const modal = document.getElementById('bookingModal');
