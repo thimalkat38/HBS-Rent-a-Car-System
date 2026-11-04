@@ -60,7 +60,19 @@ class DashboardController extends Controller
         // Fetch profit data (daily for current month by default, or monthly for longer ranges)
         $profitData = $this->getProfitDataForGraph($businessId, null, $profitStartDate, $profitEndDate);
 
-        return view('Manager.Dashboard', compact('bookingCounts', 'currentMonth', 'currentYear', 'expiringVehicles', 'serviceAlertVehicles', 'profitData', 'profitStartDate', 'profitEndDate'));
+        $vehicleChart = $this->getVehicleOccupancyChart($businessId, $startDate, $endDate);
+
+        return view('Manager.Dashboard', compact(
+            'bookingCounts',
+            'currentMonth',
+            'currentYear',
+            'expiringVehicles',
+            'serviceAlertVehicles',
+            'profitData',
+            'profitStartDate',
+            'profitEndDate',
+            'vehicleChart'
+        ));
     }
 
     /**
@@ -102,8 +114,9 @@ class DashboardController extends Controller
         }
 
         $profitData = $this->getProfitDataForGraph($businessId, null, $profitStartDate, $profitEndDate);
+        $vehicleChart = $this->getVehicleOccupancyChart($businessId, $startDate, $endDate);
 
-        return view('Acc.AccDashboard', compact('bookingCounts', 'currentMonth', 'currentYear', 'expiringVehicles', 'serviceAlertVehicles', 'profitData', 'profitStartDate', 'profitEndDate'));
+        return view('Acc.AccDashboard', compact('bookingCounts', 'currentMonth', 'currentYear', 'expiringVehicles', 'serviceAlertVehicles', 'profitData', 'profitStartDate', 'profitEndDate','vehicleChart'));
     }
 
     /**
@@ -145,13 +158,117 @@ class DashboardController extends Controller
         }
 
         $profitData = $this->getProfitDataForGraph($businessId, null, $profitStartDate, $profitEndDate);
+        $vehicleChart = $this->getVehicleOccupancyChart($businessId, $startDate, $endDate);
 
-        return view('Employee.EmpDashboard', compact('bookingCounts', 'currentMonth', 'currentYear', 'expiringVehicles', 'serviceAlertVehicles', 'profitData', 'profitStartDate', 'profitEndDate'));
+        return view('Employee.EmpDashboard', compact('bookingCounts', 'currentMonth', 'currentYear', 'expiringVehicles', 'serviceAlertVehicles', 'profitData', 'profitStartDate', 'profitEndDate','vehicleChart'));
     }
 
 
 
 
+
+    /**
+     * Vehicle rows × day columns occupancy for the selected month (whiteboard-style chart).
+     * Includes current bookings and completed businesses (post bookings).
+     */
+    private function getVehicleOccupancyChart($businessId, Carbon $startDate, Carbon $endDate): array
+    {
+        $daysInMonth = $startDate->daysInMonth;
+
+        $vehicles = Vehicle::where('business_id', $businessId)
+            ->orderBy('vehicle_number')
+            ->get(['id', 'vehicle_number', 'vehicle_name', 'status']);
+
+        $occupancy = [];
+
+        $completedHires = PostBooking::where('business_id', $businessId)
+            ->whereDate('from_date', '<=', $endDate)
+            ->whereDate('to_date', '>=', $startDate)
+            ->orderBy('from_date')
+            ->get(['id', 'booking_id', 'vehicle_number', 'full_name', 'mobile_number', 'from_date', 'to_date']);
+
+        foreach ($completedHires as $hire) {
+            $this->paintOccupancyRange($occupancy, $hire, $startDate, $endDate, [
+                'id' => $hire->id,
+                'booking_id' => $hire->booking_id,
+                'type' => 'completed',
+                'status' => 'Completed',
+                'url' => route('postbookings.show', $hire->id),
+            ]);
+        }
+
+        $bookings = Booking::where('business_id', $businessId)
+            ->whereDate('from_date', '<=', $endDate)
+            ->whereDate('to_date', '>=', $startDate)
+            ->orderBy('from_date')
+            ->get(['id', 'vehicle_number', 'full_name', 'from_date', 'to_date', 'status', 'mobile_number']);
+
+        foreach ($bookings as $booking) {
+            $isCompleted = strcasecmp((string) $booking->status, 'Completed') === 0;
+            // Completed hires are already painted from postbookings; only fill gaps here.
+            $this->paintOccupancyRange($occupancy, $booking, $startDate, $endDate, [
+                'id' => $booking->id,
+                'booking_id' => $booking->id,
+                'type' => $isCompleted ? 'completed' : 'booking',
+                'status' => $booking->status ?: ($isCompleted ? 'Completed' : 'Booked'),
+                'url' => route('bookings.show', ['id' => $booking->id]),
+            ]);
+        }
+
+        $dayCounts = [];
+        foreach ($occupancy as $plate => $days) {
+            $active = 0;
+            $completed = 0;
+            foreach ($days as $cell) {
+                if (($cell['type'] ?? '') === 'completed') {
+                    $completed++;
+                } else {
+                    $active++;
+                }
+            }
+            $dayCounts[$plate] = [
+                'total' => $active + $completed,
+                'active' => $active,
+                'completed' => $completed,
+            ];
+        }
+
+        return [
+            'vehicles' => $vehicles,
+            'occupancy' => $occupancy,
+            'dayCounts' => $dayCounts,
+            'daysInMonth' => $daysInMonth,
+        ];
+    }
+
+    private function paintOccupancyRange(array &$occupancy, $hire, Carbon $startDate, Carbon $endDate, array $meta, bool $overwrite = false): void
+    {
+        if (!$hire->vehicle_number || !$hire->from_date || !$hire->to_date) {
+            return;
+        }
+
+        $from = Carbon::parse($hire->from_date)->startOfDay();
+        $to = Carbon::parse($hire->to_date)->startOfDay();
+        $cursor = $from->copy()->max($startDate->copy()->startOfDay());
+        $last = $to->copy()->min($endDate->copy()->startOfDay());
+
+        while ($cursor->lte($last)) {
+            $day = (int) $cursor->day;
+            $plate = $hire->vehicle_number;
+
+            if ($overwrite || !isset($occupancy[$plate][$day])) {
+                $occupancy[$plate][$day] = array_merge([
+                    'name' => $hire->full_name,
+                    'mobile' => $hire->mobile_number ?? null,
+                    'from' => $from->toDateString(),
+                    'to' => $to->toDateString(),
+                    'days' => $from->diffInDays($to) + 1,
+                ], $meta);
+            }
+
+            $cursor->addDay();
+        }
+    }
 
     private function getServiceAlertVehicles($businessId, int $thresholdKm = 500)
     {
